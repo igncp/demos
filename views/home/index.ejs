@@ -1,0 +1,5 @@
+<p>Here I show some Data Visualization demos that I've built with examples found on the web, which I've modified with ideas from other examples. The sources are always available. At this point, the data visualization libraries I've used are: <a href="http://d3js.org/">D3.js</a></p>
+<h2>List:</h1>
+<% demos.forEach(function(demo, index){ %>
+    <p><%= index + 1%>.- <a href="<%= demo.route %>"><%= demo.name %></a></p>
+<% }); %>

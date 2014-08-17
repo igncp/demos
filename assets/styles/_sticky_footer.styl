@@ -1,0 +1,16 @@
+footer-height = 90px;
+
+html, body { height: 100%; }
+
+#container {
+  min-height: 100%;
+  margin-bottom: footer-height * (-1); 
+}
+#container:after {
+  content: "";
+  display: block;
+}
+footer, #container:after { height: footer-height; }
+
+footer p
+    text-align center

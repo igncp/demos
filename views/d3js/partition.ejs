@@ -1,0 +1,19 @@
+<% 
+    var mixins = {};
+    mixins.sources = ['http://bl.ocks.org/mbostock/4063423'];
+%>
+
+<h2>Partition chart</h2>
+
+
+<form>
+  <label><input type="radio" name="mode" value="size"> Size</label>
+  <label><input type="radio" name="mode" value="count" checked> Count</label>
+</form>
+
+<div id="chart"></div>
+
+<script type="text/javascript" src="/vendors/bower/d3/d3.min.js"></script>
+<script type="text/javascript" src="/js/d3js/partition.js"></script>
+
+<%- partial('../mixins/_sources', mixins) %>
