@@ -1,9 +1,10 @@
 <% 
     var mixins = {};
+    mixins.demoTitle = 'Pie chart'
     mixins.sources = ['http://codepen.io/nishidh41/pen/Frzhq'];
 %>
 
-<h2>Pie chart</h2>
+<%- partial('../mixins/_demo_title', mixins) %>
 <p><button class="change-data btn btn-success">Change</button> [Under construction]</p>
 <div id="chart"></div>
 

@@ -1,9 +1,10 @@
 <% 
     var mixins = {};
+    mixins.demoTitle = 'Force chart'
     mixins.sources = ['http://codepen.io/MidnightLightning/pen/dclbA'];
 %>
 
-<h2>Force chart</h2>
+<%- partial('../mixins/_demo_title', mixins) %>
 
 <div id="chart" class="force-chart"></div>
 

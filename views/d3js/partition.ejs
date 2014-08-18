@@ -1,9 +1,10 @@
 <% 
     var mixins = {};
+    mixins.demoTitle = 'Partition chart'
     mixins.sources = ['http://bl.ocks.org/mbostock/4063423'];
 %>
 
-<h2>Partition chart</h2>
+<%- partial('../mixins/_demo_title', mixins) %>
 
 
 <form>
