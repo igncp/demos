@@ -2,6 +2,7 @@ _ = require 'lodash'
 util = require 'util'
 
 demos = [
+    ['Collapsible tree', 'd3js', 'collapsible-tree']
     ['Force Chart', 'd3js', 'force']
     ['Partition Chart', 'd3js', 'partition']
     ['Pie Chart', 'd3js', 'pie-chart']
