@@ -1,0 +1,13 @@
+<%  demo = {category: 'd3js', key: 'pie'}; %>
+
+<%- partial('../mixins/_demo_title', demo) %>
+
+<p><button class="change-data btn btn-success">Change</button> [Under construction]</p>
+
+<div id="chart" class="<%= demo.key %>-chart"></div>
+
+<script type="text/javascript" src="/vendors/bower/d3/d3.min.js"></script>
+<script type="text/javascript" src="/js/d3js/pie_chart.js"></script>
+
+<%- partial('../mixins/_sources', demo) %>
+

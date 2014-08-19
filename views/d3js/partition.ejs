@@ -1,20 +1,15 @@
-<% 
-    var mixins = {};
-    mixins.demoTitle = 'Partition chart'
-    mixins.sources = ['http://bl.ocks.org/mbostock/4063423'];
-%>
+<%  demo = {category: 'd3js', key: 'partition'}; %>
 
-<%- partial('../mixins/_demo_title', mixins) %>
-
+<%- partial('../mixins/_demo_title', demo) %>
 
 <form>
   <label><input type="radio" name="mode" value="size"> Size</label>
   <label><input type="radio" name="mode" value="count" checked> Count</label>
 </form>
 
-<div id="chart"></div>
+<div id="chart" class="<%= demo.key %>-chart"></div>
 
 <script type="text/javascript" src="/vendors/bower/d3/d3.min.js"></script>
 <script type="text/javascript" src="/js/d3js/partition.js"></script>
 
-<%- partial('../mixins/_sources', mixins) %>
+<%- partial('../mixins/_sources', demo) %>
