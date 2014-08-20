@@ -1,0 +1,11 @@
+<% info = demosInfoSe.getInfo(category, key); %>
+<% if (info.notes.length) { %>
+    <div id="notes">
+        <p><strong>Notes:</strong></p>
+        <ul>
+            <% info.notes.forEach(function(note){ %>
+                <li><%- note %></li>
+            <% }); %>
+        </ul>
+    </div>
+<% }; %>
