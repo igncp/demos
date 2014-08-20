@@ -16,6 +16,8 @@ info = {
     ['Pie', 'd3js', 'pie', ['http://codepen.io/nishidh41/pen/Frzhq'], ['The animation (transition) is under construction']]
 
     ['Vectors', 'd3js', 'vectors', ['http://codepen.io/zarazum/pen/fjoqF'], ['Use the <strong>Ctrl</strong> key to move nodes instead of creating vectors']]
+    
+    ['World Map', 'd3js', 'world-map', ['http://bost.ocks.org/mike/map/', 'http://bl.ocks.org/mbostock/raw/4090846/world-50m.json'], []]
   ]
 }
 
