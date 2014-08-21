@@ -22,8 +22,9 @@ info = {
 }
 
 
+
 info.d3js = _.map(info.d3js, (item)->
-    {name: item[0], category: item[1], key: item[2], route: util.format('/%s/%s', item[1], item[2]), sources: item[3], notes: item[4] }
+  {name: item[0], category: item[1], key: item[2], route: util.format('/%s/%s', item[1], item[2]), sources: item[3], notes: item[4] }
 )
 
 

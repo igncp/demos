@@ -12,10 +12,7 @@
     "jquery": "~2.1.1",
     "d3": "~3.4.11",
     "async": "~0.9.0",
-    "topojson": "~1.6.17"
-  },
-  "resolutions": {
-    "d3": "~3.4.11",
-    "topojson": "~1.6.17"
+    "topojson": "~1.6.17",
+    "highlightjs": "~8.0.0"
   }
 }

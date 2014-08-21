@@ -1,11 +1,12 @@
-<%  demo = {category: 'd3js', key: 'vectors'}; %>
+<%  demo = {category: "d3js", key: "vectors", files: files}; %>
 
-<%- partial('../mixins/_demo_title', demo) %>
+<%- partial("../mixins/_demo_title", demo) %>
 
 <div id="chart" class="<%= demo.key %>-chart"></div>
 
 <script type="text/javascript" src="/vendors/bower/d3/d3.min.js"></script>
 <script type="text/javascript" src="/js/d3js/vectors.js"></script>
 
-<%- partial('../mixins/_notes', demo) %>
-<%- partial('../mixins/_sources', demo) %>
+<%- partial("../mixins/_notes", demo) %>
+<%- partial("../mixins/_sources", demo) %>
+<%- partial("../mixins/_code", demo) %>

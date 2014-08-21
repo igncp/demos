@@ -1,4 +1,4 @@
-<%  demo = {category: 'd3js', key: 'pie'}; %>
+<%  demo = {category: 'd3js', key: 'pie', files: files}; %>
 
 <%- partial('../mixins/_demo_title', demo) %>
 
@@ -7,7 +7,8 @@
 <div id="chart" class="<%= demo.key %>-chart"></div>
 
 <script type="text/javascript" src="/vendors/bower/d3/d3.min.js"></script>
-<script type="text/javascript" src="/js/d3js/pie_chart.js"></script>
+<script type="text/javascript" src="/js/d3js/pie.js"></script>
 
 <%- partial('../mixins/_notes', demo) %>
 <%- partial('../mixins/_sources', demo) %>
+<%- partial('../mixins/_code', demo) %>

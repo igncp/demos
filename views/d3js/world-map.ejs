@@ -1,6 +1,6 @@
-<%  demo = {category: 'd3js', key: 'world-map'}; %>
+<%  demo = {category: "d3js", key: "world-map", files: files}; %>
 
-<%- partial('../mixins/_demo_title', demo) %>
+<%- partial("../mixins/_demo_title", demo) %>
 
 <div id="chart" class="<%= demo.key %>-chart"></div>
 
@@ -8,5 +8,6 @@
 <script type="text/javascript" src="/vendors/bower/topojson/topojson.js"></script>
 <script type="text/javascript" src="/js/d3js/world-map.js"></script>
 
-<%- partial('../mixins/_notes', demo) %>
-<%- partial('../mixins/_sources', demo) %>
+<%- partial("../mixins/_notes", demo) %>
+<%- partial("../mixins/_sources", demo) %>
+<%- partial("../mixins/_code", demo) %>

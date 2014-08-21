@@ -1,0 +1,15 @@
+<div id="code">
+    <p><strong>Code:</strong></p>
+    <ul>
+        <li>
+            <p><%= key + '.ejs' %></p>
+            <pre><code class="html"><%= files.ejs %></code></pre>
+        </li>
+        <li>
+            <p><%= key + '.coffee' %></p>
+            <pre><code class="coffeescript"><%- files.coffee %></code></pre>
+        </li>
+    </ul>
+    <script type="text/javascript" src="/vendors/bower/highlightjs/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</div>

@@ -1,6 +1,6 @@
-<%  demo = {category: 'd3js', key: 'partition'}; %>
+<%  demo = {category: "d3js", key: "partition", files: files}; %>
 
-<%- partial('../mixins/_demo_title', demo) %>
+<%- partial("../mixins/_demo_title", demo) %>
 
 <form>
   <label><input type="radio" name="mode" value="size"> Size</label>
@@ -12,5 +12,6 @@
 <script type="text/javascript" src="/vendors/bower/d3/d3.min.js"></script>
 <script type="text/javascript" src="/js/d3js/partition.js"></script>
 
-<%- partial('../mixins/_notes', demo) %>
-<%- partial('../mixins/_sources', demo) %>
+<%- partial("../mixins/_notes", demo) %>
+<%- partial("../mixins/_sources", demo) %>
+<%- partial("../mixins/_code", demo) %>
