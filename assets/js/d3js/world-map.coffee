@@ -11,7 +11,6 @@ ready = ()->
   mouseoutFn = ((d)-> d3.select(this).style({'stroke-width': '.2px', stroke: 'white'}) )
   
   setZoom = ((d)-> 
-    console.log 'clicked'
     if not d
       countries.transition().duration(3500)
       .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + 1 + ")translate(" + -width / 2 + "," + -height / 2 + ")")
