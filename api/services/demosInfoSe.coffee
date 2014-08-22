@@ -19,7 +19,7 @@ info = {
 
     ['Weekly Heatmap', 'd3js', 'weekly-heatmap', ['http://bl.ocks.org/tjdecke/5558084'], [], ['data.tsv']]
     
-    ['World Map', 'd3js', 'world-map', ['http://bost.ocks.org/mike/map/', 'http://bl.ocks.org/mbostock/raw/4090846/world-50m.json', 'http://bl.ocks.org/mbostock/2206590'], ['Added the mouse over stroke and the zooming-unzooming when clicking in countries (from third source)', 'Click a country to zoom, click in the water to set zoom back to normal'], ['data.json']]
+    ['World Map', 'd3js', 'world-map', ['http://bost.ocks.org/mike/map/', 'http://bl.ocks.org/mbostock/raw/4090846/world-50m.json', 'http://bl.ocks.org/mbostock/2206590'], ['Added the mouse over stroke and the zooming-unzooming when clicking in countries (from third source)', 'Click a country to zoom, click in the water to set zoom back to normal'], ['world.json']]
   ]
 }
 
