@@ -24,7 +24,7 @@ ready = ()->
       "translate(" + arc.centroid(d) + ")"
   )
 
-  d3.json("/data/d3js/pie-chart/data.json", (error, data)->   
+  d3.json("/data/d3js/pie/data.json", (error, data)->   
     pie = d3.layout.pie().sort(null).value(((d)-> d.val))
     arc = d3.svg.arc().outerRadius(outerRadius)
 
