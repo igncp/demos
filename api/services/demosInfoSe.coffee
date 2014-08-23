@@ -7,7 +7,7 @@ info = {
   # NAME, CATEGORY, KEY, SOURCES, NOTES
 
   'd3js': [
-    ['Bars', 'd3js', 'bars', ['http://codepen.io/basemoz/pen/mBoiL'], [], []]
+    ['Bars', 'd3js', 'bars', ['http://codepen.io/basemoz/pen/mBoiL'], ['Added axis', 'Changed direction and added color transition for wave effect'], ['data.json']]
 
     ['Collapsible Tree', 'd3js', 'collapsible-tree', ['http://bl.ocks.org/mbostock/4339083'], [], ['data.json']]
 

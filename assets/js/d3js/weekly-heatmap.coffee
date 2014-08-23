@@ -1,7 +1,7 @@
 ready = ()->
   margin = { top: 50, right: 50, bottom: 100, left: 50 }
   width = $('#chart').innerWidth() - margin.left - margin.right
-  height = Math.ceil(width * 10 / 24) - margin.top - margin.bottom
+  height = Math.ceil(width * 10 / 24) - margin.top - margin.bottom + 60
   gridSize = Math.floor(width / 24)
   legendElementWidth = gridSize*2
   buckets = 9

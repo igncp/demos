@@ -1,3 +1,13 @@
-.bars-chart rect
-    fill steelblue
-    stroke white
+axis-color = #777
+
+.bars-chart
+    rect
+        stroke white
+
+    .axis 
+        path
+            fill none
+            stroke axis-color
+            stroke-width 1px
+        .tick line
+            stroke axis-color
