@@ -7,10 +7,12 @@ info = {
   # NAME, CATEGORY, KEY, SOURCES, NOTES
 
   'd3js': [
+    ['Bars', 'd3js', 'bars', ['http://codepen.io/basemoz/pen/mBoiL'], [], []]
+
     ['Collapsible Tree', 'd3js', 'collapsible-tree', ['http://bl.ocks.org/mbostock/4339083'], [], ['data.json']]
 
     ['Force', 'd3js', 'force', ['http://codepen.io/MidnightLightning/pen/dclbA'], [], ['links.json', 'nodes.json']]
-
+    
     ['Partition', 'd3js', 'partition', ['http://bl.ocks.org/mbostock/4063423'], ['Added title attributes, labels and change colors with events'], ['flare.json']]
 
     ['Pie', 'd3js', 'pie', ['http://codepen.io/nishidh41/pen/Frzhq'], ['Added the animation (transition) by changing a random slice data by a random integer between range'], ['data.json']]
