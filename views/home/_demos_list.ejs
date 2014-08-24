@@ -1,0 +1,5 @@
+<ul class="list-group">
+    <% demos.forEach(function(demo, index){ %>
+        <a class="list-group-item" href="<%= demo.route %>"> <%= index + 1 + indexOffset %>.- <span class="home-demo-name-link"><%= demo.name %></span></a>
+    <% }); %>
+</ul>
