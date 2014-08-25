@@ -19,7 +19,7 @@ info = {
 
     ['Pie', 'd3js', 'pie', ['http://codepen.io/nishidh41/pen/Frzhq'], ['Added the animation (transition) by changing a random slice data by a random integer between range'], ['data.json']]
     
-    ['Trend line', 'd3js', 'trend-line', ['http://codepen.io/arundhaj/pen/ouyjd'], [], ['data.json']]
+    ['Trend line', 'd3js', 'trend-line', ['http://codepen.io/arundhaj/pen/ouyjd', 'http://big-elephants.com/2014-06/unrolling-line-charts-d3js/'], ['Added both line animations', 'Changed y scale domain'], ['data.tsv']]
 
     ['Vectors', 'd3js', 'vectors', ['http://codepen.io/zarazum/pen/fjoqF'], ['Use the <strong>Ctrl</strong> key to move nodes instead of creating vectors'], []]
 
