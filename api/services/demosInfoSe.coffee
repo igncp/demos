@@ -13,11 +13,13 @@ info = {
 
     ['Force', 'd3js', 'force', ['http://codepen.io/MidnightLightning/pen/dclbA'], [], ['links.json', 'nodes.json']]
     
-    ['Icosahedron', 'd3js', 'icosahedron', ['https://gist.github.com/mbostock/7782500'], ['This demo isn\'t bound to any data yet'], []]
+    ['Icosahedron', 'd3js', 'icosahedron', ['https://gist.github.com/mbostock/7782500'], ['No data bound to it, it could be to the speed, size, colors', 'Added color scale and the sinusoidal x velocity', 'Added the stop and move when clicked'], []]
     
     ['Partition', 'd3js', 'partition', ['http://bl.ocks.org/mbostock/4063423'], ['Added title attributes, labels and change colors with events'], ['flare.json']]
 
     ['Pie', 'd3js', 'pie', ['http://codepen.io/nishidh41/pen/Frzhq'], ['Added the animation (transition) by changing a random slice data by a random integer between range'], ['data.json']]
+    
+    ['Trend line', 'd3js', 'trend-line', ['http://codepen.io/arundhaj/pen/ouyjd'], [], ['data.json']]
 
     ['Vectors', 'd3js', 'vectors', ['http://codepen.io/zarazum/pen/fjoqF'], ['Use the <strong>Ctrl</strong> key to move nodes instead of creating vectors'], []]
 
