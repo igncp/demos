@@ -13,6 +13,10 @@
     "d3": "~3.4.11",
     "async": "~0.9.0",
     "topojson": "~1.6.17",
-    "highlightjs": "~8.0.0"
+    "highlightjs": "~8.0.0",
+    "nvd3": "~1.1.15-beta"
+  },
+  "resolutions": {
+    "d3": "~3.4.11"
   }
 }

@@ -4,10 +4,12 @@ _ = require 'lodash'
 util = require 'util'
 
 info = {
-  # NAME, CATEGORY, KEY, SOURCES, NOTES
+  # NAME, CATEGORY, KEY, SOURCES, NOTES, DATA
 
   'd3js': [
     ['Bars', 'd3js', 'bars', ['http://codepen.io/basemoz/pen/mBoiL'], ['Added axis', 'Changed direction and added color transition for wave effect'], ['data.json']]
+    
+    ['Bubbles', 'd3js', 'bubbles', ['http://codepen.io/linghzang3/pen/GFdzh'], ['Using the <a href="https://github.com/novus/nvd3">NV3D</a> extension for D3JS', 'Data taken from the Nike API (via the Codepen)'], ['data.json']]
 
     ['Collapsible Tree', 'd3js', 'collapsible-tree', ['http://bl.ocks.org/mbostock/4339083'], [], ['data.json']]
 

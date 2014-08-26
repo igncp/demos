@@ -1,0 +1,5371 @@
+{
+  "data": [
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7495000000020120658040022425743435741358"
+        }
+      ],
+      "activityId": "7495000000020120658040022425743435741358",
+      "activityType": "RUN",
+      "startTime": "2014-08-17T23:31:29Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "482",
+        "fuel": "1767",
+        "distance": "6.847099781036377",
+        "steps": "0",
+        "duration": "0:35:04.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1813000000008220104880065779821344514276"
+        }
+      ],
+      "activityId": "1813000000008220104880065779821344514276",
+      "activityType": "RUN",
+      "startTime": "2014-08-16T00:57:38Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "402",
+        "fuel": "1474",
+        "distance": "5.7138",
+        "steps": "0",
+        "duration": "0:29:47.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/8246000000008678916680092804752750135189"
+        }
+      ],
+      "activityId": "8246000000008678916680092804752750135189",
+      "activityType": "RUN",
+      "startTime": "2014-08-14T01:06:50Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "408",
+        "fuel": "1498",
+        "distance": "5.793099880218506",
+        "steps": "0",
+        "duration": "0:29:13.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "RAINY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1060000000016225444700035272539353151839"
+        }
+      ],
+      "activityId": "1060000000016225444700035272539353151839",
+      "activityType": "RUN",
+      "startTime": "2014-08-12T00:36:42Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "347",
+        "fuel": "1274",
+        "distance": "4.930099964141846",
+        "steps": "0",
+        "duration": "0:25:58.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1947000000009443542870022095189990682325"
+        }
+      ],
+      "activityId": "1947000000009443542870022095189990682325",
+      "activityType": "RUN",
+      "startTime": "2014-08-06T23:24:02Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "455",
+        "fuel": "1674",
+        "distance": "6.457499980926514",
+        "steps": "0",
+        "duration": "0:34:01.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2519000000005838330900004487273295148402"
+        }
+      ],
+      "activityId": "2519000000005838330900004487273295148402",
+      "activityType": "RUN",
+      "startTime": "2014-08-05T00:53:31Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "345",
+        "fuel": "1267",
+        "distance": "4.905799865722656",
+        "steps": "0",
+        "duration": "0:27:48.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/3089000000008354297070026376314094838382"
+        }
+      ],
+      "activityId": "3089000000008354297070026376314094838382",
+      "activityType": "RUN",
+      "startTime": "2014-08-01T00:46:25Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "461",
+        "fuel": "1685",
+        "distance": "6.541800022125244",
+        "steps": "0",
+        "duration": "0:31:49.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4663000000012700867640064223895097903739"
+        }
+      ],
+      "activityId": "4663000000012700867640064223895097903739",
+      "activityType": "RUN",
+      "startTime": "2014-07-29T01:13:13Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "342",
+        "fuel": "1248",
+        "distance": "4.855899810791016",
+        "steps": "0",
+        "duration": "0:25:17.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "RAINY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6614000000011320072800003540509401712204"
+        }
+      ],
+      "activityId": "6614000000011320072800003540509401712204",
+      "activityType": "RUN",
+      "startTime": "2014-07-26T23:52:03Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "343",
+        "fuel": "1256",
+        "distance": "4.870100021362305",
+        "steps": "0",
+        "duration": "0:25:24.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/8829000000015980216460064225723825457862"
+        }
+      ],
+      "activityId": "8829000000015980216460064225723825457862",
+      "activityType": "RUN",
+      "startTime": "2014-07-25T01:39:47Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "344",
+        "fuel": "1269",
+        "distance": "4.891200065612793",
+        "steps": "0",
+        "duration": "0:27:13.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1803000000016295184350040555503423211855"
+        }
+      ],
+      "activityId": "1803000000016295184350040555503423211855",
+      "activityType": "RUN",
+      "startTime": "2014-07-19T23:55:23Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "345",
+        "fuel": "1269",
+        "distance": "4.896699905395508",
+        "steps": "0",
+        "duration": "0:25:43.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9907000000004217928960063013754793118605"
+        }
+      ],
+      "activityId": "9907000000004217928960063013754793118605",
+      "activityType": "RUN",
+      "startTime": "2014-07-19T00:28:18Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "350",
+        "fuel": "1273",
+        "distance": "4.970799922943115",
+        "steps": "0",
+        "duration": "0:26:29.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/8145000000013429279740022138508629243540"
+        }
+      ],
+      "activityId": "8145000000013429279740022138508629243540",
+      "activityType": "RUN",
+      "startTime": "2014-07-15T00:32:34Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "344",
+        "fuel": "1264",
+        "distance": "4.886300086975098",
+        "steps": "0",
+        "duration": "0:25:56.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9907000000004255675070063013754792886006"
+        }
+      ],
+      "activityId": "9907000000004255675070063013754792886006",
+      "activityType": "RUN",
+      "startTime": "2014-07-11T00:06:05Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "414",
+        "fuel": "1517",
+        "distance": "5.875699996948242",
+        "steps": "0",
+        "duration": "0:30:25.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9448000000015262956920089000813267529236"
+        }
+      ],
+      "activityId": "9448000000015262956920089000813267529236",
+      "activityType": "RUN",
+      "startTime": "2014-07-08T01:11:28Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "401",
+        "fuel": "1472",
+        "distance": "5.702400207519531",
+        "steps": "0",
+        "duration": "0:28:24.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2156000000010101613290039516417981504728"
+        }
+      ],
+      "activityId": "2156000000010101613290039516417981504728",
+      "activityType": "RUN",
+      "startTime": "2014-07-04T16:18:59Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "571",
+        "fuel": "2092",
+        "distance": "8.101099967956543",
+        "steps": "0",
+        "duration": "0:41:12.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "RAINY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2952000000008113889920061973061655873380"
+        }
+      ],
+      "activityId": "2952000000008113889920061973061655873380",
+      "activityType": "RUN",
+      "startTime": "2014-07-02T12:58:52Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "462",
+        "fuel": "1687",
+        "distance": "6.554599761962891",
+        "steps": "0",
+        "duration": "0:34:08.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5349000000003697846820089000602912706740"
+        }
+      ],
+      "activityId": "5349000000003697846820089000602912706740",
+      "activityType": "RUN",
+      "startTime": "2014-07-01T01:50:56Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "341",
+        "fuel": "1257",
+        "distance": "4.848899841308594",
+        "steps": "0",
+        "duration": "0:25:00.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7443000000018479540780060423847809358347"
+        }
+      ],
+      "activityId": "7443000000018479540780060423847809358347",
+      "activityType": "RUN",
+      "startTime": "2014-06-29T00:09:27Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "343",
+        "fuel": "1260",
+        "distance": "4.878300189971924",
+        "steps": "0",
+        "duration": "0:25:41.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": "Stitching"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2454000000011018405620087626110538667910"
+        }
+      ],
+      "activityId": "2454000000011018405620087626110538667910",
+      "activityType": "RUN",
+      "startTime": "2014-06-26T23:15:19Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "455",
+        "fuel": "1669",
+        "distance": "6.467400074005127",
+        "steps": "0",
+        "duration": "0:32:04.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5189000000005785376860059049101659475067"
+        }
+      ],
+      "activityId": "5189000000005785376860059049101659475067",
+      "activityType": "RUN",
+      "startTime": "2014-06-24T00:10:27Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "346",
+        "fuel": "1262",
+        "distance": "4.91349983215332",
+        "steps": "0",
+        "duration": "0:24:14.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6426000000012306590730060601214147147792"
+        }
+      ],
+      "activityId": "6426000000012306590730060601214147147792",
+      "activityType": "RUN",
+      "startTime": "2014-06-23T01:49:31Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "346",
+        "fuel": "1262",
+        "distance": "4.913899898529053",
+        "steps": "0",
+        "duration": "0:24:44.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2853000000006940087020059049110434204858"
+        }
+      ],
+      "activityId": "2853000000006940087020059049110434204858",
+      "activityType": "RUN",
+      "startTime": "2014-06-21T00:43:01Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "511",
+        "fuel": "1867",
+        "distance": "7.262800216674805",
+        "steps": "0",
+        "duration": "0:36:19.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1842000000013961693710060601212725228707"
+        }
+      ],
+      "activityId": "1842000000013961693710060601212725228707",
+      "activityType": "RUN",
+      "startTime": "2014-06-14T20:03:56Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "469",
+        "fuel": "1717",
+        "distance": "6.656199932098389",
+        "steps": "0",
+        "duration": "0:33:44.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2946000000021090421810015569815154817361"
+        }
+      ],
+      "activityId": "2946000000021090421810015569815154817361",
+      "activityType": "RUN",
+      "startTime": "2014-06-11T00:05:55Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "399",
+        "fuel": "1460",
+        "distance": "5.663000106811523",
+        "steps": "0",
+        "duration": "0:29:29.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4356000000021426790800085947911165171596"
+        }
+      ],
+      "activityId": "4356000000021426790800085947911165171596",
+      "activityType": "RUN",
+      "startTime": "2014-06-09T23:31:09Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "354",
+        "fuel": "1294",
+        "distance": "5.026500225067139",
+        "steps": "0",
+        "duration": "0:25:46.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": "WIth Steph"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5606000000012063196500058923952785901618"
+        }
+      ],
+      "activityId": "5606000000012063196500058923952785901618",
+      "activityType": "RUN",
+      "startTime": "2014-06-04T10:48:51Z",
+      "activityTimeZone": "Europe/Lisbon",
+      "status": "COMPLETE",
+      "deviceType": "IPHONE",
+      "metricSummary": {
+        "calories": "341",
+        "fuel": "1251",
+        "distance": "4.925644397735596",
+        "steps": "0",
+        "duration": "0:30:56.843"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": "In portugal"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "BEACH"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5914000000011312663490057374565572525726"
+        }
+      ],
+      "activityId": "5914000000011312663490057374565572525726",
+      "activityType": "RUN",
+      "startTime": "2014-06-02T09:26:03Z",
+      "activityTimeZone": "Africa/Abidjan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "455",
+        "fuel": "1673",
+        "distance": "6.466000080108643",
+        "steps": "0",
+        "duration": "0:34:46.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9356000000015531482840085892084129609771"
+        }
+      ],
+      "activityId": "9356000000015531482840085892084129609771",
+      "activityType": "RUN",
+      "startTime": "2014-05-25T06:11:00Z",
+      "activityTimeZone": "Etc/GMT-5",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "465",
+        "fuel": "1701",
+        "distance": "6.605999946594238",
+        "steps": "0",
+        "duration": "0:33:14.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "TEMPERATURE",
+          "tagValue": "TEMPERATURE"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6140000000005647347230058923790065805929"
+        }
+      ],
+      "activityId": "6140000000005647347230058923790065805929",
+      "activityType": "RUN",
+      "startTime": "2014-05-23T23:40:27Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "341",
+        "fuel": "1252",
+        "distance": "4.850599765777588",
+        "steps": "0",
+        "duration": "0:24:45.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": "With Steph."
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": "With Steph."
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9404000000015847108410055157003014359094"
+        }
+      ],
+      "activityId": "9404000000015847108410055157003014359094",
+      "activityType": "RUN",
+      "startTime": "2014-05-22T01:01:35Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "358",
+        "fuel": "1310",
+        "distance": "5.084099769592285",
+        "steps": "0",
+        "duration": "0:26:03.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2093000000003813844200028819995743825901"
+        }
+      ],
+      "activityId": "2093000000003813844200028819995743825901",
+      "activityType": "RUN",
+      "startTime": "2014-05-19T23:26:11Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "462",
+        "fuel": "1692",
+        "distance": "6.554800033569336",
+        "steps": "0",
+        "duration": "0:33:12.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": "With Steph."
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6620000000000305415280055081228136579150"
+        }
+      ],
+      "activityId": "6620000000000305415280055081228136579150",
+      "activityType": "RUN",
+      "startTime": "2014-05-17T19:49:01Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "343",
+        "fuel": "1269",
+        "distance": "4.872399806976318",
+        "steps": "0",
+        "duration": "0:26:51.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": "With Steph in Staten Island"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6869000000015390935340055154108085713859"
+        }
+      ],
+      "activityId": "6869000000015390935340055154108085713859",
+      "activityType": "RUN",
+      "startTime": "2014-05-15T23:56:57Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "346",
+        "fuel": "1261",
+        "distance": "4.922100067138672",
+        "steps": "0",
+        "duration": "0:25:08.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": "With Steph to dinner"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6166000000004188274670082125179109237215"
+        }
+      ],
+      "activityId": "6166000000004188274670082125179109237215",
+      "activityType": "RUN",
+      "startTime": "2014-05-14T23:02:05Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "461",
+        "fuel": "1681",
+        "distance": "6.5406999588012695",
+        "steps": "0",
+        "duration": "0:32:14.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2955000000003290597770053604890190418250"
+        }
+      ],
+      "activityId": "2955000000003290597770053604890190418250",
+      "activityType": "RUN",
+      "startTime": "2014-05-10T00:02:39Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "457",
+        "fuel": "1661",
+        "distance": "6.497399806976318",
+        "steps": "0",
+        "duration": "0:31:38.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6869000000005153989920055154108085470822"
+        }
+      ],
+      "activityId": "6869000000005153989920055154108085470822",
+      "activityType": "RUN",
+      "startTime": "2014-05-07T13:29:21Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "IPHONE",
+      "metricSummary": {
+        "calories": "399",
+        "fuel": "1472",
+        "distance": "5.672900199890137",
+        "steps": "0",
+        "duration": "0:29:51.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1942000000010914684410014280428902879554"
+        }
+      ],
+      "activityId": "1942000000010914684410014280428902879554",
+      "activityType": "RUN",
+      "startTime": "2014-05-06T13:47:17Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "369",
+        "fuel": "1344",
+        "distance": "5.237500190734863",
+        "steps": "0",
+        "duration": "0:26:31.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5577000000019253595970055156990681167966"
+        }
+      ],
+      "activityId": "5577000000019253595970055156990681167966",
+      "activityType": "RUN",
+      "startTime": "2014-05-03T23:44:54Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "364",
+        "fuel": "1328",
+        "distance": "5.171999931335449",
+        "steps": "0",
+        "duration": "0:26:07.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1942000000000239698040014280428902774453"
+        }
+      ],
+      "activityId": "1942000000000239698040014280428902774453",
+      "activityType": "RUN",
+      "startTime": "2014-05-03T00:41:00Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "352",
+        "fuel": "1294",
+        "distance": "5.004499912261963",
+        "steps": "0",
+        "duration": "0:25:11.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1942000000005709640720014280428902663307"
+        }
+      ],
+      "activityId": "1942000000005709640720014280428902663307",
+      "activityType": "RUN",
+      "startTime": "2014-04-28T22:56:33Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "459",
+        "fuel": "1668",
+        "distance": "6.515900135040283",
+        "steps": "0",
+        "duration": "0:31:18.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2093000000005599110520028819995743112980"
+        }
+      ],
+      "activityId": "2093000000005599110520028819995743112980",
+      "activityType": "RUN",
+      "startTime": "2014-04-24T23:25:39Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "420",
+        "fuel": "1539",
+        "distance": "5.963500022888184",
+        "steps": "0",
+        "duration": "0:31:26.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4050000000020947864470033160113913574844"
+        }
+      ],
+      "activityId": "4050000000020947864470033160113913574844",
+      "activityType": "RUN",
+      "startTime": "2014-04-22T23:34:32Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "470",
+        "fuel": "1720",
+        "distance": "6.68120002746582",
+        "steps": "0",
+        "duration": "0:32:59.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6869000000001935127590055154108084988352"
+        }
+      ],
+      "activityId": "6869000000001935127590055154108084988352",
+      "activityType": "RUN",
+      "startTime": "2014-04-20T22:41:14Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "347",
+        "fuel": "1268",
+        "distance": "4.933899879455566",
+        "steps": "0",
+        "duration": "0:24:43.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2955000000003948307100053604890189808842"
+        }
+      ],
+      "activityId": "2955000000003948307100053604890189808842",
+      "activityType": "RUN",
+      "startTime": "2014-04-18T20:50:44Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "358",
+        "fuel": "1316",
+        "distance": "5.091400146484375",
+        "steps": "0",
+        "duration": "0:25:34.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2093000000016501577650028819995742872231"
+        }
+      ],
+      "activityId": "2093000000016501577650028819995742872231",
+      "activityType": "RUN",
+      "startTime": "2014-04-16T13:18:48Z",
+      "activityTimeZone": "ART",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "399",
+        "fuel": "1464",
+        "distance": "5.667699813842773",
+        "steps": "5558",
+        "duration": "0:31:17.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "TREADMILL"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/3752000000020180842080053604869165813995"
+        }
+      ],
+      "activityId": "3752000000020180842080053604869165813995",
+      "activityType": "RUN",
+      "startTime": "2014-04-09T16:45:14Z",
+      "activityTimeZone": "ART",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "487",
+        "fuel": "1786",
+        "distance": "6.917900085449219",
+        "steps": "0",
+        "duration": "0:37:42.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free Green"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1993000000013603997660054298634865846551"
+        }
+      ],
+      "activityId": "1993000000013603997660054298634865846551",
+      "activityType": "RUN",
+      "startTime": "2014-04-03T23:11:07Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "470",
+        "fuel": "1716",
+        "distance": "6.678100109100342",
+        "steps": "4788",
+        "duration": "0:34:39.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2828000000002652120330081323300264260028"
+        }
+      ],
+      "activityId": "2828000000002652120330081323300264260028",
+      "activityType": "RUN",
+      "startTime": "2014-04-02T23:05:24Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "377",
+        "fuel": "1375",
+        "distance": "5.351200103759766",
+        "steps": "184",
+        "duration": "0:27:28.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1990000000013935292350081323508269861119"
+        }
+      ],
+      "activityId": "1990000000013935292350081323508269861119",
+      "activityType": "RUN",
+      "startTime": "2014-03-31T22:49:13Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "457",
+        "fuel": "1676",
+        "distance": "6.491099834442139",
+        "steps": "48",
+        "duration": "0:32:14.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9127000000009238156780080624480812353539"
+        }
+      ],
+      "activityId": "9127000000009238156780080624480812353539",
+      "activityType": "RUN",
+      "startTime": "2014-03-27T23:46:31Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "342",
+        "fuel": "1251",
+        "distance": "4.8607001304626465",
+        "steps": "4284",
+        "duration": "0:23:50.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6520000000001058163320027262634765876058"
+        }
+      ],
+      "activityId": "6520000000001058163320027262634765876058",
+      "activityType": "RUN",
+      "startTime": "2014-03-25T22:53:32Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "455",
+        "fuel": "1665",
+        "distance": "6.463399887084961",
+        "steps": "4690",
+        "duration": "0:31:10.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TEMPERATURE",
+          "tagValue": "TEMPERATURE"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5443000000010039158260015749130122973352"
+        }
+      ],
+      "activityId": "5443000000010039158260015749130122973352",
+      "activityType": "RUN",
+      "startTime": "2014-03-22T23:00:27Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "363",
+        "fuel": "1325",
+        "distance": "5.161399841308594",
+        "steps": "10975241",
+        "duration": "0:25:39.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9238000000020719158690012463254173916566"
+        }
+      ],
+      "activityId": "9238000000020719158690012463254173916566",
+      "activityType": "RUN",
+      "startTime": "2014-03-20T17:28:20Z",
+      "activityTimeZone": "ART",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "296",
+        "fuel": "1088",
+        "distance": "4.200500011444092",
+        "steps": "4116",
+        "duration": "0:23:41.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "TREADMILL"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/8435000000018430329380051361478179321300"
+        }
+      ],
+      "activityId": "8435000000018430329380051361478179321300",
+      "activityType": "RUN",
+      "startTime": "2014-03-17T19:42:19Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "348",
+        "fuel": "1274",
+        "distance": "4.943699836730957",
+        "steps": "5307387",
+        "duration": "0:24:43.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/8219000000006648928610079938230983267084"
+        }
+      ],
+      "activityId": "8219000000006648928610079938230983267084",
+      "activityType": "RUN",
+      "startTime": "2014-03-14T22:02:02Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "455",
+        "fuel": "1665",
+        "distance": "6.463799953460693",
+        "steps": "3638",
+        "duration": "0:31:53.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/8390000000010304705100051750599274266734"
+        }
+      ],
+      "activityId": "8390000000010304705100051750599274266734",
+      "activityType": "RUN",
+      "startTime": "2014-03-11T21:39:39Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "484",
+        "fuel": "1774",
+        "distance": "6.866399765014648",
+        "steps": "6204",
+        "duration": "0:34:56.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/3284000000008776244640078775502962858012"
+        }
+      ],
+      "activityId": "3284000000008776244640078775502962858012",
+      "activityType": "RUN",
+      "startTime": "2014-03-09T21:38:18Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "354",
+        "fuel": "1289",
+        "distance": "5.029300212860107",
+        "steps": "3848",
+        "duration": "0:24:59.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2539000000018744225370078775489996957450"
+        }
+      ],
+      "activityId": "2539000000018744225370078775489996957450",
+      "activityType": "RUN",
+      "startTime": "2014-03-08T21:41:56Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "601",
+        "fuel": "2198",
+        "distance": "8.532999992370605",
+        "steps": "6222",
+        "duration": "0:43:18.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4486000000006075560170050198510986499790"
+        }
+      ],
+      "activityId": "4486000000006075560170050198510986499790",
+      "activityType": "RUN",
+      "startTime": "2014-03-05T22:52:47Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "344",
+        "fuel": "1261",
+        "distance": "4.886300086975098",
+        "steps": "588",
+        "duration": "0:25:04.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7205000000006486866040051674847835686507"
+        }
+      ],
+      "activityId": "7205000000006486866040051674847835686507",
+      "activityType": "RUN",
+      "startTime": "2014-03-04T22:20:06Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "484",
+        "fuel": "1770",
+        "distance": "6.876699924468994",
+        "steps": "6",
+        "duration": "0:33:08.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1361000000014892281180051747729487028915"
+        }
+      ],
+      "activityId": "1361000000014892281180051747729487028915",
+      "activityType": "RUN",
+      "startTime": "2014-03-02T16:34:06Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "472",
+        "fuel": "1731",
+        "distance": "6.6975998878479",
+        "steps": "6118",
+        "duration": "0:34:13.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/8406000000003576325930051604071454680991"
+        }
+      ],
+      "activityId": "8406000000003576325930051604071454680991",
+      "activityType": "RUN",
+      "startTime": "2014-02-27T22:22:11Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "469",
+        "fuel": "1709",
+        "distance": "6.65939998626709",
+        "steps": "3374",
+        "duration": "0:32:04.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5281000000008696734980078235093169728990"
+        }
+      ],
+      "activityId": "5281000000008696734980078235093169728990",
+      "activityType": "RUN",
+      "startTime": "2014-02-25T23:07:14Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "399",
+        "fuel": "1244",
+        "distance": "5.661200046539307",
+        "steps": "148",
+        "duration": "0:29:46.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/3114000000015820718300032649456206108302"
+        }
+      ],
+      "activityId": "3114000000015820718300032649456206108302",
+      "activityType": "RUN",
+      "startTime": "2014-02-24T23:12:06Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "398",
+        "fuel": "1246",
+        "distance": "5.652500152587891",
+        "steps": "4",
+        "duration": "0:27:45.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6042000000009861989200023564973682322280"
+        }
+      ],
+      "activityId": "6042000000009861989200023564973682322280",
+      "activityType": "RUN",
+      "startTime": "2014-02-20T21:41:38Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "476",
+        "fuel": "1489",
+        "distance": "6.763700008392334",
+        "steps": "12077527",
+        "duration": "0:32:53.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9110000000020123399200049899584602292130"
+        }
+      ],
+      "activityId": "9110000000020123399200049899584602292130",
+      "activityType": "RUN",
+      "startTime": "2014-02-19T22:31:33Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "365",
+        "fuel": "1140",
+        "distance": "5.191699981689453",
+        "steps": "3726",
+        "duration": "0:26:54.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "RAINY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7188000000015773886050048351052280043628"
+        }
+      ],
+      "activityId": "7188000000015773886050048351052280043628",
+      "activityType": "RUN",
+      "startTime": "2014-02-17T21:58:45Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "458",
+        "fuel": "1441",
+        "distance": "6.509099960327148",
+        "steps": "4912",
+        "duration": "0:33:41.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/3744000000020208195510027443313838583458"
+        }
+      ],
+      "activityId": "3744000000020208195510027443313838583458",
+      "activityType": "RUN",
+      "startTime": "2014-02-11T22:34:14Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "398",
+        "fuel": "1248",
+        "distance": "5.656899929046631",
+        "steps": "3076",
+        "duration": "0:28:39.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4121000000003440302770049901543449044222"
+        }
+      ],
+      "activityId": "4121000000003440302770049901543449044222",
+      "activityType": "RUN",
+      "startTime": "2014-02-10T22:29:50Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "476",
+        "fuel": "1494",
+        "distance": "6.762599945068359",
+        "steps": "5952",
+        "duration": "0:33:10.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/3744000000013451252440027443313838540401"
+        }
+      ],
+      "activityId": "3744000000013451252440027443313838540401",
+      "activityType": "RUN",
+      "startTime": "2014-02-09T20:49:29Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "348",
+        "fuel": "1088",
+        "distance": "4.945400238037109",
+        "steps": "110",
+        "duration": "0:24:24.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5998000000000252753900008920989658906210"
+        }
+      ],
+      "activityId": "5998000000000252753900008920989658906210",
+      "activityType": "RUN",
+      "startTime": "2014-02-06T22:37:03Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "567",
+        "fuel": "1778",
+        "distance": "8.056099891662598",
+        "steps": "7084",
+        "duration": "0:40:01.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7619000000016111694770047210337690924730"
+        }
+      ],
+      "activityId": "7619000000016111694770047210337690924730",
+      "activityType": "RUN",
+      "startTime": "2014-02-04T23:33:01Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "483",
+        "fuel": "1514",
+        "distance": "6.861000061035156",
+        "steps": "5362",
+        "duration": "0:36:12.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9435000000002663190650026302912725414534"
+        }
+      ],
+      "activityId": "9435000000002663190650026302912725414534",
+      "activityType": "RUN",
+      "startTime": "2014-02-02T20:43:29Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "350",
+        "fuel": "1100",
+        "distance": "4.977200031280518",
+        "steps": "106",
+        "duration": "0:26:31.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "RAINY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4671000000005949359880022425439693241496"
+        }
+      ],
+      "activityId": "4671000000005949359880022425439693241496",
+      "activityType": "RUN",
+      "startTime": "2014-01-31T22:30:37Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "392",
+        "fuel": "1229",
+        "distance": "5.567500114440918",
+        "steps": "4042",
+        "duration": "0:28:04.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9554000000012722122040048041178610173806"
+        }
+      ],
+      "activityId": "9554000000012722122040048041178610173806",
+      "activityType": "RUN",
+      "startTime": "2014-01-24T21:54:59Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "358",
+        "fuel": "1120",
+        "distance": "5.079899787902832",
+        "steps": "3330",
+        "duration": "0:24:55.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4575000000004861313600007241532918754762"
+        }
+      ],
+      "activityId": "4575000000004861313600007241532918754762",
+      "activityType": "RUN",
+      "startTime": "2014-01-23T22:15:44Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "468",
+        "fuel": "1470",
+        "distance": "6.64169979095459",
+        "steps": "11278569",
+        "duration": "0:33:23.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6459000000010956998380075084136955513419"
+        }
+      ],
+      "activityId": "6459000000010956998380075084136955513419",
+      "activityType": "RUN",
+      "startTime": "2014-01-21T00:05:13Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "354",
+        "fuel": "1108",
+        "distance": "5.025300025939941",
+        "steps": "3392",
+        "duration": "0:26:07.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5006000000010466812090010264601407611889"
+        }
+      ],
+      "activityId": "5006000000010466812090010264601407611889",
+      "activityType": "RUN",
+      "startTime": "2014-01-19T20:32:52Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "455",
+        "fuel": "1422",
+        "distance": "6.462699890136719",
+        "steps": "4749815",
+        "duration": "0:34:29.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9544000000016404220430004762205479400244"
+        }
+      ],
+      "activityId": "9544000000016404220430004762205479400244",
+      "activityType": "RUN",
+      "startTime": "2014-01-17T23:07:55Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "362",
+        "fuel": "1146",
+        "distance": "5.138599872589111",
+        "steps": "4928",
+        "duration": "0:27:53.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7019000000009035193000047176588339630428"
+        }
+      ],
+      "activityId": "7019000000009035193000047176588339630428",
+      "activityType": "RUN",
+      "startTime": "2014-01-13T22:30:09Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "454",
+        "fuel": "1426",
+        "distance": "6.44980001449585",
+        "steps": "5976",
+        "duration": "0:35:18.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4417000000014008113200074144075155900344"
+        }
+      ],
+      "activityId": "4417000000014008113200074144075155900344",
+      "activityType": "RUN",
+      "startTime": "2014-01-12T21:05:02Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "363",
+        "fuel": "1139",
+        "distance": "5.163599967956543",
+        "steps": "4",
+        "duration": "0:27:02.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6219000000013925518290047175945636411617"
+        }
+      ],
+      "activityId": "6219000000013925518290047175945636411617",
+      "activityType": "RUN",
+      "startTime": "2014-01-10T22:57:40Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "471",
+        "fuel": "1475",
+        "distance": "6.691299915313721",
+        "steps": "4476",
+        "duration": "0:36:44.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6087000000008292186600004521568635776547"
+        }
+      ],
+      "activityId": "6087000000008292186600004521568635776547",
+      "activityType": "RUN",
+      "startTime": "2013-12-31T19:10:06Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "350",
+        "fuel": "1095",
+        "distance": "4.9653000831604",
+        "steps": "2",
+        "duration": "0:24:42.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4412000000003862080790019061169176704487"
+        }
+      ],
+      "activityId": "4412000000003862080790019061169176704487",
+      "activityType": "RUN",
+      "startTime": "2013-12-30T22:30:29Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "469",
+        "fuel": "1475",
+        "distance": "6.663599967956543",
+        "steps": "4432",
+        "duration": "0:35:34.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7554000000000132594870043845996658991213"
+        }
+      ],
+      "activityId": "7554000000000132594870043845996658991213",
+      "activityType": "RUN",
+      "startTime": "2013-12-27T20:40:14Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "475",
+        "fuel": "1489",
+        "distance": "6.746300220489502",
+        "steps": "3908",
+        "duration": "0:35:05.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1430000000019731450720045395174984808485"
+        }
+      ],
+      "activityId": "1430000000019731450720045395174984808485",
+      "activityType": "RUN",
+      "startTime": "2013-12-22T22:15:33Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "468",
+        "fuel": "1470",
+        "distance": "6.646200180053711",
+        "steps": "6014",
+        "duration": "0:34:25.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4076000000000872368680072422945218791360"
+        }
+      ],
+      "activityId": "4076000000000872368680072422945218791360",
+      "activityType": "RUN",
+      "startTime": "2013-12-19T23:49:19Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "342",
+        "fuel": "1077",
+        "distance": "4.856200218200684",
+        "steps": "560",
+        "duration": "0:25:52.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4810000000016184576960071323225552089877"
+        }
+      ],
+      "activityId": "4810000000016184576960071323225552089877",
+      "activityType": "RUN",
+      "startTime": "2013-12-14T20:42:22Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "471",
+        "fuel": "1476",
+        "distance": "6.689000129699707",
+        "steps": "6108",
+        "duration": "0:34:59.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5702000000006370143060042802936714457746"
+        }
+      ],
+      "activityId": "5702000000006370143060042802936714457746",
+      "activityType": "RUN",
+      "startTime": "2013-12-05T23:35:06Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "365",
+        "fuel": "1149",
+        "distance": "5.178199768066406",
+        "steps": "466",
+        "duration": "0:27:21.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9728000000001405192720025477029355821725"
+        }
+      ],
+      "activityId": "9728000000001405192720025477029355821725",
+      "activityType": "RUN",
+      "startTime": "2013-12-03T00:03:07Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "227",
+        "fuel": "714",
+        "distance": "3.2279999256134033",
+        "steps": "92",
+        "duration": "0:16:31.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/6710000000000524316440043720994136949083"
+        }
+      ],
+      "activityId": "6710000000000524316440043720994136949083",
+      "activityType": "RUN",
+      "startTime": "2013-11-28T22:14:48Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "465",
+        "fuel": "1467",
+        "distance": "6.597499847412109",
+        "steps": "6232",
+        "duration": "0:34:34.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7563000000005244928280041393881385714643"
+        }
+      ],
+      "activityId": "7563000000005244928280041393881385714643",
+      "activityType": "RUN",
+      "startTime": "2013-11-25T21:31:46Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "459",
+        "fuel": "1438",
+        "distance": "6.519800186157227",
+        "steps": "4312",
+        "duration": "0:35:35.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/8232000000020259859210024328531072558021"
+        }
+      ],
+      "activityId": "8232000000020259859210024328531072558021",
+      "activityType": "RUN",
+      "startTime": "2013-11-21T22:07:42Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "387",
+        "fuel": "1211",
+        "distance": "5.500100135803223",
+        "steps": "4396",
+        "duration": "0:31:55.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2592000000001026029230042945020475620257"
+        }
+      ],
+      "activityId": "2592000000001026029230042945020475620257",
+      "activityType": "RUN",
+      "startTime": "2013-11-18T21:35:43Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "290",
+        "fuel": "912",
+        "distance": "4.1234002113342285",
+        "steps": "8",
+        "duration": "0:21:46.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/3242000000005324351570042349103003640584"
+        }
+      ],
+      "activityId": "3242000000005324351570042349103003640584",
+      "activityType": "RUN",
+      "startTime": "2013-11-16T20:49:05Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "517",
+        "fuel": "1604",
+        "distance": "7.335599899291992",
+        "steps": "6",
+        "duration": "0:39:08.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/4224000000016885519920042348780343353403"
+        }
+      ],
+      "activityId": "4224000000016885519920042348780343353403",
+      "activityType": "RUN",
+      "startTime": "2013-11-14T21:57:12Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "455",
+        "fuel": "1421",
+        "distance": "6.456600189208984",
+        "steps": "1464",
+        "duration": "0:34:13.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/3680000000000713188220042350133679915733"
+        }
+      ],
+      "activityId": "3680000000000713188220042350133679915733",
+      "activityType": "RUN",
+      "startTime": "2013-11-12T22:36:05Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "227",
+        "fuel": "712",
+        "distance": "3.22160005569458",
+        "steps": "3046",
+        "duration": "0:17:11.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7339000000016101021050023412166403339086"
+        }
+      ],
+      "activityId": "7339000000016101021050023412166403339086",
+      "activityType": "RUN",
+      "startTime": "2013-11-10T19:46:53Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "503",
+        "fuel": "1571",
+        "distance": "7.148600101470947",
+        "steps": "2960",
+        "duration": "0:36:38.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "CLOUDY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/3960000000018562095000039689262609783172"
+        }
+      ],
+      "activityId": "3960000000018562095000039689262609783172",
+      "activityType": "RUN",
+      "startTime": "2013-11-05T22:52:20Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "348",
+        "fuel": "1088",
+        "distance": "4.9430999755859375",
+        "steps": "56",
+        "duration": "0:25:54.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5055000000021044461510039689255409815367"
+        }
+      ],
+      "activityId": "5055000000021044461510039689255409815367",
+      "activityType": "RUN",
+      "startTime": "2013-11-04T23:26:15Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "462",
+        "fuel": "1435",
+        "distance": "6.56820011138916",
+        "steps": "120",
+        "duration": "0:33:59.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1682000000000936692160068266224439571368"
+        }
+      ],
+      "activityId": "1682000000000936692160068266224439571368",
+      "activityType": "RUN",
+      "startTime": "2013-11-02T15:45:09Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "369",
+        "fuel": "1149",
+        "distance": "5.241099834442139",
+        "steps": "4738",
+        "duration": "0:25:58.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2164000000011052243550002986540510090651"
+        }
+      ],
+      "activityId": "2164000000011052243550002986540510090651",
+      "activityType": "RUN",
+      "startTime": "2013-10-28T22:20:32Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "365",
+        "fuel": "1142",
+        "distance": "5.184800148010254",
+        "steps": "6",
+        "duration": "0:25:16.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/3143000000017034961090067618909975981305"
+        }
+      ],
+      "activityId": "3143000000017034961090067618909975981305",
+      "activityType": "RUN",
+      "startTime": "2013-10-25T00:13:43Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "712",
+        "fuel": "2251",
+        "distance": "10.100700378417969",
+        "steps": "782459",
+        "duration": "0:53:34.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/1641000000003693266980020995015420915735"
+        }
+      ],
+      "activityId": "1641000000003693266980020995015420915735",
+      "activityType": "RUN",
+      "startTime": "2013-10-18T21:31:13Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "474",
+        "fuel": "1482",
+        "distance": "6.72790002822876",
+        "steps": "5206",
+        "duration": "0:33:22.000"
+      },
+      "tags": [
+        {
+          "tagType": "TEMPERATURE",
+          "tagValue": "TEMPERATURE"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/9556000000004576215470001761946361983843"
+        }
+      ],
+      "activityId": "9556000000004576215470001761946361983843",
+      "activityType": "RUN",
+      "startTime": "2013-10-15T22:18:24Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "472",
+        "fuel": "1483",
+        "distance": "6.696300029754639",
+        "steps": "2532",
+        "duration": "0:34:32.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7088000000006533191050039433139799354957"
+        }
+      ],
+      "activityId": "7088000000006533191050039433139799354957",
+      "activityType": "RUN",
+      "startTime": "2013-10-10T22:01:20Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "325",
+        "fuel": "1014",
+        "distance": "4.620800018310547",
+        "steps": "2696",
+        "duration": "0:25:39.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/7125000000013885436500039272891303136389"
+        }
+      ],
+      "activityId": "7125000000013885436500039272891303136389",
+      "activityType": "RUN",
+      "startTime": "2013-10-08T22:39:19Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "483",
+        "fuel": "1504",
+        "distance": "6.853099822998047",
+        "steps": "14995307",
+        "duration": "0:35:03.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/5962000000016014678720039273182542840782"
+        }
+      ],
+      "activityId": "5962000000016014678720039273182542840782",
+      "activityType": "RUN",
+      "startTime": "2013-10-07T22:36:07Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "372",
+        "fuel": "1173",
+        "distance": "5.282400131225586",
+        "steps": "4752",
+        "duration": "0:27:03.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/42514922629"
+        }
+      ],
+      "activityId": "42514922629",
+      "activityType": "RUN",
+      "startTime": "2013-09-10T23:07:14Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "457",
+        "fuel": "1424",
+        "distance": "6.48799991607666",
+        "steps": "10134255",
+        "duration": "0:34:18.000"
+      },
+      "tags": [
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "PARTLY_SUNNY"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/42514295884"
+        }
+      ],
+      "activityId": "42514295884",
+      "activityType": "RUN",
+      "startTime": "2013-09-09T23:20:58Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "377",
+        "fuel": "1174",
+        "distance": "5.359600067138672",
+        "steps": "4",
+        "duration": "0:27:48.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/42510791992"
+        }
+      ],
+      "activityId": "42510791992",
+      "activityType": "RUN",
+      "startTime": "2013-09-03T23:16:38Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "374",
+        "fuel": "1168",
+        "distance": "5.315299987792969",
+        "steps": "4358",
+        "duration": "0:28:06.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/42510791986"
+        }
+      ],
+      "activityId": "42510791986",
+      "activityType": "RUN",
+      "startTime": "2013-09-02T19:41:56Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "356",
+        "fuel": "1114",
+        "distance": "5.05079984664917",
+        "steps": "4360",
+        "duration": "0:28:12.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/42501068814"
+        }
+      ],
+      "activityId": "42501068814",
+      "activityType": "RUN",
+      "startTime": "2013-08-18T12:22:50Z",
+      "activityTimeZone": "ART",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "349",
+        "fuel": "1098",
+        "distance": "4.957399845123291",
+        "steps": "2316",
+        "duration": "0:27:40.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": "In Eskisehir, Turkey."
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/42497806924"
+        }
+      ],
+      "activityId": "42497806924",
+      "activityType": "RUN",
+      "startTime": "2013-08-12T22:10:31Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "292",
+        "fuel": "893",
+        "distance": "4.148900032043457",
+        "steps": "2978",
+        "duration": "0:23:59.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": "With Dog (Frontier)"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/42496604636"
+        }
+      ],
+      "activityId": "42496604636",
+      "activityType": "RUN",
+      "startTime": "2013-08-10T19:55:57Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "292",
+        "fuel": "899",
+        "distance": "4.147600173950195",
+        "steps": "3718",
+        "duration": "0:24:39.000"
+      },
+      "tags": [
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": "With Dog (Frontier)"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/42493783483"
+        }
+      ],
+      "activityId": "42493783483",
+      "activityType": "RUN",
+      "startTime": "2013-08-06T00:38:52Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "397",
+        "fuel": "1236",
+        "distance": "5.638000011444092",
+        "steps": "476",
+        "duration": "0:27:55.000"
+      },
+      "tags": [
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/42488484129"
+        }
+      ],
+      "activityId": "42488484129",
+      "activityType": "RUN",
+      "startTime": "2013-07-28T00:55:16Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "374",
+        "fuel": "1156",
+        "distance": "5.237299919128418",
+        "steps": "4",
+        "duration": "0:27:21.000"
+      },
+      "tags": [
+        {
+          "tagType": "TEMPERATURE",
+          "tagValue": "TEMPERATURE"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "EMOTION",
+          "tagValue": "GREAT"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/42487388309"
+        }
+      ],
+      "activityId": "42487388309",
+      "activityType": "RUN",
+      "startTime": "2013-07-25T22:51:07Z",
+      "activityTimeZone": "America/New_York",
+      "status": "COMPLETE",
+      "deviceType": "IPHONE",
+      "metricSummary": {
+        "calories": "348",
+        "fuel": "1075",
+        "distance": "4.877230644226074",
+        "steps": "0",
+        "duration": "0:22:50.136"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "UNSTOPPABLE"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "RAINY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/31886617000"
+        }
+      ],
+      "activityId": "31886617000",
+      "activityType": "RUN",
+      "startTime": "2013-06-25T00:07:38Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "346",
+        "fuel": "1071",
+        "distance": "4.851099967956543",
+        "steps": "4276",
+        "duration": "0:25:21.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/19500375000"
+        }
+      ],
+      "activityId": "19500375000",
+      "activityType": "RUN",
+      "startTime": "2013-06-04T00:26:08Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "317",
+        "fuel": "982",
+        "distance": "4.439899921417236",
+        "steps": "0",
+        "duration": "0:23:54.000"
+      },
+      "tags": [
+        {
+          "tagType": "EMOTION",
+          "tagValue": "SO_SO"
+        },
+        {
+          "tagType": "WEATHER",
+          "tagValue": "SUNNY"
+        },
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        },
+        {
+          "tagType": "TERRAIN",
+          "tagValue": "ROAD"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2070205247"
+        }
+      ],
+      "activityId": "2070205247",
+      "activityType": "RUN",
+      "startTime": "2012-11-09T01:25:33Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "IN_PROGRESS",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "398",
+        "fuel": "1261",
+        "distance": "5.964600086212158",
+        "steps": "6563817",
+        "duration": "0:38:07.000"
+      },
+      "tags": [
+        {
+          "tagType": "NOTE",
+          "tagValue": null
+        },
+        {
+          "tagType": "SHOES",
+          "tagValue": "Nike Free (Red)"
+        }
+      ],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2063571191"
+        }
+      ],
+      "activityId": "2063571191",
+      "activityType": "RUN",
+      "startTime": "2012-11-05T21:40:09Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "331",
+        "fuel": "1049",
+        "distance": "4.9629998207092285",
+        "steps": "2",
+        "duration": "0:23:32.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2063571190"
+        }
+      ],
+      "activityId": "2063571190",
+      "activityType": "RUN",
+      "startTime": "2012-11-03T23:48:37Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "IN_PROGRESS",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "363",
+        "fuel": "1152",
+        "distance": "5.447299957275391",
+        "steps": "5290",
+        "duration": "0:32:44.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2063560915"
+        }
+      ],
+      "activityId": "2063560915",
+      "activityType": "RUN",
+      "startTime": "2012-11-02T00:19:55Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "IN_PROGRESS",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "399",
+        "fuel": "1267",
+        "distance": "5.992199897766113",
+        "steps": "1847709",
+        "duration": "0:33:49.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2063565494"
+        }
+      ],
+      "activityId": "2063565494",
+      "activityType": "RUN",
+      "startTime": "2012-10-30T23:51:29Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "IN_PROGRESS",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "446",
+        "fuel": "1415",
+        "distance": "6.689899921417236",
+        "steps": "6776",
+        "duration": "0:38:56.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2059669258"
+        }
+      ],
+      "activityId": "2059669258",
+      "activityType": "RUN",
+      "startTime": "2012-10-29T00:50:22Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "IN_PROGRESS",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "255",
+        "fuel": "810",
+        "distance": "3.8290998935699463",
+        "steps": "3884",
+        "duration": "0:22:10.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2059659785"
+        }
+      ],
+      "activityId": "2059659785",
+      "activityType": "RUN",
+      "startTime": "2012-10-27T21:07:31Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "IN_PROGRESS",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "439",
+        "fuel": "1393",
+        "distance": "6.586900234222412",
+        "steps": "6520",
+        "duration": "0:36:41.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2057377596"
+        }
+      ],
+      "activityId": "2057377596",
+      "activityType": "RUN",
+      "startTime": "2012-10-23T22:41:40Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "547",
+        "fuel": "1735",
+        "distance": "8.202500343322754",
+        "steps": "7476",
+        "duration": "0:45:51.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2056537299"
+        }
+      ],
+      "activityId": "2056537299",
+      "activityType": "RUN",
+      "startTime": "2012-10-21T23:08:41Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "393",
+        "fuel": "1247",
+        "distance": "5.897299766540527",
+        "steps": "5706",
+        "duration": "0:35:49.000"
+      },
+      "tags": [],
+      "metrics": []
+    },
+    {
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://api.nike.com/v1/me/sport/activities/2056034770"
+        }
+      ],
+      "activityId": "2056034770",
+      "activityType": "RUN",
+      "startTime": "2012-10-20T23:17:41Z",
+      "activityTimeZone": "America/Atikokan",
+      "status": "COMPLETE",
+      "deviceType": "SPORTWATCH",
+      "metricSummary": {
+        "calories": "432",
+        "fuel": "1371",
+        "distance": "6.483799934387207",
+        "steps": "5086",
+        "duration": "0:34:30.000"
+      },
+      "tags": [],
+      "metrics": []
+    }
+  ],
+  "paging": {
+    "next": "/v1/me/sport/activities?count=999&access_token=XzQJmwipTXeZtrXNR4q3OYT6Ip0T&offset=1000",
+    "previous": null
+  }
+}
