@@ -12,6 +12,8 @@ info = {
     ['Bubbles', 'd3js', 'bubbles', ['http://codepen.io/linghzang3/pen/GFdzh'], ['Using the <a href="https://github.com/novus/nvd3">NV3D</a> extension for D3JS', 'Data taken from the Nike API (via the Codepen)'], ['data.json']]
 
     ['Collapsible Tree', 'd3js', 'collapsible-tree', ['http://bl.ocks.org/mbostock/4339083'], [], ['data.json']]
+    
+    ['Concentric Circles', 'd3js', 'concentric-circles', ['http://codepen.io/notno/pen/wgyAz', 'http://bl.ocks.org/cpbotha/5200394', 'http://stackoverflow.com/questions/17671252/d3-create-a-continous-color-scale-with-many-strings-inputs-for-the-range-and-dy'], ['Data of baby names in New York 2012', 'Custom color scale', 'Added box shadow filter'], []]
 
     ['Force', 'd3js', 'force', ['http://codepen.io/MidnightLightning/pen/dclbA'], [], ['links.json', 'nodes.json']]
     

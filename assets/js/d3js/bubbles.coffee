@@ -1,7 +1,7 @@
 ready = ()->
   width = $('#chart').innerWidth()
 
-  color = d3.scale.category20()
+  color = d3.scale.category20b()
 
   strToMinutes = ((str)->
     str = str.split(':')
