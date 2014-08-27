@@ -16,13 +16,6 @@ ready = ()->
     .attr("height", height + margin.left + margin.right).append("g")
 
     defs = svg.append("defs")
-    # filter = defs.append("filter").attr("id", "drop-shadow").attr("height", "130%")
-    # filter.append("feGaussianBlur").attr("in", "SourceAlpha").attr("stdDeviation", 2).attr("result", "blur")
-    # filter.append("feOffset").attr("in", "blur").attr("dx", .3).attr("dy", .3).attr("result", "offsetBlur")
-    # feMerge = filter.append("feMerge")
-    # feMerge.append("feMergeNode").attr("in", "offsetBlur")
-    # feMerge.append("feMergeNode").attr("in", "SourceGraphic")
-    
     filter = defs.append("filter").attr("id", "drop-shadow")
     filter.append('feGaussianBlur').attr("in", "SourceAlpha").attr("stdDeviation", 9)
     filter.append("feOffset").attr("dx", 5).attr("dy", 5)

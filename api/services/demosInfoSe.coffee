@@ -7,7 +7,7 @@ info = {
   # NAME, CATEGORY, KEY, SOURCES, NOTES, DATA
 
   'd3js': [
-    ['Bars', 'd3js', 'bars', ['http://codepen.io/basemoz/pen/mBoiL'], ['Added axis', 'Changed direction and added color transition for wave effect'], ['data.json']]
+    ['Bars', 'd3js', 'bars', ['http://codepen.io/basemoz/pen/mBoiL'], ['Added axis', 'Changed direction and added color transition for wave effect', 'Added transition in axis and the add item possibility', 'The interval stops when you place the mouse over a bar'], ['data.json']]
     
     ['Bubbles', 'd3js', 'bubbles', ['http://codepen.io/linghzang3/pen/GFdzh'], ['Using the <a href="https://github.com/novus/nvd3">NV3D</a> extension for D3JS', 'Data taken from the Nike API (via the Codepen)'], ['data.json']]
 
