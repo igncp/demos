@@ -51,13 +51,10 @@ ready = ()->
       .attr("y", barYFn).attr("width", barWidth).attr("height", barHeightFn )
       .attr("fill", (d)-> color(d))
       .on('mouseover', (d)->
-        console.log interval
         for i in [1..interval]
           clearInterval(i)
       )
-      .on('mouseleave', ()->
-        interval = setInterval(intervalFn,1000)
-      )
+      .on('mouseleave', ()-> interval = setInterval(intervalFn,1000))
       .append('title').text((d)-> d)
     )    
 
