@@ -8,6 +8,13 @@ module.exports = {
       files = {}
       files.ejs = fs.readFileSync('views/d3js/' + req.param('demo') + '.ejs', { encoding: 'utf8' })
       files.coffee = fs.readFileSync('assets/js/d3js/' + req.param('demo') + '.coffee', { encoding: 'utf8' })
+      
+      stylePath = 'assets/styles/d3js/' + '_' + req.param('demo') + '.styl'
+      if fs.existsSync(stylePath)
+        files.stylus = fs.readFileSync(stylePath, { encoding: 'utf8' })
+      else
+        files.stylus = false
+        
       res.view url, {layout: 'layouts/demo-layout', files: files}
     
     else res.notFound()

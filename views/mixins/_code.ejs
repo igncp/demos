@@ -9,6 +9,12 @@
             <p><%= key + '.coffee' %></p>
             <pre><code class="coffeescript"><%- files.coffee %></code></pre>
         </li>
+        <% if (files.stylus){ %>
+            <li>
+                <p><%= '_' + key + '.styl' %></p>
+                <pre><code><%- files.stylus %></code></pre>
+            </li>
+        <% }; %>
     </ul>
     <script type="text/javascript" src="/vendors/bower/highlightjs/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
