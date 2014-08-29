@@ -19,7 +19,7 @@ info = {
     
     ['Icosahedron', 'd3js', 'icosahedron', ['https://gist.github.com/mbostock/7782500'], ['No data bound to it, it could be to the speed, size, colors', 'Added color scale and the sinusoidal x velocity', 'Added the stop and move when clicked'], []]
     
-    ['Multi-Line Voronoi', 'd3js', 'multiline-voronoi', ['http://bl.ocks.org/mbostock/8033015'], [], ['data.tsv']]
+    ['Multi-Line Voronoi', 'd3js', 'multiline-voronoi', ['http://bl.ocks.org/mbostock/8033015'], ['Click one time to just show a line, click again to sho all', 'Added color and dropshadow for 3D effect', 'Added label data and clicked function'], ['data.tsv']]
     
     ['Partition', 'd3js', 'partition', ['http://bl.ocks.org/mbostock/4063423'], ['Added title attributes, labels and change colors with events'], ['flare.json']]
 
