@@ -8,8 +8,6 @@ ready = ()->
 
   debits = []
   credits = []
-  
-  fill = d3.scale.ordinal().domain([0, 1, 2]).range(["#DB704D", "#D2D0C6", "#ECD08D", "#F8EDD3"])
 
   arc = d3.svg.arc().innerRadius(r0).outerRadius(r1)
 
@@ -77,15 +75,19 @@ ready = ()->
     addDropShadowFilter = ((id, deviation, slope)->
       defs = charts.append("defs")
       filter = defs.append("filter").attr("id", "drop-shadow-" + id)
-      filter.append('feGaussianBlur').attr("in", "SourceAlpha").attr("stdDeviation", deviation)
-      filter.append("feOffset").attr("dx", 1).attr("dy", 1)
+      filter.append('feOffset').attr({result: 'offOut', in: 'SourceGraphic', dx: .5, dy:.5})
+      filter.append("feGaussianBlur").attr({result: 'blurOut', in: 'offOut', stdDeviation: deviation})
+      filter.append("feBlend").attr({in: 'SourceGraphic', in2: 'blurOut', mode: 'normal'})
       filter.append("feComponentTransfer").append('feFuncA').attr({type: 'linear', slope: slope})
-      feMerge = filter.append('feMerge')
-      feMerge.append('feMergeNode')
-      feMerge.append('feMergeNode').attr('in', 'SourceGraphic')
+      
     )
-    addDropShadowFilter('chords', 6, .2)
-    addDropShadowFilter('headings', 1, .4)
+    addDropShadowFilter('chords', 2, .4)
+    addDropShadowFilter('headings', 3, .5)
+
+    colours = ["#39B347","#C92E47","#DB704D","#FFA22C","#5E92AA", "#F8EDD3"]
+    c = d3.scale.linear().domain(d3.extent([0,n-1])).range([0,1])
+    heatmapColour = d3.scale.linear().domain(d3.range(0, 1, 1.0 / (colours.length))).range(colours)
+    fill = (d)-> heatmapColour(c(d))
 
     charts.each((matrix, j)->
       svg = d3.select(this)
@@ -93,23 +95,24 @@ ready = ()->
       layout.matrix(matrix) # Compute the chord layout.
 
       svg.selectAll("path.chord").data(layout.chords).enter().append("svg:path")
-      .attr("class", "chord").style("fill", (d)-> fill(d.source.value.risk))
+      .attr("class", "chord").style("fill", (d,i)-> fill(d.target.index))
       .style("filter", (d)-> "url(#drop-shadow-chords)")
-      .style("stroke", (d)-> d3.rgb(fill(d.source.value.risk)).darker())
+      .style("stroke", (d)-> d3.rgb(fill(d.target.index)).darker())
+      .style("stroke-width", 2)
       .attr("d", chord).append("svg:title")
       .text((d)-> d.source.value.debtor.name + " owes " + d.source.value.creditor.name + " $" + format(d.source.value) + "B.")
 
       g = svg.selectAll("g.group").data(layout.groups).enter().append("svg:g").attr("class", "group")
 
-      g.append("svg:path").style("fill", (d)-> fill(array[d.index].risk))
+      g.append("svg:path").style("fill", (d)-> fill(d.index))
       .attr("id", (d, i)-> "group" + d.index + "-" + j ).attr("d", arc)
       .style("filter", (d)-> "url(#drop-shadow-headings)")
       .append("svg:title")
       .text((d)-> array[d.index].name + " " + (if j then "owes" else "is owed") + " $" + format(d.value) + "B.")
 
-      g.append("svg:text").attr("x", 6).attr("dy", 15).filter((d)-> d.value > 110)
+      g.append("svg:text").attr("x", 6).attr("dy", 15).filter((d)-> d.value > 150)
       .append("svg:textPath").attr("xlink:href", (d)-> "#group" + d.index + "-" + j)
-      .text((d)-> array[d.index].name)
+      .text((d)-> array[d.index].name).attr('class', 'heading-title')
     )
   )
 

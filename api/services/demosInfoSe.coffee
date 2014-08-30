@@ -11,7 +11,7 @@ info = {
     
     ['Bubbles', 'd3js', 'bubbles', ['http://codepen.io/linghzang3/pen/GFdzh'], ['Using the <a href="https://github.com/novus/nvd3">NV3D</a> extension for D3JS', 'Data taken from the Nike API (via the Codepen)'], ['data.json']]
 
-    ['Chord', 'd3js', 'chord', ['http://bl.ocks.org/mbostock/1308257'], ['Added two drop shadows for 3D effect'], ['data.csv']]
+    ['Chord', 'd3js', 'chord', ['http://bl.ocks.org/mbostock/1308257'], ['Added filters with drop shadow and low opacity', 'Change scheme and match each color with a country'], ['data.csv']]
     
     ['Collapsible Tree', 'd3js', 'collapsible-tree', ['http://bl.ocks.org/mbostock/4339083'], [], ['data.json']]
     
