@@ -1,51 +1,68 @@
 @import 'nib'
 
 a:hover, a:focus
-    text-decoration none
+  text-decoration none
     
 body
-    color #6D6D77
+  color #6D6D77
 
 form
-    text-align center
-    input[type=radio]
-        margin-left 20px
+  text-align center
+  input[type=radio]
+      margin-left 20px
 
 .home-demo-name-link
-    color #4FB142
-    font-weight bold
+  color #67777A
+
+.home-demo-number
+  font-weight bold
+  font-weight bold
 
 .row { margin: 0px; }
 
 .source-number
-    color #B91515
-    font-weight bold
+  color #B91515
+  font-weight bold
 
 .back-home { text-align: right; }
 
 #chart
-    border-radius 10px
-    box-shadow(0px 0px 20px .1px #ddd)
-    margin-bottom 20px
-    overflow hidden
+  border-radius 10px
+  box-shadow(0px 0px 20px .1px #ddd)
+  margin-bottom 20px
+  overflow hidden
 
 #data-list, #sources-list
-    margin-bottom 30px
+  margin-bottom 30px
 
 #demos-lists
-    margin-top 60px
+  letter-spacing 1px
+  margin-top 60px
+  font-size 1.1em
+
+  a
+    padding-left 40px
+    background-color rgba(145, 145, 145, 0.08)
+    opacity .7
+    transition .5s linear all
+    
+    &:hover
+      padding-left 45px
+      background-color rgba(145, 172, 196, 0.3)
+      opacity 1
+
 
 #demo-title { margin-bottom: 20px; }
 
 #main-source
-    color #bbb
+  color #bbb
 
 #notes
-    margin-top 30px
-    margin-bottom 30px
+  margin-top 30px
+  margin-bottom 30px
 
 #sources-list
-    margin-top 30px
+  margin-top 30px
     
 
 @import 'd3js/*'

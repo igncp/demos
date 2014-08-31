@@ -10,7 +10,7 @@ ready = ()->
   strokeWidth = .4
 
 
-  d3.json('/data/d3js/spain/data.json', (error, spain)->
+  d3.json('/data/d3js/spain-map/data.json', (error, spain)->
     data = topojson.feature(spain, spain.objects.esp).features
     _.map(data, (d,i)-> d.index = i)
 

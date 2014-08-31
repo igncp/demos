@@ -27,7 +27,7 @@ info = {
 
     ['Pie', 'd3js', 'pie', ['http://codepen.io/nishidh41/pen/Frzhq'], ['Added the animation (transition) by changing a random slice data by a random integer between range'], ['data.json']]
     
-    ['Spain', 'd3js', 'spain', ['http://www.diva-gis.org/datadown'], ['For this chart I reused the code from the World Map chart and other demos', 'Added drop shadow for 3D effect'], []]
+    ['Spain Map', 'd3js', 'spain-map', ['http://www.diva-gis.org/datadown'], ['For this chart I reused the code from the World Map chart and other demos', 'Added drop shadow for 3D effect'], ['data.json']]
     
     ['Trend line', 'd3js', 'trend-line', ['http://codepen.io/arundhaj/pen/ouyjd', 'http://big-elephants.com/2014-06/unrolling-line-charts-d3js/'], ['Added both line animations', 'Changed y scale domain'], ['data.tsv']]
 
