@@ -1,6 +1,4 @@
 ready = ()->
-  data = ''; path = ''; projection = ''; countries = ''
-
   widthCanarias = $('#chart').innerWidth() / 3.5
   widthPeninsula = $('#chart').innerWidth() - widthCanarias - 10
 
@@ -11,11 +9,12 @@ ready = ()->
 
 
   d3.json('/data/d3js/spain-map/data.json', (error, spain)->
-    data = topojson.feature(spain, spain.objects.esp).features
+    dataRoot = spain.objects.data1
+    data = topojson.feature(spain, dataRoot).features
     _.map(data, (d,i)-> d.index = i)
 
     colorsScheme = ['#323247','#7C7CC9','#72B66C','#429742']
-    colorScale = d3.scale.linear().domain([0,spain.objects.esp.geometries.length]).range([0,1])
+    colorScale = d3.scale.linear().domain([0, dataRoot.geometries.length]).range([0,1])
     colorScaleConversion = d3.scale.linear()
       .domain(d3.range(0, 1, 1.0 / (colorsScheme.length))).range(colorsScheme)
     colorFn = (d)-> colorScaleConversion(colorScale(d.index))
@@ -46,6 +45,7 @@ ready = ()->
         .translate([widthPeninsula / 2, height / 2])
     )
     
+
     generatePath = (projection)-> d3.geo.path().projection(projection)
 
     mouseover = (d)-> d3.select(this).style({'stroke-width': '1px', fill: '#FFB61A'})
@@ -66,8 +66,8 @@ ready = ()->
     addDropShadowFilter(1,svgLeft,2,.3)
     addDropShadowFilter(2,svgRight,2,.3)
     
-    projectionCanarias = generateProjection([-5, 23])
-    projectionPeninsula = generateProjection([12, 35.5])
+    projectionCanarias = generateProjection([-7, 23])
+    projectionPeninsula = generateProjection([6, 35.5])
     
     pathCanarias = generatePath(projectionCanarias)
     pathPeninsula = generatePath(projectionPeninsula)
