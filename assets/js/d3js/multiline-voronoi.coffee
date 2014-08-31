@@ -3,7 +3,7 @@ ready = ()->
   monthFormat = d3.time.format("%Y-%m")
 
   clickToggle = false
-  monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]
+  monthNames = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]
 
   margin = {top: 60, right: 70, bottom: 70, left: 80}
   width = $('#chart').innerWidth() - margin.left - margin.right
@@ -24,7 +24,7 @@ ready = ()->
   type = ((d, i)->
     if not i then months = Object.keys(d).map(monthFormat.parse).filter(Number)
     city = {
-      name: d.name.replace(/(msa|necta div|met necta|met div)$/i, ""),
+      name: d.name.replace(/(msa|necta div|met necta|met div)$/i, ''),
       values: null
     }
     city.values = months.map((m)->

@@ -11,7 +11,7 @@ info = {
     
     ['Bubbles', 'd3js', 'bubbles', ['http://codepen.io/linghzang3/pen/GFdzh'], ['Using the <a href="https://github.com/novus/nvd3">NV3D</a> extension for D3JS', 'Data taken from the Nike API (via the Codepen)'], ['data.json']]
 
-    ['Chord', 'd3js', 'chord', ['http://bl.ocks.org/mbostock/1308257'], ['Added filters with drop shadow and low opacity', 'Change scheme and match each color with a country'], ['data.csv']]
+    ['Chord', 'd3js', 'chord', ['http://bl.ocks.org/mbostock/1308257'], ['Added filters with drop shadow and low opacity', 'Changed scheme and match each color with a country'], ['data.csv']]
     
     ['Collapsible Tree', 'd3js', 'collapsible-tree', ['http://bl.ocks.org/mbostock/4339083'], [], ['data.json']]
     
@@ -26,6 +26,8 @@ info = {
     ['Partition', 'd3js', 'partition', ['http://bl.ocks.org/mbostock/4063423'], ['Added title attributes, labels and change colors with events'], ['flare.json']]
 
     ['Pie', 'd3js', 'pie', ['http://codepen.io/nishidh41/pen/Frzhq'], ['Added the animation (transition) by changing a random slice data by a random integer between range'], ['data.json']]
+    
+    ['Spain', 'd3js', 'spain', ['http://www.diva-gis.org/datadown'], ['For this chart I reused the code from the World Map chart and other demos', 'Added drop shadow for 3D effect'], []]
     
     ['Trend line', 'd3js', 'trend-line', ['http://codepen.io/arundhaj/pen/ouyjd', 'http://big-elephants.com/2014-06/unrolling-line-charts-d3js/'], ['Added both line animations', 'Changed y scale domain'], ['data.tsv']]
 

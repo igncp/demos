@@ -79,7 +79,6 @@ ready = ()->
       filter.append("feGaussianBlur").attr({result: 'blurOut', in: 'offOut', stdDeviation: deviation})
       filter.append("feBlend").attr({in: 'SourceGraphic', in2: 'blurOut', mode: 'normal'})
       filter.append("feComponentTransfer").append('feFuncA').attr({type: 'linear', slope: slope})
-      
     )
     addDropShadowFilter('chords', 2, .4)
     addDropShadowFilter('headings', 3, .5)
