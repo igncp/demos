@@ -1,42 +1,33 @@
 .area-chart
-  body 
-    font 10px sans-serif
-    margin 0
-    padding-left 25px
-    background-color yellow
-    color hotpink
-  
-
   path.line 
     fill none
-    stroke hotpink
+    stroke #25A6FC
     stroke-width 3.5px
   
-
   path.area 
-    fill yellowgreen
-  
+    fill #6E6EA7
+    opacity .5
 
+  text
+    text-shadow 1px 1px 1px #ddd
+  
   .axis 
     shape-rendering crispEdges
-    fill red
+    fill #333
+
+  .title
+    font-weight bold
   
-
-
   .x.axis .minor 
-    stroke-opacity .5
-    fill red
+    fill #000
   
-
   .axis path,
   .axis line 
     fill none
-    stroke red
+    stroke #ccc
     shape-rendering crispEdges
-  
 
-
-
-  .y.axis line, .y.axis path 
+  .y.axis line, .y.axis path, 
+  .x.axis line, .x.axis path
     fill none
-    stroke blue
+    stroke #ccc

@@ -7,7 +7,7 @@ info = {
   # NAME, CATEGORY, KEY, SOURCES, NOTES, DATA
 
   'd3js': [
-    ['Area', 'd3js', 'area', ['http://codepen.io/notno/pen/ilvsd'], [], []]
+    ['Area', 'd3js', 'area', ['http://codepen.io/notno/pen/ilvsd'], ['Changed style'], ['data.csv']]
     
     ['Bars', 'd3js', 'bars', ['http://codepen.io/basemoz/pen/mBoiL'], ['Added axis', 'Changed direction and added color transition for wave effect', 'Added transition in axis and the add item possibility', 'The interval stops when you place the mouse over a bar'], ['data.json']]
     

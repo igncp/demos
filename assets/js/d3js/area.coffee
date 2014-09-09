@@ -9,16 +9,19 @@ ready = ( ->
         height: height + margin.top + margin.bottom})
       .append('g').attr({transform: 'translate(0,' + margin.top + ')'})
 
+    svg.append('text').attr({class: 'title', 'text-anchor': 'middle', \
+      transform: 'translate(' + String(width / 2) + ',-15)'})
+      .text('Share of top decile [aka top 10%] in national income')
+
     xMax = d3.max(data, (d)-> d.year )
     xMin = d3.min(data, (d)-> d.year )
     yMax = d3.max(data, (d)-> d.percent / 100 )
     yExtent = d3.extent(data, (d)-> d.percent)
 
     xScale = d3.scale.linear().range([0, width ]).domain([xMin, xMax])
-    yScale = d3.scale.linear().range([0, height]).domain([yMax, 0.25])
+    yScale = d3.scale.linear().range([0, height]).domain([yMax, 0])
     
-    xAxis = d3.svg.axis().scale(xScale).tickFormat(d3.format('.'))
-      .innerTickSize(-height)
+    xAxis = d3.svg.axis().scale(xScale).tickFormat(d3.format('.')).innerTickSize(-height)
     
     yAxis = d3.svg.axis().scale(yScale).tickFormat(d3.format('%'))
       .innerTickSize(-width).orient('left')
@@ -26,10 +29,11 @@ ready = ( ->
     svg.append('g').attr('class', 'x axis')
       .attr('transform', 'translate(' + margin.left + ',' + \
         String(height) + ')')
-      .call(xAxis)
+      .call(xAxis).selectAll('text').attr({dy: '1.25em'})
     
     svg.append('g').attr('class', 'y axis')
       .attr('transform', 'translate(' + margin.left + ',' + '0)').call(yAxis)
+      .selectAll('text').attr({dx: '-.25em'})
      
     area = d3.svg.area().interpolate('monotone').x((d)-> xScale(d.year) + margin.left)
       .y0(height).y1((d)-> yScale(d.percent / 100))
@@ -38,22 +42,16 @@ ready = ( ->
       .x((d)-> xScale(d.year) + margin.left)
       .y((d)-> yScale(d.percent / 100))
 
-    svg.append('path').datum(data).attr('class', 'line')
-      .attr('clip-path', 'url(#clip)').attr('d', line)
+    svg.append('path').datum(data).attr({class: 'line', 'clip-path': 'url(#clip)', \
+      d: line })
 
-    svg.append('clipPath').attr('id', 'clip').append('rect')
-      .attr('width', width + margin.left).attr('height', height)
+    svg.append('clipPath').attr({id: 'clip'}).append('rect')
+      .attr({width: width + margin.left, height: height})
 
-    svg.append('path').datum(data).attr('class', 'area').attr('clip-path', 'url(#clip)')
-      .attr('d', area)
+    svg.append('path').datum(data).attr({class: 'area', 'clip-path': 'url(#clip)', d: area})
+
   )
-
 )
 
 
 $(document).ready(ready)
-
-
-
-
-
