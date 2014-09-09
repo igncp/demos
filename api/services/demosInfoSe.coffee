@@ -7,6 +7,8 @@ info = {
   # NAME, CATEGORY, KEY, SOURCES, NOTES, DATA
 
   'd3js': [
+    ['Area', 'd3js', 'area', ['http://codepen.io/notno/pen/ilvsd'], [], []]
+    
     ['Bars', 'd3js', 'bars', ['http://codepen.io/basemoz/pen/mBoiL'], ['Added axis', 'Changed direction and added color transition for wave effect', 'Added transition in axis and the add item possibility', 'The interval stops when you place the mouse over a bar'], ['data.json']]
     
     ['Bubbles', 'd3js', 'bubbles', ['http://codepen.io/linghzang3/pen/GFdzh'], ['Using the <a href="https://github.com/novus/nvd3">NV3D</a> extension for D3JS', 'Data taken from the Nike API (via the Codepen)'], ['data.json']]
@@ -21,7 +23,7 @@ info = {
     
     ['Icosahedron', 'd3js', 'icosahedron', ['https://gist.github.com/mbostock/7782500'], ['No data bound to it, it could be to the speed, size, colors', 'Added color scale and the sinusoidal x velocity', 'Added the stop and move when clicked'], []]
     
-    ['Multi-Line Voronoi', 'd3js', 'multiline-voronoi', ['http://bl.ocks.org/mbostock/8033015'], ['Click one time to just show a line, click again to render all again', 'Added color and dropshadow for 3D effect', 'Added label data and clicked function'], ['data.tsv']]
+    ['Multi-Line Voronoi', 'd3js', 'multiline-voronoi', ['http://bl.ocks.org/mbostock/8033015'], ['Click one time to just show a line, click again to sho all', 'Added color and dropshadow for 3D effect', 'Added label data and clicked function'], ['data.tsv']]
     
     ['Partition', 'd3js', 'partition', ['http://bl.ocks.org/mbostock/4063423'], ['Added title attributes, labels and change colors with events'], ['flare.json']]
 
