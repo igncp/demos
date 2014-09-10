@@ -15,6 +15,12 @@
                 <pre><code><%- files.stylus %></code></pre>
             </li>
         <% }; %>
+        <% if (files.d3utils){ %>
+            <li>
+                <p>d3js-utils.coffee</p>
+                <pre><code><%- files.d3utils %></code></pre>
+            </li>
+        <% }; %>
     </ul>
     <script type="text/javascript" src="/vendors/bower/highlightjs/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>

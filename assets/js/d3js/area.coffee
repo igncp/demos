@@ -4,22 +4,18 @@ ready = ( ->
     width = $('#chart').innerWidth() - margin.left - margin.right
     height = 400 - margin.top - margin.bottom
 
-    svg = d3.select('#chart').append('svg')
-      .attr({width: width + margin.left + margin.right, \
-        height: height + margin.top + margin.bottom})
-      .append('g').attr({transform: 'translate(0,' + margin.top + ')'})
-
-    svg.append('text').attr({class: 'title', 'text-anchor': 'middle', \
-      transform: 'translate(' + String(width / 2) + ',-15)'})
-      .text('Share of top decile [aka top 10%] in national income')
+    svg = d3utils.svg('#chart', width, height, margin)
+    d3utils.middleTitle(svg, width, 'Share of top decile [aka top 10%] in national income')
+    d3utils.filterBlackOpacity('points', svg, 2, .5)
 
     xMax = d3.max(data, (d)-> d.year )
     xMin = d3.min(data, (d)-> d.year )
     yMax = d3.max(data, (d)-> d.percent / 100 )
+    yMin = d3.min(data, (d)-> d.percent / 100 )
     yExtent = d3.extent(data, (d)-> d.percent)
 
     xScale = d3.scale.linear().range([0, width ]).domain([xMin, xMax])
-    yScale = d3.scale.linear().range([0, height]).domain([yMax, 0])
+    yScale = d3.scale.linear().range([0, height]).domain([yMax + .05, yMin - 0.05])
     
     xAxis = d3.svg.axis().scale(xScale).tickFormat(d3.format('.')).innerTickSize(-height)
     
@@ -50,6 +46,34 @@ ready = ( ->
 
     svg.append('path').datum(data).attr({class: 'area', 'clip-path': 'url(#clip)', d: area})
 
+    voronoiData = _.map(data, (point)->
+      [point.year, ]
+    )
+
+    voronoi = d3.geom.voronoi().x((point)-> xScale(point.year) + margin.left)
+      .y((point)-> yScale(point.percent / 100) )
+      .clipExtent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]])
+
+    mouseover = ((d)->
+      d3.select('.point-' + d.index).style('display', 'block')
+    )
+
+    mouseleave = ((d)->
+      d3.select('.point-' + d.index).style('display', 'none')
+    )
+
+    svg.selectAll('circle').data(data).enter().append('circle')
+      .attr('transform', (d)-> 'translate(' + String(xScale(d.year) + margin.left) + \
+        ',' + yScale(d.percent / 100) + ')')
+      .attr('r', '5px').attr('class', (d,i)->'point point-' + i)
+      .style({filter: 'url(#drop-shadow-points)'})
+
+    voronoiGroup = svg.append('g').attr('class', 'voronoi')
+    voronoiGroup.selectAll('path').data(voronoi(data))
+      .enter().append('path').attr('d', (d,i)-> d.index = i; 'M' + d.join('L') + 'Z')
+      .on('mouseover', mouseover).on('mouseleave', mouseleave)
+      .append('title').text((d)-> 'Year: ' + d.point.year + '\n' + \
+        'Percent: ' + d.point.percent + '%')
   )
 )
 

@@ -15,9 +15,6 @@ ready = ()->
 
   color = d3.scale.category20()
 
-  voronoi = d3.geom.voronoi().x((d)-> x(d.date)).y((d)-> y(d.value))
-  .clipExtent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]])
-
   svg = d3.select('#chart').append('svg').attr('width', width + margin.left + margin.right)
   .attr('height', height + margin.top + margin.bottom)
   .append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
@@ -70,7 +67,6 @@ ready = ()->
     
     generateVoronoi = ((data)->
       mouseover = ((d)->
-        console.log d
         d3.select(d.city.line).classed('city--hover', true)
         d.city.line.parentNode.appendChild(d.city.line)
         focus.attr('transform', 'translate(' + x(d.date) + ',' + y(d.value) + ')')
@@ -101,6 +97,9 @@ ready = ()->
       focus.append('text').attr('class', 'text1').attr('y', -30)
       focus.append('text').attr('class', 'text2').attr('y', -10)
       voronoiGroup = svg.append('g').attr('class', 'voronoi')
+
+      voronoi = d3.geom.voronoi().x((d)-> x(d.date)).y((d)-> y(d.value))
+        .clipExtent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]])
 
       voronoiGroup.selectAll('path')
         .data(voronoi(d3.nest().key((d)-> x(d.date) + ',' + y(d.value))
