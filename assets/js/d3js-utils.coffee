@@ -1,8 +1,8 @@
 d3utils = {
-  middleTitle: ((svg, width, text)->
+  middleTitle: ((svg, width, text, top = -15)->
     element = svg.append('text').attr({class: 'chart-title', 'text-anchor': 'middle', \
-      transform: 'translate(' + String(width / 2) + ',-15)'})
-      .text(text)
+      transform: 'translate(' + String(width / 2) + ',' + top + ')'})
+      .text(text).style({'font-weight': 'bold'})
   )
 
   svg: ((selector, width, height, margin)->
