@@ -1,6 +1,6 @@
 ready = ->
   stations = []
-  margin = {top: 20, right: 30, bottom: 20, left: 100}
+  margin = {top: 50, right: 50, bottom: 50, left: 120}
   width =  $('#chart').innerWidth() - margin.left - margin.right
   height = 500 - margin.top - margin.bottom
 
@@ -33,9 +33,7 @@ ready = ->
     y = d3.scale.linear().range([0, height])
     xAxis = d3.svg.axis().scale(x).ticks(8).tickFormat(formatTime)
 
-    svg = d3.select('#chart').append('svg').attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom).append('g')
-      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+    svg = d3utils.svg('#chart', width, height, margin)
 
     svg.append('defs').append('clipPath').attr('id', 'clip')
       .append('rect').attr('y', -margin.top).attr('width', width)

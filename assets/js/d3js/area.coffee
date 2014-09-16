@@ -1,6 +1,6 @@
 ready = ( ->
   d3.csv('/data/d3js/area/data.csv', (error, data)->
-    margin = {top: 50, right: 50, bottom: 50, left: 50}
+    margin = {top: 50, right: 50, bottom: 50, left: 70}
     width = $('#chart').innerWidth() - margin.left - margin.right
     height = 400 - margin.top - margin.bottom
 
@@ -23,26 +23,25 @@ ready = ( ->
       .innerTickSize(-width).orient('left')
     
     svg.append('g').attr('class', 'x axis')
-      .attr('transform', 'translate(' + margin.left + ',' + \
+      .attr('transform', 'translate(' + 0 + ',' + \
         String(height) + ')')
       .call(xAxis).selectAll('text').attr({dy: '1.25em'})
     
-    svg.append('g').attr('class', 'y axis')
-      .attr('transform', 'translate(' + margin.left + ',' + '0)').call(yAxis)
+    svg.append('g').attr('class', 'y axis').call(yAxis)
       .selectAll('text').attr({dx: '-.25em'})
      
-    area = d3.svg.area().interpolate('monotone').x((d)-> xScale(d.year) + margin.left)
+    area = d3.svg.area().interpolate('monotone').x((d)-> xScale(d.year))
       .y0(height).y1((d)-> yScale(d.percent / 100))
 
     line = d3.svg.line()
-      .x((d)-> xScale(d.year) + margin.left)
+      .x((d)-> xScale(d.year))
       .y((d)-> yScale(d.percent / 100))
 
     svg.append('path').datum(data).attr({class: 'line', 'clip-path': 'url(#clip)', \
       d: line })
 
     svg.append('clipPath').attr({id: 'clip'}).append('rect')
-      .attr({width: width + margin.left, height: height})
+      .attr({width: width, height: height})
 
     svg.append('path').datum(data).attr({class: 'area', 'clip-path': 'url(#clip)', d: area})
 
@@ -50,7 +49,7 @@ ready = ( ->
       [point.year, ]
     )
 
-    voronoi = d3.geom.voronoi().x((point)-> xScale(point.year) + margin.left)
+    voronoi = d3.geom.voronoi().x((point)-> xScale(point.year))
       .y((point)-> yScale(point.percent / 100) )
       .clipExtent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]])
 
@@ -63,7 +62,7 @@ ready = ( ->
     )
 
     svg.selectAll('circle').data(data).enter().append('circle')
-      .attr('transform', (d)-> 'translate(' + String(xScale(d.year) + margin.left) + \
+      .attr('transform', (d)-> 'translate(' + String(xScale(d.year)) + \
         ',' + yScale(d.percent / 100) + ')')
       .attr('r', '5px').attr('class', (d,i)->'point point-' + i)
       .style({filter: 'url(#drop-shadow-points)'})

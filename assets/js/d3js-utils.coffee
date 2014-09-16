@@ -9,7 +9,7 @@ d3utils = {
     d3.select(selector).append('svg')
       .attr({width: width + margin.left + margin.right, \
         height: height + margin.top + margin.bottom})
-      .append('g').attr({transform: 'translate(0,' + margin.top + ')'})
+      .append('g').attr({transform: 'translate(' + margin.left + ',' + margin.top + ')'})
   )
 
   filterBlackOpacity: ((id, svg, deviation, slope)->
