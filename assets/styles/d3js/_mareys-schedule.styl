@@ -1,0 +1,41 @@
+.mareys-schedule-chart
+  svg {
+    font: 10px sans-serif;
+  }
+
+  .axis path {
+    display: none;
+  }
+
+  .axis line {
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .station line {
+    stroke: #ddd;
+    stroke-dasharray: 1,1;
+    shape-rendering: crispEdges;
+  }
+
+  .station text {
+    text-anchor: end;
+  }
+
+  .train path {
+    fill: none;
+    stroke-width: 1.5px;
+  }
+
+  .train circle {
+    stroke: #fff;
+  }
+
+  .train .N path { stroke: rgb(34,34,34); }
+  .train .N circle { fill: rgb(34,34,34); }
+
+  .train .L path { stroke: rgb(183,116,9); }
+  .train .L circle { fill: rgb(183,116,9); }
+
+  .train .B path { stroke: rgb(192,62,29); }
+  .train .B circle { fill: rgb(192,62,29); }
