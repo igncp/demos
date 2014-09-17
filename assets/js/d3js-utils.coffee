@@ -6,7 +6,7 @@ d3utils = {
   )
 
   svg: ((selector, width, height, margin)->
-    d3.select(selector).append('svg')
+    d3.select(selector).text('').append('svg')
       .attr({width: width + margin.left + margin.right, \
         height: height + margin.top + margin.bottom})
       .append('g').attr({transform: 'translate(' + margin.left + ',' + margin.top + ')'})

@@ -23,7 +23,7 @@ info = {
     
     ['Icosahedron', 'd3js', 'icosahedron', ['https://gist.github.com/mbostock/7782500'], ['No data bound to it, it could be to the speed, size, colors', 'Added color scale and the sinusoidal x velocity', 'Added the stop and move when clicked'], []]
     
-    ['Marey\'s Schedule', 'd3js', 'mareys-schedule', ['http://bl.ocks.org/mbostock/5544008'], ['Added titles'], ['data.tsv']]
+    ['Marey\'s Schedule', 'd3js', 'mareys-schedule', ['http://bl.ocks.org/mbostock/5544008'], ['Added titles with information in stops and trains', 'Add box shadow', 'Add range input'], ['data.tsv']]
     
     ['Multi-Line Voronoi', 'd3js', 'multiline-voronoi', ['http://bl.ocks.org/mbostock/8033015'], ['Click one time to just show a line, click again to sho all', 'Added color and dropshadow for 3D effect', 'Added label data and clicked function'], ['data.tsv']]
     
