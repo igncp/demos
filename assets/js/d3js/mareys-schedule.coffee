@@ -1,5 +1,5 @@
 ready = ->
-  redraw = ( (time_limit)->
+  redraw = ( (time_range)->
     stations = []
     margin = {top: 80, right: 50, bottom: 50, left: 120}
     width =  $('#chart').innerWidth() - margin.left - margin.right
@@ -46,13 +46,14 @@ ready = ->
         _.each(train.stops, (stop)-> stop.train_index = index)
       )
 
-      x = d3.time.scale().domain([parseTime('4:30AM'), parseTime(time_limit)]).range([0, width])
+      x = d3.time.scale().domain([parseTime(time_range[0]), parseTime(time_range[1])])
+        .range([0, width])
       y = d3.scale.linear().range([0, height])
       xAxis = d3.svg.axis().scale(x).ticks(8).tickFormat(formatTime)
 
       svg = d3utils.svg('#chart', width, height, margin)
       d3utils.middleTitle(svg, width, 'E.J. Marey’s graphical train schedule ' + \
-        ' (starting at 4:30AM)', -40)
+        ' (4:30AM - 1:30AM)', -40)
       d3utils.filterBlackOpacity('trains', svg, 2, .2)
 
       svg.append('defs').append('clipPath').attr('id', 'clip')
@@ -105,34 +106,43 @@ ready = ->
         )
     )
   )
-  
-  range_input = $('input[type="range"]')
 
-  # It starts at 5:30AM and ends at 1:30AM
-  range_input.on('change', (d)->
-    fragment = 'AM'
-    whole_minutes = $(@).val() / 100 * 1200
-    hours = Math.floor( whole_minutes / 60)
-    minutes = Math.floor(whole_minutes % 60)
-    if minutes > 30
-      minutes = minutes - 30
-      hours = hours + 1
-    else
-      minutes = minutes + 30
-    hours = hours + 4
-    if hours > 23
-      if hours is 24
-        hours = hours - 12
+  slider = $('.slider')
+
+  # It starts at 4:30AM and ends at 1:30AM
+  convertHour = ((val)->
+    times = []
+    _.each(slider.slider('values'), (slider_value)->
+      whole_minutes = slider_value / 100 * 1200
+      fragment = 'AM'
+      hours = Math.floor( whole_minutes / 60)
+      minutes = Math.floor(whole_minutes % 60)
+      if minutes > 30
+        minutes = minutes - 30
+        hours = hours + 1
       else
-        hours = hours - 24
-    else if hours > 11
-      fragment = 'PM'
-      hours = hours - 12 if hours isnt 12
-    minutes = '0' + String(minutes) if minutes < 10
-    final_time = String(hours) + ':' + minutes + fragment
-    redraw(final_time)
+        minutes = minutes + 30
+      hours = hours + 4
+      if hours > 23
+        if hours is 24
+          hours = hours - 12
+        else
+          hours = hours - 24
+      else if hours > 11
+        fragment = 'PM'
+        hours = hours - 12 if hours isnt 12
+      minutes = '0' + String(minutes) if minutes < 10
+      final_time = String(hours) + ':' + minutes + fragment
+      times.push final_time
+    )
+    redraw(times)
   )
 
-  range_input.val(50).trigger('change')
+  slider.slider({
+    range: true
+    change: convertHour
+  })
+
+  slider.slider('values', [10,50])
 
 $(document).ready(ready)
