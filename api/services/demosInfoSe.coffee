@@ -34,6 +34,8 @@ info = {
     ['Spanish Map', 'd3js', 'spain-map', ['http://www.diva-gis.org/datadown'], ['For this chart I reused the code from the World Map chart and other demos', 'Added drop shadow for 3D effect'], ['data.json']]
     
     ['Trend line', 'd3js', 'trend-line', ['http://codepen.io/arundhaj/pen/ouyjd', 'http://big-elephants.com/2014-06/unrolling-line-charts-d3js/'], ['Added both line animations', 'Changed y scale domain'], ['data.tsv']]
+    
+    ['Timeline', 'd3js', 'timeline', ['http://bl.ocks.org/rengel-de/5603464'], [], ['data.csv']]
 
     ['Vectors', 'd3js', 'vectors', ['http://codepen.io/zarazum/pen/fjoqF'], ['Use the <strong>Ctrl</strong> key to move nodes instead of creating vectors'], []]
 
