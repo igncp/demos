@@ -2,7 +2,7 @@ ready = ( ->
   timeline = ((domElement)->
     margin = {top: 60, right: 20, bottom: 0, left: 20}
     outerWidth = $('#chart').innerWidth()
-    outerHeight = 500
+    outerHeight = 600
     width = outerWidth - margin.left - margin.right
     height = outerHeight - margin.top - margin.bottom
 
@@ -21,8 +21,6 @@ ready = ( ->
       .attr('width', width).attr('height', height)
 
     chart = svg.append('g').attr('class', 'chart').attr('clip-path', 'url(#chart-area)' )
-
-    tooltip = d3.select('#chart').append('div').attr('class', 'tooltip')
 
     parseDate = ((dateString)->
       format = d3.time.format('%Y-%m-%d')
@@ -157,22 +155,33 @@ ready = ( ->
         .attr('transform', 'translate(0,' + band.y +  ')')
 
       band.g.append('rect').attr('class', 'band').attr('width', band.w)
-        .attr('height', band.h);
+        .attr('height', band.h)
 
       items = band.g.selectAll('g').data(data.items).enter().append('svg')
         .attr('y', (d)-> band.yScale(d.track)).attr('height', band.itemHeight)
-        .attr('class', (d)-> if d.instant then return 'part instant' else return 'part interval')
+        .attr('data-title', (d)-> # Bootstrap title
+          if d.instant then return d.label + ': ' + toYear(d.start)
+          else return d.label + ': ' + toYear(d.start) + ' - ' + toYear(d.end)
+        ).attr('class', (d)-> if d.instant then return 'part instant' else return 'part interval')
+
+      $('.part.instant, .part.interval').tooltip({container: 'body'})
 
       intervals = d3.select('#band' + bandNum).selectAll('.interval')
       intervals.append('rect').attr('width', '100%').attr('height', '100%')
-      intervals.append('text').attr('class', 'intervalLabel').attr('x', 1).attr('y', 10)
-        .text((d)-> d.label)
+      intervals.append('text').attr('class', 'intervalLabel').attr('x', 3).attr('y', 10)
+        .text((d)->
+          if d.label.length > 5 then return d.label.substr(0,4) + '..'
+          else return d.label
+        )
 
       instants = d3.select('#band' + bandNum).selectAll('.instant')
       instants.append('circle').attr('cx', band.itemHeight / 2)
         .attr('cy', band.itemHeight / 2).attr('r', 5);
       instants.append('text').attr('class', 'instantLabel').attr('x', 15).attr('y', 10)
-        .text((d)-> d.label)
+        .text((d)->
+          if d.label.length > 5 then return d.label.substr(0,4) + '..'
+          else return d.label
+        )
 
       band.addActions = ((actions)->
         actions.forEach((action)-> items.on(action[0], action[1]) )
@@ -213,10 +222,6 @@ ready = ( ->
       bandLabels = chart.append('g').attr('id', bandName + 'Labels')
         .attr('transform', 'translate(0,' + (band.y + band.h + 1) +  ')')
         .selectAll('#' + bandName + 'Labels').data(labelDefs).enter().append('g')
-        .on('mouseover', ((d)->
-          tooltip.html(d[5]).style('top', d[7] + 'px').style('left', d[6] + 'px')
-            .style('visibility', 'visible')
-        )).on('mouseout', -> tooltip.style('visibility', 'hidden'))
 
       bandLabels.append('rect').attr('class', 'bandLabel').attr('x', (d)-> d[2])
         .attr('width', labelWidth).attr('height', labelHeight).style('opacity', 1);
@@ -234,32 +239,6 @@ ready = ( ->
 
       band.parts.push(labels)
       components.push(labels)
-
-      timeline
-    )
-
-    timeline.tooltips = ((bandName)->
-      band = bands[bandName]
-
-      getHtml = ((element, d)->
-        if element.attr('class') == 'interval'
-          html = d.label + ': ' + toYear(d.start) + ' - ' + toYear(d.end)
-        else
-          html = d.label + ': ' + toYear(d.start)
-        html
-      )
-
-      showTooltip = ((d)->
-        x = if event.pageX < band.x + band.w / 2 then event.pageX + 10 else event.pageX - 110
-        y = if event.pageY < band.y + band.h / 2 then event.pageY + 30 else event.pageY - 30
-
-        tooltip.html(getHtml(d3.select(this), d)).style('top', y + 'px').style('left', x + 'px')
-          .style('visibility', 'visible')
-      )
-
-      hideTooltip = -> tooltip.style('visibility', 'hidden')
-
-      band.addActions([['mouseover', showTooltip], ['mouseout', hideTooltip]])
 
       timeline
     )
@@ -308,7 +287,7 @@ ready = ( ->
   d3.csv('/data/d3js/timeline/data.csv',(dataset)->
     timeline()
       .data(dataset).band('mainBand', 0.82).band('naviBand', 0.08).xAxis('mainBand')
-      .tooltips('mainBand').xAxis('naviBand').labels('mainBand').labels('naviBand')
+      .xAxis('naviBand').labels('mainBand').labels('naviBand')
       .brush('naviBand', ['mainBand']).redraw()
   )
 
