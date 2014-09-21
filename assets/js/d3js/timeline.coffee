@@ -16,6 +16,7 @@ ready = ( ->
 
     svg = d3utils.svg('#chart', outerWidth, outerHeight, margin)
     d3utils.middleTitle(svg, outerWidth, 'Philosophers through History', -20)
+    d3utils.filterBlackOpacity('intervals', svg, 3, .2) # Not used yet
 
     svg.append('clipPath').attr('id', 'chart-area').append('rect')
       .attr('width', width).attr('height', height)
@@ -135,6 +136,19 @@ ready = ( ->
       timeline
     )
 
+    timeline.tooltip = {
+      create: ( ->
+        $('.part.instant, .part.interval')
+          .tooltip({container: 'body', viewport: {selector: '#chart'}})
+        timeline
+      )
+      
+      delete: ( ->
+        $('.part.instant, .part.interval').tooltip('destroy')
+        timeline
+      )
+    }
+
     timeline.band = ((bandName, sizeFactor)->
       band = {}
       band.id = 'band' + bandNum
@@ -148,8 +162,11 @@ ready = ( ->
       band.parts = []
       band.instantWidth = 100 # Arbitray value.
 
+      
+
       band.xScale = d3.time.scale().domain([data.minDate, data.maxDate]).range([0, band.w])
       band.yScale = (track)-> band.trackOffset + track * band.trackHeight
+      band.yearsScale = data.maxDate.getUTCFullYear() - data.minDate.getUTCFullYear()
 
       band.g = chart.append('g').attr('id', band.id)
         .attr('transform', 'translate(0,' + band.y +  ')')
@@ -159,15 +176,14 @@ ready = ( ->
 
       items = band.g.selectAll('g').data(data.items).enter().append('svg')
         .attr('y', (d)-> band.yScale(d.track)).attr('height', band.itemHeight)
-        .attr('data-title', (d)-> # Bootstrap title
+        .attr('data-title', (d)-> # Bootstrap tooltip title
           if d.instant then return d.label + ': ' + toYear(d.start)
           else return d.label + ': ' + toYear(d.start) + ' - ' + toYear(d.end)
         ).attr('class', (d)-> if d.instant then return 'part instant' else return 'part interval')
 
-      $('.part.instant, .part.interval').tooltip({container: 'body'})
-
       intervals = d3.select('#band' + bandNum).selectAll('.interval')
       intervals.append('rect').attr('width', '100%').attr('height', '100%')
+      # .style({filter: 'url(#drop-shadow-intervals)'})
       intervals.append('text').attr('class', 'intervalLabel').attr('x', 3).attr('y', 10)
         .text((d)->
           if d.label.length > 5 then return d.label.substr(0,4) + '..'
@@ -178,10 +194,6 @@ ready = ( ->
       instants.append('circle').attr('cx', band.itemHeight / 2)
         .attr('cy', band.itemHeight / 2).attr('r', 5);
       instants.append('text').attr('class', 'instantLabel').attr('x', 15).attr('y', 10)
-        .text((d)->
-          if d.label.length > 5 then return d.label.substr(0,4) + '..'
-          else return d.label
-        )
 
       band.addActions = ((actions)->
         actions.forEach((action)-> items.on(action[0], action[1]) )
@@ -190,7 +202,13 @@ ready = ( ->
       band.redraw = ( ->
         items.attr('x', (d)-> band.xScale(d.start))
           .attr('width', (d)-> band.xScale(d.end) - band.xScale(d.start))
-        band.parts.forEach((part)-> part.redraw())
+          .select('text').text((d, index)->
+            scale = band.xScale(d.end) - band.xScale(d.start)
+            maxLetters = scale / 6
+            if d.label.length > maxLetters then return d.label.substr(0,maxLetters - 1) + '..'
+            else return d.label
+          )
+        band.parts.forEach((part)-> part.redraw() )
       )
 
       bands[bandName] = band
@@ -273,7 +291,6 @@ ready = ( ->
 
       xBrush = band.g.append('svg').attr('class', 'x brush').call(brush)
       xBrush.selectAll('rect').attr('y', 4).attr('height', band.h - 4)
-
       timeline
     )
 
@@ -288,7 +305,7 @@ ready = ( ->
     timeline()
       .data(dataset).band('mainBand', 0.82).band('naviBand', 0.08).xAxis('mainBand')
       .xAxis('naviBand').labels('mainBand').labels('naviBand')
-      .brush('naviBand', ['mainBand']).redraw()
+      .brush('naviBand', ['mainBand']).tooltip['create']().redraw()
   )
 
 )

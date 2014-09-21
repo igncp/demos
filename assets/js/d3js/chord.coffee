@@ -95,7 +95,7 @@ ready = ()->
 
       svg.selectAll("path.chord").data(layout.chords).enter().append("svg:path")
       .attr("class", "chord").style("fill", (d,i)-> fill(d.target.index))
-      .style("filter", (d)-> "url(#drop-shadow-chords)")
+      .style("filter","url(#drop-shadow-chords)")
       .style("stroke", (d)-> d3.rgb(fill(d.target.index)).darker())
       .style("stroke-width", 2)
       .attr("d", chord).append("svg:title")
