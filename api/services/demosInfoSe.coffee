@@ -35,7 +35,7 @@ info = {
     
     ['Trend line', 'd3js', 'trend-line', ['http://codepen.io/arundhaj/pen/ouyjd', 'http://big-elephants.com/2014-06/unrolling-line-charts-d3js/'], ['Added both line animations', 'Changed y scale domain'], ['data.tsv']]
     
-    ['Timeline', 'd3js', 'timeline', ['http://bl.ocks.org/rengel-de/5603464'], ['Change to bootstrap tooltip', 'Add dynamic text lengths (adding two dots)', 'Change style'], ['data.csv']]
+    ['Timeline', 'd3js', 'timeline', ['http://bl.ocks.org/rengel-de/5603464'], ['Change to bootstrap tooltip', 'Add dynamic text lengths (adding two dots)', 'Improve performance (a lot) removing the drop-shadow while brushing'], ['data.csv']]
 
     ['Vectors', 'd3js', 'vectors', ['http://codepen.io/zarazum/pen/fjoqF'], ['Use the <strong>Ctrl</strong> key to move nodes instead of creating vectors'], []]
 

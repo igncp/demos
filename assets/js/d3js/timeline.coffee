@@ -2,7 +2,7 @@ ready = ( ->
   timeline = ((domElement)->
     margin = {top: 60, right: 20, bottom: 0, left: 20}
     outerWidth = $('#chart').innerWidth()
-    outerHeight = 600
+    outerHeight = 700
     width = outerWidth - margin.left - margin.right
     height = outerHeight - margin.top - margin.bottom
 
@@ -16,10 +16,16 @@ ready = ( ->
 
     svg = d3utils.svg('#chart', outerWidth, outerHeight, margin)
     d3utils.middleTitle(svg, outerWidth, 'Philosophers through History', -20)
-    d3utils.filterBlackOpacity('intervals', svg, 3, .2) # Not used yet
+    d3utils.filterBlackOpacity('intervals', svg, 1, .2)
 
     svg.append('clipPath').attr('id', 'chart-area').append('rect')
       .attr('width', width).attr('height', height)
+
+    # Remove filter while brushing for performance
+    # Use ALL the svg area to prevent mouse up outside the brush
+    svg.on('mouseup', ->
+      d3.selectAll('.interval rect').style(filter: 'url(#drop-shadow-intervals)')
+    )
 
     chart = svg.append('g').attr('class', 'chart').attr('clip-path', 'url(#chart-area)' )
 
@@ -139,12 +145,7 @@ ready = ( ->
     timeline.tooltip = {
       create: ( ->
         $('.part.instant, .part.interval')
-          .tooltip({container: 'body', viewport: {selector: '#chart'}})
-        timeline
-      )
-      
-      delete: ( ->
-        $('.part.instant, .part.interval').tooltip('destroy')
+          .tooltip({container: '#chart', viewport: {selector: '#chart svg'}})
         timeline
       )
     }
@@ -156,9 +157,9 @@ ready = ( ->
       band.y = bandY
       band.w = width
       band.h = height * (sizeFactor or 1)
-      band.trackOffset = 4
+      band.trackOffset = 0
       band.trackHeight = Math.min((band.h - band.trackOffset) / data.nTracks, 20)
-      band.itemHeight = band.trackHeight * 0.8
+      band.itemHeight = band.trackHeight * 0.7
       band.parts = []
       band.instantWidth = 100 # Arbitray value.
 
@@ -182,13 +183,9 @@ ready = ( ->
         ).attr('class', (d)-> if d.instant then return 'part instant' else return 'part interval')
 
       intervals = d3.select('#band' + bandNum).selectAll('.interval')
-      intervals.append('rect').attr('width', '100%').attr('height', '100%')
-      # .style({filter: 'url(#drop-shadow-intervals)'})
-      intervals.append('text').attr('class', 'intervalLabel').attr('x', 3).attr('y', 10)
-        .text((d)->
-          if d.label.length > 5 then return d.label.substr(0,4) + '..'
-          else return d.label
-        )
+      intervals.append('rect').attr({width: '80%', height: '80%', x: '1px', y: '.5px'})
+        .style({filter: 'url(#drop-shadow-intervals)'})
+      intervals.append('text').attr('class', 'intervalLabel').attr('x', 3).attr('y', 9.5)
 
       instants = d3.select('#band' + bandNum).selectAll('.instant')
       instants.append('circle').attr('cx', band.itemHeight / 2)
@@ -204,7 +201,7 @@ ready = ( ->
           .attr('width', (d)-> band.xScale(d.end) - band.xScale(d.start))
           .select('text').text((d, index)->
             scale = band.xScale(d.end) - band.xScale(d.start)
-            maxLetters = scale / 6
+            maxLetters = scale / 9
             if d.label.length > maxLetters then return d.label.substr(0,maxLetters - 1) + '..'
             else return d.label
           )
@@ -281,16 +278,18 @@ ready = ( ->
     timeline.brush = ((bandName, targetNames)->
       band = bands[bandName]
       brush = d3.svg.brush().x(band.xScale.range([0, band.w]))
-        .on('brush', ( ->
-          domain = if brush.empty() then band.xScale.domain() else brush.extent()
-          targetNames.forEach((d)->
-            bands[d].xScale.domain(domain)
-            bands[d].redraw()
-          )
-        ))
+      brush.on('brush', ->
+        domain = if brush.empty() then band.xScale.domain() else brush.extent()
+        # Remove filter while brushing for performance
+        d3.selectAll('.interval rect').style(filter: 'none')
+        targetNames.forEach((d)->
+          bands[d].xScale.domain(domain)
+          bands[d].redraw()
+        )
+      )
 
       xBrush = band.g.append('svg').attr('class', 'x brush').call(brush)
-      xBrush.selectAll('rect').attr('y', 4).attr('height', band.h - 4)
+      xBrush.selectAll('rect').attr('y', 1).attr('height', band.h - 1)
       timeline
     )
 

@@ -1,4 +1,6 @@
 .timeline-chart
+  text
+    text-shadow: .5px .5px .5px #ccc;
   .axis
     fill: #808080;
     font-family: sans-serif;
@@ -15,7 +17,7 @@
     shape-rendering: crispEdges;
 
   .band
-    fill: #FAFAFA;
+    fill: #FFFFFF;
 
   .bandLabel
     fill: #F0F0F0;
@@ -23,20 +25,20 @@
     font-weight: bold;
 
   .bandMinMaxLabel
-    fill: blue;
+    fill: #11AA6A;
     font: 10px sans-serif;
     font-weight: bold;
 
   .bandMidLabel
     cursor: default;
-    fill: red;
+    fill: #BC79C5;
     font: 10px sans-serif;
     font-style: italic;
     font-weight: bold;
 
   .brush .extent
     stroke: gray;
-    fill: blue;
+    fill: #71D7E5;
     fill-opacity: .1;
 
   .chart
@@ -44,18 +46,18 @@
 
   .interval
     fill: #ECF7F7;
-    stroke-width: 6;
     cursor : default;
     pointer-events: true;
+    rect
+      stroke-width: .5px;
+      stroke: black;
 
   .instant
-    fill: #FFAAFF;
-    stroke-width: 6;
+    fill: #AFCAE7;
     cursor : default;
-    /*pointer-events: true;*/
 
   .instantLabel
-    fill : blue;
+    fill : #7E7E7E;
     font: 10px sans-serif;
     shape-rendering: crispEdges;
 
@@ -68,5 +70,13 @@
     cursor : default;
     pointer-events: auto;
 
-.tooltip.top
-  margin-left: 20px;
+  .tooltip.top
+    margin-left: 20px;
+    opacity: .9
+    .tooltip-inner
+      background-color: white;
+      border: 1px solid #ccc;
+      box-shadow: 0px 0px 5px .5px #ddd;
+      color: black;
+    .tooltip-arrow 
+      display: none
