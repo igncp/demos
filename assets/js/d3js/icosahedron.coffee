@@ -1,6 +1,6 @@
-ready = ()->
+ready =  ->
 
-  icosahedronFaces = (()->
+  icosahedronFaces = ( ->
     faces = []
     y = Math.atan2(1, 2) * 180 / Math.PI
 
@@ -26,25 +26,27 @@ ready = ()->
    
   projection = d3.geo.orthographic().scale(height / 2 - 10)
    
-  svg = d3.select("#chart").append("svg").attr("width", width).attr("height", height)
+  svg = d3.select('#chart').append('svg')
+    .attr('width', width).attr('height', height)
    
-  face = svg.selectAll("path").data(icosahedronFaces).enter().append("path").each((d)-> 
+  face = svg.selectAll('path').data(icosahedronFaces).enter().append('path').each((d)->
     d.polygon = d3.geom.polygon(d.map(projection))
   ).style({fill: (d, index)-> color(index) })
    
-  d3.timer(()->
+  d3.timer( ->
     time = Date.now() - t0
     originalPos = projection.rotate()
     projection.rotate([
-      velocity[0]*Math.abs(Math.sin(time/1000)*4) + originalPos[0], 
+      velocity[0] * Math.abs(Math.sin(time / 1000) * 4) + originalPos[0],
       velocity[1] + originalPos[1],
       originalPos[2] + velocity[2]
     ])
    
     face.each((d)-> d.forEach((p, i)-> d.polygon[i] = projection(p); return null))
-    .style("display", (d)-> if d.polygon.area() > 0 then return null else return "none")
-    .attr("d", (d)-> "M" + d.polygon.join("L") + "Z")
-    .on('click', ()-> if String(velocity) == String(zeroVelocity) then velocity = defaultVelocity else velocity = zeroVelocity)
+    .style('display', (d)-> if d.polygon.area() > 0 then return null else return 'none')
+    .attr('d', (d)-> 'M' + d.polygon.join('L') + 'Z')
+    .on('click', -> if String(velocity) == String(zeroVelocity) then \
+      velocity = defaultVelocity else velocity = zeroVelocity)
     
     return null
   )

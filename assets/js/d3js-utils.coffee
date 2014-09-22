@@ -23,6 +23,32 @@ d3utils = {
     feMerge.append('feMergeNode')
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic')
   )
+
+  tooltip: ((selector, customOpts = {})->
+    defaultOpts = {
+      followMouse: false, followElement: false, elementSelector: ''
+      leftOffst: 60, topOffst: 40
+      tOpts: {container: 'body', viewport: {selector: '#chart svg'}}
+    }
+    opts = _.merge(defaultOpts, customOpts)
+
+    # Bootstrap tooltip.
+    $(selector).tooltip(opts.tOpts)
+
+    # For SVG forms, it's better to position the tooltip manually.
+    if opts.followMouse
+      $(selector).hover((e)->
+        $('.tooltip')
+          .css({top: String(e.pageY - opts.topOffst) + 'px', \
+            left: String(e.pageX - opts.leftOffst) + 'px'})
+      )
+    else if opts.followElement
+      $(selector).hover((e)->
+        $('.tooltip')
+          .css({top: String($(opts.elementSelector).position().top - opts.topOffst) + 'px', \
+            left: String($(opts.elementSelector).position().left - opts.leftOffst) + 'px'})
+      )
+  )
 }
 
 window.d3utils = d3utils

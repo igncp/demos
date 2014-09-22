@@ -43,14 +43,14 @@ ready = ->
       .attr('y', 40).attr('font-size', '1.3em').style({'text-anchor': 'end'})
       .text('Value')
 
-    intervalFn = (()->
+    intervalFn = ( ->
       data.unshift(data.pop())
       redraw()
     )
 
     interval = setInterval(intervalFn,1000)
 
-    drawRectangles = (()->
+    drawRectangles = ( ->
       chart.selectAll('rect').data(data).enter().append('rect').attr('x', (d, i)-> barWidth * i)
       .attr('y', barYFn).attr('width', barWidth).attr('height', barHeightFn )
       .attr('fill', (d)-> color(d))
@@ -58,7 +58,7 @@ ready = ->
         for i in [1..interval]
           clearInterval(i)
       )
-      .on('mouseleave', ()-> interval = setInterval(intervalFn,1000))
+      .on('mouseleave', -> interval = setInterval(intervalFn,1000))
       .append('title').text((d)-> d)
     )
 

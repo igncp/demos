@@ -1,4 +1,4 @@
-ready = ()->
+ready = ->
   months = ''
   monthFormat = d3.time.format('%Y-%m')
 
@@ -30,13 +30,13 @@ ready = ()->
         city: city,
         date: m,
         value: d[monthFormat(m)] / 100
-      };
+      }
     )
     city
   )
 
-  d3.tsv('/data/d3js/multiline-voronoi/data.tsv', type, (error, cities)->    
-    x.domain(d3.extent(months));
+  d3.tsv('/data/d3js/multiline-voronoi/data.tsv', type, (error, cities)->
+    x.domain(d3.extent(months))
     y.domain([0, d3.max(cities, (c)-> d3.max(c.values, (d)-> d.value))]).nice()
 
     svg.append('g').attr('class', 'axis axis--x').attr('transform', 'translate(0,' + height + ')')
@@ -44,7 +44,8 @@ ready = ()->
 
     svg.append('g').attr('class', 'axis axis--y')
     .call( d3.svg.axis().scale(y).orient('left').ticks(10, '%') )
-    .append('text').attr('x', 20).attr('dy', '.32em').style('font-weight', 'bold').text('US Unemployment Rate')
+    .append('text').attr('x', 20).attr('dy', '.32em').style('font-weight', 'bold')
+    .text('US Unemployment Rate')
 
     defs = svg.append('defs')
     filter = defs.append('filter').attr('id', 'drop-shadow')
@@ -72,7 +73,7 @@ ready = ()->
         focus.attr('transform', 'translate(' + x(d.date) + ',' + y(d.value) + ')')
         focus.select('.text1').text(d.city.name.trim() + ': ')
         date = (monthNames[d.date.getMonth()]) + ' of ' + d.date.getFullYear()
-        focus.select('.text2').text(' ' + String((d.value*100).toFixed(2)) + '% - ' + date )
+        focus.select('.text2').text(' ' + String((d.value * 100).toFixed(2)) + '% - ' + date )
       )
 
       mouseout = ((d)->

@@ -55,24 +55,30 @@ ready = ( ->
 
     mouseover = ((d)->
       d3.select('.point-' + d.index).style('display', 'block')
+      d3utils.tooltip('.point-' + d.index)
+      $('.point-' + d.index).tooltip('show')
     )
 
     mouseleave = ((d)->
       d3.select('.point-' + d.index).style('display', 'none')
+      $('.point-' + d.index).tooltip('hide')
     )
 
     svg.selectAll('circle').data(data).enter().append('circle')
       .attr('transform', (d)-> 'translate(' + String(xScale(d.year)) + \
         ',' + yScale(d.percent / 100) + ')')
       .attr('r', '5px').attr('class', (d,i)->'point point-' + i)
+      .attr('data-title', (d)-> 'Year: ' + d.year + ': ' + \
+        'Percent: ' + d.percent + '%')
       .style({filter: 'url(#drop-shadow-points)'})
+
 
     voronoiGroup = svg.append('g').attr('class', 'voronoi')
     voronoiGroup.selectAll('path').data(voronoi(data))
       .enter().append('path').attr('d', (d,i)-> d.index = i; 'M' + d.join('L') + 'Z')
       .on('mouseover', mouseover).on('mouseleave', mouseleave)
-      .append('title').text((d)-> 'Year: ' + d.point.year + '\n' + \
-        'Percent: ' + d.point.percent + '%')
+      .attr('class', 'voronoi-area')
+
   )
 )
 

@@ -144,8 +144,7 @@ ready = ( ->
 
     timeline.tooltip = {
       create: ( ->
-        $('.part.instant, .part.interval')
-          .tooltip({container: '#chart', viewport: {selector: '#chart svg'}})
+        d3utils.tooltip('.part.instant, .part.interval', {followMouse: true, leftOffst: 80})
         timeline
       )
     }
