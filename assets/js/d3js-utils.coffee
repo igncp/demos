@@ -49,6 +49,11 @@ d3utils = {
             left: String($(opts.elementSelector).position().left - opts.leftOffst) + 'px'})
       )
   )
+
+  dTooltip: ((container)-> # Custom tooltip
+    console.log container
+    d3.selectAll(container).append('g').text('hola')
+  )
 }
 
 window.d3utils = d3utils

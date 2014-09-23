@@ -55,13 +55,10 @@ ready = ( ->
 
     mouseover = ((d)->
       d3.select('.point-' + d.index).style('display', 'block')
-      d3utils.tooltip('.point-' + d.index)
-      $('.point-' + d.index).tooltip('show')
     )
 
     mouseleave = ((d)->
       d3.select('.point-' + d.index).style('display', 'none')
-      $('.point-' + d.index).tooltip('hide')
     )
 
     svg.selectAll('circle').data(data).enter().append('circle')
@@ -72,6 +69,7 @@ ready = ( ->
         'Percent: ' + d.percent + '%')
       .style({filter: 'url(#drop-shadow-points)'})
 
+    d3utils.dTooltip('.point')
 
     voronoiGroup = svg.append('g').attr('class', 'voronoi')
     voronoiGroup.selectAll('path').data(voronoi(data))
