@@ -65,17 +65,16 @@ ready = ( ->
       .attr('transform', (d)-> 'translate(' + String(xScale(d.year)) + \
         ',' + yScale(d.percent / 100) + ')')
       .attr('r', '5px').attr('class', (d,i)->'point point-' + i)
-      .attr('data-title', (d)-> 'Year: ' + d.year + ': ' + \
-        'Percent: ' + d.percent + '%')
       .style({filter: 'url(#drop-shadow-points)'})
 
-    d3utils.dTooltip('.point')
 
     voronoiGroup = svg.append('g').attr('class', 'voronoi')
     voronoiGroup.selectAll('path').data(voronoi(data))
       .enter().append('path').attr('d', (d,i)-> d.index = i; 'M' + d.join('L') + 'Z')
       .on('mouseover', mouseover).on('mouseleave', mouseleave)
       .attr('class', 'voronoi-area')
+      .append('title').text((d)-> 'Year: ' + d.point.year + '\n' + \
+        'Percent: ' + d.point.percent + '%')
 
   )
 )
