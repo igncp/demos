@@ -73,8 +73,10 @@ ready = ( ->
       .enter().append('path').attr('d', (d,i)-> d.index = i; 'M' + d.join('L') + 'Z')
       .on('mouseover', mouseover).on('mouseleave', mouseleave)
       .attr('class', 'voronoi-area')
-      .append('title').text((d)-> 'Year: ' + d.point.year + '\n' + \
+      .append('title').text((d)-> 'Year: ' + d.point.year + ': ' + \
         'Percent: ' + d.point.percent + '%')
+
+    d3utils.dTooltip(svg, '.point', '.voronoi-area', 'hola')
 
   )
 )

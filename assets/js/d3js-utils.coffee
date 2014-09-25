@@ -50,13 +50,11 @@ d3utils = {
       )
   )
 
-  dTooltip: ((svg, element, text)-> # Custom tooltip
+  dTooltip: ((svg, containerEl, triggerEl, text)-> # Custom tooltip
     is_previous = d3.selectAll('.dtooltip')
     if is_previous[0].length is 0
       svg.append('g').attr('class', 'dtooltip').append('text').text('hola')
-    elements = d3.selectAll(element)
-    console.log elements
-    elements.on('mouseover', -> console.log text)
+    elements = d3.selectAll(triggerEl).on('mouseover', -> console.log text)
   )
 }
 
