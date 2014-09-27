@@ -24,6 +24,16 @@ d3utils = {
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic')
   )
 
+  filterColor: ((id, svg, deviation, slope)->
+    defs = svg.append('defs')
+    filter = defs.append('filter').attr('id', 'drop-shadow-' + id)
+    filter.append('feOffset').attr({result: 'offOut', in: 'SourceGraphic', dx: .5, dy: .5})
+    filter.append('feGaussianBlur')
+      .attr({result: 'blurOut', in: 'offOut', stdDeviation: deviation})
+    filter.append('feBlend').attr({in: 'SourceGraphic', in2: 'blurOut', mode: 'normal'})
+    filter.append('feComponentTransfer').append('feFuncA').attr({type: 'linear', slope: slope})
+  )
+
   tooltip: ((selector, customOpts = {})->
     defaultOpts = {
       followMouse: false, followElement: false, elementSelector: ''
@@ -35,7 +45,7 @@ d3utils = {
     # Bootstrap tooltip.
     $(selector).tooltip(opts.tOpts)
 
-    # For SVG forms, it's better to position the tooltip manually.
+    # For SVG forms, it is better to position the tooltip manually.
     if opts.followMouse
       $(selector).hover((e)->
         $('.tooltip')
@@ -50,6 +60,12 @@ d3utils = {
       )
   )
 
+  dTooltip: ((svg, containerEl, triggerEl, text)-> # Custom tooltip
+    is_previous = d3.selectAll('.dtooltip')
+    if is_previous[0].length is 0
+      svg.append('g').attr('class', 'dtooltip').append('text').text('hola')
+    elements = d3.selectAll(triggerEl).on('mouseover', -> console.log text)
+  )
 }
 
 window.d3utils = d3utils

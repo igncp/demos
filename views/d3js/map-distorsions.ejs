@@ -1,0 +1,14 @@
+<%  demo = {category: "d3js", key: "map-distorsions", files: files}; %>
+
+<%- partial("../mixins/_demo_title", demo) %>
+
+<p><div class="slider"></div></p>
+<div id="chart" class="<%= demo.key %>-chart" style="margin-top: 30px;"></div>
+
+<script type="text/javascript" src="/vendors/bower/d3/d3.min.js"></script>
+<script type="text/javascript" src="/js/d3js-utils.js"></script>
+<script type="text/javascript" src="/js/d3js/<%= demo.key %>.js"></script>
+
+<%- partial("../mixins/_notes", demo) %>
+<%- partial("../mixins/_sources_data", demo) %>
+<%- partial("../mixins/_code", demo) %>
