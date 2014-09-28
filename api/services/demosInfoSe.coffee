@@ -23,7 +23,7 @@ info = {
     
     ['Icosahedron', 'd3js', 'icosahedron', ['https://gist.github.com/mbostock/7782500'], ['No data bound to it, it could be to the speed, size, colors', 'Added color scale and the sinusoidal x velocity', 'Added the stop and move when clicked'], []]
     
-    ['Map Distorsions', 'd3js', 'map-distorsions', ['http://bl.ocks.org/mbostock/3709000'], [], ['data.tsv']]
+    ['Map Distorsions', 'd3js', 'map-distorsions', ['http://bl.ocks.org/mbostock/3709000'], ['Dynamic (for performance) shadow', 'Custom color scale related to index', 'Tooltip and minor style changes'], ['data.tsv']]
     
     ['Marey\'s Schedule', 'd3js', 'mareys-schedule', ['http://bl.ocks.org/mbostock/5544008'], ['Added titles with information in stops and trains', 'Add box shadow', 'Add range input'], ['data.tsv']]
     

@@ -34,6 +34,8 @@ d3utils = {
     filter.append('feComponentTransfer').append('feFuncA').attr({type: 'linear', slope: slope})
   )
 
+
+
   tooltip: ((selector, customOpts = {})->
     defaultOpts = {
       followMouse: false, followElement: false, elementSelector: ''
@@ -60,12 +62,14 @@ d3utils = {
       )
   )
 
-  dTooltip: ((svg, containerEl, triggerEl, text)-> # Custom tooltip
-    is_previous = d3.selectAll('.dtooltip')
-    if is_previous[0].length is 0
-      svg.append('g').attr('class', 'dtooltip').append('text').text('hola')
-    elements = d3.selectAll(triggerEl).on('mouseover', -> console.log text)
+
+  colorsScale: ((colors, extent)->
+    c = d3.scale.linear().domain(extent).range([0,1])
+    colorScale = d3.scale.linear()
+      .domain(d3.range(0, 1, 1.0 / (colors.length))).range(colors)
+    return ((p)-> colorScale(c(p)))
   )
+
 }
 
 window.d3utils = d3utils
