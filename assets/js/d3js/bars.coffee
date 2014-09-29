@@ -39,7 +39,7 @@ ready = ->
 
     chart.append('g').attr({'transform': 'translate(0,' + floor + ')', class: 'x-axis axis'})
       .call(yAxis)
-      .append('text').attr('transform', 'translate(-30,' - (height - 60) / 2 + ')')
+      .append('text').attr('transform', 'translate(-30,' + String((-1) * (height - 60) / 2) + ')')
       .attr('y', 40).attr('font-size', '1.3em').style({'text-anchor': 'end'})
       .text('Value')
 

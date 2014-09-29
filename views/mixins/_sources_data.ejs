@@ -1,4 +1,4 @@
-<div id="sources-list">
+<div id="sources-list"  class="bs-callout bs-callout-primary">
     <% info = demosInfoSe.getInfo(category, key); %>
     <p><strong>Sources:</strong></p>
     <ul>
@@ -10,7 +10,7 @@
 </div>
 
 <% if (info.data.length > 0) { %>
-<div id="data-list">
+<div id="data-list"  class="bs-callout bs-callout-warning">
     <p>
         <strong>Data: </strong>
         <% var links = []; info.data.forEach(function(file, index){ links.push('<a href="/data/' + category + '/' + key + '/' + file +  '">' +  file + '</a>') }); %>
