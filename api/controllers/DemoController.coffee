@@ -2,15 +2,16 @@ fs = require('fs')
 
 module.exports = {
   d3js: ((req,res)->
-    url = 'd3js/' + req.param('demo')
+    demo = req.param('demo')
+    url = 'd3js/' + demo
 
     if fs.existsSync('views/' + url + '.ejs')
       files = {}
-      files.ejs = fs.readFileSync('views/d3js/' + req.param('demo') + '.ejs', { encoding: 'utf8' })
-      files.coffee = fs.readFileSync('assets/js/d3js/' + req.param('demo') + \
+      files.ejs = fs.readFileSync('views/d3js/' + demo + '.ejs', { encoding: 'utf8' })
+      files.coffee = fs.readFileSync('assets/js/d3js/' + demo + \
         '.coffee', { encoding: 'utf8' })
       
-      stylePath = 'assets/styles/d3js/' + '_' + req.param('demo') + '.styl'
+      stylePath = 'assets/styles/d3js/' + '_' + demo + '.styl'
       if fs.existsSync(stylePath)
         files.stylus = fs.readFileSync(stylePath, { encoding: 'utf8' })
       else
@@ -21,7 +22,8 @@ module.exports = {
       else
         files.d3utils = false
 
-      res.view url, {layout: 'layouts/demo-layout', files: files}
+      res.view url, {layout: 'layouts/demo-layout', files: files, \
+        metas: metasSe.getMetas('d3js',demo)}
     
     else res.notFound()
   )
