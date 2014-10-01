@@ -13,7 +13,7 @@ for item of d3js
   DI = d3js[item]
   DI.key = item
   DI.route = '/d3js/' + item
-  info.d3js.push d3js[item]
+  info.d3js.push DI
 
 module.exports = {
   getInfo: ((category, key)->
