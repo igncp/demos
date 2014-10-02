@@ -1,0 +1,77 @@
+home:
+  description: 'Interactive data visualization examples, using open source JavaScript libraries, and usually starting from already made demos, which are always referenced.'
+
+d3js:
+  area:
+    description: 'Area Chart example, using D3.js, with a transparent Voronoi overlay that gives the funcionality know fast the nearest point to the mouse.'
+
+  # bars:
+  #   description: ''
+
+
+  # bubbles:
+  #   description: ''
+
+
+  # chord:
+  #   description: ''
+
+
+  # collapsible-tree:
+  #   description: ''
+
+
+  # concentric-circles:
+  #   description: ''
+
+
+  # force:
+  #   description: ''
+
+
+  # icosahedron:
+  #   description: ''
+
+
+  # map-distorsions:
+  #   description: ''
+
+
+  # mareys-schedule:
+  #   description: ''
+
+
+  # multiline-voronoi:
+  #   description: ''
+
+
+  # partition:
+  #   description: ''
+
+
+  # pie:
+  #   description: ''
+
+
+  # spain-map:
+  #   description: ''
+
+
+  # trend-line:
+  #   description: ''
+
+
+  # timeline:
+  #   description: ''
+
+
+  # vectors:
+  #   description: ''
+
+
+  # weekly-heatmap:
+  #   description: ''
+
+
+  # world-map:
+  #   description: ''

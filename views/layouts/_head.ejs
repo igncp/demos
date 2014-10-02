@@ -15,3 +15,6 @@
 <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
 
 <title><%= metas.title %></title>
+<% if(metas.description) { %>
+<meta name="description" content="<%= metas.description %>">
+<% }; %>

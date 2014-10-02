@@ -75,9 +75,6 @@ ready = ( ->
       .attr('class', 'voronoi-area')
       .append('title').text((d)-> 'Year: ' + d.point.year + ': ' + \
         'Percent: ' + d.point.percent + '%')
-
-    d3utils.dTooltip(svg, '.point', '.voronoi-area', 'hola')
-
   )
 )
 
