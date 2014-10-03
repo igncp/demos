@@ -5,8 +5,8 @@ d3js:
   area:
     description: 'Area Chart example, using D3.js, with a transparent Voronoi overlay that gives the funcionality know fast the nearest point to the mouse.'
 
-  # bars:
-  #   description: ''
+  bars:
+    description: 'Bar Chart example with a traslation interval, a custom color scale and dynamic entry of new data. You can also see how to animate an axis change.'
 
 
   # bubbles:
