@@ -36,6 +36,14 @@ form
 ul
   list-style-type circle
 
+.bullet
+  font-size 30px
+
+  &.d3js
+    color #9AC99D
+  &.raphael
+    color #7FA2BE   
+  
 .home-demo-name-link
   color #67777A
 
@@ -59,8 +67,6 @@ ul
   color #B91515
   font-weight bold
 
-.back-home { text-align: right; }
-
 #chart
   border-radius 10px
   box-shadow(0px 0px 20px .1px #ddd)
@@ -75,21 +81,44 @@ ul
 #data-list, #sources-list
   margin-bottom 30px
 
+#demos-legend
+  text-align center
+
+  ul
+    display inline-block
+    list-style-type none
+    margin-top 10px
+    padding 10px 20px 10px 30px
+    text-align left
+  li
+    position relative
+    display inline-block
+    &:first-child
+      margin-right 30px
+  .bullet
+    position absolute
+    left: -15px;
+    top: -10px
+  
+
 #demos-lists
   letter-spacing 1px
-  margin-top 60px
+  margin-top 15px
   font-size 1.1em
 
   a
-    padding-left 40px
+    padding-left 20px
     background-color rgba(145, 145, 145, 0.08)
-    opacity .7
     transition .5s linear all
     
     &:hover
-      padding-left 45px
+      padding-left 25px
       background-color rgba(145, 172, 196, 0.3)
-      opacity 1
+
+    .bullet
+      left -30px
+      position absolute
+      top 0px
 
 
 #demo-title { margin-bottom: 20px; }
@@ -107,6 +136,7 @@ ul
 
 
 @import 'd3js/*'
+@import 'raphael/*'
 @import '_callout'
 @import '_highlight'
 @import '_sticky_footer'

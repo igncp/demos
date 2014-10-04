@@ -1,0 +1,6 @@
+circular-arcs:
+  name: 'Circular Arcs'
+  sources: ['http://codepen.io/dshapira/pen/ltrqc']
+  notes:
+    - "This demo doesn't have data, but it wouldn't be hard (e.g. bound to the radius if all are different)"
+  data: []

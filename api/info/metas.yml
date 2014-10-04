@@ -3,7 +3,7 @@ home:
 
 d3js:
   area:
-    description: 'Area Chart example, using D3.js, with a transparent Voronoi overlay that gives the funcionality know fast the nearest point to the mouse.'
+    description: 'Area Chart example, using D3.js, with a transparent Voronoi overlay that gives the functionality know fast the nearest point to the mouse.'
 
   bars:
     description: 'Bar Chart example with a traslation interval, a custom color scale and dynamic entry of new data. You can also see how to animate an axis change.'
@@ -75,3 +75,7 @@ d3js:
 
   # world-map:
   #   description: ''
+
+raphael:
+  circular-arcs:
+    description: "Circular Arcs example, using Raphaël, which is not bound to any data but it would be easy to. It shows how to create a semicircle and the hover functionality."
