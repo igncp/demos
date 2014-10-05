@@ -4,10 +4,14 @@
 Still under construction. Showcase of some client-side demos.
 
 - Backend: It's an Sails.js app. It heavily uses CoffeeScript and Stylus.
-- Frontend: The main libraries used are lodash.js, Angulajs, D3.js.
+- Frontend: The main libraries used are jQuery, Lodash, D3 and Raphäel.
 
-## Testing
-The tests are basically functional, and just for speeding the debugging times. There are no intentions of reaching a low level unit testing.
+## Install
+You need to have Node.js installed, with Bower.
+
+- Download the repo
+- Inside the demos: `npm install` and `bower install`
+- To start the server `sails lift` (I use the port 4000)
 
 ## License
 MIT
