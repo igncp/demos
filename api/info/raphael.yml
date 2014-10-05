@@ -11,4 +11,4 @@ moving-line:
   notes:
     - The axis is not included as it is part of the background image
     - Add titles
-  data: []
+  data: ['data.json']
