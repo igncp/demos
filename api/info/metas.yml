@@ -79,3 +79,6 @@ d3js:
 raphael:
   circular-arcs:
     description: "Circular Arcs example, using Raphaël, which is not bound to any data but it would be easy to. It shows how to create a semicircle and the hover functionality."
+
+  moving-line:
+    description: "Moving Line example, using Raphaël, with some important modifications like the path line, the exclusion of the axis (is an image), or the addition of tites."
