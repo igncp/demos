@@ -24,7 +24,6 @@ module.exports = {
 
       res.view url, {layout: 'layouts/demo-layout', files: files, \
         metas: metasSe.getMetas('d3js',demo)}
-    
     else res.notFound()
   )
 

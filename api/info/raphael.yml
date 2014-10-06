@@ -1,3 +1,9 @@
+bars-3dimensional:
+  name: 'Bars 3D'
+  sources: ['http://codepen.io/djam/pen/edjCz']
+  notes: []
+  data: ['data.json']
+
 circular-arcs:
   name: 'Circular Arcs'
   sources: ['http://codepen.io/dshapira/pen/ltrqc']
