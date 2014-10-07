@@ -39,5 +39,9 @@
     "url": "git://github.com/igncp/demos.git"
   },
   "author": "igncp",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "karma": "^0.12.24",
+    "karma-coffee-preprocessor": "^0.2.1"
+  }
 }
