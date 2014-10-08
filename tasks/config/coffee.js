@@ -14,7 +14,7 @@ module.exports = function(grunt) {
 	grunt.config.set('coffee', {
 		dev: {
 			options: {
-				bare: true,
+				bare: false,
 				sourceMap: true,
 				sourceRoot: './'
 			},

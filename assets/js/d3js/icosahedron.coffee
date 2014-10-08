@@ -1,20 +1,24 @@
-ready =  ->
+window.Charts = window.Charts || {}
+window.Charts.d3js = window.Charts.d3js || {}
+window.Charts.d3js.icosahedron = window.Charts.d3js.icosahedron || {}
 
-  icosahedronFaces = ( ->
-    faces = []
-    y = Math.atan2(1, 2) * 180 / Math.PI
+chart = window.Charts.d3js.icosahedron
 
-    for x in [0...360] by 72
-      faces.push(
-        [[x +  0, -90], [x +  0,  -y], [x + 72,  -y]],
-        [[x + 36,   y], [x + 72,  -y], [x +  0,  -y]],
-        [[x + 36,   y], [x +  0,  -y], [x - 36,   y]],
-        [[x + 36,   y], [x - 36,   y], [x - 36,  90]]
-      )
+chart.icosahedronFaces = ->
+  faces = []
+  y = Math.atan2(1, 2) * 180 / Math.PI
 
-    faces
-  )
+  for x in [0...360] by 72
+    faces.push(
+      [[x +  0, -90], [x +  0,  -y], [x + 72,  -y]],
+      [[x + 36,   y], [x + 72,  -y], [x +  0,  -y]],
+      [[x + 36,   y], [x +  0,  -y], [x - 36,   y]],
+      [[x + 36,   y], [x - 36,   y], [x - 36,  90]]
+    )
 
+  faces
+
+chart.ready =  ->
   width = $('#chart').innerWidth()
   height = 500
  
@@ -29,7 +33,7 @@ ready =  ->
   svg = d3.select('#chart').append('svg')
     .attr('width', width).attr('height', height)
    
-  face = svg.selectAll('path').data(icosahedronFaces).enter().append('path').each((d)->
+  face = svg.selectAll('path').data(@icosahedronFaces).enter().append('path').each((d)->
     d.polygon = d3.geom.polygon(d.map(projection))
   ).style({fill: (d, index)-> color(index) })
    
@@ -48,7 +52,5 @@ ready =  ->
     .on('click', -> if String(velocity) == String(zeroVelocity) then \
       velocity = defaultVelocity else velocity = zeroVelocity)
     
-    return null
+    null
   )
-
-$(document).ready(ready)
