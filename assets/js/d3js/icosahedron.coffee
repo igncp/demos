@@ -2,9 +2,28 @@ window.Charts = window.Charts || {}
 window.Charts.d3js = window.Charts.d3js || {}
 window.Charts.d3js.icosahedron = window.Charts.d3js.icosahedron || {}
 
-chart = window.Charts.d3js.icosahedron
+ch = window.Charts.d3js.icosahedron # Chart
 
-chart.icosahedronFaces = ->
+ch.setCg = -> ch.cg =
+  width: $('#chart').innerWidth()
+  height: 500
+  defaultVelocity: [1, .4, .07]
+  zeroVelocity: [0,0,0]
+  t0: Date.now()
+  color: d3.scale.category20()
+  rotationFactor1: 1 / 1000
+  rotationFactor2: 4
+
+ch.setDom = -> ch.dom =
+  projection: d3.geo.orthographic().scale(ch.cg.height / 2 - 10)
+  svg: d3.select('#chart').append('svg')
+    .attr('width', ch.cg.width).attr('height', ch.cg.height)
+  faces: ''
+
+ch.setVars = -> ch.vars =
+  velocity: ''
+
+ch.icosahedronFaces = ->
   faces = []
   y = Math.atan2(1, 2) * 180 / Math.PI
 
@@ -18,39 +37,41 @@ chart.icosahedronFaces = ->
 
   faces
 
-chart.ready =  ->
-  width = $('#chart').innerWidth()
-  height = 500
- 
-  defaultVelocity = [1, .4, .07]
-  zeroVelocity = [0,0,0]
-  velocity = defaultVelocity
-  t0 = Date.now()
-  color = d3.scale.category20()
-   
-  projection = d3.geo.orthographic().scale(height / 2 - 10)
-   
-  svg = d3.select('#chart').append('svg')
-    .attr('width', width).attr('height', height)
-   
-  face = svg.selectAll('path').data(@icosahedronFaces).enter().append('path').each((d)->
-    d.polygon = d3.geom.polygon(d.map(projection))
-  ).style({fill: (d, index)-> color(index) })
-   
-  d3.timer( ->
-    time = Date.now() - t0
-    originalPos = projection.rotate()
-    projection.rotate([
-      velocity[0] * Math.abs(Math.sin(time / 1000) * 4) + originalPos[0],
-      velocity[1] + originalPos[1],
-      originalPos[2] + velocity[2]
-    ])
-   
-    face.each((d)-> d.forEach((p, i)-> d.polygon[i] = projection(p); return null))
+# Calculates a 3D rotation (sinusoidal in x)
+ch.calcNewPosition = (velocity, time, position)->
+  [
+    velocity[0] * Math.abs(Math.sin(time * ch.cg.rotationFactor1) * ch.cg.rotationFactor2) + \
+      position[0],
+    velocity[1] + position[1],
+    position[2] + velocity[2]
+  ]
+
+ch.timer = ->
+  time = Date.now() - ch.cg.t0
+  originalPos = ch.dom.projection.rotate()
+  
+  ch.dom.projection.rotate(ch.calcNewPosition(ch.vars.velocity, time, originalPos))
+  
+  ch.dom.faces.each((d)-> d.forEach((p, i)-> d.polygon[i] = ch.dom.projection(p); null))
     .style('display', (d)-> if d.polygon.area() > 0 then return null else return 'none')
     .attr('d', (d)-> 'M' + d.polygon.join('L') + 'Z')
-    .on('click', -> if String(velocity) == String(zeroVelocity) then \
-      velocity = defaultVelocity else velocity = zeroVelocity)
-    
-    null
-  )
+    .on('click', ->
+      if String(ch.vars.velocity) == String(ch.cg.zeroVelocity)
+        ch.vars.velocity = ch.cg.defaultVelocity
+      else ch.vars.velocity = ch.cg.zeroVelocity
+    )
+
+  null
+
+ch.ready =  ->
+  ch.setCg()
+  ch.setDom()
+  ch.setVars()
+   
+  ch.dom.faces = ch.dom.svg.selectAll('path').data(ch.icosahedronFaces).enter()
+    .append('path').each((d)->
+      d.polygon = d3.geom.polygon(d.map(ch.dom.projection))
+    ).style({fill: (d, index)-> ch.cg.color(index) })
+  
+  ch.vars.velocity = ch.cg.defaultVelocity
+  d3.timer(ch.timer)
