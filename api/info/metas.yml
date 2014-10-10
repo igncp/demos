@@ -9,8 +9,8 @@ d3js:
     description: 'Bar Chart example with a traslation interval, a custom color scale and dynamic entry of new data. You can also see how to animate an axis change.'
 
 
-  # bubbles:
-  #   description: ''
+  bubbles:
+    description: 'Bubbles Chart example with NV3D as D3.js extension, using data from the Nike API, and with a depurated style, an horizontal axis and other color scheme.'
 
 
   # chord:
