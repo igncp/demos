@@ -2,6 +2,8 @@
 
 <%- partial("../mixins/_demo_title", demo) %>
 
+<%- partial("../mixins/_run_ready", demo) %>
+<div style="text-align: center; margin-bottom: 20px;"><a href="" class="btn btn-info animate-bars">Change Series</a></div>
 <div id="chart" class="<%= demo.key %>-chart"></div>
 
 <script type="text/javascript" src="/vendors/bower/raphael/raphael-min.js"></script>

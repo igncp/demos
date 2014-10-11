@@ -77,6 +77,9 @@ d3js:
   #   description: ''
 
 raphael:
+  bars-3dimensional:
+    description: ""
+
   circular-arcs:
     description: "Circular Arcs example, using Raphaël, which is not bound to any data but it would be easy to. It shows how to create a semicircle and the hover functionality."
 

@@ -1,7 +1,10 @@
 bars-3dimensional:
   name: 'Bars 3D'
   sources: ['http://codepen.io/djam/pen/edjCz']
-  notes: []
+  notes:
+    - Added titles
+    - DRY and OOP (for testing) code
+    - Dynamic dimensions
   data: ['data.json']
 
 circular-arcs:

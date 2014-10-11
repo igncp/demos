@@ -2,7 +2,7 @@ window.Charts = window.Charts || {}
 window.Charts.d3js = window.Charts.d3js || {}
 window.Charts.d3js.icosahedron = window.Charts.d3js.icosahedron || {}
 
-ch = window.Charts.d3js.icosahedron # Chart
+ch = window.Charts.d3js.icosahedron
 
 ch.setCg = -> ch.cg =
   width: $('#chart').innerWidth()
@@ -75,3 +75,7 @@ ch.ready =  ->
   
   ch.vars.velocity = ch.cg.defaultVelocity
   d3.timer(ch.timer)
+
+# Necessary for testing
+window.Charts.d3js.icosahedron.refreshAlias = ->
+  ch = window.Charts.d3js.icosahedron

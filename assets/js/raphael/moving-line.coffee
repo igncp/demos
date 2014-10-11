@@ -13,7 +13,7 @@ ready = ( ->
 
       drawPoints(graphData)
       
-      setInterval(advanceGraph, 4000)
+      setInterval(advanceGraph, 3000)
     )
 
     advanceGraph = ( ->
