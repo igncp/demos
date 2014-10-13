@@ -52,6 +52,13 @@ concentric-circles:
     - 'Added box shadow filter'
   data: []
 
+fish-eye:
+  name: 'Fish Eye'
+  sources: [http://bost.ocks.org/mike/fisheye/]
+  notes:
+    - Uses the Fish Eye plugin
+  data: ['data.json']
+
 
 force:
   name: 'Force'
