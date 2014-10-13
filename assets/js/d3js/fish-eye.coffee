@@ -65,7 +65,7 @@ ch.setLabels = ->
     .text('life expectancy (years)');
 
 ch.setFilter = ->
-  d3utils.filterColor('circles', ch.dom.svg, 1.5, .6)
+  d3utils.filterColor('circles', ch.dom.svg, 1.5, .6, true)
 
 ch.position = (dot)->
   dot.attr('cx', (d)-> ch.vars.xScale(d.income))

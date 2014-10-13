@@ -24,9 +24,10 @@ d3utils = {
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic')
   )
 
-  filterColor: ((id, svg, deviation, slope)->
+  filterColor: ((id, svg, deviation, slope, extra = false)->
     defs = svg.append('defs')
-    filter = defs.append('filter').attr('id', 'drop-shadow-' + id)
+    filter = defs.append('filter').attr({id:'drop-shadow-' + id})
+    filter.attr({width: '500%', height: '500%', x: '-200%', y: '-200%'}) if extra
     filter.append('feOffset').attr({result: 'offOut', in: 'SourceGraphic', dx: .5, dy: .5})
     filter.append('feGaussianBlur')
       .attr({result: 'blurOut', in: 'offOut', stdDeviation: deviation})
