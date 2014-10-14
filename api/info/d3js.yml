@@ -57,6 +57,9 @@ fish-eye:
   sources: [http://bost.ocks.org/mike/fisheye/]
   notes:
     - Uses the Fish Eye plugin
+    - Changed style
+    - Click to toggle a greater zoom
+    - Extended the title information
   data: ['data.json']
 
 

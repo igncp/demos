@@ -1,28 +1,26 @@
 .fish-eye-chart
-    text {
-      font: 10px sans-serif;
-    }
+    text 
+      font 10px sans-serif
+      text-shadow 1px 1px 1px #ccc
 
-    .background {
-      fill: none;
-      pointer-events: all;
-    }
+    .axis path, .axis line 
+      fill none
+      stroke #eee
+      shape-rendering crispEdges    
+    
+    .background 
+      fill none
+      pointer-events all
+    
+    .chart-title
+      font-size 14px
 
-    #chart {
-      margin-left: -40px;
-      height: 506px;
-    }
+    #chart 
+      margin-left -40px
+      height 506px
 
-    #chart .background {
-      fill: #ddd;
-    }
+    #chart .background 
+      fill #ddd
 
-    #chart .dot {
-      stroke: #000;
-    }
-
-    .axis path, .axis line {
-      fill: none;
-      stroke: #eee;
-      shape-rendering: crispEdges;
-    }
+    #chart .dot 
+      stroke #000
