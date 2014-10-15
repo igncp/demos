@@ -13,6 +13,7 @@ ch.ready =  ->
 ch.render = ->
   ch.setChartTitle()
   ch.setBackground()
+  ch.setPointer()
   ch.setFilter()
   ch.setAxis()
   ch.setLabels()
@@ -23,7 +24,7 @@ ch.render = ->
 
 ch.setCg = ->
   ch.cg =
-    margin: {top: 80, right: 50, bottom: 50, left: 50}
+    margin: {top: 80, right: 50, bottom: 70, left: 70}
   ch.cg.height = 700 - ch.cg.margin.top - ch.cg.margin.bottom
   ch.cg.width = $('#chart').innerWidth() - ch.cg.margin.left - ch.cg.margin.right
 
@@ -66,10 +67,10 @@ ch.setBackground = ->
 
 ch.setLabels = ->
   ch.dom.svg.append('text').attr('class', 'x label').attr('text-anchor', 'end')
-    .attr('x', ch.cg.width - 6).attr('y', ch.cg.height - 6)
+    .attr('x', ch.cg.width - 26).attr('y', ch.cg.height + 26)
     .text('income per capita, inflation-adjusted (dollars)')
   ch.dom.svg.append('text').attr('class', 'y label').attr('text-anchor', 'end')
-    .attr('x', -6).attr('y', 6).attr('dy', '.75em').attr('transform', 'rotate(-90)')
+    .attr('x', -26).attr('y', -40).attr('dy', '.75em').attr('transform', 'rotate(-90)')
     .text('life expectancy (years)');
 
 ch.setFilter = ->
@@ -83,9 +84,11 @@ ch.position = (dot)->
 ch.setDots = ->
   ch.dom.dot = ch.dom.svg.append('g').attr('class', 'dots').selectAll('.dot')
     .data(ch.data).enter().append('circle').attr('class', 'dot')
-    .style('fill', (d)-> ch.vars.colorScale(d.region))
-    .style('filter', 'url(#drop-shadow-circles)')
-    .call(ch.position).sort((a, b)-> b.population - a.population)
+    .style({
+      fill: (d)-> ch.vars.colorScale(d.region)
+      filter: 'url(#drop-shadow-circles)'
+      stroke: 'black', 'stroke-width': '1px'
+    }).call(ch.position).sort((a, b)-> b.population - a.population)
 
 ch.setTitles = ->
   ch.dom.dot.append('title').text((d)->
@@ -94,25 +97,33 @@ ch.setTitles = ->
       "- Life expectancy: #{d.lifeExpectancy} years"
   )
 
-ch.zoom = (distorsion)->
+ch.zoom = ->
   mouse = d3.mouse(this)
-  ch.vars.xScale.distortion(distorsion).focus(mouse[0])
-  ch.vars.yScale.distortion(distorsion).focus(mouse[1])
+  ch.vars.xScale.distortion(2.5).focus(mouse[0])
+  ch.vars.yScale.distortion(2.5).focus(mouse[1])
   ch.dom.dot.call(ch.position)
   ch.dom.svg.select('.x.axis').call(ch.dom.xAxis)
   ch.dom.svg.select('.y.axis').call(ch.dom.yAxis)
 
+
+ch.setPointer = ->
+  ch.dom.pointer = ch.dom.svg.append('text').text('+').attr('class', 'pointer')
+
 ch.bindMousemove = ->
   ch.dom.svg.on('mousemove', ->
     if not ch.vars.focused
-      ch.zoom.call(this, 2.5) # use the context of this function
+      ch.zoom.call(this)
   )
 
 ch.bindClick = ->
   ch.dom.svg.on('click', ->
     ch.vars.focused = !ch.vars.focused
-    if ch.vars.focused then ch.zoom.call(this, 4.5)
-    else ch.zoom.call(this, 2.5)
+    if ch.vars.focused
+      mouse = d3.mouse(this)
+      ch.dom.pointer.attr({x: mouse[0], y: mouse[1]}).style({opacity: 1})
+    else
+      ch.dom.pointer.style({opacity: 0})
+      ch.zoom.call(this)
   )
 
 ch.humanizeNumber = (n) -> # http://stackoverflow.com/a/25194011/3244654
