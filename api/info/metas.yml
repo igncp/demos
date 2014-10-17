@@ -24,6 +24,10 @@ d3js:
   # concentric-circles:
   #   description: ''
 
+  
+  fish-eye:
+    description: "Fisheye Chart example using D3.js, with the Fisheye plugin. It has a more depurated style, and the ability to stop the scale changes when it\'s clicked."
+
 
   # force:
   #   description: ''
