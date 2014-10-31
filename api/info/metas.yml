@@ -45,8 +45,8 @@ d3js:
   #   description: ''
 
 
-  # multiline-voronoi:
-  #   description: ''
+  multiline-voronoi:
+    description: 'Multiline chart example using D3.js, with Voronoi functionality and the ability to show a single line after it is clicked. The label and style are also changed.'
 
 
   # partition:
