@@ -21,8 +21,8 @@ d3js:
     description: 'Collapsible Tree example using D3.js, with circular nodes and styled links. With transitions, it manages the text placing depending if the node is expanded.'
 
 
-  # concentric-circles:
-  #   description: ''
+  concentric-circles:
+    description: 'Concentric circles example using D3.js, with a non repeated series of data and with a new style that heavily uses the svg drop-shadow type filter.'
 
   
   fish-eye:
