@@ -29,8 +29,8 @@ d3js:
     description: "Fisheye Chart example using D3.js, with the Fisheye plugin. It has a more depurated style, and the ability to stop the scale changes when it\'s clicked."
 
 
-  # force:
-  #   description: ''
+  force:
+    description: 'Force Chart example using D3.js with two source files of data, that shows how a process with several cycles and paths can be represented.'
 
 
   # icosahedron:
