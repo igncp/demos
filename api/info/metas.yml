@@ -37,8 +37,8 @@ d3js:
     description: 'Example using D3.js of a 3D geometric figure, which has each face with a different color using a color scale and a sinusoidal animated movement.'
 
 
-  # map-distorsions:
-  #   description: ''
+  map-distorsions:
+    description: 'Cuadruple variable example using D3.js, with a colored chart and four axis that are connected by lines and with an improved and depurated style.'
 
 
   # mareys-schedule:
