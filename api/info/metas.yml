@@ -41,8 +41,8 @@ d3js:
     description: 'Cuadruple variable example using D3.js, with a colored chart and four axis that are connected by lines and with an improved and depurated style.'
 
 
-  # mareys-schedule:
-  #   description: ''
+  mareys-schedule:
+    description: 'Trains schedule example using D3.js, with San Francisco as example, and with the addition of a translucent tooltip and a 3D style.'
 
 
   multiline-voronoi:
