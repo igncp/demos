@@ -49,8 +49,8 @@ d3js:
     description: 'Multiline chart example using D3.js, with Voronoi functionality and the ability to show a single line after it is clicked. The label and style are also changed.'
 
 
-  # partition:
-  #   description: ''
+  partition:
+    description: 'Radial treemap example using D3.js, with data from a partition, where labels, mouse events and titles are added.'
 
 
   # pie:
