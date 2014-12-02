@@ -53,8 +53,8 @@ d3js:
     description: 'Radial treemap example using D3.js, with data from a partition, where labels, mouse events and titles are added.'
 
 
-  # pie:
-  #   description: ''
+  pie:
+    description: 'Pie chart example using D3.js, with an animated transition and a random change of values to show how to animate between states.'
 
 
   # spain-map:
