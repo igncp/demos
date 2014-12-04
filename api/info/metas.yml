@@ -57,8 +57,8 @@ d3js:
     description: 'Pie chart example using D3.js, with an animated transition and a random change of values to show how to animate between states.'
 
 
-  # spain-map:
-  #   description: ''
+  spain-map:
+    description: 'Example of a geographic map using D3.js, where some styles have been added to give it a 3D effect.'
 
 
   # trend-line:
