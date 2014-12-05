@@ -69,8 +69,8 @@ d3js:
   #   description: ''
 
 
-  # vectors:
-  #   description: ''
+  vectors:
+    description: 'Heatmap chart example using D3.js, very similar to the one displayed in the GitHub site, with a few additions from the original.'
 
 
   # weekly-heatmap:
