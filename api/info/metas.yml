@@ -70,11 +70,10 @@ d3js:
 
 
   vectors:
+    description: 'Not actually a chart, but the representation of pointing vectors, with the possibility of creation and movement, made with D3.js'
+
+  weekly-heatmap:
     description: 'Heatmap chart example using D3.js, very similar to the one displayed in the GitHub site, with a few additions from the original.'
-
-
-  # weekly-heatmap:
-  #   description: ''
 
 
   # world-map:
