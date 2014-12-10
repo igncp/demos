@@ -65,8 +65,8 @@ d3js:
   #   description: ''
 
 
-  # timeline:
-  #   description: ''
+  timeline:
+    description: 'Example of historical timeline using D3.js, where a legend is place to ease the navigation, as well as a more depurated style with tooltips.'
 
 
   vectors:
