@@ -76,8 +76,8 @@ d3js:
     description: 'Heatmap chart example using D3.js, very similar to the one displayed in the GitHub site, with a few additions from the original.'
 
 
-  # world-map:
-  #   description: ''
+  world-map:
+    description: 'Example of world map using D3.js, with the zoom functionality and also the possibility to unzoom. The color scale is changed, among other properties.'
 
 raphael:
   bars-3dimensional:
