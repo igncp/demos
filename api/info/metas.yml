@@ -61,8 +61,8 @@ d3js:
     description: 'Example of a geographic map using D3.js, where some styles have been added to give it a 3D effect.'
 
 
-  # trend-line:
-  #   description: ''
+  trend-line:
+      description: 'Example of trend-line using D3.js, with extra animations.'
 
 
   timeline:
