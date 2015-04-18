@@ -14,4 +14,4 @@ You need to have Node.js installed, with Bower.
 - To start the server `sails lift` (I use the port 4000)
 
 ## License
-MIT
+MIT 2014 - 2015
