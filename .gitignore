@@ -117,3 +117,4 @@ nbproject
 .node_history
 assets/vendors/bower
 tests/functional/default-test.coffee
+/www
