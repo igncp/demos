@@ -5,10 +5,17 @@
             <p><%= key + '.ejs' %></p>
             <pre><code class="html"><%= files.ejs %></code></pre>
         </li>
-        <li>
-            <p><%= key + '.coffee' %></p>
-            <pre><code class="coffeescript"><%- files.coffee %></code></pre>
-        </li>
+        <% if (files.coffee){ %>
+          <li>
+              <p><%= key + '.coffee' %></p>
+              <pre><code class="coffeescript"><%- files.coffee %></code></pre>
+          </li>
+        <% } else { %>
+          <li>
+              <p><%= key + '.js' %></p>
+              <pre><code class="javascript"><%- files.js %></code></pre>
+          </li>
+        <% }; %>
         <% if (files.stylus){ %>
             <li>
                 <p><%= '_' + key + '.styl' %></p>

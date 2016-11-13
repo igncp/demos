@@ -8,8 +8,12 @@ module.exports = {
     if fs.existsSync('views/' + url + '.ejs')
       files = {}
       files.ejs = fs.readFileSync('views/d3js/' + demo + '.ejs', { encoding: 'utf8' })
-      files.coffee = fs.readFileSync('assets/js/d3js/' + demo + \
-        '.coffee', { encoding: 'utf8' })
+      try
+        files.coffee = fs.readFileSync('assets/js/d3js/' + demo + \
+          '.coffee', { encoding: 'utf8' })
+      catch e
+        files.js = fs.readFileSync('assets/js/d3js/' + demo + \
+          '.js', { encoding: 'utf8' })
 
       stylePath = 'assets/styles/d3js/' + '_' + demo + '.styl'
       if fs.existsSync(stylePath)

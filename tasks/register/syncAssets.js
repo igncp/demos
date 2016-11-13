@@ -3,6 +3,7 @@ module.exports = function (grunt) {
         'jst:dev',
         'stylus:dev',
         'sync:dev',
-        'coffee:dev'
+        'coffee:dev',
+        'babel:dev'
     ]);
 };
