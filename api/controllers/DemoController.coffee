@@ -10,7 +10,7 @@ module.exports = {
       files.ejs = fs.readFileSync('views/d3js/' + demo + '.ejs', { encoding: 'utf8' })
       files.coffee = fs.readFileSync('assets/js/d3js/' + demo + \
         '.coffee', { encoding: 'utf8' })
-      
+
       stylePath = 'assets/styles/d3js/' + '_' + demo + '.styl'
       if fs.existsSync(stylePath)
         files.stylus = fs.readFileSync(stylePath, { encoding: 'utf8' })
@@ -36,7 +36,7 @@ module.exports = {
       files.ejs = fs.readFileSync('views/raphael/' + demo + '.ejs', { encoding: 'utf8' })
       files.coffee = fs.readFileSync('assets/js/raphael/' + demo + \
         '.coffee', { encoding: 'utf8' })
-      
+
       stylePath = 'assets/styles/raphael/' + '_' + demo + '.styl'
       if fs.existsSync(stylePath)
         files.stylus = fs.readFileSync(stylePath, { encoding: 'utf8' })
@@ -45,7 +45,7 @@ module.exports = {
 
       res.view url, {layout: 'layouts/demo-layout', files: files, \
         metas: metasSe.getMetas('raphael',demo)}
-    
+
     else res.notFound()
   )
 }
