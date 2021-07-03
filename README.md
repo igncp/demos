@@ -1,5 +1,7 @@
 # Demos
 
+[![Deploy to Github Pages](https://github.com/igncp/demos/actions/workflows/deploy-to-ghpages.yml/badge.svg)](https://github.com/igncp/demos/actions/workflows/deploy-to-ghpages.yml)
+
 ## New Roadmap
 
 This repository after it was inactive for several years. The initial planned improvements are:
