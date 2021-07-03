@@ -108,18 +108,24 @@ const main = () => {
   return async.parallel(
     [
       function (next) {
-        return d3.json("/data/d3js/force/nodes.json", (_error, root) => {
-          data.nodes = root
+        return d3.json(
+          `${ROOT_PATH}data/d3js/force/nodes.json`,
+          (_error, root) => {
+            data.nodes = root
 
-          return next()
-        })
+            return next()
+          }
+        )
       },
       function (next) {
-        return d3.json("/data/d3js/force/links.json", (_error, root) => {
-          data.links = root
+        return d3.json(
+          `${ROOT_PATH}data/d3js/force/links.json`,
+          (_error, root) => {
+            data.links = root
 
-          return next()
-        })
+            return next()
+          }
+        )
       },
     ],
     renderGraph

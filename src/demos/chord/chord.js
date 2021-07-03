@@ -48,7 +48,7 @@ const main = () => {
   setLabel(leftChart, "Debits")
   setLabel(rightChart, "Credits")
 
-  d3.csv("/data/d3js/chord/data.csv", (data) => {
+  d3.csv(`${ROOT_PATH}data/d3js/chord/data.csv`, (data) => {
     const countries = {}
     const array = []
 

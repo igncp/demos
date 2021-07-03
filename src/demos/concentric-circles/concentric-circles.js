@@ -1,5 +1,5 @@
 const main = () => {
-  d3.csv("/data/d3js/concentric-circles/data.csv", (data) => {
+  d3.csv(`${ROOT_PATH}data/d3js/concentric-circles/data.csv`, (data) => {
     const colours = ["#7C7CC9", "#52D552", "#337233", "#323247"]
     const c = d3.scale
       .linear()

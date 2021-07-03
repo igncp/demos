@@ -42,6 +42,7 @@
   "license": "MIT",
   "scripts": {
     "build": "npm run check:ts && gatsby build",
+    "build:gh-pages": "ROOT_PATH=/demos/ npm run build",
     "check:ts": "tsc --noEmit --project .",
     "clean": "gatsby clean",
     "develop": "gatsby develop",

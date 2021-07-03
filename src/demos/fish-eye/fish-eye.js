@@ -49,7 +49,7 @@ ch.setDom = function () {
 }
 
 ch.getData = function (cb) {
-  d3.json("/data/d3js/fish-eye/data.json", (nations) => {
+  d3.json(`${ROOT_PATH}data/d3js/fish-eye/data.json`, (nations) => {
     ch.data = nations
 
     return cb()

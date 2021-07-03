@@ -55,7 +55,7 @@ const main = () => {
     .attr("class", "dimension")
     .attr("transform", (d) => `translate(${x(d.name)})`)
 
-  d3.tsv("/data/d3js/map-distorsions/data.tsv", (data) => {
+  d3.tsv(`${ROOT_PATH}data/d3js/map-distorsions/data.tsv`, (data) => {
     d3utils.filterColor("lines", svg, 2, 0.4)
     data = _.sortBy(data, "name")
 

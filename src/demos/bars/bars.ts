@@ -199,7 +199,7 @@ class BarsChart {
 }
 
 const fetchData = async (): Promise<Data> => {
-  const rawData = await fetch("/data/d3js/bars/data.json")
+  const rawData = await fetch(`${ROOT_PATH}data/d3js/bars/data.json`)
   const data = await rawData.json()
 
   return data

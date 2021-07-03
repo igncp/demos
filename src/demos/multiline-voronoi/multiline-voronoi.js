@@ -87,7 +87,7 @@ const main = async () => {
 
   const cities = await new Promise((resolve) => {
     d3.tsv(
-      "/data/d3js/multiline-voronoi/data.tsv",
+      `${ROOT_PATH}data/d3js/multiline-voronoi/data.tsv`,
       chartType,
       (_error, citiesResp) => {
         resolve(citiesResp)

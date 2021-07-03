@@ -241,7 +241,7 @@ const main = () => {
   })
 
   return d3.tsv(
-    "/data/d3js/mareys-schedule/data.tsv",
+    `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`,
     typeFn,
     (_error, data) => {
       trains = data

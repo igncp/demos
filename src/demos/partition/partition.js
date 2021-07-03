@@ -63,7 +63,7 @@ const main = () => {
     .innerRadius((d) => Math.sqrt(d.y))
     .outerRadius((d) => Math.sqrt(d.y + d.dy))
 
-  d3.json("/data/d3js/partition/flare.json", (_error, root) => {
+  d3.json(`${ROOT_PATH}data/d3js/partition/flare.json`, (_error, root) => {
     const arcs = svg.datum(root).selectAll("path").data(partition.nodes).enter()
     const path = arcs
       .append("path")

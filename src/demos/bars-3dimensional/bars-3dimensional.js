@@ -1,12 +1,14 @@
 const ch = {}
 
 ch.getData = function (cb) {
-  return $.ajax("/data/raphael/bars-3dimensional/data.json").done((data) => {
-    ch.data = data.results
-    ch.setData()
+  return $.ajax(`${ROOT_PATH}data/raphael/bars-3dimensional/data.json`).done(
+    (data) => {
+      ch.data = data.results
+      ch.setData()
 
-    return cb()
-  })
+      return cb()
+    }
+  )
 }
 
 ch.setData = function () {

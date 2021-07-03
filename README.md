@@ -6,6 +6,7 @@
 
 This repository after it was inactive for several years. The initial planned improvements are:
 
+1. [x] Add a CI that checks linting, static types and unit tests
 1. [x] Port all examples to JavaScript from CoffeeScript
 1. [x] Move from Sails.js hosted in Heroku to a static Gatsby site hosted in Github pages
     - [x] Support loading different scripts per demo
@@ -17,7 +18,6 @@ This repository after it was inactive for several years. The initial planned imp
 1. [ ] Remove or change dependencies
     - Remove: Bower, jQuery
 1. [ ] Port styles to CSS with preprocessors (postcss)
-1. [ ] Add a CI that checks linting, static types and unit tests
 1. [ ] Update the general UI framework (better support for responsive) but maintain the look and feel
 1. [ ] Improve performance of some charts
 1. [ ] Add disclaimer for old charts
@@ -31,7 +31,12 @@ Showcase of some client-side demos.
 
 - Backend: It uses Gatsby to generate static pages. and Stylus as CSS preprocessor
 - Frontend: The main libraries used are D3, Raphäel, jQuery and Lodash
-- Link to the first version from 2016: http://igncp-demos.herokuapp.com/
+- New version: https://igncp.github.io/demos/
+- Testing page:
+    - Some unit tests for external pages for learning their usage better
+    - https://igncp.github.io/demos/testing
+    - [src/pages/testing.js](./src/pages/testing.js)
+- First version from 2016: http://igncp-demos.herokuapp.com/
 
 ## Install
 

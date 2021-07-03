@@ -42,7 +42,7 @@ const main = () => {
     }
   }
 
-  return d3.tsv("/data/d3js/trend-line/data.tsv", (_error, data) => {
+  return d3.tsv(`${ROOT_PATH}data/d3js/trend-line/data.tsv`, (_error, data) => {
     const margin = {
       bottom: 50,
       left: 50,

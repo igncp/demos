@@ -1,5 +1,5 @@
 const main = () => {
-  d3.csv("/data/d3js/area/data.csv", (_error, data) => {
+  d3.csv(`${ROOT_PATH}data/d3js/area/data.csv`, (_error, data) => {
     const margin = {
       bottom: 50,
       left: 70,

@@ -5,6 +5,9 @@ import DemoTitle from "./demo-title"
 import FilesDetails from "./files-details"
 import Layout from "./layout"
 
+const parsePath = (str) =>
+  str[0] === "/" ? ROOT_PATH + str.replace(/^\//, "") : str
+
 const Demo = ({ demoInfo, main, children, scripts = [], links = [] }) => {
   const { name, sources } = demoInfo
 
@@ -21,14 +24,14 @@ const Demo = ({ demoInfo, main, children, scripts = [], links = [] }) => {
       <Helmet
         link={(process.env.NODE_ENV === "production" ? links : []).map(
           (href) => ({
-            href,
+            href: parsePath(href),
             rel: "stylesheet",
             type: "text/css",
           })
         )}
         script={(process.env.NODE_ENV === "production" ? scripts : []).map(
           (src) => ({
-            src,
+            src: parsePath(src),
             type: "text/javascript",
           })
         )}

@@ -155,23 +155,26 @@ const main = () => {
     })
   }
 
-  d3.json("/data/d3js/collapsible-tree/data.json", (_error, data) => {
-    root = data
-    root.x0 = height / 2
-    root.y0 = 0
+  d3.json(
+    `${ROOT_PATH}data/d3js/collapsible-tree/data.json`,
+    (_error, data) => {
+      root = data
+      root.x0 = height / 2
+      root.y0 = 0
 
-    const collapse = function (d) {
-      if (d.children) {
-        d._children = d.children
-        d._children.forEach(collapse)
-        d.children = null
+      const collapse = function (d) {
+        if (d.children) {
+          d._children = d.children
+          d._children.forEach(collapse)
+          d.children = null
+        }
       }
+
+      root.children.forEach(collapse)
+
+      update(root)
     }
-
-    root.children.forEach(collapse)
-
-    update(root)
-  })
+  )
 }
 
 export default main

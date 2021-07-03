@@ -24,7 +24,7 @@ const main = () => {
     return `translate(${arc.centroid(d)})`
   }
 
-  return d3.json("/data/d3js/pie/data.json", (_error, data) => {
+  return d3.json(`${ROOT_PATH}data/d3js/pie/data.json`, (_error, data) => {
     const pie = d3.layout
       .pie()
       .sort(null)

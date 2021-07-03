@@ -8,6 +8,7 @@ module.exports = {
   extends: ["eslint:recommended", "plugin:react/recommended"],
   globals: {
     $: false,
+    ROOT_PATH: false,
     Raphael: false,
     _: false,
     async: false,

@@ -73,36 +73,39 @@ const main = () => {
     })
   svg = svg.append("g")
 
-  return d3.json("/data/d3js/world-map/world.json", (_error, world) => {
-    const projection = d3.geo
-      .mercator()
-      .center([0, 45.4])
-      .scale(150)
-      .translate([width / 2, height / 2])
+  return d3.json(
+    `${ROOT_PATH}data/d3js/world-map/world.json`,
+    (_error, world) => {
+      const projection = d3.geo
+        .mercator()
+        .center([0, 45.4])
+        .scale(150)
+        .translate([width / 2, height / 2])
 
-    path = d3.geo.path().projection(projection)
+      path = d3.geo.path().projection(projection)
 
-    const data = topojson.feature(world, world.objects.countries).features
+      const data = topojson.feature(world, world.objects.countries).features
 
-    countries = svg
-      .selectAll(".country")
-      .data(data)
-      .enter()
-      .append("path")
-      .attr({
-        class: classFn,
-        d: path,
-      })
-      .style({
-        fill: colorFn,
-        stroke: "#FFF",
-        "stroke-width": 0.2,
-      })
+      countries = svg
+        .selectAll(".country")
+        .data(data)
+        .enter()
+        .append("path")
+        .attr({
+          class: classFn,
+          d: path,
+        })
+        .style({
+          fill: colorFn,
+          stroke: "#FFF",
+          "stroke-width": 0.2,
+        })
 
-    countries.on("mouseover", mouseoverFn)
-    countries.on("mouseout", mouseoutFn)
-    countries.on("click", setZoom)
-  })
+      countries.on("mouseover", mouseoverFn)
+      countries.on("mouseout", mouseoutFn)
+      countries.on("click", setZoom)
+    }
+  )
 }
 
 export default main

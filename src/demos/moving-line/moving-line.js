@@ -1,5 +1,5 @@
 const main = () => {
-  $.ajax("/data/raphael/moving-line/data.json").done((graphData) => {
+  $.ajax(`${ROOT_PATH}data/raphael/moving-line/data.json`).done((graphData) => {
     const initLineGraph = function () {
       const width = $("#chart").width()
       const height = 300

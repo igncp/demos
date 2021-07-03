@@ -17,7 +17,7 @@ for (const item in d3js) {
 
   DI.key = item
   DI.category = "d3js"
-  DI.route = `/d3js/${item}`
+  DI.route = `${ROOT_PATH}d3js/${item}`
   info.d3js.push(DI)
 }
 
@@ -26,7 +26,7 @@ for (const item in raphael) {
 
   RI.key = item
   RI.category = "raphael"
-  RI.route = `/raphael/${item}`
+  RI.route = `${ROOT_PATH}raphael/${item}`
   info.raphael.push(RI)
 }
 

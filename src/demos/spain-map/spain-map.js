@@ -8,7 +8,7 @@ const main = () => {
   }
   const strokeWidth = 0.4
 
-  d3.json("/data/d3js/spain-map/data.json", (_error, spain) => {
+  d3.json(`${ROOT_PATH}data/d3js/spain-map/data.json`, (_error, spain) => {
     const dataRoot = spain.objects.data1
     const data = topojson.feature(spain, dataRoot).features
 

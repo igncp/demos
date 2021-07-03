@@ -59,126 +59,130 @@ const main = () => {
     }
   }
 
-  d3.tsv("/data/d3js/weekly-heatmap/data.tsv", values, (_error, data) => {
-    const colorScale = d3.scale
-      .quantile()
-      .domain([0, buckets - 1, d3.max(data, (d) => d.value)])
-      .range(colors)
-    const svg = d3
-      .select("#chart")
-      .append("svg")
-      .attr({
-        height: height + margin.top + margin.bottom,
-        width: width + margin.left + margin.right,
-      })
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`)
+  d3.tsv(
+    `${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`,
+    values,
+    (_error, data) => {
+      const colorScale = d3.scale
+        .quantile()
+        .domain([0, buckets - 1, d3.max(data, (d) => d.value)])
+        .range(colors)
+      const svg = d3
+        .select("#chart")
+        .append("svg")
+        .attr({
+          height: height + margin.top + margin.bottom,
+          width: width + margin.left + margin.right,
+        })
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`)
 
-    svg
-      .selectAll(".dayLabel")
-      .data(days)
-      .enter()
-      .append("text")
-      .text((d) => d)
-      .attr({
-        class(_d, i) {
-          if (i >= 0 && i <= 4) {
-            return "dayLabel mono axis axis-workweek"
-          }
+      svg
+        .selectAll(".dayLabel")
+        .data(days)
+        .enter()
+        .append("text")
+        .text((d) => d)
+        .attr({
+          class(_d, i) {
+            if (i >= 0 && i <= 4) {
+              return "dayLabel mono axis axis-workweek"
+            }
 
-          return "dayLabel mono axis"
-        },
-        transform: `translate(-6,${gridSize / 1.5})`,
-        x: 0,
-        y(_d, i) {
-          return i * gridSize
-        },
-      })
-      .style("text-anchor", "end")
+            return "dayLabel mono axis"
+          },
+          transform: `translate(-6,${gridSize / 1.5})`,
+          x: 0,
+          y(_d, i) {
+            return i * gridSize
+          },
+        })
+        .style("text-anchor", "end")
 
-    svg
-      .selectAll(".timeLabel")
-      .data(times)
-      .enter()
-      .append("text")
-      .text((d) => d)
-      .attr({
-        class(_d, i) {
-          if (i >= 7 && i <= 16) {
-            return "timeLabel mono axis axis-worktime"
-          }
+      svg
+        .selectAll(".timeLabel")
+        .data(times)
+        .enter()
+        .append("text")
+        .text((d) => d)
+        .attr({
+          class(_d, i) {
+            if (i >= 7 && i <= 16) {
+              return "timeLabel mono axis axis-worktime"
+            }
 
-          return "timeLabel mono axis"
-        },
-        transform: `translate(${gridSize / 2}, -6)`,
-        x(_d, i) {
-          return i * gridSize
-        },
-        y: 0,
-      })
-      .style("text-anchor", "middle")
+            return "timeLabel mono axis"
+          },
+          transform: `translate(${gridSize / 2}, -6)`,
+          x(_d, i) {
+            return i * gridSize
+          },
+          y: 0,
+        })
+        .style("text-anchor", "middle")
 
-    const heatMap = svg
-      .selectAll(".hour")
-      .data(data)
-      .enter()
-      .append("rect")
-      .attr({
-        class: "hour bordered",
-        height: gridSize,
-        rx: 4,
-        ry: 4,
-        width: gridSize,
-        x(d) {
-          return (d.hour - 1) * gridSize
-        },
-        y(d) {
-          return (d.day - 1) * gridSize
-        },
-      })
-      .style("fill", colors[0])
+      const heatMap = svg
+        .selectAll(".hour")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr({
+          class: "hour bordered",
+          height: gridSize,
+          rx: 4,
+          ry: 4,
+          width: gridSize,
+          x(d) {
+            return (d.hour - 1) * gridSize
+          },
+          y(d) {
+            return (d.day - 1) * gridSize
+          },
+        })
+        .style("fill", colors[0])
 
-    heatMap
-      .transition()
-      .duration(6000)
-      .style("fill", (d) => colorScale(d.value))
-    heatMap.attr("data-title", (d) => `Value: ${d.value}`)
-    d3utils.tooltip(".hour", {
-      tOpts: {
-        delay: {
-          hide: 0,
-          show: 500,
+      heatMap
+        .transition()
+        .duration(6000)
+        .style("fill", (d) => colorScale(d.value))
+      heatMap.attr("data-title", (d) => `Value: ${d.value}`)
+      d3utils.tooltip(".hour", {
+        tOpts: {
+          delay: {
+            hide: 0,
+            show: 500,
+          },
         },
-      },
-    })
-
-    const legend = svg
-      .selectAll(".legend")
-      .data([0].concat(colorScale.quantiles()), (d) => d)
-      .enter()
-      .append("g")
-      .attr("class", "legend")
-
-    legend
-      .append("rect")
-      .attr("x", (_d, i) => legendElementWidth * i)
-      .attr("y", height)
-      .attr("width", legendElementWidth)
-      .attr("height", gridSize / 2)
-      .style({
-        fill(_d, i) {
-          return colors[i]
-        },
-        stroke: "#CCC",
       })
 
-    legend
-      .append("text")
-      .attr("class", "mono")
-      .text((d) => `≥ ${Math.round(d)}`)
-      .attr("x", (_d, i) => legendElementWidth * i)
-      .attr("y", height + gridSize)
-  })
+      const legend = svg
+        .selectAll(".legend")
+        .data([0].concat(colorScale.quantiles()), (d) => d)
+        .enter()
+        .append("g")
+        .attr("class", "legend")
+
+      legend
+        .append("rect")
+        .attr("x", (_d, i) => legendElementWidth * i)
+        .attr("y", height)
+        .attr("width", legendElementWidth)
+        .attr("height", gridSize / 2)
+        .style({
+          fill(_d, i) {
+            return colors[i]
+          },
+          stroke: "#CCC",
+        })
+
+      legend
+        .append("text")
+        .attr("class", "mono")
+        .text((d) => `≥ ${Math.round(d)}`)
+        .attr("x", (_d, i) => legendElementWidth * i)
+        .attr("y", height + gridSize)
+    }
+  )
 }
 
 export default main

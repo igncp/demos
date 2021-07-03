@@ -54,3 +54,13 @@ module.exports.onCreatePage = ({ page, actions }) => {
     })
   }
 }
+
+exports.onCreateWebpackConfig = ({ plugins, actions }) => {
+  actions.setWebpackConfig({
+    plugins: [
+      plugins.define({
+        ROOT_PATH: process.env.ROOT_PATH || "/",
+      }),
+    ],
+  })
+}

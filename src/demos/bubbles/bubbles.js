@@ -34,7 +34,7 @@ const main = function () {
       .call(chart)
   }
 
-  d3.json("/data/d3js/bubbles/data.json", (_error, jsonData) => {
+  d3.json(`${ROOT_PATH}data/d3js/bubbles/data.json`, (_error, jsonData) => {
     const data = []
 
     jsonData.data.forEach((d, i, arr) => {
