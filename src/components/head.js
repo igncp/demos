@@ -40,7 +40,7 @@ const Head = () => (
     {/* Iconspedia - Free License */}
     <link href="/images/favicon.png" rel="shortcut icon" type="image/png" />
     <link
-      href="http://fonts.googleapis.com/css?family=Lobster"
+      href="https://fonts.googleapis.com/css?family=Lobster"
       rel="stylesheet"
       type="text/css"
     />

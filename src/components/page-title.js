@@ -13,7 +13,7 @@ const PageTitle = () => (
           frameBorder="0"
           height="20"
           scrolling="0"
-          src="http://ghbtns.com/github-btn.html?user=igncp&repo=demos&type=watch"
+          src="https://ghbtns.com/github-btn.html?user=igncp&repo=demos&type=watch"
           width="62"
         />
         <iframe
@@ -21,7 +21,7 @@ const PageTitle = () => (
           frameBorder="0"
           height="20"
           scrolling="0"
-          src="http://ghbtns.com/github-btn.html?user=igncp&repo=demos&type=follow"
+          src="https://ghbtns.com/github-btn.html?user=igncp&repo=demos&type=follow"
           width="119"
         />
         <iframe
@@ -29,7 +29,7 @@ const PageTitle = () => (
           frameBorder="0"
           height="20"
           scrolling="0"
-          src="http://ghbtns.com/github-btn.html?user=igncp&repo=demos&type=fork"
+          src="https://ghbtns.com/github-btn.html?user=igncp&repo=demos&type=fork"
           width="62"
         />
       </span>

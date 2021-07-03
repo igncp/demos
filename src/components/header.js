@@ -22,7 +22,7 @@ const Header = ({ siteTitle }) => (
             color: `white`,
             textDecoration: `none`,
           }}
-          to="/"
+          to={ROOT_PATH}
         >
           {siteTitle}
         </Link>
