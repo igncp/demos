@@ -9,7 +9,7 @@ const DemoTitle = ({ name, mainSource }) => (
       </small>
     </span>
     <span className="col-lg-2 back-home">
-      <a className="btn btn-default" href="/">
+      <a className="btn btn-default" href={ROOT_PATH}>
         <span className="glyphicon glyphicon-home" /> Home
       </a>
     </span>

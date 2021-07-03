@@ -4,7 +4,7 @@
 
 ## New Roadmap
 
-This repository after it was inactive for several years. The initial planned improvements are:
+I am updating this repository after it was inactive for several years. The initial planned improvements are:
 
 1. [x] Add a CI that checks linting, static types and unit tests
 1. [x] Port all examples to JavaScript from CoffeeScript

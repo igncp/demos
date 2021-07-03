@@ -4,7 +4,7 @@ const PageTitle = () => (
   <div className="page-header">
     <h1 className="row">
       <span className="col-lg-8">
-        <a href="/">Demos</a>{" "}
+        <a href={ROOT_PATH}>Demos</a>{" "}
         <small>interactive data visualization examples</small>
       </span>
       <span className="col-lg-4">
