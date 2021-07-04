@@ -6,6 +6,7 @@
   "author": "igncp",
   "dependencies": {
     "@types/d3": "^7.0.0",
+    "@types/jquery": "^3.5.5",
     "@types/qunit": "^2.11.1",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
@@ -25,6 +26,7 @@
     "gatsby-plugin-stylus": "^3.8.0",
     "gatsby-source-filesystem": "^3.6.0",
     "gatsby-transformer-sharp": "^3.6.0",
+    "jquery": "^3.6.0",
     "lodash": "^4.17.21",
     "prop-types": "^15.7.2",
     "qunit": "^2.16.0",

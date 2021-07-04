@@ -1,3 +1,5 @@
+import d3utils from "@/demos/_utils/d3utils"
+
 const main = () => {
   d3.csv(`${ROOT_PATH}data/d3js/area/data.csv`, (_error, data) => {
     const margin = {

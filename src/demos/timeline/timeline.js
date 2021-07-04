@@ -1,3 +1,5 @@
+import d3utils from "@/demos/_utils/d3utils"
+
 const main = () => {
   const createTimeline = function () {
     const margin = {

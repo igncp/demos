@@ -70,6 +70,13 @@ const d3Tests = (QUnit: QUnitType) => {
     })
   })
 
+  QUnit.test("d3.max", (assert) => {
+    assert.deepEqual(
+      d3.max([{ foo: 1 }, { foo: 2 }, { foo: -1 }], (d) => d.foo),
+      2
+    )
+  })
+
   QUnit.test("d3.pie generates the expected data", (assert) => {
     type Data = { val: number }
 
@@ -123,6 +130,16 @@ const d3Tests = (QUnit: QUnitType) => {
     assert.deepEqual(scale(0), 0)
     assert.deepEqual(scale(0.1), 10)
     assert.deepEqual(scale(0.2), 20)
+  })
+
+  QUnit.test("d3.select", (assert) => {
+    const div = document.createElement("div")
+    const svg = d3.select(div).append("svg")
+
+    svg.attr("id", "foo")
+
+    assert.deepEqual(svg.node() instanceof SVGElement, true)
+    assert.deepEqual(svg.node()!.getAttribute("id"), "foo")
   })
 }
 

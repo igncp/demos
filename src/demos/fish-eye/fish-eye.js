@@ -1,3 +1,5 @@
+import d3utils from "@/demos/_utils/d3utils"
+
 const ch = {}
 
 ch.ready = function () {

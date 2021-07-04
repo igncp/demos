@@ -57,19 +57,25 @@ const FilesDetails = ({ demoInfo }) => {
           <strong>Code:</strong>
         </p>
         <ul>
-          {demoInfo.files.js && (
+          <li>
+            <p>{`${demoInfo.key}.${demoInfo.files.demo.type}`}</p>
+            <pre>
+              <code
+                className={
+                  demoInfo.files.demo.type === "ts"
+                    ? "typescript"
+                    : "javascript"
+                }
+              >
+                {demoInfo.files.demo.content}
+              </code>
+            </pre>
+          </li>
+          {demoInfo.files.d3utils && (
             <li>
-              <p>{`${demoInfo.key}.js`}</p>
+              <p>d3utils.js</p>
               <pre>
-                <code className="javascript">{demoInfo.files.js}</code>
-              </pre>
-            </li>
-          )}
-          {demoInfo.files.ts && (
-            <li>
-              <p>{`${demoInfo.key}.ts`}</p>
-              <pre>
-                <code className="typescript">{demoInfo.files.ts}</code>
+                <code className="javascript">{demoInfo.files.d3utils}</code>
               </pre>
             </li>
           )}

@@ -22,16 +22,32 @@ const getDemoInfo = (slugs) => {
     return null
   }
 
+  let demo = {
+    content: readIfExists(`src/demos/${demoName}/${demoName}.ts`),
+    type: "ts",
+  }
+
+  if (!demo.content) {
+    demo = {
+      content: readIfExists(`src/demos/${demoName}/${demoName}.js`),
+      type: "js",
+    }
+  }
+
+  const d3utils = demo.content.includes("d3utils")
+    ? readIfExists(`src/demos/_utils/d3utils.js`)
+    : null
+
   return {
     ...categoryToData[category][demoName],
     category,
     files: {
-      js: readIfExists(`src/demos/${demoName}/${demoName}.js`, "utf-8"),
+      d3utils,
+      demo,
       page:
         readIfExists(`src/pages/${category}/${demoName}.ts`, "utf-8") ||
         readIfExists(`src/pages/${category}/${demoName}.js`, "utf-8"),
       styl: readIfExists(`src/demos/${demoName}/${demoName}.styl`),
-      ts: readIfExists(`src/demos/${demoName}/${demoName}.ts`, "utf-8"),
     },
     key: demoName,
   }

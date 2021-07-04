@@ -1,4 +1,4 @@
-window.d3utils = window.d3utils || {
+const d3utils = {
   colorsScale(colors, extent) {
     const c = d3.scale.linear().domain(extent).range([0, 1])
     const colorScale = d3.scale
@@ -155,3 +155,5 @@ window.d3utils = window.d3utils || {
     }
   },
 }
+
+export default d3utils

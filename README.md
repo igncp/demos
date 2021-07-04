@@ -18,7 +18,8 @@ I am updating this repository after it was inactive for several years. The initi
     - When necessary to use global dependencies, they should be requested from the script
 1. [ ] Remove or change dependencies
     - [x] Remove Bower
-    - Remove jQuery except for jQuery UI
+    - [ ] Remove jQuery except for jQuery UI
+    - [ ] Remove Angular and Bootstrap but keep same look and feel
 1. [ ] Port styles to CSS with preprocessors (postcss)
 1. [ ] Update the general UI framework (better support for responsive) but maintain the look and feel
 1. [ ] Improve performance of some charts
@@ -63,10 +64,10 @@ You need to have Node.js installed
 |chord|No|No|No|
 |circular-arcs|No|No|No|
 |collapsible-tree|No|No|No|
-|concentric-circles|No|No|No|
+|concentric-circles|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |fish-eye|No|No|No|
 |force|No|No|No|
-|icosahedron|No|No|No|
+|icosahedron|No|:white_check_mark:|No|
 |map-distorsions|No|No|No|
 |mareys-schedule|No|No|No|
 |moving-line|No|No|No|
