@@ -1,11 +1,11 @@
 import * as React from "react"
 import _ from "lodash"
 
-import Layout from "../components/layout"
-import DemosList from "../components/demos-list"
+import Layout from "@/components/layout"
+import DemosList from "@/components/demos-list"
 
-import d3js from "../info/d3js"
-import raphael from "../info/raphael"
+import d3js from "@/info/d3js"
+import raphael from "@/info/raphael"
 
 const info = {}
 

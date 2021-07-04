@@ -6,6 +6,7 @@
   "author": "igncp",
   "dependencies": {
     "@types/d3": "^7.0.0",
+    "@types/qunit": "^2.11.1",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "d3": "^7.0.0",
@@ -48,6 +49,7 @@
     "develop": "gatsby develop",
     "lint": "eslint --ext .js --ext .ts .",
     "lint-fix": "npm run lint -- --fix",
+    "print-js-demos": "find src/demos -type f | grep 'js$' | xargs -I{} wc -l {} | sort -V",
     "serve": "gatsby serve",
     "start": "npm run develop",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"

@@ -1,10 +1,9 @@
 import React from "react"
 
-import Demo from "../../components/demo"
+import Demo from "@/components/demo"
 
-import main from "../../demos/circular-arcs/circular-arcs"
-
-import "../../demos/circular-arcs/circular-arcs.styl"
+import main from "@/demos/circular-arcs/circular-arcs"
+import "@/demos/circular-arcs/circular-arcs.styl"
 
 const CircularArcs = ({ pageContext: { demoInfo } }) => (
   <Demo

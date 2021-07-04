@@ -7,7 +7,7 @@ import main from "@/demos/bars/bars"
 import "@/demos/bars/bars.styl"
 
 const Bars = ({ pageContext: { demoInfo } }) => (
-  <Demo demoInfo={demoInfo} main={main} scripts={["/vendors/d3/d3.min.js"]}>
+  <Demo demoInfo={demoInfo} main={main}>
     <form>
       <button className="btn btn-info" id="add-item" type="button">
         Add item

@@ -38,7 +38,11 @@ const Head = () => (
       type="text/css"
     />
     {/* Iconspedia - Free License */}
-    <link href="/images/favicon.png" rel="shortcut icon" type="image/png" />
+    <link
+      href={`${ROOT_PATH}favicon.png`}
+      rel="shortcut icon"
+      type="image/png"
+    />
     <link
       href="https://fonts.googleapis.com/css?family=Lobster"
       rel="stylesheet"

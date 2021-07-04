@@ -18,6 +18,14 @@ module.exports = {
     nv: false,
     topojson: false,
   },
+  overrides: [
+    {
+      files: ["*.js"],
+      rules: {
+        "@typescript-eslint/explicit-member-accessibility": 0,
+      },
+    },
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 9,

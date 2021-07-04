@@ -20,8 +20,9 @@ module.exports = {
     data: ["data.json"],
     name: "Bubbles",
     notes: [
-      'Using the <a href="https://github.com/novus/nvd3">NV3D</a> extension for D3JS',
+      'Using the <a href="https://github.com/novus/nvd3" target="_blank">NV3D</a> extension for D3JS',
       "Data taken from the Nike API (via the Codepen)",
+      'You can click the "Maginify" button and click a point to zoom the chart',
     ],
     sources: ["http://codepen.io/linghzang3/pen/GFdzh"],
   },

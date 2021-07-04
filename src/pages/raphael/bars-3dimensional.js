@@ -1,10 +1,9 @@
 import React from "react"
 
-import Demo from "../../components/demo"
+import Demo from "@/components/demo"
 
-import main from "../../demos/bars-3dimensional/bars-3dimensional"
-
-import "../../demos/bars-3dimensional/bars-3dimensional.styl"
+import main from "@/demos/bars-3dimensional/bars-3dimensional"
+import "@/demos/bars-3dimensional/bars-3dimensional.styl"
 
 const Bars3Dimensional = ({ pageContext: { demoInfo } }) => (
   <Demo

@@ -18,7 +18,7 @@ const FilesDetails = ({ demoInfo }) => {
           </p>
           <ul>
             {demoInfo.notes.map((note, idx) => (
-              <li key={idx}>{note}</li>
+              <li dangerouslySetInnerHTML={{ __html: note }} key={idx} />
             ))}
           </ul>
         </div>
@@ -42,7 +42,7 @@ const FilesDetails = ({ demoInfo }) => {
             <strong>Data: </strong>
             {demoInfo.data.map((file, index) => (
               <a
-                href={`/data/${demoInfo.category}/${demoInfo.key}/${file}`}
+                href={`${ROOT_PATH}data/${demoInfo.category}/${demoInfo.key}/${file}`}
                 key={index}
               >
                 {file}

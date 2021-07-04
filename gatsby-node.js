@@ -59,7 +59,7 @@ exports.onCreateWebpackConfig = ({ plugins, actions }) => {
   actions.setWebpackConfig({
     plugins: [
       plugins.define({
-        ROOT_PATH: process.env.ROOT_PATH || "/",
+        ROOT_PATH: JSON.stringify(process.env.ROOT_PATH || "/"),
       }),
     ],
   })
