@@ -1,3 +1,5 @@
+import Raphael from "raphael"
+
 const main = function () {
   const width = 700
   const height = 300

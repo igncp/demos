@@ -6,11 +6,7 @@ import main from "@/demos/moving-line/moving-line"
 import "@/demos/moving-line/moving-line.styl"
 
 const CircularArcs = ({ pageContext: { demoInfo } }) => (
-  <Demo
-    demoInfo={demoInfo}
-    main={main}
-    scripts={["/vendors/raphael/raphael-min.js"]}
-  >
+  <Demo demoInfo={demoInfo} main={main}>
     <div className="moving-line-chart" id="chart" />
   </Demo>
 )

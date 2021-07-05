@@ -1,3 +1,5 @@
+import Raphael from "raphael"
+
 const main = () => {
   $.ajax(`${ROOT_PATH}data/raphael/moving-line/data.json`).done((graphData) => {
     const initLineGraph = function () {

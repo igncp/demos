@@ -1,3 +1,5 @@
+import Raphael from "raphael"
+
 const ch = {}
 
 ch.getData = function (cb) {

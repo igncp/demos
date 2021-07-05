@@ -70,6 +70,14 @@ const d3Tests = (QUnit: QUnitType) => {
     })
   })
 
+  QUnit.test("d3.geoOrthographic", (assert) => {
+    const projection100 = d3.geoOrthographic().scale(100)
+    const projection1 = d3.geoOrthographic().scale(1)
+
+    assert.deepEqual(projection100([0, 0]), [480, 250])
+    assert.deepEqual(projection1([0, 0]), [480, 250])
+  })
+
   QUnit.test("d3.max", (assert) => {
     assert.deepEqual(
       d3.max([{ foo: 1 }, { foo: 2 }, { foo: -1 }], (d) => d.foo),
@@ -132,14 +140,27 @@ const d3Tests = (QUnit: QUnitType) => {
     assert.deepEqual(scale(0.2), 20)
   })
 
+  QUnit.test("d3.scaleOrdinal with color", (assert) => {
+    const scale = d3.scaleOrdinal(d3.schemePastel2)
+
+    assert.deepEqual(scale("0"), "#b3e2cd")
+  })
+
   QUnit.test("d3.select", (assert) => {
     const div = document.createElement("div")
-    const svg = d3.select(div).append("svg")
+    const svg: d3.Selection<SVGSVGElement, unknown, null, unknown> = d3
+      .select(div)
+      .append("svg")
+    // note that here the parent is still null in the types
+    const g: d3.Selection<SVGPathElement, number, null, unknown> = svg
+      .append("path")
+      .data([1])
 
     svg.attr("id", "foo")
 
     assert.deepEqual(svg.node() instanceof SVGElement, true)
     assert.deepEqual(svg.node()!.getAttribute("id"), "foo")
+    assert.deepEqual(g.node() instanceof SVGPathElement, true)
   })
 }
 

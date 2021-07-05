@@ -95,10 +95,6 @@ const Head = () => (
           type="text/css"
         />
         <script src={`${ROOT_PATH}js/d3js-utils.js`} type="text/javascript" />
-        <script
-          src={`${ROOT_PATH}vendors/raphael/raphael-min.js`}
-          type="text/javascript"
-        />
       </>
     )}
 

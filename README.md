@@ -67,7 +67,7 @@ You need to have Node.js installed
 |concentric-circles|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |fish-eye|No|No|No|
 |force|No|No|No|
-|icosahedron|No|:white_check_mark:|No|
+|icosahedron|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |map-distorsions|No|No|No|
 |mareys-schedule|No|No|No|
 |moving-line|No|No|No|

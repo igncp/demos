@@ -6,11 +6,7 @@ import main from "@/demos/bars-3dimensional/bars-3dimensional"
 import "@/demos/bars-3dimensional/bars-3dimensional.styl"
 
 const Bars3Dimensional = ({ pageContext: { demoInfo } }) => (
-  <Demo
-    demoInfo={demoInfo}
-    main={main}
-    scripts={["/vendors/raphael/raphael-min.js"]}
-  >
+  <Demo demoInfo={demoInfo} main={main}>
     <div
       style={{
         marginBottom: 20,

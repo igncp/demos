@@ -2,6 +2,7 @@ import React, { useEffect } from "react"
 import { QUnit } from "qunit"
 
 import d3Tests from "@/testing/d3"
+import raphaelTests from "@/testing/raphael"
 
 const Testing = () => {
   useEffect(() => {
@@ -11,6 +12,10 @@ const Testing = () => {
 
     QUnit.module("d3", () => {
       d3Tests(QUnit)
+    })
+
+    QUnit.module("raphael", () => {
+      raphaelTests(QUnit)
     })
 
     QUnit.start()
