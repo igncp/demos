@@ -1,5 +1,6 @@
-import Raphael from "raphael"
 import QUnitType from "qunit"
+
+const Raphael = typeof window === "undefined" ? null : require("raphael")
 
 const raphaelTests = (QUnit: QUnitType) => {
   QUnit.test("basic", (assert) => {

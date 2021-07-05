@@ -1,4 +1,4 @@
-import Raphael from "raphael"
+const Raphael = typeof window === "undefined" ? null : require("raphael")
 
 const main = () => {
   $.ajax(`${ROOT_PATH}data/raphael/moving-line/data.json`).done((graphData) => {

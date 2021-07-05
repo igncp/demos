@@ -1,4 +1,4 @@
-import Raphael from "raphael"
+const Raphael = typeof window === "undefined" ? null : require("raphael")
 
 const main = function () {
   const width = 700
