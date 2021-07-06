@@ -1,136 +1,178 @@
-<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta content="ie=edge" http-equiv="x-ua-compatible"/><meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/><script src="/demos/vendors/jquery/dist/jquery.min.js" type="text/javascript"></script><script src="/demos/vendors/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script><script src="/demos/vendors/angular/angular.min.js" type="text/javascript"></script><script src="/demos/vendors/lodash/dist/lodash.min.js" type="text/javascript"></script><script src="/demos/vendors/async/lib/async.js" type="text/javascript"></script><link href="/demos/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/><link href="/demos/vendors/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/><link href="/demos/vendors/highlightjs/styles/default.css" rel="stylesheet" type="text/css"/><link href="/demos/favicon.png" rel="shortcut icon" type="image/png"/><link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"/><script src="/demos/vendors/highlightjs/highlight.pack.js" type="text/javascript"></script><style data-href="/demos/styles.2d6159d62e1edf771fb8.css" id="gatsby-global-css">body{color:red}::selection{background-color:transparent;color:#ccc}a:focus,a:hover{text-decoration:none}body{color:#6d6d77}body .tooltip.top{margin-left:20px;opacity:.9;z-index:10}body .tooltip.top .tooltip-inner{background-color:#fff;border:1px solid #ccc;box-shadow:0 0 5px .5px #ddd;color:#000}body .tooltip.top .tooltip-arrow{display:none}form{text-align:center}form input[type=radio]{margin-left:20px}ul{list-style-type:circle}.bullet{font-size:30px;text-shadow:.5px .5px 1px #444}.bullet.d3js{color:#9ac99d}.bullet.raphael{color:#7fa2be}.home-demo-name-link{color:#67777a}.home-demo-number{font-weight:700}.page-header{font-family:Lobster,cursive}.page-header a{color:#324297}.page-header h1{font-size:4em;text-shadow:1px 1px 1px #ddd}.page-header small{color:#9bb9a8;font-size:.5em}.row{margin:0}.source-number{color:#b91515;font-weight:700}#chart{border-radius:10px;box-shadow:0 0 20px .1px #ddd;margin-bottom:20px;overflow:hidden}#code pre{border:1px solid #3a9e4a;box-shadow:inset 0 0 8px .1px #ddd}#data-list,#sources-list{margin-bottom:30px}#demos-legend{text-align:center}#demos-legend ul{display:inline-block;list-style-type:none;margin-top:10px;padding:10px 20px 10px 30px;text-align:left}#demos-legend li{display:inline-block;position:relative}#demos-legend li:first-child{margin-right:30px}#demos-legend .bullet{left:-15px;position:absolute;top:-10px}#demos-lists{font-size:1.1em;letter-spacing:1px;margin-top:15px}#demos-lists a{background-color:rgba(145,145,145,.08);padding-left:20px;transition:all .5s linear}#demos-lists a:hover{background-color:rgba(145,172,196,.3);padding-left:25px}#demos-lists a .bullet{left:-30px;position:absolute;top:0}#demo-title{margin-bottom:20px}#main-source{color:#bbb}#notes{margin-bottom:30px}#notes,#sources-list{margin-top:30px}.bs-callout{border:1px solid #eee;border-left-width:5px;border-radius:3px;margin:20px 0;padding:20px}.bs-callout h4{margin-top:0}.bs-callout p:last-child{margin-bottom:0}.bs-callout .highlight,.bs-callout code{background-color:#fff}.bs-callout-success{border-color:#93b193}.bs-callout-warning{border-color:#f1e7bc}.bs-callout-info{border-color:#d0e3f0}.bs-callout-primary{border-color:#768ca0}pre{margin-bottom:30px}.hljs,pre{background:#fff}.hljs .hljs-string{color:#4d97f5}.hljs .hljs-keyword{color:#2cbd72}.hljs .hljs-title{color:#dd2323}.hljs .hljs-number{color:#db1fb6;font-weight:700}.hljs .vbscript{color:#228b37}.hljs .hljs-value,.hljs .hljs-value .hljs-number{color:#50b43d}.hljs .hljs-hexcolor{color:#4762ce}.hljs .hljs-class,.hljs .hljs-id,.hljs .hljs-tag{color:#c59c44}.hljs .hljs-attribute{color:#cf3d48}body,html{height:100%}#container{margin-bottom:-60px;min-height:100%}#container:after{content:"";display:block}#container:after,footer{height:60px}footer p{margin-top:20px;text-align:center;text-shadow:1px 1px 1px #ccc}.area-chart path.line{fill:none;stroke:#25a6fc;stroke-width:3.5px}.area-chart path.area{fill:#6e6ea7;opacity:.5}.area-chart text{text-shadow:1px 1px 1px #ddd}.area-chart .axis{shape-rendering:crispEdges;fill:#333}.area-chart .chart-title{font-weight:700}.area-chart .x.axis .minor{fill:#000}.area-chart .axis line,.area-chart .axis path{fill:none;stroke:#ccc;shape-rendering:crispEdges}.area-chart .x.axis line,.area-chart .x.axis path,.area-chart .y.axis line,.area-chart .y.axis path{fill:none;stroke:#ccc}.area-chart .voronoi{stroke-width:.1;opacity:0}.area-chart .point{fill:#69d895;display:none}.bars-chart rect{stroke:#fff}.bars-chart .axis path{fill:none;stroke:#777;stroke-width:1px}.bars-chart .axis .tick line{stroke:#777}.bubbles-chart .nvd3 .nv-axis.nv-x path.domain{stroke-opacity:.75}.bubbles-chart .nvd3 .nv-axis line{stroke-opacity:.4}.chord-chart path.chord{stroke-width:.75;fill-opacity:.75}.chord-chart .chart-title{font-weight:700}.chord-chart .group text{font:11px sans-serif;pointer-events:none}.chord-chart .group path{stroke:#000}.chord-chart .heading-title{font-size:15px;font-weight:700}.collapsible-tree-chart .node{cursor:pointer}.collapsible-tree-chart .node circle{fill:#fff;stroke:#4682b4;stroke-width:1.5px}.collapsible-tree-chart .node text{font:10px sans-serif}.collapsible-tree-chart .link{fill:none;stroke:#ccc;stroke-width:1.5px}.fish-eye-chart text{font:10px sans-serif;text-shadow:1px 1px 1px #ccc}.fish-eye-chart .axis line,.fish-eye-chart .axis path{fill:none;stroke:#eee;shape-rendering:crispEdges}.fish-eye-chart .background{fill:none;pointer-events:all}.fish-eye-chart .chart-title{font-size:14px}.fish-eye-chart .pointer{fill:#7aae61;font-size:15px;opacity:0}.force-chart path.link{fill:none;stroke:#666;stroke-width:1.5px}.force-chart circle{fill:#9c9;stroke:#fff;stroke-width:1.5px}.force-chart text{fill:#999;font:10px sans-serif;pointer-events:none}.force-chart .node text{fill:#000;font-size:12px}.icosahedron-chart path{fill:#f88e22;stroke:#fff;stroke-width:2px}.map-distorsions-chart svg{font-family:sans-serif;text-shadow:1px 1px 1px #ddd}.map-distorsions-chart .background path{fill:none;stroke:none;stroke-width:20px;pointer-events:stroke}.map-distorsions-chart .foreground path{fill:none;stroke-width:1.5px}.map-distorsions-chart .axis{font-size:12px}.map-distorsions-chart .axis .title{font-family:Times New Roman;font-size:11px;font-weight:700;text-transform:uppercase}.map-distorsions-chart .axis line,.map-distorsions-chart .axis path{fill:none;stroke:#000;shape-rendering:crispEdges}.map-distorsions-chart .label{-webkit-transition:fill 125ms linear}.map-distorsions-chart .label.inactive{fill:#ccc!important}.map-distorsions-chart .active .label:not(.inactive){font-weight:700}.map-distorsions-chart .foreground path.inactive{stroke:#ccc!important;stroke-opacity:.5;stroke-width:1px}.mareys-schedule-chart svg{font:10px sans-serif}.mareys-schedule-chart .axis path{display:none}.mareys-schedule-chart .axis line{stroke:#000;shape-rendering:crispEdges}.mareys-schedule-chart .chart-title{font-size:15px}.mareys-schedule-chart .station line{stroke:#ddd;stroke-dasharray:1,1;shape-rendering:crispEdges}.mareys-schedule-chart .station text{text-anchor:end}.mareys-schedule-chart .train path{fill:none;stroke-width:2.5px}.mareys-schedule-chart .train circle{stroke:#fff}.mareys-schedule-chart .train .N path{stroke:#222}.mareys-schedule-chart .train .N circle{fill:#222}.mareys-schedule-chart .train .L path{stroke:#b77409}.mareys-schedule-chart .train .L circle{fill:#b77409}.mareys-schedule-chart .train .B path{stroke:#c03e1d}.mareys-schedule-chart .train .B circle{fill:#c03e1d}.multiline-voronoi-chart .axis line,.multiline-voronoi-chart .axis path{fill:none;stroke:#000;shape-rendering:crispEdges}.multiline-voronoi-chart .cities{fill:none;stroke:#aaa;stroke-linejoin:round;stroke-linecap:round;stroke-width:1.5px}.multiline-voronoi-chart .city--hover{stroke:#000}.multiline-voronoi-chart .focus text{text-anchor:middle;text-shadow:0 1px 0 #fff,1px 0 0 #fff,0 -1px 0 #fff,-1px 0 0 #fff}.multiline-voronoi-chart .voronoi path{fill:none;pointer-events:all}.multiline-voronoi-chart .voronoi--show path{stroke:red;stroke-opacity:.2}.multiline-voronoi-chart #form{position:absolute;right:30px;top:20px}.timeline-chart text{text-shadow:.5px .5px .5px #ccc}.timeline-chart .axis{fill:grey;font-family:sans-serif;font-size:10px}.timeline-chart .axis line,.timeline-chart .axis path{stroke-width:1;stroke:grey;shape-rendering:crispEdges}.timeline-chart .band{fill:#fff}.timeline-chart .bandLabel{fill:#f0f0f0;font:10px sans-serif;font-weight:700}.timeline-chart .bandMinMaxLabel{fill:#11aa6a;font:10px sans-serif;font-weight:700}.timeline-chart .bandMidLabel{fill:#bc79c5;cursor:default;font:10px sans-serif;font-style:italic;font-weight:700}.timeline-chart .brush .extent{stroke:grey;fill:#71d7e5;fill-opacity:.1}.timeline-chart .chart{fill:#eee}.timeline-chart .interval{fill:#ecf7f7;cursor:default;pointer-events:true}.timeline-chart .interval rect{stroke-width:.5px;stroke:#000}.timeline-chart .instant{fill:#afcae7;cursor:default}.timeline-chart .instantLabel{fill:#7e7e7e;shape-rendering:crispEdges;font:10px sans-serif}.timeline-chart .intervalLabel{fill:#000;shape-rendering:crispEdges;font:10px sans-serif}.timeline-chart .item{cursor:default;pointer-events:auto}.trend-line-chart .axis{font:10px sans-serif}.trend-line-chart .axis path,.trend-line-chart line{fill:none;stroke:#000;shape-rendering:crispEdges}.trend-line-chart .line{fill:none;stroke:#4682b4;stroke-width:1.5px}.trend-line-chart .rline{fill:none;stroke:red;stroke-dasharray:5,5;stroke-width:1.5px}.vectors-chart svg{background-color:#fff;cursor:default;-webkit-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}.vectors-chart svg:not(.active):not(.ctrl){cursor:crosshair}.vectors-chart path.link{fill:none;stroke:#888;stroke-width:3px;cursor:default}.vectors-chart svg:not(.active):not(.ctrl) path.link{cursor:pointer}.vectors-chart path.link.selected{stroke-dasharray:10,2}.vectors-chart path.link.dragline{pointer-events:none}.vectors-chart path.link.hidden{stroke-width:0}.vectors-chart circle.node{stroke-width:0px;fill:#fff;cursor:pointer}.vectors-chart text{font:14px sans-serif;pointer-events:none}.vectors-chart text.id{text-anchor:middle;font-weight:700}.weekly-heatmap-chart rect.bordered{stroke:#e6e6e6;stroke-width:2px}.weekly-heatmap-chart text.mono{fill:#aaa;font-family:Consolas,courier;font-size:9pt}.weekly-heatmap-chart text.axis-worktime,.weekly-heatmap-chart text.axis-workweek{fill:#000}.bars-3dimensional-chart{padding:50px}.circular-arcs-chart{color:#fff}.circular-arcs-chart svg{margin-left:30px}.moving-line-chart path{stroke:#000;fill:none}.moving-line-chart .point{fill:#87b189}</style><meta name="generator" content="Gatsby 3.6.2"/><title data-react-helmet="true">Area | demos igncp</title><script data-react-helmet="true" src="/demos/vendors/d3/d3.min.js" type="text/javascript"></script><script data-react-helmet="true" src="/demos/js/d3js-utils.js" type="text/javascript"></script><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){if(void 0===e.target.dataset.mainImage)return;if(void 0===e.target.dataset.gatsbyImageSsr)return;const t=e.target;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script><link as="script" rel="preload" href="/demos/webpack-runtime-e56b2c618e13f4cbc5cb.js"/><link as="script" rel="preload" href="/demos/framework-1f78429ab6fb93434b07.js"/><link as="script" rel="preload" href="/demos/app-6a630258070fb16a5327.js"/><link as="script" rel="preload" href="/demos/40253593f9913a7f13fa78c8c713ea552ed82d8a-cb2c0702fb0cd3f059e6.js"/><link as="script" rel="preload" href="/demos/component---src-pages-d-3-js-area-js-fb8fa49201f40c82a4a1.js"/><link as="fetch" rel="preload" href="/demos/page-data/d3js/area/page-data.json" crossorigin="anonymous"/><link as="fetch" rel="preload" href="/demos/page-data/app-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="row" id="container"><div class="col-lg-offset-1 col-lg-10"><div class="page-header"><h1 class="row"><span class="col-lg-8"><a href="/demos/">Demos</a> <small>interactive data visualization examples</small></span><span class="col-lg-4"><iframe allowtransparency="true" frameBorder="0" height="20" scrolling="0" src="https://ghbtns.com/github-btn.html?user=igncp&amp;repo=demos&amp;type=watch" width="62"></iframe><iframe allowtransparency="true" frameBorder="0" height="20" scrolling="0" src="https://ghbtns.com/github-btn.html?user=igncp&amp;repo=demos&amp;type=follow" width="119"></iframe><iframe allowtransparency="true" frameBorder="0" height="20" scrolling="0" src="https://ghbtns.com/github-btn.html?user=igncp&amp;repo=demos&amp;type=fork" width="62"></iframe></span></h1></div><h2 class="row" id="demo-title"><span class="col-lg-10">Area<!-- --> Chart<!-- --> <small id="main-source">main source: <a href="http://codepen.io/notno/pen/ilvsd">···</a></small></span><span class="col-lg-2 back-home"><a class="btn btn-default" href="/demos/"><span class="glyphicon glyphicon-home"></span> Home</a></span></h2><div class="area-chart" id="chart"></div><div><div class="bs-callout bs-callout-info" id="notes"><p><strong>Notes:</strong></p><ul><li>Changed style</li><li>Added point and voronoi functionality</li></ul></div><div class="bs-callout bs-callout-primary" id="sources-list"><p><strong>Sources:</strong></p><ul><li><span class="source-number">[<!-- -->1<!-- -->]</span>:<!-- --> <a href="http://codepen.io/notno/pen/ilvsd">http://codepen.io/notno/pen/ilvsd</a></li></ul></div><div class="bs-callout bs-callout-warning" id="data-list"><p><strong>Data: </strong><a href="/demos/data/d3js/area/data.csv">data.csv</a></p></div><div class="bs-callout bs-callout-success" id="code"><p><strong>Code:</strong></p><ul><li><p>area.js</p><pre><code class="javascript">import d3utils from &quot;@/demos/_utils/d3utils&quot;
+<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta content="ie=edge" http-equiv="x-ua-compatible"/><meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/><script src="/demos/vendors/jquery/dist/jquery.min.js" type="text/javascript"></script><script src="/demos/vendors/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script><script src="/demos/vendors/angular/angular.min.js" type="text/javascript"></script><script src="/demos/vendors/lodash/dist/lodash.min.js" type="text/javascript"></script><script src="/demos/vendors/async/lib/async.js" type="text/javascript"></script><link href="/demos/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/><link href="/demos/vendors/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/><link href="/demos/vendors/highlightjs/styles/default.css" rel="stylesheet" type="text/css"/><link href="/demos/favicon.png" rel="shortcut icon" type="image/png"/><link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css"/><script src="/demos/vendors/highlightjs/highlight.pack.js" type="text/javascript"></script><style data-href="/demos/styles.5708debfd5611e98fd45.css" id="gatsby-global-css">body{color:red}::selection{background-color:transparent;color:#ccc}a:focus,a:hover{text-decoration:none}body{color:#6d6d77}body .tooltip.top{margin-left:20px;opacity:.9;z-index:10}body .tooltip.top .tooltip-inner{background-color:#fff;border:1px solid #ccc;box-shadow:0 0 5px .5px #ddd;color:#000}body .tooltip.top .tooltip-arrow{display:none}form{text-align:center}form input[type=radio]{margin-left:20px}ul{list-style-type:circle}.bullet{font-size:30px;text-shadow:.5px .5px 1px #444}.bullet.d3js{color:#9ac99d}.bullet.raphael{color:#7fa2be}.home-demo-name-link{color:#67777a}.home-demo-number{font-weight:700}.page-header{font-family:Lobster,cursive}.page-header a{color:#324297}.page-header h1{font-size:4em;text-shadow:1px 1px 1px #ddd}.page-header small{color:#9bb9a8;font-size:.5em}.row{margin:0}.source-number{color:#b91515;font-weight:700}#chart{border-radius:10px;box-shadow:0 0 20px .1px #ddd;margin-bottom:20px;overflow:hidden}#code pre{border:1px solid #3a9e4a;box-shadow:inset 0 0 8px .1px #ddd}#data-list,#sources-list{margin-bottom:30px}#demos-legend{text-align:center}#demos-legend ul{display:inline-block;list-style-type:none;margin-top:10px;padding:10px 20px 10px 30px;text-align:left}#demos-legend li{display:inline-block;position:relative}#demos-legend li:first-child{margin-right:30px}#demos-legend .bullet{left:-15px;position:absolute;top:-10px}#demos-lists{font-size:1.1em;letter-spacing:1px;margin-top:15px}#demos-lists a{background-color:rgba(145,145,145,.08);padding-left:20px;transition:all .5s linear}#demos-lists a:hover{background-color:rgba(145,172,196,.3);padding-left:25px}#demos-lists a .bullet{left:-30px;position:absolute;top:0}#demo-title{margin-bottom:20px}#main-source{color:#bbb}#notes{margin-bottom:30px}#notes,#sources-list{margin-top:30px}.bs-callout{border:1px solid #eee;border-left-width:5px;border-radius:3px;margin:20px 0;padding:20px}.bs-callout h4{margin-top:0}.bs-callout p:last-child{margin-bottom:0}.bs-callout .highlight,.bs-callout code{background-color:#fff}.bs-callout-success{border-color:#93b193}.bs-callout-warning{border-color:#f1e7bc}.bs-callout-info{border-color:#d0e3f0}.bs-callout-primary{border-color:#768ca0}pre{margin-bottom:30px}.hljs,pre{background:#fff}.hljs .hljs-string{color:#4d97f5}.hljs .hljs-keyword{color:#2cbd72}.hljs .hljs-title{color:#dd2323}.hljs .hljs-number{color:#db1fb6;font-weight:700}.hljs .vbscript{color:#228b37}.hljs .hljs-value,.hljs .hljs-value .hljs-number{color:#50b43d}.hljs .hljs-hexcolor{color:#4762ce}.hljs .hljs-class,.hljs .hljs-id,.hljs .hljs-tag{color:#c59c44}.hljs .hljs-attribute{color:#cf3d48}body,html{height:100%}#container{margin-bottom:-60px;min-height:100%}#container:after{content:"";display:block}#container:after,footer{height:60px}footer p{margin-top:20px;text-align:center;text-shadow:1px 1px 1px #ccc}.area-chart path.line{fill:none;stroke:#25a6fc;stroke-width:3.5px}.area-chart path.area{fill:#6e6ea7;opacity:.5}.area-chart text{text-shadow:1px 1px 1px #ddd}.area-chart .axis{shape-rendering:crispEdges;fill:#333}.area-chart .chart-title{font-weight:700}.area-chart .x.axis .minor{fill:#000}.area-chart .axis line,.area-chart .axis path{fill:none;stroke:#ccc;shape-rendering:crispEdges}.area-chart .x.axis line,.area-chart .x.axis path,.area-chart .y.axis line,.area-chart .y.axis path{fill:none;stroke:#ccc}.area-chart .voronoi{stroke-width:.1;stroke:#000;fill:#000;opacity:0}.area-chart .voronoi.show-voronoi{stroke-width:1;fill:transparent;opacity:1}.area-chart .point{fill:#69d895;display:none}.bars-chart rect{stroke:#fff}.bars-chart .axis path{fill:none;stroke:#777;stroke-width:1px}.bars-chart .axis .tick line{stroke:#777}.bubbles-chart .nvd3 .nv-axis.nv-x path.domain{stroke-opacity:.75}.bubbles-chart .nvd3 .nv-axis line{stroke-opacity:.4}.chord-chart path.chord{stroke-width:.75;fill-opacity:.75}.chord-chart .chart-title{font-weight:700}.chord-chart .group text{font:11px sans-serif;pointer-events:none}.chord-chart .group path{stroke:#000}.chord-chart .heading-title{font-size:15px;font-weight:700}.collapsible-tree-chart .node{cursor:pointer}.collapsible-tree-chart .node circle{fill:#fff;stroke:#4682b4;stroke-width:1.5px}.collapsible-tree-chart .node text{font:10px sans-serif}.collapsible-tree-chart .link{fill:none;stroke:#ccc;stroke-width:1.5px}.fish-eye-chart text{font:10px sans-serif;text-shadow:1px 1px 1px #ccc}.fish-eye-chart .axis line,.fish-eye-chart .axis path{fill:none;stroke:#eee;shape-rendering:crispEdges}.fish-eye-chart .background{fill:none;pointer-events:all}.fish-eye-chart .chart-title{font-size:14px}.fish-eye-chart .pointer{fill:#7aae61;font-size:15px;opacity:0}.force-chart path.link{fill:none;stroke:#666;stroke-width:1.5px}.force-chart circle{fill:#9c9;stroke:#fff;stroke-width:1.5px}.force-chart text{fill:#999;font:10px sans-serif;pointer-events:none}.force-chart .node text{fill:#000;font-size:12px}.icosahedron-chart path{fill:#f88e22;stroke:#fff;stroke-width:2px}.map-distorsions-chart svg{font-family:sans-serif;text-shadow:1px 1px 1px #ddd}.map-distorsions-chart .background path{fill:none;stroke:none;stroke-width:20px;pointer-events:stroke}.map-distorsions-chart .foreground path{fill:none;stroke-width:1.5px}.map-distorsions-chart .axis{font-size:12px}.map-distorsions-chart .axis .title{font-family:Times New Roman;font-size:11px;font-weight:700;text-transform:uppercase}.map-distorsions-chart .axis line,.map-distorsions-chart .axis path{fill:none;stroke:#000;shape-rendering:crispEdges}.map-distorsions-chart .label{-webkit-transition:fill 125ms linear}.map-distorsions-chart .label.inactive{fill:#ccc!important}.map-distorsions-chart .active .label:not(.inactive){font-weight:700}.map-distorsions-chart .foreground path.inactive{stroke:#ccc!important;stroke-opacity:.5;stroke-width:1px}.mareys-schedule-chart svg{font:10px sans-serif}.mareys-schedule-chart .axis path{display:none}.mareys-schedule-chart .axis line{stroke:#000;shape-rendering:crispEdges}.mareys-schedule-chart .chart-title{font-size:15px}.mareys-schedule-chart .station line{stroke:#ddd;stroke-dasharray:1,1;shape-rendering:crispEdges}.mareys-schedule-chart .station text{text-anchor:end}.mareys-schedule-chart .train path{fill:none;stroke-width:2.5px}.mareys-schedule-chart .train circle{stroke:#fff}.mareys-schedule-chart .train .N path{stroke:#222}.mareys-schedule-chart .train .N circle{fill:#222}.mareys-schedule-chart .train .L path{stroke:#b77409}.mareys-schedule-chart .train .L circle{fill:#b77409}.mareys-schedule-chart .train .B path{stroke:#c03e1d}.mareys-schedule-chart .train .B circle{fill:#c03e1d}.multiline-voronoi-chart .axis line,.multiline-voronoi-chart .axis path{fill:none;stroke:#000;shape-rendering:crispEdges}.multiline-voronoi-chart .cities{fill:none;stroke:#aaa;stroke-linejoin:round;stroke-linecap:round;stroke-width:1.5px}.multiline-voronoi-chart .city--hover{stroke:#000}.multiline-voronoi-chart .focus text{text-anchor:middle;text-shadow:0 1px 0 #fff,1px 0 0 #fff,0 -1px 0 #fff,-1px 0 0 #fff}.multiline-voronoi-chart .voronoi path{fill:none;pointer-events:all}.multiline-voronoi-chart .voronoi--show path{stroke:red;stroke-opacity:.2}.multiline-voronoi-chart #form{position:absolute;right:30px;top:20px}.timeline-chart text{text-shadow:.5px .5px .5px #ccc}.timeline-chart .axis{fill:grey;font-family:sans-serif;font-size:10px}.timeline-chart .axis line,.timeline-chart .axis path{stroke-width:1;stroke:grey;shape-rendering:crispEdges}.timeline-chart .band{fill:#fff}.timeline-chart .bandLabel{fill:#f0f0f0;font:10px sans-serif;font-weight:700}.timeline-chart .bandMinMaxLabel{fill:#11aa6a;font:10px sans-serif;font-weight:700}.timeline-chart .bandMidLabel{fill:#bc79c5;cursor:default;font:10px sans-serif;font-style:italic;font-weight:700}.timeline-chart .brush .extent{stroke:grey;fill:#71d7e5;fill-opacity:.1}.timeline-chart .chart{fill:#eee}.timeline-chart .interval{fill:#ecf7f7;cursor:default;pointer-events:true}.timeline-chart .interval rect{stroke-width:.5px;stroke:#000}.timeline-chart .instant{fill:#afcae7;cursor:default}.timeline-chart .instantLabel{fill:#7e7e7e;shape-rendering:crispEdges;font:10px sans-serif}.timeline-chart .intervalLabel{fill:#000;shape-rendering:crispEdges;font:10px sans-serif}.timeline-chart .item{cursor:default;pointer-events:auto}.trend-line-chart .axis{font:10px sans-serif}.trend-line-chart .axis path,.trend-line-chart line{fill:none;stroke:#000;shape-rendering:crispEdges}.trend-line-chart .line{fill:none;stroke:#4682b4;stroke-width:1.5px}.trend-line-chart .rline{fill:none;stroke:red;stroke-dasharray:5,5;stroke-width:1.5px}.vectors-chart svg{background-color:#fff;cursor:default;-webkit-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}.vectors-chart svg:not(.active):not(.ctrl){cursor:crosshair}.vectors-chart path.link{fill:none;stroke:#888;stroke-width:3px;cursor:default}.vectors-chart svg:not(.active):not(.ctrl) path.link{cursor:pointer}.vectors-chart path.link.selected{stroke-dasharray:10,2}.vectors-chart path.link.dragline{pointer-events:none}.vectors-chart path.link.hidden{stroke-width:0}.vectors-chart circle.node{stroke-width:0px;fill:#fff;cursor:pointer}.vectors-chart text{font:14px sans-serif;pointer-events:none}.vectors-chart text.id{text-anchor:middle;font-weight:700}.weekly-heatmap-chart rect.bordered{stroke:#e6e6e6;stroke-width:2px}.weekly-heatmap-chart text.mono{fill:#aaa;font-family:Consolas,courier;font-size:9pt}.weekly-heatmap-chart text.axis-worktime,.weekly-heatmap-chart text.axis-workweek{fill:#000}.bars-3dimensional-chart{padding:50px}.circular-arcs-chart{color:#fff}.circular-arcs-chart svg{margin-left:30px}.moving-line-chart path{stroke:#000;fill:none}.moving-line-chart .point{fill:#87b189}</style><meta name="generator" content="Gatsby 3.6.2"/><title data-react-helmet="true">Area | demos igncp</title><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){if(void 0===e.target.dataset.mainImage)return;if(void 0===e.target.dataset.gatsbyImageSsr)return;const t=e.target;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script><link as="script" rel="preload" href="/demos/webpack-runtime-7e83798185b017d58576.js"/><link as="script" rel="preload" href="/demos/framework-1f78429ab6fb93434b07.js"/><link as="script" rel="preload" href="/demos/app-0e0481dfcd956d8f2ce2.js"/><link as="script" rel="preload" href="/demos/40253593f9913a7f13fa78c8c713ea552ed82d8a-cb2c0702fb0cd3f059e6.js"/><link as="script" rel="preload" href="/demos/7f47fdc8fe3f2f57d1014d537fefa71bc58f96ff-e56be92a78e2c6a8ea76.js"/><link as="script" rel="preload" href="/demos/b2569e7a79b0d27b0a7ef23af8d274481e3be3ea-4c186ab1a6f006765e4f.js"/><link as="script" rel="preload" href="/demos/737ee4cc5fa92f04b16d6b857167fe68b7988369-9e0287831880c5ddf8de.js"/><link as="script" rel="preload" href="/demos/component---src-pages-d-3-js-area-js-c0acdb317bb5f37c201a.js"/><link as="fetch" rel="preload" href="/demos/page-data/d3js/area/page-data.json" crossorigin="anonymous"/><link as="fetch" rel="preload" href="/demos/page-data/app-data.json" crossorigin="anonymous"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="row" id="container"><div class="col-lg-offset-1 col-lg-10"><div class="page-header"><h1 class="row"><span class="col-lg-8"><a href="/demos/">Demos</a> <small>interactive data visualization examples</small></span><span class="col-lg-4"><iframe allowtransparency="true" frameBorder="0" height="20" scrolling="0" src="https://ghbtns.com/github-btn.html?user=igncp&amp;repo=demos&amp;type=watch" width="62"></iframe><iframe allowtransparency="true" frameBorder="0" height="20" scrolling="0" src="https://ghbtns.com/github-btn.html?user=igncp&amp;repo=demos&amp;type=follow" width="119"></iframe><iframe allowtransparency="true" frameBorder="0" height="20" scrolling="0" src="https://ghbtns.com/github-btn.html?user=igncp&amp;repo=demos&amp;type=fork" width="62"></iframe></span></h1></div><h2 class="row" id="demo-title"><span class="col-lg-10">Area<!-- --> Chart<!-- --> <small id="main-source">main source: <a href="http://codepen.io/notno/pen/ilvsd">···</a></small></span><span class="col-lg-2 back-home"><a class="btn btn-default" href="/demos/"><span class="glyphicon glyphicon-home"></span> Home</a></span></h2><form><button class="btn btn-info" id="toggle-voronoi" type="button">Toggle Voronoi</button></form><div class="area-chart" id="chart"></div><div><div class="bs-callout bs-callout-info" id="notes"><p><strong>Notes:</strong></p><ul><li>Changed style</li><li>Added point and voronoi functionality</li></ul></div><div class="bs-callout bs-callout-primary" id="sources-list"><p><strong>Sources:</strong></p><ul><li><span class="source-number">[<!-- -->1<!-- -->]</span>:<!-- --> <a href="http://codepen.io/notno/pen/ilvsd">http://codepen.io/notno/pen/ilvsd</a></li></ul></div><div class="bs-callout bs-callout-warning" id="data-list"><p><strong>Data: </strong><a href="/demos/data/d3js/area/data.csv">data.csv</a></p></div><div class="bs-callout bs-callout-success" id="code"><p><strong>Code:</strong></p><ul><li><p>area.ts</p><pre><code class="typescript">import * as d3 from &quot;d3&quot;
+import { Delaunay } from &quot;d3-delaunay&quot;
 
-const main = () =&gt; {
-  d3.csv(`${ROOT_PATH}data/d3js/area/data.csv`, (_error, data) =&gt; {
-    const margin = {
-      bottom: 50,
-      left: 70,
-      right: 50,
-      top: 50,
-    }
-    const width = $(&quot;#chart&quot;).innerWidth() - margin.left - margin.right
-    const height = 400 - margin.top - margin.bottom
+import d3utils from &quot;@/demos/_utils/d3nextutils&quot;
 
-    const svg = d3utils.svg(&quot;#chart&quot;, width, height, margin)
+type Point = {
+  index?: number
+  percent: number
+  year: number
+}
 
-    d3utils.middleTitle(
-      svg,
-      width,
-      &quot;Share of top decile [aka top 10%] in national income&quot;
+const fetchData = (): Promise&lt;Point[]&gt; =&gt;
+  (d3.csv(`${ROOT_PATH}data/d3js/area/data.csv`) as unknown) as Promise&lt;Point[]&gt;
+
+const margin = {
+  bottom: 50,
+  left: 70,
+  right: 50,
+  top: 50,
+}
+
+const height = 400 - margin.top - margin.bottom
+
+const main = async () =&gt; {
+  const data = await fetchData()
+  const rootElId = &quot;chart&quot;
+
+  const width =
+    (document.getElementById(rootElId) as HTMLElement).getBoundingClientRect()
+      .width -
+    margin.left -
+    margin.right
+
+  const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
+
+  d3utils.middleTitle(
+    svg,
+    width,
+    &quot;Share of top decile [aka top 10%] in national income&quot;,
+    null
+  )
+  d3utils.filterBlackOpacity(&quot;points&quot;, svg, 2, 0.5)
+
+  const xMax = d3.max(data, (d) =&gt; d.year) as number
+  const xMin = d3.min(data, (d) =&gt; d.year) as number
+  const yMax = d3.max(data, (d) =&gt; d.percent / 100) as number
+  const yMin = d3.min(data, (d) =&gt; d.percent / 100) as number
+
+  const xScale = d3.scaleLinear().range([0, width]).domain([xMin, xMax])
+  const yScale = d3
+    .scaleLinear()
+    .range([0, height])
+    .domain([yMax + 0.05, yMin - 0.05])
+
+  const xAxis = d3
+    .axisBottom(xScale)
+    .tickFormat(d3.format(&quot;.0f&quot;))
+    .tickSize(-height)
+
+  const yAxis = d3
+    .axisLeft(yScale)
+    .tickFormat(d3.format(&quot;.0%&quot;))
+    .tickSize(-width)
+
+  svg
+    .append(&quot;g&quot;)
+    .attr(&quot;class&quot;, &quot;x axis&quot;)
+    .attr(&quot;transform&quot;, `translate(0,${String(height)})`)
+    .call(xAxis)
+    .selectAll(&quot;text&quot;)
+    .attr(&quot;dy&quot;, &quot;1.25em&quot;)
+
+  svg
+    .append(&quot;g&quot;)
+    .attr(&quot;class&quot;, &quot;y axis&quot;)
+    .call(yAxis)
+    .selectAll(&quot;text&quot;)
+    .attr(&quot;dx&quot;, &quot;-.25em&quot;)
+
+  const area = d3
+    .area&lt;Point&gt;()
+    .x((d: Point) =&gt; xScale(d.year))
+    .y0(height)
+    .y1((d: Point) =&gt; yScale(d.percent / 100))
+
+  const line = d3
+    .line&lt;Point&gt;()
+    .x((d) =&gt; xScale(d.year))
+    .y((d) =&gt; yScale(d.percent / 100))
+
+  svg
+    .append(&quot;path&quot;)
+    .datum(data)
+    .attr(&quot;class&quot;, &quot;line&quot;)
+    .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
+    .attr(&quot;d&quot;, line)
+
+  svg
+    .append(&quot;clipPath&quot;)
+    .attr(&quot;id&quot;, &quot;clip&quot;)
+    .append(&quot;rect&quot;)
+    .attr(&quot;height&quot;, height)
+    .attr(&quot;width&quot;, width)
+
+  svg
+    .append(&quot;path&quot;)
+    .datum(data)
+    .attr(&quot;class&quot;, &quot;area&quot;)
+    .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
+    .attr(&quot;d&quot;, area)
+
+  const voronoi = Delaunay.from(
+    data,
+    (point) =&gt; xScale(point.year),
+    (point) =&gt; yScale(point.percent / 100)
+  ).voronoi([
+    -margin.left,
+    -margin.top,
+    width + margin.right,
+    height + margin.bottom,
+  ])
+
+  const mouseover = (_e: unknown, d: Point) =&gt; {
+    d3.select(`.point-${d.index}`).style(&quot;display&quot;, &quot;block&quot;)
+  }
+
+  const mouseleave = (_e: unknown, d: Point) =&gt; {
+    d3.select(`.point-${d.index}`).style(&quot;display&quot;, &quot;none&quot;)
+  }
+
+  svg
+    .selectAll(&quot;circle&quot;)
+    .data(data)
+    .enter()
+    .append(&quot;circle&quot;)
+    .attr(
+      &quot;transform&quot;,
+      (d: Point) =&gt;
+        `translate(${String(xScale(d.year))},${yScale(d.percent / 100)})`
     )
-    d3utils.filterBlackOpacity(&quot;points&quot;, svg, 2, 0.5)
+    .attr(&quot;r&quot;, &quot;5px&quot;)
+    .attr(&quot;class&quot;, (_d: Point, i: number) =&gt; `point point-${i}`)
+    .style(&quot;filter&quot;, &quot;url(#drop-shadow-points)&quot;)
 
-    const xMax = d3.max(data, (d) =&gt; d.year)
-    const xMin = d3.min(data, (d) =&gt; d.year)
-    const yMax = d3.max(data, (d) =&gt; d.percent / 100)
-    const yMin = d3.min(data, (d) =&gt; d.percent / 100)
+  const voronoiGroup = svg.append(&quot;g&quot;).attr(&quot;class&quot;, &quot;voronoi&quot;)
 
-    const xScale = d3.scale.linear().range([0, width]).domain([xMin, xMax])
-    const yScale = d3.scale
-      .linear()
-      .range([0, height])
-      .domain([yMax + 0.05, yMin - 0.05])
+  voronoiGroup
+    .selectAll(&quot;path&quot;)
+    .data(data)
+    .enter()
+    .append(&quot;path&quot;)
+    .attr(&quot;d&quot;, (d: Point, i: number) =&gt; {
+      d.index = i
 
-    const xAxis = d3.svg
-      .axis()
-      .scale(xScale)
-      .tickFormat(d3.format(&quot;.&quot;))
-      .innerTickSize(-height)
-    const yAxis = d3.svg
-      .axis()
-      .scale(yScale)
-      .tickFormat(d3.format(&quot;%&quot;))
-      .innerTickSize(-width)
-      .orient(&quot;left&quot;)
-
-    svg
-      .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, &quot;x axis&quot;)
-      .attr(&quot;transform&quot;, `translate(0,${String(height)})`)
-      .call(xAxis)
-      .selectAll(&quot;text&quot;)
-      .attr({ dy: &quot;1.25em&quot; })
-
-    svg
-      .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, &quot;y axis&quot;)
-      .call(yAxis)
-      .selectAll(&quot;text&quot;)
-      .attr({ dx: &quot;-.25em&quot; })
-
-    const area = d3.svg
-      .area()
-      .interpolate(&quot;monotone&quot;)
-      .x((d) =&gt; xScale(d.year))
-      .y0(height)
-      .y1((d) =&gt; yScale(d.percent / 100))
-
-    const line = d3.svg
-      .line()
-      .x((d) =&gt; xScale(d.year))
-      .y((d) =&gt; yScale(d.percent / 100))
-
-    svg
-      .append(&quot;path&quot;)
-      .datum(data)
-      .attr({ class: &quot;line&quot;, &quot;clip-path&quot;: &quot;url(#clip)&quot;, d: line })
-
-    svg.append(&quot;clipPath&quot;).attr({ id: &quot;clip&quot; }).append(&quot;rect&quot;).attr({
-      height,
-      width,
+      return voronoi.renderCell(i)
     })
+    .on(&quot;mouseover&quot;, mouseover)
+    .on(&quot;mouseleave&quot;, mouseleave)
+    .attr(&quot;class&quot;, &quot;voronoi-area&quot;)
+    .append(&quot;title&quot;)
+    .text((d: Point) =&gt; `Year: ${d.year}, ` + `Percent: ${d.percent}%`)
+  ;(document.getElementById(&quot;toggle-voronoi&quot;) as HTMLElement).addEventListener(
+    &quot;click&quot;,
+    (e) =&gt; {
+      e.preventDefault()
 
-    svg
-      .append(&quot;path&quot;)
-      .datum(data)
-      .attr({ class: &quot;area&quot;, &quot;clip-path&quot;: &quot;url(#clip)&quot;, d: area })
+      const currentClass = voronoiGroup.attr(&quot;class&quot;)
 
-    const voronoi = d3.geom
-      .voronoi()
-      .x((point) =&gt; xScale(point.year))
-      .y((point) =&gt; yScale(point.percent / 100))
-      .clipExtent([
-        [-margin.left, -margin.top],
-        [width + margin.right, height + margin.bottom],
-      ])
+      const newClass = currentClass.includes(&quot;show-voronoi&quot;)
+        ? currentClass.replace(&quot;show-voronoi&quot;, &quot;&quot;).trim()
+        : `${currentClass} show-voronoi`
 
-    const mouseover = (d) =&gt;
-      d3.select(`.point-${d.index}`).style(&quot;display&quot;, &quot;block&quot;)
-
-    const mouseleave = (d) =&gt;
-      d3.select(`.point-${d.index}`).style(&quot;display&quot;, &quot;none&quot;)
-
-    svg
-      .selectAll(&quot;circle&quot;)
-      .data(data)
-      .enter()
-      .append(&quot;circle&quot;)
-      .attr(
-        &quot;transform&quot;,
-        (d) =&gt; `translate(${String(xScale(d.year))},${yScale(d.percent / 100)})`
-      )
-      .attr(&quot;r&quot;, &quot;5px&quot;)
-      .attr(&quot;class&quot;, (_d, i) =&gt; `point point-${i}`)
-      .style({ filter: &quot;url(#drop-shadow-points)&quot; })
-
-    const voronoiGroup = svg.append(&quot;g&quot;).attr(&quot;class&quot;, &quot;voronoi&quot;)
-
-    voronoiGroup
-      .selectAll(&quot;path&quot;)
-      .data(voronoi(data))
-      .enter()
-      .append(&quot;path&quot;)
-      .attr(&quot;d&quot;, (d, i) =&gt; {
-        d.index = i
-
-        return `M${d.join(&quot;L&quot;)}Z`
-      })
-      .on(&quot;mouseover&quot;, mouseover)
-      .on(&quot;mouseleave&quot;, mouseleave)
-      .attr(&quot;class&quot;, &quot;voronoi-area&quot;)
-      .append(&quot;title&quot;)
-      .text((d) =&gt; `Year: ${d.point.year}: ` + `Percent: ${d.point.percent}%`)
-  })
+      voronoiGroup.attr(&quot;class&quot;, newClass)
+    }
+  )
 }
 
 export default main
@@ -302,54 +344,63 @@ import main from &quot;@/demos/area/area&quot;
 import &quot;@/demos/area/area.styl&quot;
 
 const Area = ({ pageContext: { demoInfo } }) =&gt; (
-  &lt;Demo
-    demoInfo={demoInfo}
-    main={main}
-    scripts={[&quot;/vendors/d3/d3.min.js&quot;, &quot;/js/d3js-utils.js&quot;]}
-  &gt;
+  &lt;Demo demoInfo={demoInfo} main={main}&gt;
+    &lt;form&gt;
+      &lt;button className=&quot;btn btn-info&quot; id=&quot;toggle-voronoi&quot; type=&quot;button&quot;&gt;
+        Toggle Voronoi
+      &lt;/button&gt;
+    &lt;/form&gt;
     &lt;div className=&quot;area-chart&quot; id=&quot;chart&quot; /&gt;
   &lt;/Demo&gt;
 )
 
 export default Area
 </code></pre></li><li><p>area.styl</p><pre><code>.area-chart
-  path.line 
+  path.line
     fill none
     stroke #25A6FC
     stroke-width 3.5px
-  
-  path.area 
+
+  path.area
     fill #6E6EA7
     opacity .5
 
   text
     text-shadow 1px 1px 1px #ddd
-  
-  .axis 
+
+  .axis
     shape-rendering crispEdges
     fill #333
 
   .chart-title
     font-weight bold
-  
-  .x.axis .minor 
+
+  .x.axis .minor
     fill #000
-  
+
   .axis path,
-  .axis line 
+  .axis line
     fill none
     stroke #ccc
     shape-rendering crispEdges
 
-  .y.axis line, .y.axis path, 
+  .y.axis line, .y.axis path,
   .x.axis line, .x.axis path
     fill none
     stroke #ccc
 
   .voronoi
     stroke-width .1
+    stroke black
     opacity 0
+    fill black
+
+  .voronoi.show-voronoi
+    stroke-width 1
+    opacity 1
+    fill rgba(0,0,0,0)
 
   .point
     fill #69D895
-    display none</code></pre></li></ul></div></div></div></div><footer class="row"><p>2021</p></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/d3js/area/";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-dfb1072a7bf3bc69d7fe.js"],"app":["/app-6a630258070fb16a5327.js"],"component---src-pages-404-js":["/component---src-pages-404-js-270adbbd899e574208d7.js"],"component---src-pages-d-3-js-area-js":["/component---src-pages-d-3-js-area-js-fb8fa49201f40c82a4a1.js"],"component---src-pages-d-3-js-bars-js":["/component---src-pages-d-3-js-bars-js-396e30724d1bb997e616.js"],"component---src-pages-d-3-js-bubbles-js":["/component---src-pages-d-3-js-bubbles-js-0142096cccec83c2ab13.js"],"component---src-pages-d-3-js-chord-js":["/component---src-pages-d-3-js-chord-js-549c569b718e1eff6aa1.js"],"component---src-pages-d-3-js-collapsible-tree-js":["/component---src-pages-d-3-js-collapsible-tree-js-73965f0bc2e743bed8fe.js"],"component---src-pages-d-3-js-concentric-circles-js":["/component---src-pages-d-3-js-concentric-circles-js-b5cbbd1b3a331135282b.js"],"component---src-pages-d-3-js-fish-eye-js":["/component---src-pages-d-3-js-fish-eye-js-c8423912ad349b164af9.js"],"component---src-pages-d-3-js-force-js":["/component---src-pages-d-3-js-force-js-01d5c4baeb81f87b7c55.js"],"component---src-pages-d-3-js-icosahedron-js":["/component---src-pages-d-3-js-icosahedron-js-44d55381bdf99fe2a98b.js"],"component---src-pages-d-3-js-map-distorsions-js":["/component---src-pages-d-3-js-map-distorsions-js-f316a98cc9f0f37d6615.js"],"component---src-pages-d-3-js-mareys-schedule-js":["/component---src-pages-d-3-js-mareys-schedule-js-13102644626add017e79.js"],"component---src-pages-d-3-js-multiline-voronoi-js":["/component---src-pages-d-3-js-multiline-voronoi-js-8bb1a3e98ab642575801.js"],"component---src-pages-d-3-js-partition-js":["/component---src-pages-d-3-js-partition-js-87d3e2a7b25508b13a53.js"],"component---src-pages-d-3-js-pie-js":["/component---src-pages-d-3-js-pie-js-296d336a7979ecbefbcd.js"],"component---src-pages-d-3-js-spain-map-js":["/component---src-pages-d-3-js-spain-map-js-41f2571a291e713e2828.js"],"component---src-pages-d-3-js-timeline-js":["/component---src-pages-d-3-js-timeline-js-ca6a001da1860c231289.js"],"component---src-pages-d-3-js-trend-line-js":["/component---src-pages-d-3-js-trend-line-js-5a687d19eb107b9c2a49.js"],"component---src-pages-d-3-js-vectors-js":["/component---src-pages-d-3-js-vectors-js-6c7056f96fe1807bf6da.js"],"component---src-pages-d-3-js-weekly-heatmap-js":["/component---src-pages-d-3-js-weekly-heatmap-js-70497231970d365391cc.js"],"component---src-pages-d-3-js-world-map-js":["/component---src-pages-d-3-js-world-map-js-857981ea316d4f51c1dd.js"],"component---src-pages-index-js":["/component---src-pages-index-js-7368e4493881777b4f36.js"],"component---src-pages-raphael-bars-3-dimensional-js":["/component---src-pages-raphael-bars-3-dimensional-js-c2a07c6820dc9d511436.js"],"component---src-pages-raphael-circular-arcs-js":["/component---src-pages-raphael-circular-arcs-js-93cf1f1eb0f210874076.js"],"component---src-pages-raphael-moving-line-js":["/component---src-pages-raphael-moving-line-js-353e9c4fdf41076fe30b.js"],"component---src-pages-testing-js":["/component---src-pages-testing-js-c75dc00849c259daeaee.js"]};/*]]>*/</script><script src="/demos/polyfill-dfb1072a7bf3bc69d7fe.js" nomodule=""></script><script src="/demos/component---src-pages-d-3-js-area-js-fb8fa49201f40c82a4a1.js" async=""></script><script src="/demos/40253593f9913a7f13fa78c8c713ea552ed82d8a-cb2c0702fb0cd3f059e6.js" async=""></script><script src="/demos/app-6a630258070fb16a5327.js" async=""></script><script src="/demos/framework-1f78429ab6fb93434b07.js" async=""></script><script src="/demos/webpack-runtime-e56b2c618e13f4cbc5cb.js" async=""></script></body></html>
+    display none
+</code></pre></li></ul></div></div></div></div><footer class="row"><p>2021</p></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/d3js/area/";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-dfb1072a7bf3bc69d7fe.js"],"app":["/app-0e0481dfcd956d8f2ce2.js"],"component---src-pages-404-js":["/component---src-pages-404-js-270adbbd899e574208d7.js"],"component---src-pages-d-3-js-area-js":["/component---src-pages-d-3-js-area-js-c0acdb317bb5f37c201a.js"],"component---src-pages-d-3-js-bars-js":["/component---src-pages-d-3-js-bars-js-46f2d2c33bbf2e398875.js"],"component---src-pages-d-3-js-bubbles-js":["/component---src-pages-d-3-js-bubbles-js-d2ad4b628e5404f46a42.js"],"component---src-pages-d-3-js-chord-js":["/component---src-pages-d-3-js-chord-js-549c569b718e1eff6aa1.js"],"component---src-pages-d-3-js-collapsible-tree-js":["/component---src-pages-d-3-js-collapsible-tree-js-73965f0bc2e743bed8fe.js"],"component---src-pages-d-3-js-concentric-circles-js":["/component---src-pages-d-3-js-concentric-circles-js-160f53effe76e6ade8c7.js"],"component---src-pages-d-3-js-fish-eye-js":["/component---src-pages-d-3-js-fish-eye-js-c8423912ad349b164af9.js"],"component---src-pages-d-3-js-force-js":["/component---src-pages-d-3-js-force-js-01d5c4baeb81f87b7c55.js"],"component---src-pages-d-3-js-icosahedron-js":["/component---src-pages-d-3-js-icosahedron-js-e7e4211b072fee22f392.js"],"component---src-pages-d-3-js-map-distorsions-js":["/component---src-pages-d-3-js-map-distorsions-js-f316a98cc9f0f37d6615.js"],"component---src-pages-d-3-js-mareys-schedule-js":["/component---src-pages-d-3-js-mareys-schedule-js-13102644626add017e79.js"],"component---src-pages-d-3-js-multiline-voronoi-js":["/component---src-pages-d-3-js-multiline-voronoi-js-8bb1a3e98ab642575801.js"],"component---src-pages-d-3-js-partition-js":["/component---src-pages-d-3-js-partition-js-87d3e2a7b25508b13a53.js"],"component---src-pages-d-3-js-pie-js":["/component---src-pages-d-3-js-pie-js-59e2b7cbf3069024691f.js"],"component---src-pages-d-3-js-spain-map-js":["/component---src-pages-d-3-js-spain-map-js-41f2571a291e713e2828.js"],"component---src-pages-d-3-js-timeline-js":["/component---src-pages-d-3-js-timeline-js-ca6a001da1860c231289.js"],"component---src-pages-d-3-js-trend-line-js":["/component---src-pages-d-3-js-trend-line-js-5a687d19eb107b9c2a49.js"],"component---src-pages-d-3-js-vectors-js":["/component---src-pages-d-3-js-vectors-js-6c7056f96fe1807bf6da.js"],"component---src-pages-d-3-js-weekly-heatmap-js":["/component---src-pages-d-3-js-weekly-heatmap-js-70497231970d365391cc.js"],"component---src-pages-d-3-js-world-map-js":["/component---src-pages-d-3-js-world-map-js-857981ea316d4f51c1dd.js"],"component---src-pages-index-js":["/component---src-pages-index-js-7368e4493881777b4f36.js"],"component---src-pages-raphael-bars-3-dimensional-js":["/component---src-pages-raphael-bars-3-dimensional-js-c2a07c6820dc9d511436.js"],"component---src-pages-raphael-circular-arcs-js":["/component---src-pages-raphael-circular-arcs-js-33836849412acd0ed911.js"],"component---src-pages-raphael-moving-line-js":["/component---src-pages-raphael-moving-line-js-353e9c4fdf41076fe30b.js"],"component---src-pages-testing-js":["/component---src-pages-testing-js-909bf6fc977ed251ec2a.js"]};/*]]>*/</script><script src="/demos/polyfill-dfb1072a7bf3bc69d7fe.js" nomodule=""></script><script src="/demos/component---src-pages-d-3-js-area-js-c0acdb317bb5f37c201a.js" async=""></script><script src="/demos/737ee4cc5fa92f04b16d6b857167fe68b7988369-9e0287831880c5ddf8de.js" async=""></script><script src="/demos/b2569e7a79b0d27b0a7ef23af8d274481e3be3ea-4c186ab1a6f006765e4f.js" async=""></script><script src="/demos/7f47fdc8fe3f2f57d1014d537fefa71bc58f96ff-e56be92a78e2c6a8ea76.js" async=""></script><script src="/demos/40253593f9913a7f13fa78c8c713ea552ed82d8a-cb2c0702fb0cd3f059e6.js" async=""></script><script src="/demos/app-0e0481dfcd956d8f2ce2.js" async=""></script><script src="/demos/framework-1f78429ab6fb93434b07.js" async=""></script><script src="/demos/webpack-runtime-7e83798185b017d58576.js" async=""></script></body></html>
