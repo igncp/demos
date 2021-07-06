@@ -111,8 +111,6 @@ const renderChart: RenderChart = ({ rootElId, jsonData }) => {
   const chart = nv.models.scatterChart()
 
   chart.margin(margin)
-  chart.xAxis.axisLabelDistance(45).tickFormat(d3.format(".1f"))
-  chart.yAxis.axisLabelDistance(45).tickFormat(d3.format(".2f"))
 
   nv.utils.windowResize(chart.update)
 
@@ -122,8 +120,14 @@ const renderChart: RenderChart = ({ rootElId, jsonData }) => {
     (_key: unknown, _x: unknown, _y: unknown, obj: { point: ChartDataItem }) =>
       `${obj.point.size.toFixed(1)} km - ${obj.point.data.deviceType}`
   )
-  chart.xAxis.tickFormat(d3.format("f")).axisLabel("Person Number")
-  chart.yAxis.axisLabelDistance(10).axisLabel("Pace (min/km)")
+  chart.xAxis
+    .axisLabelDistance(45)
+    .tickFormat(d3.format("f"))
+    .axisLabel("Person Number")
+  chart.yAxis
+    .tickFormat(d3.format(".2f"))
+    .axisLabelDistance(10)
+    .axisLabel("Pace (min/km)")
 
   d3.select(`#${rootElId}`)
     .append("svg")

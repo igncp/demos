@@ -7,11 +7,12 @@ import main from "@/demos/area/area"
 import "@/demos/area/area.styl"
 
 const Area = ({ pageContext: { demoInfo } }) => (
-  <Demo
-    demoInfo={demoInfo}
-    main={main}
-    scripts={["/vendors/d3/d3.min.js", "/js/d3js-utils.js"]}
-  >
+  <Demo demoInfo={demoInfo} main={main}>
+    <form>
+      <button className="btn btn-info" id="toggle-voronoi" type="button">
+        Toggle Voronoi
+      </button>
+    </form>
     <div className="area-chart" id="chart" />
   </Demo>
 )

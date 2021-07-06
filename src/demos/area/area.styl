@@ -1,40 +1,47 @@
 .area-chart
-  path.line 
+  path.line
     fill none
     stroke #25A6FC
     stroke-width 3.5px
-  
-  path.area 
+
+  path.area
     fill #6E6EA7
     opacity .5
 
   text
     text-shadow 1px 1px 1px #ddd
-  
-  .axis 
+
+  .axis
     shape-rendering crispEdges
     fill #333
 
   .chart-title
     font-weight bold
-  
-  .x.axis .minor 
+
+  .x.axis .minor
     fill #000
-  
+
   .axis path,
-  .axis line 
+  .axis line
     fill none
     stroke #ccc
     shape-rendering crispEdges
 
-  .y.axis line, .y.axis path, 
+  .y.axis line, .y.axis path,
   .x.axis line, .x.axis path
     fill none
     stroke #ccc
 
   .voronoi
     stroke-width .1
+    stroke black
     opacity 0
+    fill black
+
+  .voronoi.show-voronoi
+    stroke-width 1
+    opacity 1
+    fill rgba(0,0,0,0)
 
   .point
     fill #69D895

@@ -57,12 +57,12 @@ You need to have Node.js installed
 
 |Name|Ported to TS|Removed global dependencies|Reusable structure|
 |:--:|:--:|:--:|:--:|
-|area|No|No|No|
+|area|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |bars|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |bars-3dimensional|No|No|No|
 |bubbles|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |chord|No|No|No|
-|circular-arcs|No|No|No|
+|circular-arcs|No|:white_check_mark:|:white_check_mark:|
 |collapsible-tree|No|No|No|
 |concentric-circles|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |fish-eye|No|No|No|
