@@ -1,3 +1,5 @@
+import * as topojson from "topojson-client"
+
 const main = () => {
   let path = ""
   let countries = ""
@@ -15,17 +17,14 @@ const main = () => {
   }
 
   const mouseoverFn = function () {
-    return d3.select(this).style({
-      stroke: "black",
-      "stroke-width": "1px",
-    })
+    return d3.select(this).style("stroke", "black").style("stroke-width", "1px")
   }
 
   const mouseoutFn = function () {
-    return d3.select(this).style({
-      stroke: "white",
-      "stroke-width": ".2px",
-    })
+    return d3
+      .select(this)
+      .style("stroke", "white")
+      .style('"stroke-width"', ".2px")
   }
 
   const setZoom = function (d) {
@@ -62,15 +61,11 @@ const main = () => {
 
   svg
     .append("rect")
-    .attr({
-      class: "background",
-      height,
-      width,
-    })
+    .attr("class", "background")
+    .attr("height", height)
+    .attr("width", width)
     .on("click", setZoom)
-    .style({
-      fill: "#DAEDFF",
-    })
+    .style("fill", "#DAEDFF")
   svg = svg.append("g")
 
   return d3.json(
@@ -91,15 +86,11 @@ const main = () => {
         .data(data)
         .enter()
         .append("path")
-        .attr({
-          class: classFn,
-          d: path,
-        })
-        .style({
-          fill: colorFn,
-          stroke: "#FFF",
-          "stroke-width": 0.2,
-        })
+        .attr("class", classFn)
+        .attr("d", path)
+        .style("fill", colorFn)
+        .style("stroke", "#FFF")
+        .style("stroke-width", 0.2)
 
       countries.on("mouseover", mouseoverFn)
       countries.on("mouseout", mouseoutFn)

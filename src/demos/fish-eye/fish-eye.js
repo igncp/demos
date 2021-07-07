@@ -161,14 +161,10 @@ ch.setDots = function () {
     .enter()
     .append("circle")
     .attr("class", "dot")
-    .style({
-      fill(d) {
-        return ch.vars.colorScale(d.region)
-      },
-      filter: "url(#drop-shadow-circles)",
-      stroke: "black",
-      "stroke-width": "1px",
-    })
+    .style("fill", (d) => ch.vars.colorScale(d.region))
+    .style("filter", "url(#drop-shadow-circles)")
+    .style("stroke", "black")
+    .style('"stroke-width"', "1px")
     .call(ch.position)
     .sort((a, b) => b.population - a.population)
 }
@@ -215,18 +211,12 @@ ch.bindClick = function () {
       const mouse = d3.mouse(this)
 
       return ch.dom.pointer
-        .attr({
-          x: mouse[0],
-          y: mouse[1],
-        })
-        .style({
-          opacity: 1,
-        })
+        .attr("x", mouse[0])
+        .attr("y", mouse[1])
+        .style("opacity", 1)
     }
 
-    ch.dom.pointer.style({
-      opacity: 0,
-    })
+    ch.dom.pointer.style("opacity", 0)
 
     return ch.zoom.call(this)
   })

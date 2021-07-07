@@ -78,7 +78,7 @@ You need to have Node.js installed
 |timeline|No|No|No|
 |trend-line|No|No|No|
 |vectors|No|No|No|
-|weekly-heatmap|No|No|No|
+|weekly-heatmap|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |world-map|No|No|No|
 
 ## License

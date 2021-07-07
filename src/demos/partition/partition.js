@@ -67,27 +67,20 @@ const main = () => {
     const arcs = svg.datum(root).selectAll("path").data(partition.nodes).enter()
     const path = arcs
       .append("path")
-      .attr({
-        d: arc,
-        "data-index"(_d, i) {
-          return i
-        },
-        display(d) {
-          if (d.depth) {
-            return null
-          }
+      .attr("display", (d) => {
+        if (d.depth) {
+          return null
+        }
 
-          return "none"
-        },
+        return "none"
       })
-      .style({
-        fill(d) {
-          return color(d)
-        },
-        "fill-rule": "evenodd",
-        stroke: "#fff",
-      })
+      .attr("d", arc)
+      .attr("data-index", (_d, i) => i)
+      .style("fill", (d) => color(d))
+      .style("fill-rule", "evenodd")
+      .style("stroke", "#fff")
       .each(stash)
+
     const texts = arcs
       .append("text")
       .text((d) => {
@@ -97,20 +90,10 @@ const main = () => {
 
         return ""
       })
-      .attr({
-        "data-index"(_d, i) {
-          return i
-        },
-        x(d) {
-          return arc.centroid(d)[0] - 30
-        },
-        y(d) {
-          return arc.centroid(d)[1]
-        },
-      })
-      .style({
-        cursor: "default",
-      })
+      .attr("data-index", (_d, i) => i)
+      .attr("x", (d) => arc.centroid(d)[0] - 30)
+      .attr("y", (d) => arc.centroid(d)[1])
+      .style("cursor", "default")
 
     ;[path, texts].forEach((set) =>
       set.on("mouseover", function () {

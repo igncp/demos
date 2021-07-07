@@ -93,9 +93,7 @@ const d3utils = {
         transform: `translate(${String(width / 2)},${top})`,
       })
       .text(text)
-      .style({
-        "font-weight": "bold",
-      })
+      .style("font-weight", "bold")
   },
   svg(selector, width, height, margin) {
     return d3

@@ -146,6 +146,17 @@ const d3Tests = (QUnit: QUnitType) => {
     assert.deepEqual(scale("0"), "#b3e2cd")
   })
 
+  // https://observablehq.com/@d3/quantile-quantize-and-threshold-scales
+  QUnit.test("d3.scaleQuantile", (assert) => {
+    const colors = ["A", "B", "C", "D", "E"]
+    const colorScale = d3.scaleQuantile<string>().domain([0, 100]).range(colors)
+
+    assert.deepEqual(colorScale(0), "A")
+    assert.deepEqual(colorScale(19), "A")
+    assert.deepEqual(colorScale(20), "B")
+    assert.deepEqual(colorScale(100), "E")
+  })
+
   QUnit.test("d3.select", (assert) => {
     const div = document.createElement("div")
     const svg: d3.Selection<SVGSVGElement, unknown, null, unknown> = d3

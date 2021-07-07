@@ -36,9 +36,9 @@ const main = () => {
       .attr("height", height)
 
     svg.on("mouseup", () =>
-      d3.selectAll(".interval rect").style({
-        filter: "url(#drop-shadow-intervals)",
-      })
+      d3
+        .selectAll(".interval rect")
+        .style("filter", "url(#drop-shadow-intervals)")
     )
 
     const chart = svg
@@ -306,15 +306,11 @@ const main = () => {
 
       intervals
         .append("rect")
-        .attr({
-          height: "80%",
-          width: "80%",
-          x: "1px",
-          y: ".5px",
-        })
-        .style({
-          filter: "url(#drop-shadow-intervals)",
-        })
+        .attr("height", "80%")
+        .attr("width", "80%")
+        .attr("x", "1px")
+        .attr("y", ".5px")
+        .style("filter", "url(#drop-shadow-intervals)")
       intervals
         .append("text")
         .attr("class", "intervalLabel")
@@ -477,9 +473,7 @@ const main = () => {
       brush.on("brush", () => {
         const domain = brush.empty() ? band.xScale.domain() : brush.extent()
 
-        d3.selectAll(".interval rect").style({
-          filter: "none",
-        })
+        d3.selectAll(".interval rect").style("filter", "none")
 
         targetNames.forEach((d) => {
           bands[d].xScale.domain(domain)

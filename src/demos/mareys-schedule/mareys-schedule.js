@@ -119,15 +119,17 @@ const main = () => {
       .call(xAxis.orient("bottom"))
 
     const mouseover = function (d) {
-      return d3.select(`.train-${d.index}`).select("path").style({
-        "stroke-width": "5px",
-      })
+      return d3
+        .select(`.train-${d.index}`)
+        .select("path")
+        .style("stroke-width", "5px")
     }
 
     const mouseleave = function (d) {
-      return d3.select(`.train-${d.index}`).select("path").style({
-        "stroke-width": "2.5px",
-      })
+      return d3
+        .select(`.train-${d.index}`)
+        .select("path")
+        .style('"stroke-width"', "2.5px")
     }
 
     const train = svg
@@ -177,9 +179,7 @@ const main = () => {
         "transform",
         (d) => `translate(${x(d.time)},${y(d.station.distance)})`
       )
-      .style({
-        filter: "url(#drop-shadow-trains)",
-      })
+      .style("filter", "url(#drop-shadow-trains)")
       .attr("r", "5px")
       .append("title")
       .text(

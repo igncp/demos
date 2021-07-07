@@ -30,10 +30,11 @@ const addFilter = (svg) => {
     .attr("stdDeviation", 1)
 
   filter.append("feOffset").attr("dx", 1).attr("dy", 1)
-  filter.append("feComponentTransfer").append("feFuncA").attr({
-    slope: "1",
-    type: "linear",
-  })
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", "1")
+    .attr("type", "linear")
 
   const feMerge = filter.append("feMerge")
 

@@ -112,29 +112,30 @@ const main = () => {
       const defs = charts.append("defs")
       const filter = defs.append("filter").attr("id", `drop-shadow-${id}`)
 
-      filter.append("feOffset").attr({
-        dx: 0.5,
-        dy: 0.5,
-        in: "SourceGraphic",
-        result: "offOut",
-      })
+      filter
+        .append("feOffset")
+        .attr("dx", 0.5)
+        .attr("dy", 0.5)
+        .attr("in", "SourceGraphic")
+        .attr("result", "offOut")
 
-      filter.append("feGaussianBlur").attr({
-        in: "offOut",
-        result: "blurOut",
-        stdDeviation: deviation,
-      })
+      filter
+        .append("feGaussianBlur")
+        .attr("in", "offOut")
+        .attr("result", "blurOut")
+        .attr("stdDeviation", deviation)
 
-      filter.append("feBlend").attr({
-        in: "SourceGraphic",
-        in2: "blurOut",
-        mode: "normal",
-      })
+      filter
+        .append("feBlend")
+        .attr("in", "SourceGraphic")
+        .attr("in2", "blurOut")
+        .attr("mode", "normal")
 
-      filter.append("feComponentTransfer").append("feFuncA").attr({
-        slope,
-        type: "linear",
-      })
+      filter
+        .append("feComponentTransfer")
+        .append("feFuncA")
+        .attr("slope", slope)
+        .attr("type", "linear")
     }
 
     addDropShadowFilter("chords", 2, 0.4)

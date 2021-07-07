@@ -61,9 +61,7 @@ ch.drawAxis = function () {
       ch.cg.heightOffset + i * 25
     )}`
 
-    paper.path(path).attr({
-      "stroke-dasharray": ". ",
-    })
+    paper.path(path).attr("stroke-dasharray", ". ")
   }
 
   return paper
@@ -72,10 +70,8 @@ ch.drawAxis = function () {
         100 + ch.cg.heightOffset
       } ${ch.cg.width - deep},${100 + ch.cg.heightOffset + deep}Z`
     )
-    .attr({
-      fill: "#999",
-      stroke: "none",
-    })
+    .attr("fill", "#999")
+    .attr("stroke", "none")
 }
 
 ch.calcH0 = function (it, se) {
@@ -112,20 +108,19 @@ ch.createCountries = function (i) {
 
   return data.keys.forEach((item, index) => {
     ch.dom.els[item].inner = paper.path(ch.calcInnerPath(item, i))
-    ch.dom.els[item].outer = paper.path(ch.calcOuterPath(item, i)).attr({
-      opacity: ".5",
-    })
+    ch.dom.els[item].outer = paper
+      .path(ch.calcOuterPath(item, i))
+      .attr("opacity", ".5")
     ch.dom.els[item].el.push(ch.dom.els[item].inner, ch.dom.els[item].outer)
     ch.dom.els[item].el.transform(
       `T ${String((ch.cg.width / data.keysLength) * index)},` +
         `${String((ch.cg.heightOffset / data.keysLength) * index)}`
     )
 
-    return ch.dom.els[item].el.attr({
-      fill: "#C1252D",
-      stroke: "none",
-      title: `${item}: ${data[item][i]}`,
-    })
+    return ch.dom.els[item].el
+      .attr("fill", "#C1252D")
+      .attr("stroke", "none")
+      .attr("title", `${item}: ${data[item][i]}`)
   })
 }
 

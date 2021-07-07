@@ -44,9 +44,7 @@ const main = () => {
         const circle = data.paper.circle(xPos, yPos, radius)
 
         circle.node.className.baseVal = "point"
-        circle.attr({
-          title: `Value: ${0}`,
-        })
+        circle.attr("title", `Value: ${0}`)
         points[i].point = circle
         i++
       }

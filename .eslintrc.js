@@ -16,7 +16,6 @@ module.exports = {
     d3utils: false,
     hljs: false,
     nv: false,
-    topojson: false,
   },
   overrides: [
     {

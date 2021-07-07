@@ -7,9 +7,7 @@ const addHoverHandlers = function (el) {
 
   el.hover(
     function () {
-      this.attr({
-        "fill-opacity": ".3",
-      })
+      this.attr("fill-opacity", ".3")
 
       return this.animate(
         {
@@ -20,9 +18,7 @@ const addHoverHandlers = function (el) {
       )
     },
     function () {
-      this.attr({
-        "fill-opacity": ".2",
-      })
+      this.attr("fill-opacity", ".2")
 
       return this.animate(
         {
@@ -46,12 +42,11 @@ const createArc = ({ stroke, fill, arcI, paper }) => {
     startAngle: 180,
   })
 
-  arc.attr({
-    fill,
-    "fill-opacity": ".2",
-    stroke,
-    "stroke-width": strokeWidth,
-  })
+  arc
+    .attr("fill", fill)
+    .attr("fill-opacity", ".2")
+    .attr("stroke", stroke)
+    .attr("stroke-width", strokeWidth)
 
   addHoverHandlers(arc)
 }

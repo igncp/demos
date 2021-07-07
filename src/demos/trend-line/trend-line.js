@@ -64,10 +64,8 @@ const main = () => {
         .select("#chart")
         .text("")
         .append("svg")
-        .attr({
-          height: height + margin.top + margin.bottom,
-          width: width + margin.left + margin.right,
-        })
+        .attr("height", height + margin.top + margin.bottom)
+        .attr("width", width + margin.left + margin.right)
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.right})`)
 

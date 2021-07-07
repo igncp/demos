@@ -1,12 +1,13 @@
 import d3utils from "@/demos/_utils/d3utils"
 
+const margin = {
+  bottom: 20,
+  left: 200,
+  right: 40,
+  top: 90,
+}
+
 const main = () => {
-  const margin = {
-    bottom: 20,
-    left: 200,
-    right: 40,
-    top: 90,
-  }
   const width = $("#chart").innerWidth() - margin.left - margin.right
   const height = 750 - margin.top - margin.bottom
   const colors = ["#7C7CC9", "#429742", "#63BD28", "#D14141"]
@@ -96,10 +97,8 @@ const main = () => {
       .data(data)
       .enter()
       .append("path")
-      .attr({
-        d: draw,
-        "data-title": tooltipText,
-      })
+      .attr("d", draw)
+      .attr('"data-title"', tooltipText)
     svg
       .append("g")
       .attr("class", "foreground")
@@ -107,10 +106,8 @@ const main = () => {
       .data(data)
       .enter()
       .append("path")
-      .attr({
-        d: draw,
-        "data-title": tooltipText,
-      })
+      .attr("d", draw)
+      .attr("data-title", tooltipText)
     dimension
       .append("g")
       .attr("class", "axis")
@@ -127,20 +124,14 @@ const main = () => {
       .selectAll("text:not(.title)")
       .attr("class", "label")
       .data(data, (d) => d.name || d)
-      .style({
-        fill(_d, i) {
-          return colorFn(i)
-        },
-      })
+      .style("fill", (_d, i) => colorFn(i))
 
     const moveToFront = function () {
       return this.parentNode.appendChild(this)
     }
 
     const mouseover = function (d) {
-      svg.selectAll(".foreground path").style({
-        filter: "none",
-      })
+      svg.selectAll(".foreground path").style("filter", "none")
       svg.classed("active", true)
       projection.classed("inactive", (p) => p !== d)
 
@@ -148,19 +139,17 @@ const main = () => {
     }
 
     const mouseout = function () {
-      svg.selectAll(".foreground path").style({
-        filter: "url(#drop-shadow-lines)",
-      })
+      svg
+        .selectAll(".foreground path")
+        .style("filter", "url(#drop-shadow-lines)")
       svg.classed("active", false)
       projection.classed("inactive", false)
     }
 
-    svg.selectAll(".foreground path").style({
-      filter: "url(#drop-shadow-lines)",
-      stroke(_d, i) {
-        return colorFn(i)
-      },
-    })
+    svg
+      .selectAll(".foreground path")
+      .style("filter", "url(#drop-shadow-lines)")
+      .style("stroke", (_d, i) => colorFn(i))
 
     const projection = svg
       .selectAll(".axis text,.background path,.foreground path")
