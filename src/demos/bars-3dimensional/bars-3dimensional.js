@@ -1,3 +1,5 @@
+import extend from "lodash/extend"
+
 const Raphael = typeof window === "undefined" ? null : require("raphael")
 
 const ch = {}
@@ -31,7 +33,7 @@ ch.setCg = function (config) {
     config = {}
   }
 
-  ch.cg = _.extend(
+  ch.cg = extend(
     {
       colorScheme: ["#C1252D", "#5F3A5F", "#51A8D0"],
       deep: 5,

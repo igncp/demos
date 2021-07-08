@@ -1,3 +1,4 @@
+import sortBy from "lodash/sortBy"
 import d3utils from "@/demos/_utils/d3utils"
 
 const margin = {
@@ -60,7 +61,7 @@ const main = () => {
 
   d3.tsv(`${ROOT_PATH}data/d3js/map-distorsions/data.tsv`, (data) => {
     d3utils.filterColor("lines", svg, 2, 0.4)
-    data = _.sortBy(data, "name")
+    data = sortBy(data, "name")
 
     const colorFn = d3utils.colorsScale(colors, [0, data.length - 1])
 
@@ -82,9 +83,8 @@ const main = () => {
     }
 
     const tooltipText = function (d) {
-      const vals = _.map(
-        ["Acc. 40º 150%", "Scale", "Areal", "Angular"],
-        (item) => String(Number(d[item]).toFixed(2))
+      const vals = ["Acc. 40º 150%", "Scale", "Areal", "Angular"].map((item) =>
+        String(Number(d[item]).toFixed(2))
       )
 
       return `${d.name}:  ${vals.join(" - ")}`
@@ -98,7 +98,7 @@ const main = () => {
       .enter()
       .append("path")
       .attr("d", draw)
-      .attr('"data-title"', tooltipText)
+      .attr("data-title", tooltipText)
     svg
       .append("g")
       .attr("class", "foreground")

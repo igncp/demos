@@ -74,7 +74,7 @@ You need to have Node.js installed
 |multiline-voronoi|No|No|No|
 |partition|No|No|No|
 |pie|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|spain-map|No|No|No|
+|spain-map|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |timeline|No|No|No|
 |trend-line|No|No|No|
 |vectors|No|No|No|

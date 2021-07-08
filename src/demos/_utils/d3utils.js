@@ -1,3 +1,5 @@
+import merge from "lodash/merge"
+
 const d3utils = {
   colorsScale(colors, extent) {
     const c = d3.scale.linear().domain(extent).range([0, 1])
@@ -128,7 +130,7 @@ const d3utils = {
       topOffst: 40,
     }
 
-    const opts = _.merge(defaultOpts, customOpts)
+    const opts = merge(defaultOpts, customOpts)
 
     $(selector).tooltip(opts.tOpts)
 

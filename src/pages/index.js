@@ -1,5 +1,5 @@
 import * as React from "react"
-import _ from "lodash"
+import sortBy from "lodash/sortBy"
 
 import Layout from "@/components/layout"
 import DemosList from "@/components/demos-list"
@@ -32,9 +32,7 @@ for (const item in raphael) {
 
 const getInfo = (category, key) => {
   if (key) {
-    return _.where(info[category], {
-      key,
-    })[0]
+    return info[category].find((c) => c.key === key)[0]
   }
 
   return info[category]
@@ -45,7 +43,7 @@ const demosRaphael = getInfo("raphael")
 
 let demos = demosD3.concat(demosRaphael)
 
-demos = _.sortBy(demos, "name")
+demos = sortBy(demos, "name")
 
 const IndexPage = () => {
   const numberPerGroup = Math.ceil(demos.length / 2)

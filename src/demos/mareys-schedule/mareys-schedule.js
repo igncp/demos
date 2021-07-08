@@ -1,3 +1,6 @@
+import each from "lodash/each"
+import last from "lodash/last"
+
 import d3utils from "@/demos/_utils/d3utils"
 
 const main = () => {
@@ -153,10 +156,10 @@ const main = () => {
 
       if (trainData.direction === "S") {
         title = `${trainData.stops[0].station.name} -> ${
-          _.last(trainData.stops).station.name
+          last(trainData.stops).station.name
         }`
       } else {
-        title = `${_.last(trainData.stops).station.name} -> ${
+        title = `${last(trainData.stops).station.name} -> ${
           trainData.stops[0].station.name
         }`
       }
@@ -195,7 +198,7 @@ const main = () => {
   const convertHour = function () {
     const times = []
 
-    _.each(slider.slider("values"), (sliderValue) => {
+    each(slider.slider("values"), (sliderValue) => {
       const wholeMinutes = (sliderValue / 100) * 1200
 
       let fragment = "AM"
@@ -242,15 +245,16 @@ const main = () => {
     range: true,
   })
 
-  return d3.tsv(
+  d3.tsv(
     `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`,
     typeFn,
     (_error, data) => {
       trains = data
-      _.each(trains, (train, index) => {
+
+      trains.forEach((train, index) => {
         train.index = index
 
-        return _.each(train.stops, (stop) => {
+        train.stops.forEach((stop) => {
           stop.train_index = index
         })
       })
