@@ -61,7 +61,7 @@ const renderChart: RenderChart = ({ world, rootElId }) => {
     .attr("class", "background")
     .attr("height", height)
     .attr("width", width)
-    .on("click", setZoom)
+    .on("click", setZoom as any)
     .style("fill", "#daedff")
 
   const content = svg.append("g")
