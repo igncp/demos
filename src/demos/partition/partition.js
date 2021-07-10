@@ -1,144 +1,113 @@
-const main = () => {
-  const stash = function (d) {
-    d.x0 = d.x
-    d.dx0 = d.dx
-  }
+import * as d3 from "d3"
 
-  const arcTween = function (a) {
-    const i = d3.interpolate(
-      {
-        dx: a.dx0,
-        x: a.x0,
-      },
-      a
-    )
+const fetchData = () => d3.json(`${ROOT_PATH}data/d3js/partition/flare.json`)
 
-    return function (t) {
-      const b = i(t)
+// @TODO: add back the count option
 
-      a.x0 = b.x
-      a.dx0 = b.dx
+const height = 700
+const colorScale = d3.scaleOrdinal(d3.schemePastel2)
 
-      return arc(b)
-    }
-  }
-
+const renderChart = ({ root, rootElId }) => {
   const addTitles = (selectors) => {
     selectors.forEach((selector) =>
-      selector.append("title").text((d) => `${d.name}\n${d.value}`)
+      selector.append("title").text((d) => `${d.data.name}\n${d.value}`)
     )
   }
 
-  const width = $("#chart").innerWidth()
-  const height = 700
+  const { width } = document.getElementById("chart").getBoundingClientRect()
   const radius = Math.min(width, height) / 2
-  const colorScale = d3.scale.category20c()
 
-  const color = function (d) {
-    if (d.children) {
-      return colorScale(d.name)
-    }
-
-    return colorScale(d.parent.name)
-  }
+  const color = (d) =>
+    d.children ? colorScale(d.data.name) : colorScale(d.parent.name)
 
   const svg = d3
-    .select("#chart")
+    .select(`#${rootElId}`)
     .append("svg")
     .attr("width", width)
     .attr("height", height)
     .append("g")
     .attr("transform", `translate(${width / 2},${height * 0.52})`)
 
-  const partition = d3.layout
-    .partition()
-    .sort(null)
-    .size([2 * Math.PI, radius * radius])
-    .value(() => 1)
+  const partitionLayout = d3.partition().size([2 * Math.PI, radius])
 
-  const arc = d3.svg
+  const parsedSize = d3.hierarchy(root).sum((d) => d.size)
+  const parsedFixed = d3.hierarchy(root).sum(() => 1)
+
+  partitionLayout(parsedSize)
+  // partitionLayout(parsedFixed)
+
+  const arc = d3
     .arc()
-    .startAngle((d) => d.x)
-    .endAngle((d) => d.x + d.dx)
-    .innerRadius((d) => Math.sqrt(d.y))
-    .outerRadius((d) => Math.sqrt(d.y + d.dy))
+    .startAngle((d) => d.x0)
+    .endAngle((d) => d.x1)
+    .innerRadius((d) => d.y0)
+    .outerRadius((d) => d.y1)
 
-  d3.json(`${ROOT_PATH}data/d3js/partition/flare.json`, (_error, root) => {
-    const arcs = svg.datum(root).selectAll("path").data(partition.nodes).enter()
-    const path = arcs
-      .append("path")
-      .attr("display", (d) => {
-        if (d.depth) {
-          return null
-        }
+  const path = svg
+    .selectAll("path")
+    .data(parsedSize.descendants())
+    .enter()
+    .append("path")
+    .attr("display", (d) => (d.depth ? null : "none"))
+    .attr("data-index", (_d, i) => i)
+    .attr("d", arc)
+    .style("stroke", "#000")
+    .style("stroke-width", "1px")
+    .style("fill", (d) => color(d))
 
-        return "none"
-      })
-      .attr("d", arc)
-      .attr("data-index", (_d, i) => i)
-      .style("fill", (d) => color(d))
-      .style("fill-rule", "evenodd")
-      .style("stroke", "#fff")
-      .each(stash)
+  const texts = svg
+    .selectAll("text")
+    .data(parsedSize.descendants())
+    .enter()
+    .append("text")
+    .text((d) => {
+      const dx = Math.abs(d.x0 - d.x1)
+      const dy = Math.abs(d.y0 - d.y1)
 
-    const texts = arcs
-      .append("text")
-      .text((d) => {
-        if (d.depth < 2 && d.dx > 0.1 && d.parent) {
-          return d.name
-        }
+      if (dx > 0.1 && dy > 0.1 && d.parent) {
+        return d.data.name
+      }
 
-        return ""
-      })
-      .attr("data-index", (_d, i) => i)
-      .attr("x", (d) => arc.centroid(d)[0] - 30)
-      .attr("y", (d) => arc.centroid(d)[1])
-      .style("cursor", "default")
-
-    ;[path, texts].forEach((set) =>
-      set.on("mouseover", function () {
-        const index = d3.select(this).attr("data-index")
-
-        d3.select(`path[data-index="${index}"]`).style("fill", "#CCC")
-
-        return d3.select(`text[data-index="${index}"]`).style("fill", "#fff")
-      })
-    )
-    ;[path, texts].forEach((set) =>
-      set.on("mouseout", function () {
-        const index = d3.select(this).attr("data-index")
-
-        d3.select(`path[data-index="${index}"]`).style("fill", color)
-
-        return d3.select(`text[data-index="${index}"]`).style("fill", "#000")
-      })
-    )
-    addTitles([path, texts])
-
-    d3.selectAll("input").on("change", function () {
-      const value =
-        this.value === "count"
-          ? function () {
-              return 1
-            }
-          : function (d) {
-              return d.size
-            }
-
-      path
-        .data(partition.value(value).nodes)
-        .transition()
-        .duration(1500)
-        .attrTween("d", arcTween)
-      addTitles([path, texts])
-
-      return texts
-        .data(partition.value(value).nodes)
-        .transition()
-        .duration(1500)
-        .attr("x", (d) => arc.centroid(d)[0] - 10)
-        .attr("y", (d) => arc.centroid(d)[1])
+      return ""
     })
+    .attr("data-index", (_d, i) => i)
+    .style("fill", "black")
+    .attr("text-anchor", "middle")
+    .style("font", "bold 12px Arial")
+    .attr("transform", (d) => {
+      const centroid = arc.centroid(d)
+      const rotation = 0
+
+      return `rotate(${rotation},${centroid[0]},${centroid[1]}) translate(${centroid})`
+    })
+    .style("cursor", "default")
+
+  ;[path, texts].forEach((set) =>
+    set.on("mouseover", function () {
+      const index = d3.select(this).attr("data-index")
+
+      d3.select(`path[data-index="${index}"]`).style("fill", "#333")
+      d3.select(`text[data-index="${index}"]`).style("fill", "white")
+    })
+  )
+  ;[path, texts].forEach((set) =>
+    set.on("mouseout", function () {
+      const index = d3.select(this).attr("data-index")
+
+      d3.select(`path[data-index="${index}"]`).style("fill", color)
+      d3.select(`text[data-index="${index}"]`).style("fill", "#000")
+    })
+  )
+
+  addTitles([path, texts])
+}
+
+const main = async () => {
+  const root = await fetchData()
+
+  renderChart({
+    root,
+    rootElId: "chart",
   })
 }
 

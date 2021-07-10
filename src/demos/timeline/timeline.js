@@ -1,6 +1,8 @@
 import d3utils from "@/demos/_utils/d3utils"
 
 const main = () => {
+  const rootElId = "chart"
+
   const createTimeline = function () {
     const margin = {
       bottom: 0,
@@ -9,7 +11,8 @@ const main = () => {
       top: 60,
     }
 
-    const outerWidth = $("#chart").innerWidth()
+    const outerWidth = document.getElementById("chart").getBoundingClientRect()
+      .width
     const outerHeight = 700
     const width = outerWidth - margin.left - margin.right
     const height = outerHeight - margin.top - margin.bottom
@@ -23,7 +26,7 @@ const main = () => {
     const components = []
 
     const bands = {}
-    const svg = d3utils.svg("#chart", outerWidth, outerHeight, margin)
+    const svg = d3utils.svg(`#${rootElId}`, outerWidth, outerHeight, margin)
 
     d3utils.middleTitle(svg, outerWidth, "Philosophers through History", -20)
     d3utils.filterBlackOpacity("intervals", svg, 1, 0.2)

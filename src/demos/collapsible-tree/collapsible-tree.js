@@ -1,11 +1,15 @@
 const main = () => {
+  const rootElId = "chart"
   const margin = {
     bottom: 20,
     left: 120,
     right: 120,
     top: 20,
   }
-  const width = $("#chart").innerWidth() - margin.right - margin.left
+  const width =
+    document.getElementById(rootElId).getBoundingClientRect().width -
+    margin.right -
+    margin.left
   const height = 800 - margin.top - margin.bottom
 
   let root = null
@@ -16,7 +20,7 @@ const main = () => {
 
   const diagonal = d3.svg.diagonal().projection((d) => [d.y, d.x])
   const svg = d3
-    .select("#chart")
+    .select(`#${rootElId}`)
     .append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)

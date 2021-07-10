@@ -43,13 +43,17 @@ const addFilter = (svg) => {
 }
 
 const main = async () => {
+  const rootElId = "chart"
   const color = d3.scale.category20()
   const months = []
 
   const monthFormat = d3.time.format("%Y-%m")
   let clickToggle = false
 
-  const width = $("#chart").innerWidth() - margin.left - margin.right
+  const width =
+    document.getElementById("chart").getBoundingClientRect().width -
+    margin.left -
+    margin.right
 
   const height = 500 - margin.top - margin.bottom
 
@@ -57,7 +61,7 @@ const main = async () => {
   const y = d3.scale.linear().range([height, 0])
 
   const svg = d3
-    .select("#chart")
+    .select(`#${rootElId}`)
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)

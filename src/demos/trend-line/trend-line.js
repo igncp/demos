@@ -1,4 +1,5 @@
 const main = () => {
+  const rootElId = "chart"
   const animationTime = 2000
 
   const linearRegression = function (data) {
@@ -49,7 +50,10 @@ const main = () => {
       right: 50,
       top: 50,
     }
-    const width = $("#chart").innerWidth() - margin.left - margin.right
+    const width =
+      document.getElementById("chart").getBoundingClientRect().width -
+      margin.left -
+      margin.right
     const height = 500 - margin.top - margin.bottom
     const timeFormat = d3.time.format("%Y-%m-%d").parse
 
@@ -61,7 +65,7 @@ const main = () => {
     const renderGraph = function () {
       const zoomed = d3.select('input[value="zoom"]')[0][0].checked
       const svg = d3
-        .select("#chart")
+        .select(`#${rootElId}`)
         .text("")
         .append("svg")
         .attr("height", height + margin.top + margin.bottom)

@@ -4,6 +4,7 @@ import last from "lodash/last"
 import d3utils from "@/demos/_utils/d3utils"
 
 const main = () => {
+  const rootElId = "chart"
   let trains = false
 
   const stations = []
@@ -14,7 +15,10 @@ const main = () => {
     top: 80,
   }
 
-  const width = $("#chart").innerWidth() - margin.left - margin.right
+  const width =
+    document.getElementById("chart").getBoundingClientRect().width -
+    margin.left -
+    margin.right
   const height = 600 - margin.top - margin.bottom
   const formatTime = d3.time.format("%I:%M%p")
 
@@ -80,7 +84,7 @@ const main = () => {
     const y = d3.scale.linear().range([0, height])
     const xAxis = d3.svg.axis().scale(x).ticks(8).tickFormat(formatTime)
 
-    const svg = d3utils.svg("#chart", width, height, margin)
+    const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
 
     d3utils.middleTitle(
       svg,

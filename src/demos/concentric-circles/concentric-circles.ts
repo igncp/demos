@@ -25,7 +25,8 @@ const tooltip = (
       }
     }
     topOffst: number
-  }>
+  }>,
+  rootElId: string
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { $ } = window as any
@@ -42,7 +43,7 @@ const tooltip = (
     tOpts: {
       container: "body",
       viewport: {
-        selector: "#chart svg",
+        selector: `#${rootElId} svg`,
       },
     },
     topOffst: 40,
@@ -201,9 +202,13 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
 
   circles.append("title").text(getTitle)
 
-  tooltip(".name-circle", {
-    followMouse: true,
-  })
+  tooltip(
+    ".name-circle",
+    {
+      followMouse: true,
+    },
+    rootElId
+  )
 
   addDescription({
     height,

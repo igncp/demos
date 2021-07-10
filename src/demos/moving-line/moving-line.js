@@ -3,7 +3,7 @@ const Raphael = typeof window === "undefined" ? null : require("raphael")
 const main = () => {
   $.ajax(`${ROOT_PATH}data/raphael/moving-line/data.json`).done((graphData) => {
     const initLineGraph = function () {
-      const width = $("#chart").width()
+      const { width } = document.getElementById("chart").getBoundingClientRect()
       const height = 300
       const paper = Raphael("chart", width, height)
 

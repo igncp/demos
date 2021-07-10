@@ -2,7 +2,9 @@ import extend from "lodash/extend"
 
 const Raphael = typeof window === "undefined" ? null : require("raphael")
 
-const ch = {}
+const ch = {
+  rootElId: "chart",
+}
 
 ch.getData = function (cb) {
   return $.ajax(`${ROOT_PATH}data/raphael/bars-3dimensional/data.json`).done(
@@ -41,7 +43,7 @@ ch.setCg = function (config) {
       heightOffset: 100,
       ratio: 0.6,
       speed: 800,
-      width: $("#chart").width(),
+      width: $(`#${ch.rootElId}`).width(),
     },
     config
   )

@@ -9,7 +9,11 @@ const margin = {
 }
 
 const main = () => {
-  const width = $("#chart").innerWidth() - margin.left - margin.right
+  const rootElId = "chart"
+  const width =
+    document.getElementById("chart").getBoundingClientRect().width -
+    margin.left -
+    margin.right
   const height = 750 - margin.top - margin.bottom
   const colors = ["#7C7CC9", "#429742", "#63BD28", "#D14141"]
   const dimensions = [
@@ -39,7 +43,7 @@ const main = () => {
       type: Number,
     },
   ]
-  const svg = d3utils.svg("#chart", width, height, margin)
+  const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
   const title =
     "Comparison of 41 map projections by four different types of distortion. Lower is better."
 

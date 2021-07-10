@@ -1,11 +1,12 @@
 const main = () => {
-  const width = $("#chart").innerWidth()
+  const rootElId = "chart"
+  const { width } = document.getElementById("chart").getBoundingClientRect()
   const height = 500
 
   const colors = () => "#FFF"
 
   const svg = d3
-    .select("#chart")
+    .select(`#${rootElId}`)
     .append("svg")
     .attr("width", width)
     .attr("height", height)

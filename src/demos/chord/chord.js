@@ -1,6 +1,8 @@
 const main = () => {
+  const rootElId = "chart"
   const height = 500
-  const width = $("#chart").innerWidth() / 2 - 20
+  const width =
+    document.getElementById("chart").getBoundingClientRect().width / 2 - 20
   const margin = {
     bottom: 20,
     top: 50,
@@ -14,7 +16,7 @@ const main = () => {
 
   const arc = d3.svg.arc().innerRadius(r0).outerRadius(r1)
   const chord = d3.svg.chord().radius(r0)
-  const svg = d3.select("#chart")
+  const svg = d3.select(`#${rootElId}`)
 
   const charts = svg
     .selectAll("div")

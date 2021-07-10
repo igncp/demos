@@ -79,7 +79,7 @@ You need to have Node.js installed
 |trend-line|No|No|No|
 |vectors|No|No|No|
 |weekly-heatmap|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|world-map|No|No|No|
+|world-map|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 
 ## License
 

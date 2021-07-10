@@ -1,6 +1,8 @@
 import d3utils from "@/demos/_utils/d3utils"
 
-const ch = {}
+const ch = {
+  rootElId: "chart",
+}
 
 ch.ready = function () {
   ch.setCg()
@@ -35,13 +37,15 @@ ch.setCg = function () {
   ch.cg.height = 700 - ch.cg.margin.top - ch.cg.margin.bottom
 
   ch.cg.width =
-    $("#chart").innerWidth() - ch.cg.margin.left - ch.cg.margin.right
+    document.getElementById("chart").getBoundingClientRect().width -
+    ch.cg.margin.left -
+    ch.cg.margin.right
 }
 
 ch.setDom = function () {
   ch.dom = {
     svg: d3
-      .select("#chart")
+      .select(`#${ch.rootElId}`)
       .append("svg")
       .attr("width", ch.cg.width + ch.cg.margin.left + ch.cg.margin.right)
       .attr("height", ch.cg.height + ch.cg.margin.top + ch.cg.margin.bottom)

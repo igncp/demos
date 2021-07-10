@@ -22,7 +22,7 @@ const renderGraph = function ({ data, rootElId }) {
   let links = data.links.filter((el) => el.source !== el.target)
 
   const { nodes } = data
-  const width = $(`#${rootElId}`).innerWidth()
+  const { width } = document.getElementById("chart").getBoundingClientRect()
   const height = 600
 
   const tick = function () {
