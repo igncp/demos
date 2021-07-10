@@ -31,10 +31,8 @@ const renderChart = ({ root, rootElId }) => {
   const partitionLayout = d3.partition().size([2 * Math.PI, radius])
 
   const parsedSize = d3.hierarchy(root).sum((d) => d.size)
-  const parsedFixed = d3.hierarchy(root).sum(() => 1)
 
   partitionLayout(parsedSize)
-  // partitionLayout(parsedFixed)
 
   const arc = d3
     .arc()
