@@ -2,11 +2,7 @@ module.exports = {
   "bars-3dimensional": {
     data: ["data.json"],
     name: "Bars 3D",
-    notes: [
-      "Added titles",
-      "DRY and OOP (for testing) code",
-      "Dynamic dimensions",
-    ],
+    notes: ["Added titles on hover", "Dynamic dimensions"],
     sources: ["http://codepen.io/djam/pen/edjCz"],
   },
   "circular-arcs": {

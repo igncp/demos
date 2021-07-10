@@ -59,10 +59,10 @@ You need to have Node.js installed
 |:--:|:--:|:--:|:--:|
 |area|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |bars|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|bars-3dimensional|No|No|No|
+|bars-3dimensional|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |bubbles|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |chord|No|No|No|
-|circular-arcs|No|:white_check_mark:|:white_check_mark:|
+|circular-arcs|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |collapsible-tree|No|No|No|
 |concentric-circles|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |fish-eye|No|No|No|
@@ -70,9 +70,9 @@ You need to have Node.js installed
 |icosahedron|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |map-distorsions|No|No|No|
 |mareys-schedule|No|No|No|
-|moving-line|No|No|No|
+|moving-line|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |multiline-voronoi|No|No|No|
-|partition|No|No|No|
+|partition|No|:white_check_mark:|No|
 |pie|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |spain-map|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |timeline|No|No|No|
