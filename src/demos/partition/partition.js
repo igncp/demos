@@ -28,11 +28,9 @@ const renderChart = ({ root, rootElId }) => {
     .append("g")
     .attr("transform", `translate(${width / 2},${height * 0.52})`)
 
-  const partitionLayout = d3.partition().size([2 * Math.PI, radius])
+  const dataHierarchy = d3.hierarchy(root).sum((d) => d.size)
 
-  const parsedSize = d3.hierarchy(root).sum((d) => d.size)
-
-  partitionLayout(parsedSize)
+  d3.partition().size([2 * Math.PI, radius])(dataHierarchy)
 
   const arc = d3
     .arc()
@@ -43,7 +41,7 @@ const renderChart = ({ root, rootElId }) => {
 
   const path = svg
     .selectAll("path")
-    .data(parsedSize.descendants())
+    .data(dataHierarchy.descendants())
     .enter()
     .append("path")
     .attr("display", (d) => (d.depth ? null : "none"))
@@ -55,14 +53,13 @@ const renderChart = ({ root, rootElId }) => {
 
   const texts = svg
     .selectAll("text")
-    .data(parsedSize.descendants())
+    .data(dataHierarchy.descendants())
     .enter()
     .append("text")
     .text((d) => {
       const dx = Math.abs(d.x0 - d.x1)
-      const dy = Math.abs(d.y0 - d.y1)
 
-      if (dx > 0.1 && dy > 0.1 && d.parent) {
+      if (dx > 0.07 && d.parent && d.data.name.length < 10) {
         return d.data.name
       }
 
@@ -73,10 +70,18 @@ const renderChart = ({ root, rootElId }) => {
     .attr("text-anchor", "middle")
     .style("font", "bold 12px Arial")
     .attr("transform", (d) => {
-      const centroid = arc.centroid(d)
-      const rotation = 0
+      if (!d.depth) {
+        return null
+      }
 
-      return `rotate(${rotation},${centroid[0]},${centroid[1]}) translate(${centroid})`
+      const centroid = arc.centroid(d)
+      let rotationDeg = 90 + ((d.x0 + (d.x1 - d.x0) / 2) * 180) / Math.PI
+
+      if (rotationDeg > 90 && rotationDeg < 270) {
+        rotationDeg -= 180
+      }
+
+      return `rotate(${rotationDeg},${centroid[0]},${centroid[1]}) translate(${centroid[0]},${centroid[1]})`
     })
     .style("cursor", "default")
 

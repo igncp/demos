@@ -52,6 +52,7 @@
     "build": "npm run check:ts && gatsby build --prefix-paths",
     "build:gh-pages": "ROOT_PATH=/demos/ npm run build",
     "check:ts": "tsc --noEmit --project .",
+    "check:ci": "npm run build && npm run lint",
     "clean": "gatsby clean",
     "develop": "gatsby develop",
     "lint": "eslint --ext .js --ext .ts .",

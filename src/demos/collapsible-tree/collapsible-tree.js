@@ -1,18 +1,43 @@
-const main = () => {
+const fetchData = () =>
+  new Promise((resolve) => {
+    d3.json(
+      `${ROOT_PATH}data/d3js/collapsible-tree/data.json`,
+      (_error, data) => {
+        const collapse = function (d) {
+          if (d.children) {
+            d._children = d.children
+            d._children.forEach(collapse)
+            d.children = null
+          }
+        }
+
+        data.children.forEach(collapse)
+
+        resolve(data)
+      }
+    )
+  })
+
+const margin = {
+  bottom: 20,
+  left: 120,
+  right: 120,
+  top: 20,
+}
+
+const main = async () => {
   const rootElId = "chart"
-  const margin = {
-    bottom: 20,
-    left: 120,
-    right: 120,
-    top: 20,
-  }
   const width =
     document.getElementById(rootElId).getBoundingClientRect().width -
     margin.right -
     margin.left
   const height = 800 - margin.top - margin.bottom
 
-  let root = null
+  const root = await fetchData()
+
+  root.x0 = height / 2
+  root.y0 = 0
+
   let i = 0
 
   const duration = 750
@@ -159,26 +184,7 @@ const main = () => {
     })
   }
 
-  d3.json(
-    `${ROOT_PATH}data/d3js/collapsible-tree/data.json`,
-    (_error, data) => {
-      root = data
-      root.x0 = height / 2
-      root.y0 = 0
-
-      const collapse = function (d) {
-        if (d.children) {
-          d._children = d.children
-          d._children.forEach(collapse)
-          d.children = null
-        }
-      }
-
-      root.children.forEach(collapse)
-
-      update(root)
-    }
-  )
+  update(root)
 }
 
 export default main

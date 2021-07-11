@@ -7,11 +7,7 @@ import main from "@/demos/timeline/timeline"
 import "@/demos/timeline/timeline.styl"
 
 const Timeline = ({ pageContext: { demoInfo } }) => (
-  <Demo
-    demoInfo={demoInfo}
-    main={main}
-    scripts={["/vendors/d3/d3.min.js", "/js/d3js-utils.js"]}
-  >
+  <Demo demoInfo={demoInfo} main={main} scripts={["/vendors/d3/d3.min.js"]}>
     <div className="timeline-chart" id="chart" />
   </Demo>
 )

@@ -60,11 +60,6 @@ const Head = () => (
           type="text/css"
         />
         <script
-          src={`${ROOT_PATH}vendors/d3-plugins/fisheye/fisheye.js `}
-          type="text/javascript"
-        />
-
-        <script
           src={`${ROOT_PATH}vendors/jquery-ui/jquery-ui.min.js`}
           type="text/javascript"
         />
