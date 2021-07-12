@@ -43,6 +43,7 @@ module.exports = {
     "consistent-return": 2,
     "init-declarations": [2, "always"],
     "newline-before-return": 2,
+    "no-console": 2,
     "no-else-return": 2,
     "no-func-assign": 2,
     "no-multi-assign": 2,

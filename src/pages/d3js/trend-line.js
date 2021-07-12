@@ -7,14 +7,10 @@ import main from "@/demos/trend-line/trend-line"
 import "@/demos/trend-line/trend-line.styl"
 
 const TrendLine = ({ pageContext: { demoInfo } }) => (
-  <Demo
-    demoInfo={demoInfo}
-    main={main}
-    scripts={["/vendors/d3/d3.min.js", "/js/d3js-utils.js"]}
-  >
+  <Demo demoInfo={demoInfo} main={main} scripts={["/vendors/d3/d3.min.js"]}>
     <form>
       <label>
-        <input checked name="mode" type="radio" value="zoom" /> Zoom
+        <input defaultChecked name="mode" type="radio" value="zoom" /> Zoom
       </label>
       <label>
         <input name="mode" type="radio" value="normal" /> Normal

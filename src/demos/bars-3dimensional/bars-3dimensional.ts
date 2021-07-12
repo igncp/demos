@@ -223,8 +223,6 @@ class Chart {
 const main = async () => {
   const data = await fetchData()
 
-  console.log("data", data)
-
   const chart = new Chart({
     data,
     rootElId: "chart",
