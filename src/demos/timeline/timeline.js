@@ -3,7 +3,9 @@ import d3utils from "@/demos/_utils/d3utils"
 
 const fetchData = () =>
   new Promise((resolve) => {
-    d3.csv("/data/d3js/timeline/data.csv", (dataset) => resolve(dataset))
+    d3.csv(`${ROOT_PATH}data/d3js/timeline/data.csv`, (dataset) =>
+      resolve(dataset)
+    )
   })
 
 const margin = {

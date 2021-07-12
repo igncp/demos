@@ -20,6 +20,8 @@ I am updating this repository after it was inactive for several years. The initi
 1. [ ] Upgrade all dependencies to latest version - this will take some time for D3 as several APIs changed
     - All global dependencies should be removed where possible and fetched by npm using the version
     - When necessary to use global dependencies, they should be requested from the script
+1. [ ] Use `import { foo, bar } from "baz"` instead of `import * as baz from "baz"` where possible
+1. [ ] Minimize demos code
 1. [ ] Remove or change dependencies
     - [x] Remove Bower
     - [ ] Remove jQuery except for jQuery UI

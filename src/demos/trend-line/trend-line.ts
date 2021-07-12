@@ -1,4 +1,20 @@
-import * as d3 from "d3"
+import {
+  Line,
+  axisBottom,
+  axisLeft,
+  extent,
+  line as d3Line,
+  max,
+  min,
+  range,
+  scaleLinear,
+  scaleQuantile,
+  scaleTime,
+  select,
+  selectAll,
+  timeParse,
+  tsv,
+} from "d3"
 
 type InitialDataItem = {
   occurred: string
@@ -11,11 +27,11 @@ type DataItem = {
 }
 
 const fetchData = async (): Promise<DataItem[]> => {
-  const result = (await d3.tsv(
+  const result = (await tsv(
     `${ROOT_PATH}data/d3js/trend-line/data.tsv`
   )) as InitialDataItem[]
 
-  const timeFormat = d3.timeParse("%Y-%m-%d")
+  const timeFormat = timeParse("%Y-%m-%d")
 
   const data = result.map((d) => ({
     occurred: timeFormat(d.occurred) as Date,
@@ -36,11 +52,10 @@ const height = 500 - margin.top - margin.bottom
 
 const animationTime = 2000
 
-const getInterpolation = (data: DataItem[], line: d3.Line<DataItem>) => {
-  const interpolate = d3
-    .scaleQuantile()
+const getInterpolation = (data: DataItem[], line: Line<DataItem>) => {
+  const interpolate = scaleQuantile()
     .domain([0, 1])
-    .range(d3.range(1, data.length + 1))
+    .range(range(1, data.length + 1))
 
   return (t: number): any => {
     const interpolatedLine = data.slice(0, interpolate(t))
@@ -95,8 +110,7 @@ const renderGraph = ({
       'input[value="zoom"]'
     ) as HTMLInputElement).checked
 
-    const svg = d3
-      .select(`#${rootElId}`)
+    const svg = select(`#${rootElId}`)
       .text("")
       .append("svg")
       .attr("height", height + margin.top + margin.bottom)
@@ -104,20 +118,19 @@ const renderGraph = ({
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.right})`)
 
-    const x = d3.scaleTime().range([0, width])
-    const y = d3.scaleLinear().range([height, 0])
-    const xAxis = d3.axisBottom(x)
-    const yAxis = d3.axisLeft(y)
+    const x = scaleTime().range([0, width])
+    const y = scaleLinear().range([height, 0])
+    const xAxis = axisBottom(x)
+    const yAxis = axisLeft(y)
 
-    const line = d3
-      .line<DataItem>()
+    const line = d3Line<DataItem>()
       .x((d) => x(d.occurred))
       .y((d) => y(d.value))
 
-    x.domain(d3.extent(data, (d) => d.occurred) as [Date, Date])
+    x.domain(extent(data, (d) => d.occurred) as [Date, Date])
     y.domain([
-      zoomed ? (d3.min(data, (d) => d.value) as number) : 0,
-      d3.max(data, (d) => d.value) as number,
+      zoomed ? (min(data, (d) => d.value) as number) : 0,
+      max(data, (d) => d.value) as number,
     ])
 
     svg
@@ -137,8 +150,7 @@ const renderGraph = ({
 
     const lr = linearRegression(data)
 
-    const regressionLine = d3
-      .line<DataItem>()
+    const regressionLine = d3Line<DataItem>()
       .x((d) => x(d.occurred))
       .y((d) => {
         const tmp = lr.intercept! + lr.slope! * +d.occurred
@@ -167,7 +179,7 @@ const renderGraph = ({
 
   renderContent()
 
-  d3.selectAll('input[name="mode"]').on("change", renderContent)
+  selectAll('input[name="mode"]').on("change", renderContent)
 }
 
 const main = async () => {
