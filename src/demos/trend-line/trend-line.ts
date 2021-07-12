@@ -1,6 +1,29 @@
-import * as d3next from "d3"
+import * as d3 from "d3"
 
-const fetchData = () => d3next.tsv(`${ROOT_PATH}data/d3js/trend-line/data.tsv`)
+type InitialDataItem = {
+  occurred: string
+  value: string
+}
+
+type DataItem = {
+  occurred: Date
+  value: number
+}
+
+const fetchData = async (): Promise<DataItem[]> => {
+  const result = (await d3.tsv(
+    `${ROOT_PATH}data/d3js/trend-line/data.tsv`
+  )) as InitialDataItem[]
+
+  const timeFormat = d3.timeParse("%Y-%m-%d")
+
+  const data = result.map((d) => ({
+    occurred: timeFormat(d.occurred) as Date,
+    value: +d.value,
+  }))
+
+  return data
+}
 
 const margin = {
   bottom: 50,
@@ -13,21 +36,21 @@ const height = 500 - margin.top - margin.bottom
 
 const animationTime = 2000
 
-const getInterpolation = function (data, line) {
-  const interpolate = d3.scale
-    .quantile()
+const getInterpolation = (data: DataItem[], line: d3.Line<DataItem>) => {
+  const interpolate = d3
+    .scaleQuantile()
     .domain([0, 1])
     .range(d3.range(1, data.length + 1))
 
-  return function (t) {
+  return (t: number): any => {
     const interpolatedLine = data.slice(0, interpolate(t))
 
     return line(interpolatedLine)
   }
 }
 
-const linearRegression = function (data) {
-  const lr = {}
+const linearRegression = (data: DataItem[]) => {
+  const lr: { slope?: number; intercept?: number; r2?: number } = {}
   const n = data.length
 
   let sumX = 0
@@ -54,21 +77,23 @@ const linearRegression = function (data) {
   return lr
 }
 
-const renderGraph = ({ data, rootElId }) => {
+const renderGraph = ({
+  data,
+  rootElId,
+}: {
+  data: DataItem[]
+  rootElId: string
+}) => {
   const width =
-    document.getElementById(rootElId).getBoundingClientRect().width -
+    (document.getElementById(rootElId) as HTMLElement).getBoundingClientRect()
+      .width -
     margin.left -
     margin.right
 
-  const timeFormat = d3.time.format("%Y-%m-%d").parse
-
-  data.forEach((d) => {
-    d.occurred = timeFormat(d.occurred)
-    d.value = +d.value
-  })
-
   const renderContent = () => {
-    const zoomed = d3.select('input[value="zoom"]')[0][0].checked
+    const zoomed = (document.querySelector(
+      'input[value="zoom"]'
+    ) as HTMLInputElement).checked
 
     const svg = d3
       .select(`#${rootElId}`)
@@ -79,26 +104,20 @@ const renderGraph = ({ data, rootElId }) => {
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.right})`)
 
-    const x = d3.time.scale().range([0, width])
-    const y = d3next.scaleLinear().range([height, 0])
-    const xAxis = d3.svg.axis().scale(x).orient("bottom")
-    const yAxis = d3.svg.axis().scale(y).orient("left")
+    const x = d3.scaleTime().range([0, width])
+    const y = d3.scaleLinear().range([height, 0])
+    const xAxis = d3.axisBottom(x)
+    const yAxis = d3.axisLeft(y)
 
-    const line = d3.svg
-      .line()
+    const line = d3
+      .line<DataItem>()
       .x((d) => x(d.occurred))
       .y((d) => y(d.value))
 
-    x.domain(d3.extent(data, (d) => d.occurred))
+    x.domain(d3.extent(data, (d) => d.occurred) as [Date, Date])
     y.domain([
-      (function () {
-        if (zoomed) {
-          return d3.min(data, (d) => d.value)
-        }
-
-        return 0
-      })(),
-      d3next.max(data, (d) => d.value),
+      zoomed ? (d3.min(data, (d) => d.value) as number) : 0,
+      d3.max(data, (d) => d.value) as number,
     ])
 
     svg
@@ -107,6 +126,7 @@ const renderGraph = ({ data, rootElId }) => {
       .attr("transform", `translate(0,${height})`)
       .call(xAxis)
     svg.append("g").attr("class", "y axis").call(yAxis)
+
     svg
       .append("path")
       .datum(data)
@@ -117,11 +137,11 @@ const renderGraph = ({ data, rootElId }) => {
 
     const lr = linearRegression(data)
 
-    const regressionLine = d3.svg
-      .line()
+    const regressionLine = d3
+      .line<DataItem>()
       .x((d) => x(d.occurred))
       .y((d) => {
-        const tmp = lr.intercept + lr.slope * d.occurred
+        const tmp = lr.intercept! + lr.slope! * +d.occurred
 
         return y(tmp)
       })
@@ -139,9 +159,9 @@ const renderGraph = ({ data, rootElId }) => {
       .append("text")
       .attr("transform", `translate(${width * 0.7},${height * 0.7})`)
       .style("opacity", 0)
-      .transition(1000)
+      .transition()
       .delay(animationTime * 2)
-      .text(`Slope: ${lr.slope.toExponential(3)}`)
+      .text(`Slope: ${lr.slope!.toExponential(3)}`)
       .style("opacity", 1)
   }
 

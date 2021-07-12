@@ -24,11 +24,6 @@ const Head = () => (
       rel="stylesheet"
       type="text/css"
     />
-    <link
-      href={`${ROOT_PATH}vendors/highlightjs/styles/default.css`}
-      rel="stylesheet"
-      type="text/css"
-    />
     {/* Iconspedia - Free License */}
     <link
       href={`${ROOT_PATH}favicon.png`}
@@ -39,10 +34,6 @@ const Head = () => (
       href="https://fonts.googleapis.com/css?family=Lobster"
       rel="stylesheet"
       type="text/css"
-    />
-    <script
-      src={`${ROOT_PATH}vendors/highlightjs/highlight.pack.js`}
-      type="text/javascript"
     />
     {process.env.NODE_ENV === "development" && (
       <>

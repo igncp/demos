@@ -263,7 +263,7 @@ const main = () => {
         })
       })
 
-      return slider.slider("values", [10, 50])
+      slider.slider("values", [10, 50])
     }
   )
 }

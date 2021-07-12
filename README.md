@@ -12,6 +12,10 @@ I am updating this repository after it was inactive for several years. The initi
     - [x] Support loading different scripts per demo
     - [ ] Setup 404 page
 1. [x] Implement strict rules in ESLint for all the code
+1. [ ] Improve syntax highlighting
+    - [x] Use PrismJS 
+    - [ ] Research if using AST / TreeSitter is possible
+    - [ ] Try SSR if possible
 1. [ ] Refactor charts into components that can be configured and rendered multiple times on the same page
 1. [ ] Upgrade all dependencies to latest version - this will take some time for D3 as several APIs changed
     - All global dependencies should be removed where possible and fetched by npm using the version
@@ -23,7 +27,6 @@ I am updating this repository after it was inactive for several years. The initi
 1. [ ] Port styles to CSS with preprocessors (postcss)
 1. [ ] Update the general UI framework (better support for responsive) but maintain the look and feel
 1. [ ] Improve performance of some charts
-1. [ ] Improve syntax highlighting
 1. [ ] Add SEO meta tags
 1. [ ] Add disclaimer for old charts
 1. [ ] Port codebase to TypeScript with a high type coverage
@@ -76,7 +79,7 @@ You need to have Node.js installed
 |pie|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |spain-map|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |timeline|No|No|No|
-|trend-line|No|No|No|
+|trend-line|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |vectors|No|No|No|
 |weekly-heatmap|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |world-map|:white_check_mark:|:white_check_mark:|:white_check_mark:|

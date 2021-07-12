@@ -1,13 +1,17 @@
-import React, { useEffect } from "react"
+import React from "react"
+
+import Prism from "prismjs"
+
+import "prismjs/components/prism-jsx"
+import "prismjs/components/prism-typescript"
+import "prismjs/components/prism-stylus"
+
+import "prismjs/themes/prism-solarizedlight.css"
 
 const FilesDetails = ({ demoInfo }) => {
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return
-    }
-
-    hljs.initHighlightingOnLoad()
-  }, [])
+  if (typeof window === "undefined") {
+    return null
+  }
 
   return (
     <div>
@@ -61,35 +65,60 @@ const FilesDetails = ({ demoInfo }) => {
             <p>{`${demoInfo.key}.${demoInfo.files.demo.type}`}</p>
             <pre>
               <code
-                className={
-                  demoInfo.files.demo.type === "ts"
-                    ? "typescript"
-                    : "javascript"
-                }
-              >
-                {demoInfo.files.demo.content}
-              </code>
+                dangerouslySetInnerHTML={{
+                  __html: Prism.highlight(
+                    demoInfo.files.demo.content,
+                    demoInfo.files.demo.type === "ts"
+                      ? Prism.languages.typescript
+                      : Prism.languages.jsx,
+                    demoInfo.files.demo.type === "ts" ? "typescript" : "jsx"
+                  ),
+                }}
+              />
             </pre>
           </li>
           {demoInfo.files.d3utils && (
             <li>
               <p>d3utils.js</p>
               <pre>
-                <code className="javascript">{demoInfo.files.d3utils}</code>
+                <code
+                  dangerouslySetInnerHTML={{
+                    __html: Prism.highlight(
+                      demoInfo.files.d3utils,
+                      Prism.languages.jsx,
+                      "jsx"
+                    ),
+                  }}
+                />
               </pre>
             </li>
           )}
           <li>
             <p>{`pages/${demoInfo.category}/${demoInfo.key}.js`}</p>
             <pre>
-              <code className="javascript">{demoInfo.files.page}</code>
+              <code
+                dangerouslySetInnerHTML={{
+                  __html: Prism.highlight(
+                    demoInfo.files.page,
+                    Prism.languages.jsx,
+                    "jsx"
+                  ),
+                }}
+              />
             </pre>
           </li>
           {demoInfo.files.styl && (
             <li>
               <p>{`${demoInfo.key}.styl`}</p>
               <pre>
-                <code>{demoInfo.files.styl}</code>
+                <code
+                  dangerouslySetInnerHTML={{
+                    __html: Prism.highlight(
+                      demoInfo.files.styl,
+                      Prism.languages.stylus
+                    ),
+                  }}
+                />
               </pre>
             </li>
           )}

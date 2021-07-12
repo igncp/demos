@@ -9,12 +9,7 @@ module.exports = {
   globals: {
     $: false,
     ROOT_PATH: false,
-    Raphael: false,
-    _: false,
-    async: false,
     d3: false,
-    d3utils: false,
-    hljs: false,
     nv: false,
   },
   overrides: [
@@ -47,6 +42,7 @@ module.exports = {
     "no-else-return": 2,
     "no-func-assign": 2,
     "no-multi-assign": 2,
+    "no-restricted-globals": [2, "global"],
     "no-return-assign": [2, "always"],
     "no-shadow": 2,
     "no-useless-computed-key": 2,
