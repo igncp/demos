@@ -79,9 +79,8 @@ const addFilter = (svg) => {
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-const color = d3.scale.category20()
-
 const renderChart = ({ rootElId, cities, months }) => {
+  const color = d3.scale.category20()
   let clickToggle = false
 
   const width =
