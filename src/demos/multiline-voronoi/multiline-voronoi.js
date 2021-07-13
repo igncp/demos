@@ -1,3 +1,40 @@
+import * as d3next from "d3"
+
+const fetchData = () => {
+  const monthFormat = d3.time.format("%Y-%m")
+  const months = []
+
+  return new Promise((resolve) => {
+    d3.tsv(
+      `${ROOT_PATH}data/d3js/multiline-voronoi/data.tsv`,
+      (d, index) => {
+        if (!index) {
+          Object.keys(d)
+            .map(monthFormat.parse)
+            .filter(Number)
+            .forEach((value) => months.push(value))
+        }
+
+        const city = {
+          name: d.name.replace(/(msa|necta div|met necta|met div)$/i, ""),
+          values: null,
+        }
+
+        city.values = months.map((m) => ({
+          city,
+          date: m,
+          value: d[monthFormat(m)] / 100,
+        }))
+
+        return city
+      },
+      (_error, citiesResp) => {
+        resolve({ cities: citiesResp, months })
+      }
+    )
+  })
+}
+
 const monthNames = [
   "January",
   "February",
@@ -42,23 +79,20 @@ const addFilter = (svg) => {
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-const main = async () => {
-  const rootElId = "chart"
-  const color = d3.scale.category20()
-  const months = []
+const color = d3.scale.category20()
 
-  const monthFormat = d3.time.format("%Y-%m")
+const renderChart = ({ rootElId, cities, months }) => {
   let clickToggle = false
 
   const width =
-    document.getElementById("chart").getBoundingClientRect().width -
+    document.getElementById(rootElId).getBoundingClientRect().width -
     margin.left -
     margin.right
 
   const height = 500 - margin.top - margin.bottom
 
   const x = d3.time.scale().range([0, width])
-  const y = d3.scale.linear().range([height, 0])
+  const y = d3next.scaleLinear().range([height, 0])
 
   const svg = d3
     .select(`#${rootElId}`)
@@ -67,38 +101,6 @@ const main = async () => {
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`)
-
-  const chartType = function (d, index) {
-    if (!index) {
-      Object.keys(d)
-        .map(monthFormat.parse)
-        .filter(Number)
-        .forEach((value) => months.push(value))
-    }
-
-    const city = {
-      name: d.name.replace(/(msa|necta div|met necta|met div)$/i, ""),
-      values: null,
-    }
-
-    city.values = months.map((m) => ({
-      city,
-      date: m,
-      value: d[monthFormat(m)] / 100,
-    }))
-
-    return city
-  }
-
-  const cities = await new Promise((resolve) => {
-    d3.tsv(
-      `${ROOT_PATH}data/d3js/multiline-voronoi/data.tsv`,
-      chartType,
-      (_error, citiesResp) => {
-        resolve(citiesResp)
-      }
-    )
-  })
 
   x.domain(d3.extent(months))
   y.domain([0, d3.max(cities, (c) => d3.max(c.values, (d) => d.value))]).nice()
@@ -121,7 +123,7 @@ const main = async () => {
 
   addFilter(svg)
 
-  const line = d3.svg
+  const line = d3next
     .line()
     .x((d) => x(d.date))
     .y((d) => y(d.value))
@@ -229,6 +231,17 @@ const main = async () => {
   }
 
   generateLines(cities)
+}
+
+const main = async () => {
+  const rootElId = "chart"
+  const { cities, months } = await fetchData()
+
+  renderChart({
+    cities,
+    months,
+    rootElId,
+  })
 }
 
 export default main

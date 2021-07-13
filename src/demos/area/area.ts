@@ -1,4 +1,15 @@
-import * as d3 from "d3"
+import {
+  area as d3Area,
+  axisBottom,
+  axisLeft,
+  csv,
+  format,
+  line as d3Line,
+  max,
+  min,
+  scaleLinear,
+  select,
+} from "d3"
 import { Delaunay } from "d3-delaunay"
 
 import d3utils from "@/demos/_utils/d3nextutils"
@@ -10,7 +21,7 @@ type Point = {
 }
 
 const fetchData = (): Promise<Point[]> =>
-  (d3.csv(`${ROOT_PATH}data/d3js/area/data.csv`) as unknown) as Promise<Point[]>
+  (csv(`${ROOT_PATH}data/d3js/area/data.csv`) as unknown) as Promise<Point[]>
 
 const margin = {
   bottom: 50,
@@ -41,26 +52,19 @@ const main = async () => {
   )
   d3utils.filterBlackOpacity("points", svg, 2, 0.5)
 
-  const xMax = d3.max(data, (d) => d.year) as number
-  const xMin = d3.min(data, (d) => d.year) as number
-  const yMax = d3.max(data, (d) => d.percent / 100) as number
-  const yMin = d3.min(data, (d) => d.percent / 100) as number
+  const xMax = max(data, (d) => d.year) as number
+  const xMin = min(data, (d) => d.year) as number
+  const yMax = max(data, (d) => d.percent / 100) as number
+  const yMin = min(data, (d) => d.percent / 100) as number
 
-  const xScale = d3.scaleLinear().range([0, width]).domain([xMin, xMax])
-  const yScale = d3
-    .scaleLinear()
+  const xScale = scaleLinear().range([0, width]).domain([xMin, xMax])
+  const yScale = scaleLinear()
     .range([0, height])
     .domain([yMax + 0.05, yMin - 0.05])
 
-  const xAxis = d3
-    .axisBottom(xScale)
-    .tickFormat(d3.format(".0f"))
-    .tickSize(-height)
+  const xAxis = axisBottom(xScale).tickFormat(format(".0f")).tickSize(-height)
 
-  const yAxis = d3
-    .axisLeft(yScale)
-    .tickFormat(d3.format(".0%"))
-    .tickSize(-width)
+  const yAxis = axisLeft(yScale).tickFormat(format(".0%")).tickSize(-width)
 
   svg
     .append("g")
@@ -77,14 +81,12 @@ const main = async () => {
     .selectAll("text")
     .attr("dx", "-.25em")
 
-  const area = d3
-    .area<Point>()
+  const area = d3Area<Point>()
     .x((d: Point) => xScale(d.year))
     .y0(height)
     .y1((d: Point) => yScale(d.percent / 100))
 
-  const line = d3
-    .line<Point>()
+  const line = d3Line<Point>()
     .x((d) => xScale(d.year))
     .y((d) => yScale(d.percent / 100))
 
@@ -121,11 +123,11 @@ const main = async () => {
   ])
 
   const mouseover = (_e: unknown, d: Point) => {
-    d3.select(`.point-${d.index}`).style("display", "block")
+    select(`.point-${d.index}`).style("display", "block")
   }
 
   const mouseleave = (_e: unknown, d: Point) => {
-    d3.select(`.point-${d.index}`).style("display", "none")
+    select(`.point-${d.index}`).style("display", "none")
   }
 
   svg

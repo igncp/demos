@@ -32,6 +32,7 @@ I am updating this repository after it was inactive for several years. The initi
 1. [ ] Add SEO meta tags
 1. [ ] Add disclaimer for old charts
 1. [ ] Port codebase to TypeScript with a high type coverage
+1. [ ] Extract texts, dimensions, state
 
 Some new examples may be added at the same time, especially when more progress is done
 
