@@ -69,10 +69,10 @@ You need to have Node.js installed
 |bubbles|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |chord|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |circular-arcs|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|collapsible-tree|No|No|No|
+|collapsible-tree|No|:white_check_mark:|:white_check_mark:|
 |concentric-circles|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |fish-eye|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|force|No|No|No|
+|force|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |icosahedron|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |map-distorsions|No|No|No|
 |mareys-schedule|No|No|No|

@@ -1,22 +1,10 @@
-const fetchData = () =>
-  new Promise((resolve) => {
-    d3.json(
-      `${ROOT_PATH}data/d3js/collapsible-tree/data.json`,
-      (_error, data) => {
-        const collapse = function (d) {
-          if (d.children) {
-            d._children = d.children
-            d._children.forEach(collapse)
-            d.children = null
-          }
-        }
+import * as d3 from "d3"
 
-        data.children.forEach(collapse)
+const fetchData = async () => {
+  const data = await d3.json(`${ROOT_PATH}data/d3js/collapsible-tree/data.json`)
 
-        resolve(data)
-      }
-    )
-  })
+  return data
+}
 
 const margin = {
   bottom: 20,
@@ -25,166 +13,164 @@ const margin = {
   top: 20,
 }
 
-const main = async () => {
-  const rootElId = "chart"
+const duration = 750
+const height = 800 - margin.top - margin.bottom
+
+const renderChart = ({ rootElId, rootData }) => {
+  const root = d3.hierarchy(rootData)
+
+  root.descendants().forEach((d, i) => {
+    d.id = i
+    d._children = d.children
+    if (d.depth && d.data.name.length !== 7) d.children = null
+  })
+
   const width =
     document.getElementById(rootElId).getBoundingClientRect().width -
     margin.right -
     margin.left
-  const height = 800 - margin.top - margin.bottom
-
-  const root = await fetchData()
 
   root.x0 = height / 2
   root.y0 = 0
 
-  let i = 0
+  const tree = d3.tree().nodeSize([20, 100])
 
-  const duration = 750
-  const tree = d3.layout.tree().size([height, width])
+  tree(root)
 
-  const diagonal = d3.svg.diagonal().projection((d) => [d.y, d.x])
+  const diagonal = d3
+    .linkHorizontal()
+    .x((d) => d.y)
+    .y((d) => d.x)
+
   const svg = d3
     .select(`#${rootElId}`)
     .append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`)
+    .attr("transform", `translate(${margin.left},${height / 2})`)
 
-  const click = function (d) {
-    if (d.children) {
-      d._children = d.children
-      d.children = null
-    } else {
-      d.children = d._children
-      d._children = null
-    }
+  const gLink = svg
+    .append("g")
+    .attr("fill", "none")
+    .attr("stroke", "#555")
+    .attr("stroke-opacity", 0.4)
+    .attr("stroke-width", 1.5)
 
-    update(d)
-  }
+  const gNode = svg
+    .append("g")
+    .attr("cursor", "pointer")
+    .attr("pointer-events", "all")
 
   const update = function (source) {
-    const nodes = tree.nodes(root).reverse()
-    const links = tree.links(nodes)
+    const nodes = root.descendants().reverse()
+    const links = root.links()
 
-    nodes.forEach((d) => {
-      d.y = d.depth * 180
+    tree(root)
+
+    let left = root
+    let right = root
+
+    root.eachBefore((node) => {
+      if (node.x < left.x) left = node
+      if (node.x > right.x) right = node
     })
 
-    const node = svg.selectAll("g.node").data(nodes, (d) => {
-      if (!d.id) {
-        d.id = ++i
-      }
+    const transition = svg
+      .transition()
+      .duration(duration)
+      .tween(
+        "resize",
+        window.ResizeObserver ? null : () => () => svg.dispatch("toggle")
+      )
+    const node = gNode.selectAll("g").data(nodes, (d) => d.id)
 
-      return d.id
-    })
     const nodeEnter = node
       .enter()
       .append("g")
-      .attr("class", "node")
       .attr("transform", () => `translate(${source.y0},${source.x0})`)
-      .on("click", click)
+      .attr("fill-opacity", 0)
+      .attr("stroke-opacity", 0)
+      .on("click", (_event, d) => {
+        d.children = d.children ? null : d._children
+
+        update(d)
+      })
 
     nodeEnter
       .append("circle")
-      .attr("r", 1e-6)
-      .style("fill", (d) => {
-        if (d._children) {
-          return "lightsteelblue"
-        }
+      .attr("r", 2.5)
+      .attr("fill", (d) => (d._children ? "#555" : "#999"))
+      .attr("stroke-width", 10)
 
-        return "#fff"
-      })
     nodeEnter
       .append("text")
-      .attr("x", (d) => {
-        if (d.children || d._children) {
-          return -10
-        }
+      .attr("dy", "0.31em")
+      .attr("x", (d) => (d._children ? -6 : 6))
+      .attr("text-anchor", (d) => (d._children ? "end" : "start"))
+      .text((d) => (d.data ? d.data.name : d.name))
+      .clone(true)
+      .lower()
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-width", 3)
+      .attr("stroke", "white")
 
-        return 10
-      })
-      .attr("dy", ".35em")
-      .attr("text-anchor", (d) => {
-        if (d.children || d._children) {
-          return "end"
-        }
-
-        return "start"
-      })
-      .text((d) => d.name)
-      .style("fill-opacity", 1e-6)
-
-    const nodeUpdate = node
-      .transition()
-      .duration(duration)
+    node
+      .merge(nodeEnter)
+      .transition(transition)
       .attr("transform", (d) => `translate(${d.y},${d.x})`)
+      .attr("fill-opacity", 1)
+      .attr("stroke-opacity", 1)
 
-    nodeUpdate
-      .select("circle")
-      .attr("r", 4.5)
-      .style("fill", (d) => {
-        if (d._children) {
-          return "lightsteelblue"
-        }
-
-        return "#fff"
-      })
-    nodeUpdate.select("text").style("fill-opacity", 1)
-
-    const nodeExit = node
+    node
       .exit()
-      .transition()
-      .duration(duration)
+      .transition(transition)
+      .remove()
       .attr("transform", () => `translate(${source.y},${source.x})`)
-      .remove()
+      .attr("fill-opacity", 0)
+      .attr("stroke-opacity", 0)
 
-    nodeExit.select("circle").attr("r", 1e-6)
-    nodeExit.select("text").style("fill-opacity", 1e-6)
+    const link = gLink.selectAll("path").data(links, (d) => d.target.id)
 
-    const link = svg.selectAll("path.link").data(links, (d) => d.target.id)
-
-    link
+    const linkEnter = link
       .enter()
-      .insert("path", "g")
-      .attr("class", "link")
+      .append("path")
       .attr("d", () => {
-        const o = {
-          x: source.x0,
-          y: source.y0,
-        }
+        const o = { x: source.x0, y: source.y0 }
 
-        return diagonal({
-          source: o,
-          target: o,
-        })
+        return diagonal({ source: o, target: o })
       })
-    link.transition().duration(duration).attr("d", diagonal)
+
+    link.merge(linkEnter).transition(transition).attr("d", diagonal)
+
     link
       .exit()
-      .transition()
-      .duration(duration)
-      .attr("d", () => {
-        const o = {
-          x: source.x,
-          y: source.y,
-        }
-
-        return diagonal({
-          source: o,
-          target: o,
-        })
-      })
+      .transition(transition)
       .remove()
+      .attr("d", () => {
+        const o = { x: source.x, y: source.y }
 
-    nodes.forEach((d) => {
+        return diagonal({ source: o, target: o })
+      })
+
+    root.eachBefore((d) => {
       d.x0 = d.x
       d.y0 = d.y
     })
   }
 
   update(root)
+}
+
+const main = async () => {
+  const rootElId = "chart"
+
+  const rootData = await fetchData()
+
+  renderChart({
+    rootData,
+    rootElId,
+  })
 }
 
 export default main

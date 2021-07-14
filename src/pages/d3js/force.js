@@ -6,7 +6,7 @@ import main from "@/demos/force/force"
 import "@/demos/force/force.styl"
 
 const Force = ({ pageContext: { demoInfo } }) => (
-  <Demo demoInfo={demoInfo} main={main} scripts={["/vendors/d3/d3.min.js"]}>
+  <Demo demoInfo={demoInfo} main={main}>
     <div className="force-chart" id="chart" />
   </Demo>
 )

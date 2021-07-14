@@ -7,7 +7,7 @@ import main from "@/demos/collapsible-tree/collapsible-tree"
 import "@/demos/collapsible-tree/collapsible-tree.styl"
 
 const CollapsibleTree = ({ pageContext: { demoInfo } }) => (
-  <Demo demoInfo={demoInfo} main={main} scripts={["/vendors/d3/d3.min.js"]}>
+  <Demo demoInfo={demoInfo} main={main}>
     <div className="collapsible-tree-chart" id="chart" />
   </Demo>
 )

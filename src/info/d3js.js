@@ -39,7 +39,10 @@ module.exports = {
     data: ["data.json"],
     name: "Collapsible Tree",
     notes: [],
-    sources: ["http://bl.ocks.org/mbostock/4339083"],
+    sources: [
+      "http://bl.ocks.org/mbostock/4339083",
+      "https://observablehq.com/@d3/collapsible-tree",
+    ],
   },
   "concentric-circles": {
     data: [],
