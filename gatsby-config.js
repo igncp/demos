@@ -4,14 +4,6 @@ module.exports = {
     : "/",
   plugins: [
     `gatsby-plugin-react-helmet`,
-    `gatsby-plugin-image`,
-    {
-      options: {
-        name: `images`,
-        path: `${__dirname}/src/images`,
-      },
-      resolve: `gatsby-source-filesystem`,
-    },
     `gatsby-plugin-stylus`,
     {
       options: {

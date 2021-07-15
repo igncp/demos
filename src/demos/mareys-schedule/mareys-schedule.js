@@ -1,36 +1,13 @@
+import * as d3 from "d3"
 import each from "lodash/each"
 import last from "lodash/last"
 
-import d3utils from "@/demos/_utils/d3utils"
+import d3utils from "@/demos/_utils/d3nextutils"
 
-const main = () => {
-  const rootElId = "chart"
-  let trains = false
+const fetchData = async () => {
+  const data = await d3.tsv(`${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`)
 
   const stations = []
-  const margin = {
-    bottom: 50,
-    left: 120,
-    right: 50,
-    top: 80,
-  }
-
-  const width =
-    document.getElementById("chart").getBoundingClientRect().width -
-    margin.left -
-    margin.right
-  const height = 600 - margin.top - margin.bottom
-  const formatTime = d3.time.format("%I:%M%p")
-
-  const parseTime = function (s) {
-    const t = formatTime.parse(s)
-
-    if (t !== null && t.getHours() < 3) {
-      t.setDate(t.getDate() + 1)
-    }
-
-    return t
-  }
 
   const typeFn = function (d, i) {
     let p = null
@@ -62,6 +39,96 @@ const main = () => {
     }
   }
 
+  const trains = data.map(typeFn)
+
+  trains.forEach((train, index) => {
+    train.index = index
+
+    train.stops.forEach((stop) => {
+      stop.train_index = index
+    })
+  })
+
+  return {
+    stations,
+    trains,
+  }
+}
+
+const convertHour = ({ slider, redraw }) => {
+  const times = []
+
+  each(slider.slider("values"), (sliderValue) => {
+    const wholeMinutes = (sliderValue / 100) * 1200
+
+    let fragment = "AM"
+    let hours = Math.floor(wholeMinutes / 60)
+    let minutes = Math.floor(wholeMinutes % 60)
+
+    if (minutes > 30) {
+      minutes = minutes - 30
+      hours = hours + 1
+    } else {
+      minutes = minutes + 30
+    }
+
+    hours = hours + 4
+
+    if (hours > 23) {
+      if (hours === 24) {
+        hours = hours - 12
+      } else {
+        hours = hours - 24
+      }
+    } else if (hours > 11) {
+      fragment = "PM"
+
+      if (hours !== 12) {
+        hours = hours - 12
+      }
+    }
+
+    if (minutes < 10) {
+      minutes = `0${String(minutes)}`
+    }
+
+    const finalTime = `${String(hours)}:${minutes}${fragment}`
+
+    return times.push(finalTime)
+  })
+
+  return redraw(times)
+}
+
+const getFormatTime = () => d3.timeParse("%I:%M%p")
+
+const parseTime = function (s) {
+  const formatTime = getFormatTime()
+  const t = formatTime(s)
+
+  if (t !== null && t.getHours() < 3) {
+    t.setDate(t.getDate() + 1)
+  }
+
+  return t
+}
+
+const margin = {
+  bottom: 50,
+  left: 120,
+  right: 50,
+  top: 80,
+}
+
+const renderChart = ({ rootElId, data }) => {
+  const { stations, trains } = data
+  const width =
+    document.getElementById(rootElId).getBoundingClientRect().width -
+    margin.left -
+    margin.right
+
+  const height = 600 - margin.top - margin.bottom
+
   const formatAMPM = function (date) {
     let hours = date.getHours()
     let minutes = date.getMinutes()
@@ -77,12 +144,14 @@ const main = () => {
   }
 
   const redraw = function (timeRange) {
-    const x = d3.time
-      .scale()
+    const x = d3
+      .scaleTime()
       .domain([parseTime(timeRange[0]), parseTime(timeRange[1])])
       .range([0, width])
-    const y = d3.scale.linear().range([0, height])
-    const xAxis = d3.svg.axis().scale(x).ticks(8).tickFormat(formatTime)
+    const y = d3.scaleLinear().range([0, height])
+    const formatTime = getFormatTime()
+    const xAxisTop = d3.axisTop(x).ticks(8).tickFormat(formatTime)
+    const xAxisBottom = d3.axisBottom(x).ticks(8).tickFormat(formatTime)
 
     const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
 
@@ -118,25 +187,21 @@ const main = () => {
       .attr("dy", ".35em")
       .text((d) => d.name)
     station.append("line").attr("x2", width)
-    svg.append("g").attr("class", "x top axis").call(xAxis.orient("top"))
+    svg.append("g").attr("class", "x top axis").call(xAxisTop)
     svg
       .append("g")
       .attr("class", "x bottom axis")
       .attr("transform", `translate(0,${height})`)
-      .call(xAxis.orient("bottom"))
+      .call(xAxisBottom)
 
-    const mouseover = function (d) {
-      return d3
-        .select(`.train-${d.index}`)
-        .select("path")
-        .style("stroke-width", "5px")
+    const mouseover = function (_e, d) {
+      d3.select(`.train-${d.index}`).select("path").style("stroke-width", "5px")
     }
 
-    const mouseleave = function (d) {
-      return d3
-        .select(`.train-${d.index}`)
+    const mouseleave = function (_e, d) {
+      d3.select(`.train-${d.index}`)
         .select("path")
-        .style('"stroke-width"', "2.5px")
+        .style("stroke-width", "2.5px")
     }
 
     const train = svg
@@ -150,7 +215,7 @@ const main = () => {
       .attr("class", (d) => `${d.type} train-${d.index}`)
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave)
-    const line = d3.svg
+    const line = d3
       .line()
       .x((d) => x(d.time))
       .y((d) => y(d.station.distance))
@@ -199,73 +264,23 @@ const main = () => {
 
   const slider = $(".slider")
 
-  const convertHour = function () {
-    const times = []
-
-    each(slider.slider("values"), (sliderValue) => {
-      const wholeMinutes = (sliderValue / 100) * 1200
-
-      let fragment = "AM"
-      let hours = Math.floor(wholeMinutes / 60)
-      let minutes = Math.floor(wholeMinutes % 60)
-
-      if (minutes > 30) {
-        minutes = minutes - 30
-        hours = hours + 1
-      } else {
-        minutes = minutes + 30
-      }
-
-      hours = hours + 4
-
-      if (hours > 23) {
-        if (hours === 24) {
-          hours = hours - 12
-        } else {
-          hours = hours - 24
-        }
-      } else if (hours > 11) {
-        fragment = "PM"
-
-        if (hours !== 12) {
-          hours = hours - 12
-        }
-      }
-
-      if (minutes < 10) {
-        minutes = `0${String(minutes)}`
-      }
-
-      const finalTime = `${String(hours)}:${minutes}${fragment}`
-
-      return times.push(finalTime)
-    })
-
-    return redraw(times)
-  }
-
   slider.slider({
-    change: convertHour,
+    change: () => convertHour({ redraw, slider }),
     range: true,
   })
 
-  d3.tsv(
-    `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`,
-    typeFn,
-    (_error, data) => {
-      trains = data
+  slider.slider("values", [10, 50])
+}
 
-      trains.forEach((train, index) => {
-        train.index = index
+const main = async () => {
+  const rootElId = "chart"
 
-        train.stops.forEach((stop) => {
-          stop.train_index = index
-        })
-      })
+  const data = await fetchData()
 
-      slider.slider("values", [10, 50])
-    }
-  )
+  renderChart({
+    data,
+    rootElId,
+  })
 }
 
 export default main

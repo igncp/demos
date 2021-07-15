@@ -9,7 +9,7 @@ const PageTitle = () => (
       </span>
       <span className="col-lg-4">
         <iframe
-          allowtransparency="true"
+          allowTransparency
           frameBorder="0"
           height="20"
           scrolling="0"
@@ -17,7 +17,7 @@ const PageTitle = () => (
           width="62"
         />
         <iframe
-          allowtransparency="true"
+          allowTransparency
           frameBorder="0"
           height="20"
           scrolling="0"
@@ -25,7 +25,7 @@ const PageTitle = () => (
           width="119"
         />
         <iframe
-          allowtransparency="true"
+          allowTransparency
           frameBorder="0"
           height="20"
           scrolling="0"

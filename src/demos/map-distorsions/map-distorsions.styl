@@ -1,51 +1,43 @@
 .map-distorsions-chart
   svg
-    font-family: sans-serif;
-    text-shadow 1px 1px 1px #ddd;
+    font-family: sans-serif
+    text-shadow 1px 1px 1px #ddd
 
-  .background path {
-    fill: none;
-    stroke: none;
-    stroke-width: 20px;
-    pointer-events: stroke;
-  }
+  .background path
+    fill: none
+    pointer-events: stroke
+    stroke-width: 20px
+    stroke: none
 
-  .foreground path {
-    fill: none;
-    stroke-width: 1.5px;
-  }
+  .foreground path
+    fill: none
+    stroke-width: 1.5px
 
   .axis
     font-size 12px
 
-  .axis .title {
-    font-size: 11px;
-    font-family: Times New Roman;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
+  .axis .title
+    font-family: Times New Roman
+    font-size: 11px
+    font-weight: bold
+    text-transform: uppercase
 
   .axis line,
-  .axis path {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
+  .axis path
+    fill: none
+    shape-rendering: crispEdges
+    stroke: #000
 
-  .label {
-    -webkit-transition: fill 125ms linear;
+  .label
+    -webkit-transition: fill 125ms linear
 
-    &.inactive {
-      fill: #ccc !important;
-    }
-  }
+    &.inactive
+      fill: #ccc !important
 
-  .active .label:not(.inactive) {
-    font-weight: bold;
-  }
+  .active .label:not(.inactive)
+    font-weight: bold
 
-  .foreground path.inactive {
-    stroke: #ccc !important;
-    stroke-opacity: .5;
-    stroke-width: 1px;
-  }
+  .foreground path.inactive
+    stroke-opacity: .5
+    stroke-width: 1px
+    stroke: #ccc !important

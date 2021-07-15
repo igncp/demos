@@ -1,6 +1,11 @@
 import React from "react"
 
-const DemoTitle = ({ name, mainSource }) => (
+type Props = {
+  name: string
+  mainSource: string
+}
+
+const DemoTitle = ({ name, mainSource }: Props) => (
   <h2 className="row" id="demo-title">
     <span className="col-lg-10">
       {name} Chart{" "}

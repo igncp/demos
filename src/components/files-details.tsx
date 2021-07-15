@@ -1,5 +1,6 @@
 import React from "react"
 
+// @ts-ignore
 import Prism from "prismjs"
 
 import "prismjs/components/prism-jsx"
@@ -8,7 +9,13 @@ import "prismjs/components/prism-stylus"
 
 import "prismjs/themes/prism-solarizedlight.css"
 
-const FilesDetails = ({ demoInfo }) => {
+import { DemoInfo } from "@/common"
+
+type Props = {
+  demoInfo: DemoInfo
+}
+
+const FilesDetails = ({ demoInfo }: Props) => {
   if (typeof window === "undefined") {
     return null
   }
@@ -94,14 +101,16 @@ const FilesDetails = ({ demoInfo }) => {
             </li>
           )}
           <li>
-            <p>{`pages/${demoInfo.category}/${demoInfo.key}.js`}</p>
+            <p>{`pages/${demoInfo.category}/${demoInfo.key}.${demoInfo.files.page.type}`}</p>
             <pre>
               <code
                 dangerouslySetInnerHTML={{
                   __html: Prism.highlight(
-                    demoInfo.files.page,
-                    Prism.languages.jsx,
-                    "jsx"
+                    demoInfo.files.page.content,
+                    demoInfo.files.page.type === "tsx"
+                      ? Prism.languages.typescript
+                      : Prism.languages.jsx,
+                    demoInfo.files.demo.type === "tsx" ? "typescript" : "jsx"
                   ),
                 }}
               />

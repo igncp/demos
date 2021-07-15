@@ -32,10 +32,14 @@ const margin = {
 
 const height = 400 - margin.top - margin.bottom
 
-const main = async () => {
-  const data = await fetchData()
-  const rootElId = "chart"
+type RenderChart = (o: {
+  data: Point[]
+  rootElId: string
+}) => {
+  toggleVoronoi(): void
+}
 
+const renderChart: RenderChart = ({ data, rootElId }) => {
   const width =
     (document.getElementById(rootElId) as HTMLElement).getBoundingClientRect()
       .width -
@@ -43,6 +47,8 @@ const main = async () => {
     margin.right
 
   const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
+
+  svg.attr("class", "area-chart")
 
   d3utils.middleTitle(
     svg,
@@ -63,7 +69,6 @@ const main = async () => {
     .domain([yMax + 0.05, yMin - 0.05])
 
   const xAxis = axisBottom(xScale).tickFormat(format(".0f")).tickSize(-height)
-
   const yAxis = axisLeft(yScale).tickFormat(format(".0%")).tickSize(-width)
 
   svg
@@ -161,11 +166,9 @@ const main = async () => {
     .attr("class", "voronoi-area")
     .append("title")
     .text((d: Point) => `Year: ${d.year}, ` + `Percent: ${d.percent}%`)
-  ;(document.getElementById("toggle-voronoi") as HTMLElement).addEventListener(
-    "click",
-    (e) => {
-      e.preventDefault()
 
+  return {
+    toggleVoronoi: () => {
       const currentClass = voronoiGroup.attr("class")
 
       const newClass = currentClass.includes("show-voronoi")
@@ -173,6 +176,25 @@ const main = async () => {
         : `${currentClass} show-voronoi`
 
       voronoiGroup.attr("class", newClass)
+    },
+  }
+}
+
+const main = async () => {
+  const data = await fetchData()
+  const rootElId = "chart"
+
+  const { toggleVoronoi } = renderChart({
+    data,
+    rootElId,
+  })
+
+  ;(document.getElementById("toggle-voronoi") as HTMLElement).addEventListener(
+    "click",
+    (e) => {
+      e.preventDefault()
+
+      toggleVoronoi()
     }
   )
 }

@@ -15,6 +15,38 @@ const readIfExists = (filePath) => {
   }
 }
 
+const getDemo = (demoName) => {
+  const demo = {
+    content: readIfExists(`src/demos/${demoName}/${demoName}.ts`),
+    type: "ts",
+  }
+
+  if (demo.content) {
+    return demo
+  }
+
+  return {
+    content: readIfExists(`src/demos/${demoName}/${demoName}.js`),
+    type: "js",
+  }
+}
+
+const getPage = (demoName, category) => {
+  const page = {
+    content: readIfExists(`src/pages/${category}/${demoName}.tsx`),
+    type: "tsx",
+  }
+
+  if (page.content) {
+    return page
+  }
+
+  return {
+    content: readIfExists(`src/pages/${category}/${demoName}.js`),
+    type: "js",
+  }
+}
+
 const getDemoInfo = (slugs) => {
   const [category, demoName] = slugs
 
@@ -22,17 +54,8 @@ const getDemoInfo = (slugs) => {
     return null
   }
 
-  let demo = {
-    content: readIfExists(`src/demos/${demoName}/${demoName}.ts`),
-    type: "ts",
-  }
-
-  if (!demo.content) {
-    demo = {
-      content: readIfExists(`src/demos/${demoName}/${demoName}.js`),
-      type: "js",
-    }
-  }
+  const demo = getDemo(demoName)
+  const page = getPage(demoName, category)
 
   const d3utils = demo.content.includes("d3utils")
     ? readIfExists(`src/demos/_utils/d3utils.js`)
@@ -44,9 +67,7 @@ const getDemoInfo = (slugs) => {
     files: {
       d3utils,
       demo,
-      page:
-        readIfExists(`src/pages/${category}/${demoName}.ts`, "utf-8") ||
-        readIfExists(`src/pages/${category}/${demoName}.js`, "utf-8"),
+      page,
       styl: readIfExists(`src/demos/${demoName}/${demoName}.styl`),
     },
     key: demoName,

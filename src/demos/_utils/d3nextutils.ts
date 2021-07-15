@@ -14,15 +14,16 @@ type SVG = d3.Selection<SVGGElement, unknown, HTMLElement, unknown>
 // @TODO: types
 
 const d3utils = {
-  colorsScale(/*_colors: unknown, _extent: unknown*/) {
-    // const c = d3.scale.linear().domain(extent).range([0, 1])
-    // const colorScale = d3.scale
-    // .linear()
-    // .domain(d3.range(0, 1, 1.0 / colors.length))
-    // .range(colors)
-    // return function (p) {
-    // return colorScale(c(p))
-    // }
+  colorsScale<P extends number = any>(colors: any, extent: any) {
+    const c = d3.scaleLinear().domain(extent).range([0, 1])
+    const colorScale = d3
+      .scaleLinear()
+      .domain(d3.range(0, 1, 1.0 / colors.length))
+      .range(colors)
+
+    return function (p: P) {
+      return colorScale(c(p))
+    }
   },
   filterBlackOpacity(id: string, svg: SVG, deviation: number, slope: number) {
     const defs = svg.append("defs")
@@ -57,7 +58,7 @@ const d3utils = {
     svg: SVG,
     deviation: number,
     slope: number,
-    extra: any
+    extra?: any
   ) {
     if (extra == null) {
       extra = false

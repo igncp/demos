@@ -1,6 +1,13 @@
 import React from "react"
 
-const DemosList = ({ demos, indexOffset }) => (
+import { DemoSummary } from "@/common"
+
+type Props = {
+  demos: DemoSummary[]
+  indexOffset: number
+}
+
+const DemosList = ({ demos, indexOffset }: Props) => (
   <ul className="list-group">
     {demos.map((demo, index) => (
       <a className="list-group-item" href={demo.route} key={demo.name}>

@@ -1,4 +1,13 @@
-import * as d3 from "d3"
+import {
+  Selection,
+  axisBottom,
+  axisLeft,
+  extent,
+  max,
+  range,
+  scaleLinear,
+  select,
+} from "d3"
 
 type Data = number[]
 
@@ -13,13 +22,20 @@ const colours = ["#323247", "#7C7CC9", "#72B66C", "#429742"]
 const barYFn = (d: Data[number]) => floor - barHeight * d
 const barHeightFn = (d: Data[number]) => d * barHeight
 
+const fetchData = async (): Promise<Data> => {
+  const rawData = await fetch(`${ROOT_PATH}data/d3js/bars/data.json`)
+  const data = await rawData.json()
+
+  return data
+}
+
 type BarsChartOpts = {
   data: Data
   rootElId: string
 }
 
 type Interval = ReturnType<typeof setInterval>
-type Chart = d3.Selection<SVGGElement, unknown, HTMLElement, unknown>
+type Chart = Selection<SVGGElement, unknown, HTMLElement, unknown>
 type ColorFn = (c: Data[number]) => string
 
 class BarsChart {
@@ -44,13 +60,11 @@ class BarsChart {
       rootElId
     ) as HTMLElement).getBoundingClientRect()
 
-    const c = d3
-      .scaleLinear()
-      .domain(d3.extent(data) as [number, number])
+    const c = scaleLinear()
+      .domain(extent(data) as [number, number])
       .range([0, 1])
-    const heatmapColour: ColorFn = d3
-      .scaleLinear()
-      .domain(d3.range(0, 1, 1.0 / colours.length))
+    const heatmapColour: ColorFn = scaleLinear()
+      .domain(range(0, 1, 1.0 / colours.length))
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .range(colours as any) as any
 
@@ -58,9 +72,9 @@ class BarsChart {
 
     this.color = color as ColorFn
 
-    const svg = d3.select(`#${rootElId}`).append("svg")
+    const svg = select(`#${rootElId}`).append("svg")
 
-    svg.attr("height", height).attr("width", width)
+    svg.attr("height", height).attr("width", width).attr("class", "bars-chart")
 
     const chart = svg.append("g")
 
@@ -70,22 +84,20 @@ class BarsChart {
 
     this.interval = setInterval(this.getIntervalFn(), 1000)
 
-    const x = d3
-      .scaleLinear()
+    const x = scaleLinear()
       .domain([0.5, data.length + 0.5])
       .range([1, barWidth * data.length])
 
-    const y = d3
-      .scaleLinear()
-      .domain([0, d3.max(data) as number])
-      .rangeRound([0, -1 * barHeight * (d3.max(data) as number)])
+    const y = scaleLinear()
+      .domain([0, max(data) as number])
+      .rangeRound([0, -1 * barHeight * (max(data) as number)])
 
     const xAxisG = chart.append("g")
 
     xAxisG
       .attr("class", "x-axis axis")
       .attr("transform", `translate(0,${floor})`)
-      .call(d3.axisBottom(x))
+      .call(axisBottom(x))
 
     xAxisG
       .append("text")
@@ -102,7 +114,7 @@ class BarsChart {
     yAxisG
       .attr("class", "x-axis axis")
       .attr("transform", `translate(0,${floor})`)
-      .call(d3.axisLeft(y))
+      .call(axisLeft(y))
 
     yAxisG
       .append("text")
@@ -167,8 +179,7 @@ class BarsChart {
       return
     }
 
-    const newX = d3
-      .scaleLinear()
+    const newX = scaleLinear()
       .domain([0.5, data.length + 0.5])
       .range([1, barWidth * data.length])
 
@@ -177,7 +188,7 @@ class BarsChart {
       .transition()
       .duration(500)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .call(d3.axisBottom(newX) as any)
+      .call(axisBottom(newX) as any)
 
     chart
       .select(".x-axis-label")
@@ -198,13 +209,6 @@ class BarsChart {
   }
 }
 
-const fetchData = async (): Promise<Data> => {
-  const rawData = await fetch(`${ROOT_PATH}data/d3js/bars/data.json`)
-  const data = await rawData.json()
-
-  return data
-}
-
 const main = async () => {
   const data = await fetchData()
 
@@ -219,7 +223,7 @@ const main = async () => {
 
   addItemEl.addEventListener("click", () => {
     if (data.length < 20) {
-      data.push(Math.floor(Math.random() * (d3.max(data) as number)) + 1)
+      data.push(Math.floor(Math.random() * (max(data) as number)) + 1)
       barsChart.refresh()
     } else {
       addItemEl.setAttribute("disabled", "disabled")

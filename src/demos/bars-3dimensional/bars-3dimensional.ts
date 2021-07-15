@@ -60,9 +60,19 @@ class Chart {
     this.data.keys.forEach((item) => {
       this.dom.els[item].el = this.dom.paper.set()
     })
-    this.bindClickEvent()
 
     this.createCountries(this.data.seriesDisplayed)
+  }
+
+  public displayNextSeries() {
+    const { data } = this
+
+    data.seriesDisplayed =
+      data.seriesDisplayed + 1 === data.seriesLength
+        ? 0
+        : data.seriesDisplayed + 1
+
+    this.animateCountries(data.seriesDisplayed)
   }
 
   private setCg() {
@@ -86,6 +96,9 @@ class Chart {
       els: {},
       paper: Raphael(this.rootElId, this.cg.width, 245),
     }
+    ;(document.getElementById(this.rootElId) as HTMLElement).classList.add(
+      "bars-3dimensional-chart"
+    )
   }
 
   private setData(data: Data) {
@@ -203,21 +216,6 @@ class Chart {
         .attr("title", `${item}: ${data[item][i]}`)
     })
   }
-
-  private bindClickEvent() {
-    const { data } = this
-
-    return $(".animate-bars").bind("click", (e) => {
-      e.preventDefault()
-
-      data.seriesDisplayed =
-        data.seriesDisplayed + 1 === data.seriesLength
-          ? 0
-          : data.seriesDisplayed + 1
-
-      this.animateCountries(data.seriesDisplayed)
-    })
-  }
 }
 
 const main = async () => {
@@ -229,6 +227,14 @@ const main = async () => {
   })
 
   chart.render()
+  ;(document.querySelector(".animate-bars") as HTMLElement).addEventListener(
+    "click",
+    (e) => {
+      e.preventDefault()
+
+      chart.displayNextSeries()
+    }
+  )
 }
 
 export default main

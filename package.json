@@ -57,7 +57,7 @@
     "check:ci": "npm run build && npm run lint",
     "clean": "gatsby clean",
     "develop": "gatsby develop",
-    "lint": "eslint --ext .js --ext .ts .",
+    "lint": "eslint --ext .js --ext .ts --ext .tsx .",
     "lint-fix": "npm run lint -- --fix",
     "print-js-demos": "find src/demos -type f | grep 'js$' | xargs -I{} wc -l {} | sort -V",
     "serve": "gatsby serve",

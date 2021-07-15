@@ -140,11 +140,11 @@ const height = 500
 type RenderChart = (o: { rootElId: string; data: Data }) => void
 
 const renderChart: RenderChart = ({ rootElId, data }) => {
-  const width =
-    (document.getElementById(rootElId) as HTMLElement).getBoundingClientRect()
-      .width /
-      2 -
-    20
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add("chord-chart")
+
+  const width = rootEl.getBoundingClientRect().width / 2 - 20
 
   const r1 = Math.min(width, height) / 2 - 4
   const r0 = r1 - 20

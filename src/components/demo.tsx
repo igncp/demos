@@ -1,14 +1,31 @@
 import React, { useEffect } from "react"
+// @ts-ignore
 import { Helmet } from "react-helmet"
+
+import { DemoInfo } from "@/common"
 
 import DemoTitle from "./demo-title"
 import FilesDetails from "./files-details"
 import Layout from "./layout"
 
-const parsePath = (str) =>
+const parsePath = (str: string) =>
   str[0] === "/" ? ROOT_PATH + str.replace(/^\//, "") : str
 
-const Demo = ({ demoInfo, main, children, scripts = [], links = [] }) => {
+type Props = {
+  children: React.ReactNode
+  demoInfo: DemoInfo
+  links?: string[]
+  main: (() => void) | (() => Promise<void>)
+  scripts?: string[]
+}
+
+const Demo = ({
+  demoInfo,
+  main,
+  children,
+  scripts = [],
+  links = [],
+}: Props) => {
   const { name, sources } = demoInfo
 
   useEffect(() => {

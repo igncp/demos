@@ -94,22 +94,20 @@ const linearRegression = (data: DataItem[]) => {
 
 const renderGraph = ({
   data,
+  initialZoomed,
   rootElId,
 }: {
   data: DataItem[]
+  initialZoomed: boolean
   rootElId: string
 }) => {
-  const width =
-    (document.getElementById(rootElId) as HTMLElement).getBoundingClientRect()
-      .width -
-    margin.left -
-    margin.right
+  const el = document.getElementById(rootElId) as HTMLElement
 
-  const renderContent = () => {
-    const zoomed = (document.querySelector(
-      'input[value="zoom"]'
-    ) as HTMLInputElement).checked
+  el.classList.add("trend-line-chart")
 
+  const width = el.getBoundingClientRect().width - margin.left - margin.right
+
+  const renderContent = (isZoomed: boolean) => {
     const svg = select(`#${rootElId}`)
       .text("")
       .append("svg")
@@ -129,7 +127,7 @@ const renderGraph = ({
 
     x.domain(extent(data, (d) => d.occurred) as [Date, Date])
     y.domain([
-      zoomed ? (min(data, (d) => d.value) as number) : 0,
+      isZoomed ? (min(data, (d) => d.value) as number) : 0,
       max(data, (d) => d.value) as number,
     ])
 
@@ -177,18 +175,30 @@ const renderGraph = ({
       .style("opacity", 1)
   }
 
-  renderContent()
+  renderContent(initialZoomed)
 
-  selectAll('input[name="mode"]').on("change", renderContent)
+  return {
+    renderContent,
+  }
 }
 
 const main = async () => {
   const rootElId = "chart"
   const data = await fetchData()
 
-  renderGraph({
+  const getIsZoomed = () =>
+    (document.querySelector('input[value="zoom"]') as HTMLInputElement).checked
+
+  const { renderContent } = renderGraph({
     data,
+    initialZoomed: getIsZoomed(),
     rootElId,
+  })
+
+  selectAll('input[name="mode"]').on("change", () => {
+    const isZoomed = getIsZoomed()
+
+    renderContent(isZoomed)
   })
 }
 

@@ -1,12 +1,14 @@
 import React from "react"
 
+import { DemoPageProps } from "@/common"
+
 import Demo from "@/components/demo"
 
 import main from "@/demos/trend-line/trend-line"
 
 import "@/demos/trend-line/trend-line.styl"
 
-const TrendLine = ({ pageContext: { demoInfo } }) => (
+const TrendLine = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo demoInfo={demoInfo} main={main}>
     <form>
       <label>
@@ -16,7 +18,7 @@ const TrendLine = ({ pageContext: { demoInfo } }) => (
         <input name="mode" type="radio" value="normal" /> Normal
       </label>
     </form>
-    <div className="trend-line-chart" id="chart" />
+    <div id="chart" />
   </Demo>
 )
 

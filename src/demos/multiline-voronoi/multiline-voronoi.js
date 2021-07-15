@@ -101,8 +101,11 @@ const renderChart = ({ rootElId, cities, months }) => {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`)
 
-  x.domain(d3.extent(months))
-  y.domain([0, d3.max(cities, (c) => d3.max(c.values, (d) => d.value))]).nice()
+  x.domain(d3next.extent(months))
+  y.domain([
+    0,
+    d3next.max(cities, (c) => d3next.max(c.values, (d) => d.value)),
+  ]).nice()
 
   svg
     .append("g")

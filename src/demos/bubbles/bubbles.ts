@@ -80,9 +80,11 @@ type RenderChart = (o: { rootElId: string; jsonData: JsonData }) => void
 const renderChart: RenderChart = ({ rootElId, jsonData }) => {
   const { d3, nv } = window as any
 
-  const { width } = (document.getElementById(
-    rootElId
-  ) as HTMLElement).getBoundingClientRect()
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add("bubbles-chart")
+
+  const { width } = rootEl.getBoundingClientRect()
 
   const color = d3.scale.category20b()
 

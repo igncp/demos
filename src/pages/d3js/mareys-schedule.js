@@ -15,10 +15,8 @@ const MareysSchedule = ({ pageContext: { demoInfo } }) => (
     ]}
     main={main}
     scripts={[
-      "/vendors/d3/d3.min.js",
       "/vendors/jquery-ui/jquery-ui.min.js",
       "/vendors/jquery-ui/ui/slider.js",
-      "/js/d3js-utils.js",
     ]}
   >
     <div>
