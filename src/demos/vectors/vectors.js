@@ -1,6 +1,10 @@
 const main = () => {
   const rootElId = "chart"
-  const { width } = document.getElementById("chart").getBoundingClientRect()
+  const rootEl = document.getElementById(rootElId)
+
+  rootEl.classList.add("vectors-chart")
+
+  const { width } = rootEl.getBoundingClientRect()
   const height = 500
 
   const colors = () => "#FFF"

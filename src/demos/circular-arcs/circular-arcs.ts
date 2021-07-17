@@ -117,6 +117,8 @@ const main = () => {
   const rootElId = "chart"
   const chartWrapper = document.getElementById(rootElId) as HTMLElement
 
+  chartWrapper.classList.add("circular-arcs-chart")
+
   const { width } = chartWrapper.getBoundingClientRect()
   const height = 500
 

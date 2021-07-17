@@ -83,10 +83,12 @@ const renderChart = ({ rootElId, cities, months }) => {
   const color = d3.scale.category20()
   let clickToggle = false
 
+  const rootEl = document.getElementById(rootElId)
+
+  rootEl.classList.add("multiline-voronoi-chart")
+
   const width =
-    document.getElementById(rootElId).getBoundingClientRect().width -
-    margin.left -
-    margin.right
+    rootEl.getBoundingClientRect().width - margin.left - margin.right
 
   const height = 500 - margin.top - margin.bottom
 

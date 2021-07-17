@@ -1,4 +1,5 @@
 import React, { useEffect } from "react"
+// @ts-ignore
 import { QUnit } from "qunit"
 
 import d3Tests from "@/testing/d3"

@@ -1,12 +1,15 @@
 import React from "react"
 
+import { DemoPageProps } from "@/common"
+
 import Demo from "@/components/demo"
 
+// @ts-ignore
 import main from "@/demos/mareys-schedule/mareys-schedule"
 
 import "@/demos/mareys-schedule/mareys-schedule.styl"
 
-const MareysSchedule = ({ pageContext: { demoInfo } }) => (
+const MareysSchedule = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo
     demoInfo={demoInfo}
     links={[
@@ -22,7 +25,7 @@ const MareysSchedule = ({ pageContext: { demoInfo } }) => (
     <div>
       <div className="slider" />
     </div>
-    <div className="mareys-schedule-chart" id="chart" />
+    <div id="chart" />
   </Demo>
 )
 

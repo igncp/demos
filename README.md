@@ -43,7 +43,9 @@ I am updating this repository after it was inactive for several years. The initi
     - Port components, pages and other utils
     - Resolve cases with `any`
     - Resolve cases with `@ts-ignore`
-1. [ ] Extract texts, dimensions, state
+1. [ ] Extra refactors:
+    - Extract texts, dimensions, state
+    - Rename variables and functions
 
 Some new examples may be added at the same time, especially when more progress is done
 
@@ -80,7 +82,7 @@ You need to have Node.js installed
 |bubbles|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |chord|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |circular-arcs|:white_check_mark:|:white_check_mark:|No|
-|collapsible-tree|No|:white_check_mark:|No|
+|collapsible-tree|:white_check_mark:|:white_check_mark:|No|
 |concentric-circles|:white_check_mark:|:white_check_mark:|No|
 |fish-eye|:white_check_mark:|:white_check_mark:|No|
 |force|:white_check_mark:|:white_check_mark:|No|

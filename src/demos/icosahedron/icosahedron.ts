@@ -130,6 +130,10 @@ class Icosahedron {
   }
 
   private setDom() {
+    const rootEl = document.getElementById(this.rootElId) as HTMLElement
+
+    rootEl.classList.add("icosahedron-chart")
+
     const projection = d3.geoOrthographic().scale(this.config.height / 2 - 10)
     const svg = d3
       .select(`#${this.rootElId}`)

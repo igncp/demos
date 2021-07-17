@@ -26,14 +26,17 @@ const fetchData = async (): Promise<Data> => {
   return data
 }
 
+const height = 300
+
 type RenderChartOpts = { rootElId: string; graphData: Data }
 
 const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
   const initLineGraph = function () {
-    const { width } = (document.getElementById(
-      rootElId
-    ) as HTMLElement).getBoundingClientRect()
-    const height = 300
+    const rootEl = document.getElementById(rootElId) as HTMLElement
+
+    rootEl.classList.add("moving-line-chart")
+
+    const { width } = rootEl.getBoundingClientRect()
     const paper = Raphael(rootElId, width, height)
 
     graphData.paper = paper

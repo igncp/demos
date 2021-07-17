@@ -47,9 +47,11 @@ type RenderGraph = (o: { rootElId: string; data: Data }) => void
 const renderGraph: RenderGraph = ({ rootElId, data }) => {
   const { nodes, links } = data
 
-  const { width } = (document.getElementById(
-    rootElId
-  ) as HTMLElement).getBoundingClientRect()
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add("force-chart")
+
+  const { width } = rootEl.getBoundingClientRect()
 
   const ticked = () => {
     updateLinks()

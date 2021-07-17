@@ -1,14 +1,17 @@
 import React from "react"
 
+import { DemoPageProps } from "@/common"
+
 import Demo from "@/components/demo"
 
+// @ts-ignore
 import main from "@/demos/vectors/vectors"
 
 import "@/demos/vectors/vectors.styl"
 
-const Vectors = ({ pageContext: { demoInfo } }) => (
+const Vectors = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo demoInfo={demoInfo} main={main} scripts={["/vendors/d3/d3.min.js"]}>
-    <div className="vectors-chart" id="chart" />
+    <div id="chart" />
   </Demo>
 )
 

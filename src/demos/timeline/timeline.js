@@ -61,8 +61,11 @@ const toYear = function (date, bcString) {
 }
 
 const createTimeline = function ({ rootElId }) {
-  const outerWidth = document.getElementById(rootElId).getBoundingClientRect()
-    .width
+  const rootEl = document.getElementById(rootElId)
+
+  rootEl.classList.add("timeline-chart")
+
+  const outerWidth = rootEl.getBoundingClientRect().width
   const width = outerWidth - margin.left - margin.right
 
   let bandY = 0

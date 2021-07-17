@@ -1,14 +1,16 @@
 import React from "react"
 
+import { DemoPageProps } from "@/common"
+
 import Demo from "@/components/demo"
 
 import main from "@/demos/fish-eye/fish-eye"
 
 import "@/demos/fish-eye/fish-eye.styl"
 
-const FishEye = ({ pageContext: { demoInfo } }) => (
+const FishEye = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo demoInfo={demoInfo} main={main}>
-    <div className="fish-eye-chart" id="chart" />
+    <div id="chart" />
   </Demo>
 )
 

@@ -4,10 +4,12 @@ import sortBy from "lodash/sortBy"
 import Layout from "@/components/layout"
 import DemosList from "@/components/demos-list"
 
+// @ts-ignore
 import d3js from "@/info/d3js"
+// @ts-ignore
 import raphael from "@/info/raphael"
 
-const info = {}
+const info: any = {}
 
 info.d3js = []
 info.raphael = []
@@ -30,16 +32,8 @@ for (const item in raphael) {
   info.raphael.push(RI)
 }
 
-const getInfo = (category, key) => {
-  if (key) {
-    return info[category].find((c) => c.key === key)[0]
-  }
-
-  return info[category]
-}
-
-const demosD3 = getInfo("d3js")
-const demosRaphael = getInfo("raphael")
+const demosD3 = info["d3js"]
+const demosRaphael = info["raphael"]
 
 let demos = demosD3.concat(demosRaphael)
 

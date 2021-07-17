@@ -1,14 +1,16 @@
 import React from "react"
 
+import { DemoPageProps } from "@/common"
+
 import Demo from "@/components/demo"
 
 import main from "@/demos/collapsible-tree/collapsible-tree"
 
 import "@/demos/collapsible-tree/collapsible-tree.styl"
 
-const CollapsibleTree = ({ pageContext: { demoInfo } }) => (
+const CollapsibleTree = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo demoInfo={demoInfo} main={main}>
-    <div className="collapsible-tree-chart" id="chart" />
+    <div id="chart" />
   </Demo>
 )
 

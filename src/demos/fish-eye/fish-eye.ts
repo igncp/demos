@@ -69,7 +69,7 @@ class FishEyeChart {
     this.rootElId = rootElId
     this.data = data
 
-    this.setWidth()
+    this.setupRootEl()
     this.setVars()
     this.setDom()
   }
@@ -87,13 +87,13 @@ class FishEyeChart {
     this.bindClick()
   }
 
-  private setWidth() {
+  private setupRootEl() {
+    const rootEl = document.getElementById(this.rootElId) as HTMLElement
+
+    rootEl.classList.add("fish-eye-chart")
+
     this.width =
-      (document.getElementById(
-        this.rootElId
-      ) as HTMLElement).getBoundingClientRect().width -
-      margin.left -
-      margin.right
+      rootEl.getBoundingClientRect().width - margin.left - margin.right
   }
 
   private setDom() {

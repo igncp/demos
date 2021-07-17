@@ -78,11 +78,12 @@ const renderChart = async ({
   data: DataItem[]
   rootElId: string
 }) => {
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add("weekly-heatmap-chart")
+
   const width =
-    (document.getElementById(rootElId) as HTMLElement).getBoundingClientRect()
-      .width -
-    margin.left -
-    margin.right
+    rootEl.getBoundingClientRect().width - margin.left - margin.right
   const height = Math.ceil((width * 10) / 24) - margin.top - margin.bottom + 60
   const gridSize = Math.floor(width / 24)
   const legendElementWidth = gridSize * 2

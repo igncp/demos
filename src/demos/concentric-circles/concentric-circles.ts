@@ -143,9 +143,8 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     return heatmapColour(colorNormalized)
   }
 
-  const { width: elWidth } = (document.getElementById(
-    rootElId
-  ) as HTMLElement).getBoundingClientRect()
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+  const { width: elWidth } = rootEl.getBoundingClientRect()
 
   const width = elWidth - margin.left - margin.right
   const height = (d3.max(data, (d) => +d.count) as number) * 2.5
