@@ -7,8 +7,6 @@ import Demo from "@/components/demo"
 // @ts-ignore
 import main from "@/demos/mareys-schedule/mareys-schedule"
 
-import "@/demos/mareys-schedule/mareys-schedule.styl"
-
 const MareysSchedule = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo
     demoInfo={demoInfo}

@@ -2,7 +2,9 @@ import * as d3 from "d3"
 import each from "lodash/each"
 import last from "lodash/last"
 
-import d3utils from "@/demos/_utils/d3nextutils"
+import d3utils from "@/demos/_utils/d3utils"
+
+import "./mareys-schedule.styl"
 
 type RawDataItem = {
   direction: string
@@ -21,7 +23,7 @@ type Station = {
 type Stop = {
   station: Station
   time: Date | null
-  trainIndex: number // eslint-disable-line camelcase
+  trainIndex: number
 }
 
 type Train = {

@@ -1,5 +1,7 @@
 import * as d3 from "d3"
 
+import "./chord.styl"
+
 type CSVDataItem = {
   amount: string
   creditor: string

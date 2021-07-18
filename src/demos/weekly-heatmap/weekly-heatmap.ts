@@ -1,13 +1,13 @@
-import * as d3 from "d3"
-import d3utils from "@/demos/_utils/d3nextutils"
+import { max as maxD3, scaleQuantile, select, tsv } from "d3"
 
-type DataItem = {
+import "./weekly-heatmap.styl"
+
+type TimeItem = {
   day: number
   hour: number
   value: number
 }
 
-const buckets = 9
 const colors = [
   "#ffffd9",
   "#edf8b1",
@@ -19,9 +19,10 @@ const colors = [
   "#253494",
   "#081d58",
 ]
+const buckets = colors.length
 
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
-const times = [
+const hours = [
   "1 am",
   "2 am",
   "3 am",
@@ -48,20 +49,14 @@ const times = [
   "12 pm",
 ]
 
-const fetchData = async (): Promise<DataItem[]> => {
-  const values = function (d: DataItem) {
-    return {
-      day: +d.day,
-      hour: +d.hour,
-      value: +d.value,
-    }
-  }
+const fetchData = async (): Promise<TimeItem[]> => {
+  const data: any = await tsv(`${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`)
 
-  const data: any = await d3.tsv(
-    `${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`
-  )
-
-  return data.map(values)
+  return data.map((timeItem: TimeItem) => ({
+    day: +timeItem.day,
+    hour: +timeItem.hour,
+    value: +timeItem.value,
+  }))
 }
 
 const margin = {
@@ -71,11 +66,23 @@ const margin = {
   top: 50,
 }
 
+const hoursInDay = 24
+const rectRadiusSize = 100
+const extraHeight = 60
+const axisOffset = -6
+
+const workingDayMin = 0
+const workingDayMax = 4
+const workingHourMin = 7
+const workingHourMax = 16
+
+const legendStroke = "#ccc"
+
 const renderChart = async ({
   data,
   rootElId,
 }: {
-  data: DataItem[]
+  data: TimeItem[]
   rootElId: string
 }) => {
   const rootEl = document.getElementById(rootElId) as HTMLElement
@@ -84,19 +91,21 @@ const renderChart = async ({
 
   const width =
     rootEl.getBoundingClientRect().width - margin.left - margin.right
-  const height = Math.ceil((width * 10) / 24) - margin.top - margin.bottom + 60
-  const gridSize = Math.floor(width / 24)
-  const legendElementWidth = gridSize * 2
+  const height =
+    Math.ceil((width * 10) / hoursInDay) -
+    margin.top -
+    margin.bottom +
+    extraHeight
+  const cellSize = Math.floor(width / hoursInDay)
+  const legendElementWidth = cellSize * 2
 
-  const max = d3.max(data, (d) => d.value)
+  const max = maxD3(data, (timeItem) => timeItem.value)
 
-  const colorScale = d3
-    .scaleQuantile<string>()
+  const colorScale = scaleQuantile<string>()
     .domain([0, buckets - 1, max])
     .range(colors)
 
-  const svg = d3
-    .select(`#${rootElId}`)
+  const svg = select(`#${rootElId}`)
     .append("svg")
     .attr("height", height + margin.top + margin.bottom)
     .attr("width", width + margin.left + margin.right)
@@ -108,34 +117,34 @@ const renderChart = async ({
     .data(days)
     .enter()
     .append("text")
-    .text((d) => d)
-    .attr("class", (_d, i) => {
-      if (i >= 0 && i <= 4) {
+    .text((day) => day)
+    .attr("class", (_d, dayIndex) => {
+      if (dayIndex >= workingDayMin && dayIndex <= workingDayMax) {
         return "dayLabel mono axis axis-workweek"
       }
 
       return "dayLabel mono axis"
     })
-    .attr("transform", `translate(-6,${gridSize / 1.5})`)
+    .attr("transform", `translate(${axisOffset},${cellSize / 1.5})`)
     .attr("x", 0)
-    .attr("y", (_d, i) => i * gridSize)
+    .attr("y", (_d, dayIndex) => dayIndex * cellSize)
     .style("text-anchor", "end")
 
   svg
     .selectAll(".timeLabel")
-    .data(times)
+    .data(hours)
     .enter()
     .append("text")
-    .text((d) => d)
-    .attr("class", (_d, i) => {
-      if (i >= 7 && i <= 16) {
+    .text((hourStr) => hourStr)
+    .attr("class", (_d, hourIndex) => {
+      if (hourIndex >= workingHourMin && hourIndex <= workingHourMax) {
         return "timeLabel mono axis axis-worktime"
       }
 
       return "timeLabel mono axis"
     })
-    .attr("transform", `translate(${gridSize / 2}, -6)`)
-    .attr("x", (_d, i) => i * gridSize)
+    .attr("transform", `translate(${cellSize / 2}, ${axisOffset})`)
+    .attr("x", (_d, hourIndex) => hourIndex * cellSize)
     .attr("y", 0)
     .style("text-anchor", "middle")
 
@@ -145,29 +154,22 @@ const renderChart = async ({
     .enter()
     .append("rect")
     .attr("class", "hour bordered")
-    .attr("height", gridSize)
-    .attr("rx", 4)
-    .attr("ry", 4)
-    .attr("width", gridSize)
-    .attr("x", (d) => (d.hour - 1) * gridSize)
-    .attr("y", (d) => (d.day - 1) * gridSize)
+    .attr("height", cellSize)
+    .attr("rx", rectRadiusSize)
+    .attr("ry", rectRadiusSize)
+    .attr("width", cellSize)
+    .attr("x", (timeItem) => (timeItem.hour - 1) * cellSize)
+    .attr("y", (timeItem) => (timeItem.day - 1) * cellSize)
     .style("fill", colors[0])
 
   heatMap
     .transition()
     .duration(6000)
-    .style("fill", (d) => colorScale(d.value))
+    .style("fill", (timeItem) => colorScale(timeItem.value))
 
-  heatMap.attr("data-title", (d) => `Value: ${d.value}`)
+  heatMap.attr("data-title", (timeItem) => `Value: ${timeItem.value}`)
 
-  d3utils.tooltip(".hour", {
-    tOpts: {
-      delay: {
-        hide: 0,
-        show: 500,
-      },
-    },
-  })
+  tooltip(".hour")
 
   const legend = svg
     .selectAll(".legend")
@@ -178,19 +180,41 @@ const renderChart = async ({
 
   legend
     .append("rect")
-    .attr("x", (_d, i) => legendElementWidth * i)
+    .attr("x", (_value, valueIndex) => legendElementWidth * valueIndex)
     .attr("y", height)
     .attr("width", legendElementWidth)
-    .attr("height", gridSize / 2)
-    .style("fill", (_d, i) => colors[i])
-    .style("stroke", "#CCC")
+    .attr("height", cellSize / 2)
+    .style("fill", (_value, valueIndex) => colors[valueIndex])
+    .style("stroke", legendStroke)
 
   legend
     .append("text")
     .attr("class", "mono")
-    .text((d) => `≥ ${d.toFixed(2)}`)
-    .attr("x", (_d, i) => legendElementWidth * i)
-    .attr("y", height + gridSize)
+    .text((value) => `≥ ${value.toFixed(2)}`)
+    .attr("x", (_value, valueIndex) => legendElementWidth * valueIndex)
+    .attr("y", height + cellSize)
+}
+
+// @TODO: tooltip not working
+const tooltip = (selector: string) => {
+  const opts = {
+    leftOffst: 60,
+    tOpts: {
+      container: "body",
+      delay: {
+        hide: 0,
+        show: 500,
+      },
+      viewport: {
+        selector: "#chart svg",
+      },
+    },
+    topOffst: 40,
+  }
+
+  const sel: any = $(selector)
+
+  sel.tooltip(opts.tOpts)
 }
 
 const main = async () => {

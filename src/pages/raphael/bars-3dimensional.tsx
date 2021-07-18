@@ -5,7 +5,6 @@ import { DemoPageProps } from "@/common"
 import Demo from "@/components/demo"
 
 import main from "@/demos/bars-3dimensional/bars-3dimensional"
-import "@/demos/bars-3dimensional/bars-3dimensional.styl"
 
 const Bars3Dimensional = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo demoInfo={demoInfo} main={main}>

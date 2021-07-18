@@ -10,7 +10,6 @@ type Margin = {
 
 type SVG = d3.Selection<SVGGElement, unknown, HTMLElement, unknown>
 
-// @TODO: rename this file when all files using utils have been ported to use this
 // @TODO: types
 
 const d3utils = {

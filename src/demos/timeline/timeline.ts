@@ -1,12 +1,19 @@
-import * as d3next from "d3"
+import * as d3 from "d3"
+
 import d3utils from "@/demos/_utils/d3utils"
 
+import "./timeline.styl"
+
+type DataItem = {
+  end: Date
+  instant: boolean
+  label: string
+  start: Date
+  track: number
+}
+
 const fetchData = () =>
-  new Promise((resolve) => {
-    d3.csv(`${ROOT_PATH}data/d3js/timeline/data.csv`, (dataset) =>
-      resolve(dataset)
-    )
-  })
+  (d3.csv(`${ROOT_PATH}data/d3js/timeline/data.csv`) as unknown) as DataItem[]
 
 const margin = {
   bottom: 0,
@@ -19,16 +26,16 @@ const outerHeight = 700
 const height = outerHeight - margin.top - margin.bottom
 const bandGap = 25
 
-const parseDate = function (dateString) {
-  const format = d3.time.format("%Y-%m-%d")
+const parseDate = function (dateString: string) {
+  const format = d3.timeParse("%Y-%m-%d")
 
-  let date = format.parse(dateString)
+  let date = format(dateString)
 
   if (date !== null) {
     return date
   }
 
-  const year = isNaN(dateString)
+  const year = isNaN(Number(dateString))
     ? -dateString.replace(/[^0-9]/g, "")
     : +dateString
 
@@ -38,77 +45,82 @@ const parseDate = function (dateString) {
     date = new Date(-1, 6, 1)
   } else {
     date = new Date(year, 6, 1)
-    date.setUTCFullYear(`0000${year}`.slice(-4))
+    date.setUTCFullYear(year)
   }
 
   return date
 }
 
-const toYear = function (date, bcString) {
-  bcString = bcString || " BC"
-
+const toYear = (date: Date) => {
+  const bcString = " BC"
   const year = date.getUTCFullYear()
 
-  if (year > 0) {
+  if (year >= 0) {
     return year.toString()
   }
 
-  if (bcString[0] === "-") {
-    return bcString - year
-  }
-
-  return bcString - year
+  return bcString + Math.abs(year)
 }
 
-const createTimeline = function ({ rootElId }) {
-  const rootEl = document.getElementById(rootElId)
+class Timeline {
+  private chart: any
+  private bandY: number
+  private bandNum: number
+  private dataContent: any
+  private components: any
+  private bands: any
+  private width: number
 
-  rootEl.classList.add("timeline-chart")
+  public constructor({ rootElId }: { rootElId: string }) {
+    const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  const outerWidth = rootEl.getBoundingClientRect().width
-  const width = outerWidth - margin.left - margin.right
+    rootEl.classList.add("timeline-chart")
 
-  let bandY = 0
-  let bandNum = 0
+    const outerWidth = rootEl.getBoundingClientRect().width
 
-  const timeline = {}
-  const data = {}
-  const components = []
-  const bands = {}
+    this.width = outerWidth - margin.left - margin.right
 
-  const svg = d3utils.svg(`#${rootElId}`, outerWidth, outerHeight, margin)
+    this.bandY = 0
+    this.bandNum = 0
 
-  d3utils.middleTitle(svg, outerWidth, "Philosophers through History", -20)
-  d3utils.filterBlackOpacity("intervals", svg, 1, 0.2)
+    this.dataContent = {}
+    this.components = []
+    this.bands = {}
 
-  svg
-    .append("clipPath")
-    .attr("id", "chart-area")
-    .append("rect")
-    .attr("width", width)
-    .attr("height", height)
+    const svg = d3utils.svg(`#${rootElId}`, outerWidth, outerHeight, margin)
 
-  svg.on("mouseup", () =>
-    d3
-      .selectAll(".interval rect")
-      .style("filter", "url(#drop-shadow-intervals)")
-  )
+    d3utils.middleTitle(svg, outerWidth, "Philosophers through History", -20)
+    d3utils.filterBlackOpacity("intervals", svg, 1, 0.2)
 
-  const chart = svg
-    .append("g")
-    .attr("class", "chart")
-    .attr("clip-path", "url(#chart-area)")
+    svg
+      .append("clipPath")
+      .attr("id", "chart-area")
+      .append("rect")
+      .attr("width", this.width)
+      .attr("height", height)
 
-  timeline.data = function (timelineItems) {
+    svg.on("mouseup", () =>
+      d3
+        .selectAll(".interval rect")
+        .style("filter", "url(#drop-shadow-intervals)")
+    )
+
+    this.chart = svg
+      .append("g")
+      .attr("class", "chart")
+      .attr("clip-path", "url(#chart-area)")
+  }
+
+  public data(timelineItems: DataItem[]) {
     const today = new Date()
 
-    const tracks = []
+    const tracks: any = []
     const yearMillis = 31622400000
     const instantOffset = 100 * yearMillis
 
-    data.items = timelineItems
+    this.dataContent.items = timelineItems
 
-    const compareAscending = function (item1, item2) {
+    const compareAscending = function (item1: any, item2: any) {
       let result = item1.start - item2.start
 
       if (result < 0) {
@@ -132,7 +144,7 @@ const createTimeline = function ({ rootElId }) {
       return 0
     }
 
-    const compareDescending = function (item1, item2) {
+    const compareDescending = function (item1: any, item2: any) {
       let result = item1.start - item2.start
 
       if (result < 0) {
@@ -156,12 +168,12 @@ const createTimeline = function ({ rootElId }) {
       return 0
     }
 
-    const calculateTracks = function (items, sortOrder, timeOrder) {
+    const calculateTracks = (items: any, sortOrder: any, timeOrder: any) => {
       sortOrder = sortOrder || "descending"
       timeOrder = timeOrder || "backward"
 
-      const sortBackward = function () {
-        return items.forEach((item) => {
+      const sortBackward = () =>
+        items.forEach((item: any) => {
           let track = 0
 
           for (
@@ -180,10 +192,9 @@ const createTimeline = function ({ rootElId }) {
 
           tracks[track] = item.start
         })
-      }
 
       const sortForward = function () {
-        return items.forEach((item) => {
+        return items.forEach((item: any) => {
           let track = 0
 
           for (
@@ -205,9 +216,9 @@ const createTimeline = function ({ rootElId }) {
       }
 
       if (sortOrder === "ascending") {
-        data.items.sort(compareAscending)
+        this.dataContent.items.sort(compareAscending)
       } else {
-        data.items.sort(compareDescending)
+        this.dataContent.items.sort(compareDescending)
       }
 
       if (timeOrder === "forward") {
@@ -217,7 +228,7 @@ const createTimeline = function ({ rootElId }) {
       return sortBackward()
     }
 
-    data.items.forEach((item) => {
+    this.dataContent.items.forEach((item: any) => {
       item.start = parseDate(item.start)
 
       if (item.end === "") {
@@ -233,51 +244,77 @@ const createTimeline = function ({ rootElId }) {
       }
     })
 
-    calculateTracks(data.items, "descending", "backward")
+    calculateTracks(this.dataContent.items, "descending", "backward")
 
-    data.nTracks = tracks.length
-    data.minDate = d3next.min(data.items, (d) => d.start)
-    data.maxDate = d3next.max(data.items, (d) => d.end)
+    this.dataContent.nTracks = tracks.length
+    this.dataContent.minDate = d3.min(
+      this.dataContent.items,
+      (d: any) => d.start
+    )
+    this.dataContent.maxDate = d3.max(this.dataContent.items, (d: any) => d.end)
 
-    return timeline
+    return this
   }
 
-  timeline.tooltip = {
-    create() {
-      d3utils.tooltip(".part.instant, .part.interval", {
-        followMouse: true,
-        leftOffst: 80,
-      })
+  public xAxis(bandName: any) {
+    const band = this.bands[bandName]
 
-      return timeline
-    },
+    const axis = (d3 as any)
+      .axisBottom(band.xScale)
+      .tickSize(6, 0)
+      .tickFormat((d: any) => toYear(d))
+
+    const xAxis: any = this.chart
+      .append("g")
+      .attr("class", "axis")
+      .attr("transform", `translate(0,${band.y + band.h})`)
+
+    xAxis.redraw = function () {
+      return xAxis.call(axis)
+    }
+
+    band.parts.push(xAxis)
+    this.components.push(xAxis)
+
+    return this
   }
 
-  timeline.band = function (bandName, sizeFactor) {
-    const band = {}
+  public createTooltip() {
+    d3utils.tooltip(".part.instant, .part.interval", {
+      followMouse: true,
+      leftOffst: 80,
+    })
 
-    band.id = `band${bandNum}`
+    return this
+  }
+
+  public band(bandName: any, sizeFactor: any) {
+    const band: any = {}
+
+    band.id = `band${this.bandNum}`
     band.x = 0
-    band.y = bandY
-    band.w = width
+    band.y = this.bandY
+    band.w = this.width
     band.h = height * (sizeFactor || 1)
     band.trackOffset = 0
-    band.trackHeight = Math.min((band.h - band.trackOffset) / data.nTracks, 20)
+    band.trackHeight = Math.min(
+      (band.h - band.trackOffset) / this.dataContent.nTracks,
+      20
+    )
     band.itemHeight = band.trackHeight * 0.7
     band.parts = []
     band.instantWidth = 100
-    band.xScale = d3.time
-      .scale()
-      .domain([data.minDate, data.maxDate])
+    band.xScale = d3
+      .scaleTime()
+      .domain([this.dataContent.minDate, this.dataContent.maxDate])
       .range([0, band.w])
 
-    band.yScale = function (track) {
-      return band.trackOffset + track * band.trackHeight
-    }
+    band.yScale = (track: any) => band.trackOffset + track * band.trackHeight
 
     band.yearsScale =
-      data.maxDate.getUTCFullYear() - data.minDate.getUTCFullYear()
-    band.g = chart
+      this.dataContent.maxDate.getUTCFullYear() -
+      this.dataContent.minDate.getUTCFullYear()
+    band.g = this.chart
       .append("g")
       .attr("id", band.id)
       .attr("transform", `translate(0,${band.y})`)
@@ -289,19 +326,19 @@ const createTimeline = function ({ rootElId }) {
 
     const items = band.g
       .selectAll("g")
-      .data(data.items)
+      .data(this.dataContent.items)
       .enter()
       .append("svg")
-      .attr("y", (d) => band.yScale(d.track))
+      .attr("y", (d: DataItem) => band.yScale(d.track))
       .attr("height", band.itemHeight)
-      .attr("data-title", (d) => {
+      .attr("data-title", (d: DataItem) => {
         if (d.instant) {
           return `${d.label}: ${toYear(d.start)}`
         }
 
         return `${d.label}: ${toYear(d.start)} - ${toYear(d.end)}`
       })
-      .attr("class", (d) => {
+      .attr("class", (d: DataItem) => {
         if (d.instant) {
           return "part instant"
         }
@@ -309,7 +346,7 @@ const createTimeline = function ({ rootElId }) {
         return "part interval"
       })
 
-    const intervals = d3.select(`#band${bandNum}`).selectAll(".interval")
+    const intervals = d3.select(`#band${this.bandNum}`).selectAll(".interval")
 
     intervals
       .append("rect")
@@ -325,7 +362,7 @@ const createTimeline = function ({ rootElId }) {
       .attr("x", 3)
       .attr("y", 9.5)
 
-    const instants = d3.select(`#band${bandNum}`).selectAll(".instant")
+    const instants = d3.select(`#band${this.bandNum}`).selectAll(".instant")
 
     instants
       .append("circle")
@@ -338,16 +375,16 @@ const createTimeline = function ({ rootElId }) {
       .attr("x", 15)
       .attr("y", 10)
 
-    band.addActions = function (actions) {
-      return actions.forEach((action) => items.on(action[0], action[1]))
+    band.addActions = function (actions: any) {
+      return actions.forEach((action: any) => items.on(action[0], action[1]))
     }
 
     band.redraw = function () {
       items
-        .attr("x", (d) => band.xScale(d.start))
-        .attr("width", (d) => band.xScale(d.end) - band.xScale(d.start))
+        .attr("x", (d: any) => band.xScale(d.start))
+        .attr("width", (d: any) => band.xScale(d.end) - band.xScale(d.start))
         .select("text")
-        .text((d) => {
+        .text((d: any) => {
           const scale = band.xScale(d.end) - band.xScale(d.start)
           const maxLetters = scale / 9
 
@@ -358,19 +395,19 @@ const createTimeline = function ({ rootElId }) {
           return d.label
         })
 
-      return band.parts.forEach((part) => part.redraw())
+      return band.parts.forEach((part: any) => part.redraw())
     }
 
-    bands[bandName] = band
-    components.push(band)
-    bandY += band.h + bandGap
-    bandNum += 1
+    this.bands[bandName] = band
+    this.components.push(band)
+    this.bandY += band.h + bandGap
+    this.bandNum += 1
 
-    return timeline
+    return this
   }
 
-  timeline.labels = function (bandName) {
-    const band = bands[bandName]
+  public labels(bandName: any) {
+    const band = this.bands[bandName]
     const labelWidth = 46
     const labelHeight = 20
     const labelTop = band.y + band.h - 10
@@ -381,7 +418,7 @@ const createTimeline = function ({ rootElId }) {
         "bandMinMaxLabel",
         0,
         4,
-        function (min) {
+        function (min: any) {
           return toYear(min)
         },
         "Start of the selected interval",
@@ -393,7 +430,7 @@ const createTimeline = function ({ rootElId }) {
         "bandMinMaxLabel",
         band.w - labelWidth,
         band.w - 4,
-        function (_min, max) {
+        function (_min: any, max: any) {
           return toYear(max)
         },
         "End of the selected interval",
@@ -405,15 +442,17 @@ const createTimeline = function ({ rootElId }) {
         "bandMidLabel",
         (band.w - labelWidth) / 2,
         band.w / 2,
-        function (min, max) {
-          return max.getUTCFullYear() - min.getUTCFullYear()
+        function (min: any, max: any) {
+          const result = max.getUTCFullYear() - min.getUTCFullYear()
+
+          return result
         },
         "Length of the selected interval",
         band.x + band.w / 2 - 75,
         labelTop,
       ],
     ]
-    const bandLabels = chart
+    const bandLabels = this.chart
       .append("g")
       .attr("id", `${bandName}Labels`)
       .attr("transform", `translate(0,${band.y + band.h + 1})`)
@@ -425,68 +464,60 @@ const createTimeline = function ({ rootElId }) {
     bandLabels
       .append("rect")
       .attr("class", "bandLabel")
-      .attr("x", (d) => d[2])
+      .attr("x", (d: any) => d[2])
       .attr("width", labelWidth)
       .attr("height", labelHeight)
       .style("opacity", 1)
 
-    const labels = bandLabels
+    const labels: any = bandLabels
       .append("text")
-      .attr("class", (d) => d[1])
-      .attr("id", (d) => d[0])
-      .attr("x", (d) => d[3])
+      .attr("class", (d: any) => d[1])
+      .attr("id", (d: any) => d[0])
+      .attr("x", (d: any) => d[3])
       .attr("y", yText)
-      .attr("text-anchor", (d) => d[0])
+      .attr("text-anchor", (d: any) => d[0])
 
     labels.redraw = function () {
       const min = band.xScale.domain()[0]
       const max = band.xScale.domain()[1]
 
-      return labels.text((d) => d[4](min, max))
+      return labels.text((d: any) => d[4](min, max))
     }
 
     band.parts.push(labels)
-    components.push(labels)
+    this.components.push(labels)
 
-    return timeline
+    return this
   }
 
-  timeline.xAxis = function (bandName, orientation) {
-    const band = bands[bandName]
-    const axis = d3.svg
-      .axis()
-      .scale(band.xScale)
-      .orient(orientation || "bottom")
-      .tickSize(6, 0)
-      .tickFormat((d) => toYear(d))
-    const xAxis = chart
-      .append("g")
-      .attr("class", "axis")
-      .attr("transform", `translate(0,${band.y + band.h})`)
+  public brush(bandName: any, targetNames: any) {
+    const band = this.bands[bandName]
+    const brush = d3.brushX()
 
-    xAxis.redraw = function () {
-      return xAxis.call(axis)
-    }
+    const selectionScale = d3
+      .scaleTime()
+      .domain([0, 1000])
+      .range([
+        this.dataContent.minDate.getTime(),
+        this.dataContent.maxDate.getTime(),
+      ])
 
-    band.parts.push(xAxis)
-    components.push(xAxis)
+    brush.on("brush", (e) => {
+      let newDomain = band.xScale.domain()
 
-    return timeline
-  }
-
-  timeline.brush = function (bandName, targetNames) {
-    const band = bands[bandName]
-    const brush = d3.svg.brush().x(band.xScale.range([0, band.w]))
-
-    brush.on("brush", () => {
-      const domain = brush.empty() ? band.xScale.domain() : brush.extent()
+      if (e.selection) {
+        newDomain = [
+          selectionScale(e.selection[0]),
+          selectionScale(e.selection[1]),
+        ]
+      }
 
       d3.selectAll(".interval rect").style("filter", "none")
 
-      targetNames.forEach((d) => {
-        bands[d].xScale.domain(domain)
+      targetNames.forEach((d: any) => {
+        this.bands[d].xScale.domain(newDomain)
 
-        bands[d].redraw()
+        this.bands[d].redraw()
       })
     })
 
@@ -497,18 +528,18 @@ const createTimeline = function ({ rootElId }) {
       .attr("y", 1)
       .attr("height", band.h - 1)
 
-    return timeline
+    return this
   }
 
-  timeline.redraw = function () {
-    return components.forEach((component) => component.redraw())
+  public redraw() {
+    return this.components.forEach((component: any) => component.redraw())
   }
-
-  return timeline
 }
 
-const renderChart = ({ dataset, rootElId }) => {
-  createTimeline({ rootElId })
+const main = async () => {
+  const dataset = await fetchData()
+
+  new Timeline({ rootElId: "chart" })
     .data(dataset)
     .band("mainBand", 0.82)
     .band("naviBand", 0.08)
@@ -517,17 +548,8 @@ const renderChart = ({ dataset, rootElId }) => {
     .labels("mainBand")
     .labels("naviBand")
     .brush("naviBand", ["mainBand"])
-    .tooltip["create"]()
+    .createTooltip()
     .redraw()
-}
-
-const main = async () => {
-  const dataset = await fetchData()
-
-  renderChart({
-    dataset,
-    rootElId: "chart",
-  })
 }
 
 export default main

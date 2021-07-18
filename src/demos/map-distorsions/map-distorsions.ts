@@ -1,6 +1,9 @@
 import * as d3 from "d3"
 import sortBy from "lodash/sortBy"
-import d3utils from "@/demos/_utils/d3nextutils"
+
+import d3utils from "@/demos/_utils/d3utils"
+
+import "./map-distorsions.styl"
 
 type Data = {
   "Acc. 40º 150%": string

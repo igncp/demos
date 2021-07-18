@@ -6,8 +6,6 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/area/area"
 
-import "@/demos/area/area.styl"
-
 const Area = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo demoInfo={demoInfo} main={main}>
     <form>

@@ -1,3 +1,5 @@
+import "./bubbles.styl"
+
 const fetchScript = (src: string) =>
   new Promise((resolve) => {
     const script = document.createElement("script")

@@ -1,5 +1,7 @@
 import * as d3 from "d3"
 
+import "./force.styl"
+
 type Node = {
   fx: number | null
   fy: number | null

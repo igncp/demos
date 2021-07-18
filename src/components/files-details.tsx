@@ -7,9 +7,34 @@ import "prismjs/components/prism-jsx"
 import "prismjs/components/prism-typescript"
 import "prismjs/components/prism-stylus"
 
-import "prismjs/themes/prism-solarizedlight.css"
+import "prismjs/themes/prism-coy.css"
 
 import { DemoInfo } from "@/common"
+
+const CodeInGH = ({ filePath }: { filePath: string }) => (
+  <>
+    <span>| </span>
+    <a
+      href={`https://github.com/igncp/demos/blob/main/src/${filePath}`}
+      rel="noreferrer"
+      target="_blank"
+    >
+      Code in Github
+    </a>
+  </>
+)
+const CoverageReport = ({ filePath }: { filePath: string }) => (
+  <>
+    <span>| </span>
+    <a
+      href={`https://igncp.github.io/demos/coverage-ts/files/src/${filePath}.html`}
+      rel="noreferrer"
+      target="_blank"
+    >
+      TypeScript coverage report
+    </a>
+  </>
+)
 
 type Props = {
   demoInfo: DemoInfo
@@ -19,6 +44,9 @@ const FilesDetails = ({ demoInfo }: Props) => {
   if (typeof window === "undefined") {
     return null
   }
+
+  const demoFileName = `${demoInfo.key}.${demoInfo.files.demo.type}`
+  const pageFilePath = `pages/${demoInfo.category}/${demoInfo.key}.${demoInfo.files.page.type}`
 
   return (
     <div>
@@ -30,6 +58,18 @@ const FilesDetails = ({ demoInfo }: Props) => {
           <ul>
             {demoInfo.notes.map((note, idx) => (
               <li dangerouslySetInnerHTML={{ __html: note }} key={idx} />
+            ))}
+          </ul>
+        </div>
+      )}
+      {!!demoInfo.summary.length && (
+        <div className="bs-callout bs-callout-summary" id="notes">
+          <p>
+            <strong>Implementation Summary:</strong>
+          </p>
+          <ul>
+            {demoInfo.summary.map((note, idx) => (
+              <p dangerouslySetInnerHTML={{ __html: note }} key={idx} />
             ))}
           </ul>
         </div>
@@ -47,6 +87,22 @@ const FilesDetails = ({ demoInfo }: Props) => {
           ))}
         </ul>
       </div>
+      {!!demoInfo.docs.length && (
+        <div className="bs-callout bs-callout-secondary" id="docs">
+          <p>
+            <strong>Docs:</strong>
+          </p>
+          <ul>
+            {demoInfo.docs.map((doc) => (
+              <li key={doc[1]}>
+                <a href={doc[1]} rel="noreferrer" target="_blank">
+                  {doc[0]}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {!!demoInfo.data.length && (
         <div className="bs-callout bs-callout-warning" id="data-list">
           <p>
@@ -69,7 +125,19 @@ const FilesDetails = ({ demoInfo }: Props) => {
         </p>
         <ul>
           <li>
-            <p>{`${demoInfo.key}.${demoInfo.files.demo.type}`}</p>
+            <p>
+              {demoFileName}{" "}
+              {(() => {
+                const filePath = `demos/${demoInfo.key}/${demoFileName}`
+
+                return (
+                  <>
+                    <CodeInGH filePath={filePath} />{" "}
+                    <CoverageReport filePath={filePath} />
+                  </>
+                )
+              })()}
+            </p>
             <pre>
               <code
                 dangerouslySetInnerHTML={{
@@ -86,7 +154,19 @@ const FilesDetails = ({ demoInfo }: Props) => {
           </li>
           {demoInfo.files.d3utils && (
             <li>
-              <p>d3utils.js</p>
+              <p>
+                d3utils.ts{" "}
+                {(() => {
+                  const filePath = `demos/_utils/d3utils.ts`
+
+                  return (
+                    <>
+                      <CodeInGH filePath={filePath} />{" "}
+                      <CoverageReport filePath={filePath} />
+                    </>
+                  )
+                })()}
+              </p>
               <pre>
                 <code
                   dangerouslySetInnerHTML={{
@@ -101,7 +181,10 @@ const FilesDetails = ({ demoInfo }: Props) => {
             </li>
           )}
           <li>
-            <p>{`pages/${demoInfo.category}/${demoInfo.key}.${demoInfo.files.page.type}`}</p>
+            <p>
+              {pageFilePath} <CodeInGH filePath={pageFilePath} />{" "}
+              <CoverageReport filePath={pageFilePath} />
+            </p>
             <pre>
               <code
                 dangerouslySetInnerHTML={{
@@ -118,7 +201,12 @@ const FilesDetails = ({ demoInfo }: Props) => {
           </li>
           {demoInfo.files.styl && (
             <li>
-              <p>{`${demoInfo.key}.styl`}</p>
+              <p>
+                {`${demoInfo.key}.styl`}{" "}
+                <CodeInGH
+                  filePath={`demos/${demoInfo.key}/${demoInfo.key}.styl`}
+                />
+              </p>
               <pre>
                 <code
                   dangerouslySetInnerHTML={{

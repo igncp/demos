@@ -16,11 +16,9 @@ I am updating this repository after it was inactive for several years. The initi
     - [x] Use PrismJS 
     - [ ] Research if using AST / TreeSitter is possible
     - [ ] Try SSR if possible
-1. [ ] Refactor charts into components that can be configured and rendered multiple times on the same page
 1. [ ] Upgrade all dependencies to latest version - this will take some time for D3 as several APIs changed
     - All global dependencies should be removed where possible and fetched by npm using the version
     - When necessary to use global dependencies, they should be requested from the script
-1. [ ] Use `import { foo, bar } from "baz"` instead of `import * as baz from "baz"` where possible
 1. [ ] Remove or change dependencies
     - [x] Remove Bower
     - [ ] Remove jQuery
@@ -33,19 +31,24 @@ I am updating this repository after it was inactive for several years. The initi
     - Remove page's unnecessary classes: when used by style, add them by code
     - Separate data fetching (at the top) from the chart rendering
     - Future: use any selector, insted just id
-1. [ ] Port styles to CSS with preprocessors (postcss) with Stylelint
-    - Fist, clean Stylus files and make them consistent: no semi, brackets, etc.
+1. [ ] Add CSS modules, preferably with stylus
 1. [ ] Update the general UI framework (better support for responsive) but maintain the look and feel
 1. [ ] Improve performance of some charts
 1. [ ] Add SEO meta tags
 1. [ ] Add disclaimer for old charts
 1. [ ] Port codebase to TypeScript with a high type coverage
-    - Port components, pages and other utils
-    - Resolve cases with `any`
-    - Resolve cases with `@ts-ignore`
+    - [x] Generate report and hosted along with the pages
+    - [ ] Port components, pages and other utils
+    - [ ] Resolve cases with `any`
+    - [ ] Resolve cases with `@ts-ignore`
+    - [ ] Set the threshold to 99%
 1. [ ] Extra refactors:
-    - Extract texts, dimensions, state
-    - Rename variables and functions
+    - Extract texts, some dimensions and state into variables
+    - Improve naming of variables and functions
+    - Add references to relevant documentations
+    - Add some personal description of the implementation
+    - Remove the usage of d3utils, even if it creates duplication in charts
+    - Use `import { foo, bar } from "baz"` instead of `import * as baz from "baz"` where possible
 
 Some new examples may be added at the same time, especially when more progress is done
 
@@ -54,8 +57,9 @@ Some new examples may be added at the same time, especially when more progress i
 Showcase of some client-side demos.
 
 - Backend: It uses Gatsby to generate static pages, and Stylus as CSS preprocessor
-- Frontend: The main libraries used are D3, Raphäel, jQuery and Lodash
+- Frontend: The main libraries used are D3 and Raphäel
 - New version: https://igncp.github.io/demos/
+- [TypeScript coverage report](https://igncp.github.io/demos/coverage-ts)
 - Testing page:
     - Some unit tests for external dependencies like D3 for learning their usage better
     - https://igncp.github.io/demos/testing
@@ -74,31 +78,31 @@ You need to have Node.js installed
 
 ## Refactoring Progress
 
-|Name|Ported to TS|Removed global dependencies|Reusable structure|
-|:--:|:--:|:--:|:--:|
-|area|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|bars|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|bars-3dimensional|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|bubbles|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|chord|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|circular-arcs|:white_check_mark:|:white_check_mark:|No|
-|collapsible-tree|:white_check_mark:|:white_check_mark:|No|
-|concentric-circles|:white_check_mark:|:white_check_mark:|No|
-|fish-eye|:white_check_mark:|:white_check_mark:|No|
-|force|:white_check_mark:|:white_check_mark:|No|
-|icosahedron|:white_check_mark:|:white_check_mark:|No|
-|map-distorsions|:white_check_mark:|:white_check_mark:|No|
-|mareys-schedule|No|:white_check_mark:|No|
-|moving-line|:white_check_mark:|:white_check_mark:|No|
-|multiline-voronoi|No|No|No|
-|partition|No|:white_check_mark:|No|
-|pie|:white_check_mark:|:white_check_mark:|No|
-|spain-map|:white_check_mark:|:white_check_mark:|No|
-|timeline|No|No|No|
-|trend-line|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|vectors|No|No|No|
-|weekly-heatmap|:white_check_mark:|:white_check_mark:|No|
-|world-map|:white_check_mark:|:white_check_mark:|No|
+|Name|Ported to TS|Removed global dependencies|Reusable structure|Docs|Extra Refactors|
+|:--:|:--:|:--:|:--:|:--:|:--:|
+|area|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+|bars|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|bars-3dimensional|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|bubbles|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|chord|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|circular-arcs|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|collapsible-tree|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|concentric-circles|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|fish-eye|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|force|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|icosahedron|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|map-distorsions|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|mareys-schedule|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|moving-line|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|multiline-voronoi|No|No|No|No|No|
+|partition|No|:white_check_mark:|No|No|No|
+|pie|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|spain-map|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|timeline|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|trend-line|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|vectors|No|No|No|No|No|
+|weekly-heatmap|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+|world-map|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
 
 ## License
 

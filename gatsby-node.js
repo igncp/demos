@@ -58,7 +58,7 @@ const getDemoInfo = (slugs) => {
   const page = getPage(demoName, category)
 
   const d3utils = demo.content.includes("d3utils")
-    ? readIfExists(`src/demos/_utils/d3utils.js`)
+    ? readIfExists(`src/demos/_utils/d3utils.ts`)
     : null
 
   return {

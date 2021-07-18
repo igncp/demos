@@ -16,6 +16,8 @@ import {
   tsv,
 } from "d3"
 
+import "./trend-line.styl"
+
 type InitialDataItem = {
   occurred: string
   value: string

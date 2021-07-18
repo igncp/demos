@@ -7,7 +7,7 @@ const PageTitle = () => (
         <a href={ROOT_PATH}>Demos</a>{" "}
         <small>interactive data visualization examples</small>
       </span>
-      <span className="col-lg-4">
+      <span className="col-lg-4" id="gh-buttons">
         <iframe
           frameBorder="0"
           height="20"

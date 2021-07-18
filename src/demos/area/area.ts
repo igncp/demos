@@ -1,10 +1,10 @@
 import {
-  area as d3Area,
+  area as areaD3,
   axisBottom,
   axisLeft,
   csv,
   format,
-  line as d3Line,
+  line as lineD3,
   max,
   min,
   scaleLinear,
@@ -12,7 +12,7 @@ import {
 } from "d3"
 import { Delaunay } from "d3-delaunay"
 
-import d3utils from "@/demos/_utils/d3nextutils"
+import "./area.styl"
 
 type Point = {
   index?: number
@@ -23,6 +23,12 @@ type Point = {
 const fetchData = (): Promise<Point[]> =>
   (csv(`${ROOT_PATH}data/d3js/area/data.csv`) as unknown) as Promise<Point[]>
 
+const texts = {
+  pointTitle: (point: Point) =>
+    `Year: ${point.year}, ` + `Percent: ${point.percent}%`,
+  title: "Share of top decile [aka top 10%] in national income",
+}
+
 const margin = {
   bottom: 50,
   left: 70,
@@ -31,6 +37,8 @@ const margin = {
 }
 
 const height = 400 - margin.top - margin.bottom
+const titleYOffset = -15
+const axisTickSize = 10
 
 type RenderChart = (o: {
   data: Point[]
@@ -46,30 +54,41 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     margin.left -
     margin.right
 
-  const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
+  const svg = select(`#${rootElId}`)
+    .append("svg")
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width + margin.left + margin.right)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`)
+    .attr("class", "area-chart")
 
-  svg.attr("class", "area-chart")
+  svg
+    .append("text")
+    .attr("class", "chart-title")
+    .attr("text-anchor", "middle")
+    .attr("transform", `translate(${String(width / 2)},${titleYOffset})`)
+    .text(texts.title)
+    .style("font-weight", "bold")
 
-  d3utils.middleTitle(
-    svg,
-    width,
-    "Share of top decile [aka top 10%] in national income",
-    null
-  )
-  d3utils.filterBlackOpacity("points", svg, 2, 0.5)
+  filterBlackOpacity("points", svg, 2, 0.5)
 
-  const xMax = max(data, (d) => d.year) as number
-  const xMin = min(data, (d) => d.year) as number
-  const yMax = max(data, (d) => d.percent / 100) as number
-  const yMin = min(data, (d) => d.percent / 100) as number
+  const xMax = max(data, (point) => point.year) as number
+  const xMin = min(data, (point) => point.year) as number
 
-  const xScale = scaleLinear().range([0, width]).domain([xMin, xMax])
+  const yMax = max(data, (point) => point.percent / 100) as number
+  const yMin = min(data, (point) => point.percent / 100) as number
+
+  const xScale = scaleLinear().domain([xMin, xMax]).range([0, width])
   const yScale = scaleLinear()
-    .range([0, height])
     .domain([yMax + 0.05, yMin - 0.05])
+    .range([0, height])
 
-  const xAxis = axisBottom(xScale).tickFormat(format(".0f")).tickSize(-height)
-  const yAxis = axisLeft(yScale).tickFormat(format(".0%")).tickSize(-width)
+  const xAxis = axisBottom(xScale)
+    .tickFormat(format(".0f"))
+    .tickSize(axisTickSize)
+  const yAxis = axisLeft(yScale)
+    .tickFormat(format(".0%"))
+    .tickSize(axisTickSize)
 
   svg
     .append("g")
@@ -86,12 +105,12 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .selectAll("text")
     .attr("dx", "-.25em")
 
-  const area = d3Area<Point>()
-    .x((d: Point) => xScale(d.year))
+  const area = areaD3<Point>()
+    .x((point: Point) => xScale(point.year))
     .y0(height)
-    .y1((d: Point) => yScale(d.percent / 100))
+    .y1((point: Point) => yScale(point.percent / 100))
 
-  const line = d3Line<Point>()
+  const line = lineD3<Point>()
     .x((d) => xScale(d.year))
     .y((d) => yScale(d.percent / 100))
 
@@ -99,8 +118,8 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .append("path")
     .datum(data)
     .attr("class", "line")
-    .attr("clip-path", "url(#clip)")
     .attr("d", line)
+    .attr("clip-path", "url(#clip)")
 
   svg
     .append("clipPath")
@@ -113,8 +132,8 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .append("path")
     .datum(data)
     .attr("class", "area")
-    .attr("clip-path", "url(#clip)")
     .attr("d", area)
+    .attr("clip-path", "url(#clip)")
 
   const voronoi = Delaunay.from(
     data,
@@ -131,8 +150,8 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     select(`.point-${d.index}`).style("display", "block")
   }
 
-  const mouseleave = (_e: unknown, d: Point) => {
-    select(`.point-${d.index}`).style("display", "none")
+  const mouseleave = (_mouseEvent: unknown, point: Point) => {
+    select(`.point-${point.index}`).style("display", "none")
   }
 
   svg
@@ -142,11 +161,14 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .append("circle")
     .attr(
       "transform",
-      (d: Point) =>
-        `translate(${String(xScale(d.year))},${yScale(d.percent / 100)})`
+      (point: Point) =>
+        `translate(${xScale(point.year)},${yScale(point.percent / 100)})`
     )
     .attr("r", "5px")
-    .attr("class", (_d: Point, i: number) => `point point-${i}`)
+    .attr(
+      "class",
+      (_point: Point, pointIndex: number) => `point point-${pointIndex}`
+    )
     .style("filter", "url(#drop-shadow-points)")
 
   const voronoiGroup = svg.append("g").attr("class", "voronoi")
@@ -156,16 +178,15 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .data(data)
     .enter()
     .append("path")
-    .attr("d", (d: Point, i: number) => {
-      d.index = i
+    .attr("d", (point: Point, pointIndex: number) => {
+      point.index = pointIndex
 
-      return voronoi.renderCell(i)
+      return voronoi.renderCell(pointIndex)
     })
     .on("mouseover", mouseover)
     .on("mouseleave", mouseleave)
-    .attr("class", "voronoi-area")
     .append("title")
-    .text((d: Point) => `Year: ${d.year}, ` + `Percent: ${d.percent}%`)
+    .text(texts.pointTitle)
 
   return {
     toggleVoronoi: () => {
@@ -178,6 +199,40 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
       voronoiGroup.attr("class", newClass)
     },
   }
+}
+
+const filterBlackOpacity = (
+  id: string,
+  svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  deviation: number,
+  slope: number
+) => {
+  const defs = svg.append("defs")
+  const filter = defs
+    .append("filter")
+    .attr("height", "500%")
+    .attr("id", `drop-shadow-${id}`)
+    .attr("width", "500%")
+    .attr("x", "-200%")
+    .attr("y", "-200%")
+
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", deviation)
+
+  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", slope)
+    .attr("type", "linear")
+
+  const feMerge = filter.append("feMerge")
+
+  feMerge.append("feMergeNode")
+
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
 const main = async () => {

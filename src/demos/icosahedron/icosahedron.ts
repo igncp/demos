@@ -1,5 +1,7 @@
 import * as d3 from "d3"
 
+import "./icosahedron.styl"
+
 type IcosahedronOpts = {
   rootElId: string
 }

@@ -1,7 +1,9 @@
 import * as d3 from "d3"
 
 import d3Fisheye, { FishEyeScale } from "@/demos/_utils/fish-eye"
-import d3utils from "@/demos/_utils/d3nextutils"
+import d3utils from "@/demos/_utils/d3utils"
+
+import "./fish-eye.styl"
 
 type DataItem = {
   income: number

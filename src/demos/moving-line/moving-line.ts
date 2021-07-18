@@ -2,6 +2,8 @@ import { RaphaelPaper, RaphaelPath, RaphaelElement } from "raphael"
 
 import Raphael from "@/demos/_utils/browserRaphael"
 
+import "./moving-line.styl"
+
 type Data = {
   charts: Array<{
     lower: string

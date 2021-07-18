@@ -6,8 +6,6 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/bars/bars"
 
-import "@/demos/bars/bars.styl"
-
 const Bars = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo demoInfo={demoInfo} main={main}>
     <form>

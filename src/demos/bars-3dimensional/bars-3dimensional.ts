@@ -3,6 +3,8 @@ import { RaphaelPaper } from "raphael"
 // @ts-ignore
 import Raphael from "@/demos/_utils/browserRaphael"
 
+import "./bars-3dimensional.styl"
+
 const fetchData = async () => {
   const response = await fetch(
     `${ROOT_PATH}data/raphael/bars-3dimensional/data.json`

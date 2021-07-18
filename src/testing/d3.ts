@@ -5,7 +5,6 @@ const d3Tests = (QUnit: QUnitType) => {
   QUnit.test("d3.arc", (assert) => {
     const arc = d3.arc().outerRadius(10).innerRadius(0)
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     assert.deepEqual(typeof arc({} as any), "string")
   })
 
@@ -18,7 +17,6 @@ const d3Tests = (QUnit: QUnitType) => {
       .endAngle(Math.PI)
 
     // https://github.com/d3/d3-shape/blob/54f0f111a0fc356d8a71205686cd59033a931631/src/arc.js
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     assert.deepEqual(arc.centroid({} as any), [25, 0])
   })
 

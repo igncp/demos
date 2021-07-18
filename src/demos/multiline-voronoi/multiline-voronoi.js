@@ -1,5 +1,7 @@
 import * as d3next from "d3"
 
+import "./multiline-voronoi.styl"
+
 const fetchData = () => {
   const monthFormat = d3.time.format("%Y-%m")
   const months = []

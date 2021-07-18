@@ -6,8 +6,6 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/trend-line/trend-line"
 
-import "@/demos/trend-line/trend-line.styl"
-
 const TrendLine = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo demoInfo={demoInfo} main={main}>
     <form>

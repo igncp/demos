@@ -1,20 +1,11 @@
-const main = () => {
-  const rootElId = "chart"
-  const rootEl = document.getElementById(rootElId)
+import * as d3next from "d3"
 
-  rootEl.classList.add("vectors-chart")
+const colors = () => "#fff"
+const height = 500
 
-  const { width } = rootEl.getBoundingClientRect()
-  const height = 500
+// @TODO: Remove when ported
 
-  const colors = () => "#FFF"
-
-  const svg = d3
-    .select(`#${rootElId}`)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-
+const getInitialData = () => {
   const nodes = [
     {
       id: "A",
@@ -29,9 +20,6 @@ const main = () => {
       reflexive: false,
     },
   ]
-
-  let lastNodeId = "C".charCodeAt(0)
-
   const links = [
     {
       left: false,
@@ -47,26 +35,13 @@ const main = () => {
     },
   ]
 
-  const tick = () => {
-    path.attr("d", (d) => {
-      const deltaX = d.target.x - d.source.x
-      const deltaY = d.target.y - d.source.y
-      const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
-      const normX = deltaX / dist
-      const normY = deltaY / dist
-      const sourcePadding = d.left ? 17 : 12
-      const targetPadding = d.right ? 17 : 12
-      const sourceX = d.source.x + sourcePadding * normX
-      const sourceY = d.source.y + sourcePadding * normY
-      const targetX = d.target.x - targetPadding * normX
-      const targetY = d.target.y - targetPadding * normY
-
-      return `M${sourceX},${sourceY}L${targetX},${targetY}`
-    })
-
-    return circle.attr("transform", (d) => `translate(${d.x},${d.y})`)
+  return {
+    links,
+    nodes,
   }
+}
 
+const setupSVG = (svg) => {
   svg
     .append("svg:defs")
     .append("svg:marker")
@@ -92,6 +67,59 @@ const main = () => {
     .append("svg:path")
     .attr("d", "M10,-5L0,0L10,5")
     .attr("fill", "#000")
+}
+
+const renderChart = ({ rootElId }) => {
+  const rootEl = document.getElementById(rootElId)
+
+  rootEl.classList.add("vectors-chart")
+
+  const { width } = rootEl.getBoundingClientRect()
+
+  const svg = d3
+    .select(`#${rootElId}`)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+
+  const { links, nodes } = getInitialData()
+
+  let lastNodeId = "C".charCodeAt(0)
+  let lastKeyDown = -1
+
+  let selectedNode = null
+  let selectedLink = null
+  let mousedownLink = null
+  let mousedownNode = null
+  let mouseupNode = null
+
+  const resetMouseVars = () => {
+    mousedownNode = null
+    mouseupNode = null
+    mousedownLink = null
+  }
+
+  const tick = () => {
+    path.attr("d", (d) => {
+      const deltaX = d.target.x - d.source.x
+      const deltaY = d.target.y - d.source.y
+      const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+      const normX = deltaX / dist
+      const normY = deltaY / dist
+      const sourcePadding = d.left ? 17 : 12
+      const targetPadding = d.right ? 17 : 12
+      const sourceX = d.source.x + sourcePadding * normX
+      const sourceY = d.source.y + sourcePadding * normY
+      const targetX = d.target.x - targetPadding * normX
+      const targetY = d.target.y - targetPadding * normY
+
+      return `M${sourceX},${sourceY}L${targetX},${targetY}`
+    })
+
+    circle.attr("transform", (d) => `translate(${d.x},${d.y})`)
+  }
+
+  setupSVG(svg)
 
   const dragLine = svg
     .append("svg:path")
@@ -99,7 +127,6 @@ const main = () => {
     .attr("d", "M0,0L0,0")
 
   let path = svg.append("svg:g").selectAll("path")
-
   let circle = svg.append("svg:g").selectAll("g")
 
   const force = d3.layout
@@ -111,20 +138,7 @@ const main = () => {
     .charge(-500)
     .on("tick", tick)
 
-  let selectedNode = null
-  let selectedLink = null
-  let mousedownLink = null
-  let mousedownNode = null
-
-  let mouseupNode = null
-
-  const resetMouseVars = () => {
-    mousedownNode = null
-    mouseupNode = null
-    mousedownLink = null
-  }
-
-  const restart = function () {
+  const restart = () => {
     path = path.data(links)
     path
       .classed("selected", (d) => d === selectedLink)
@@ -142,6 +156,7 @@ const main = () => {
 
         return ""
       })
+
     path
       .enter()
       .append("svg:path")
@@ -184,7 +199,7 @@ const main = () => {
       .selectAll("circle")
       .style("fill", (d) => {
         if (d === selectedNode) {
-          return d3.rgb(colors(d.id)).darker().toString()
+          return d3next.rgb(colors(d.id)).darker().toString()
         }
 
         return colors(d.id)
@@ -198,26 +213,26 @@ const main = () => {
       .attr("r", 12)
       .style("fill", (d) => {
         if (d === selectedNode) {
-          return d3.rgb(colors(d.id)).brighter().toString()
+          return d3next.rgb(colors(d.id)).brighter().toString()
         }
 
         return colors(d.id)
       })
-      .style("stroke", (d) => d3.rgb(colors(d.id)).darker().toString())
+      .style("stroke", (d) => d3next.rgb(colors(d.id)).darker().toString())
       .classed("reflexive", (d) => d.reflexive)
       .on("mouseover", function (d) {
         if (!mousedownNode || d === mousedownNode) {
           return
         }
 
-        d3.select(this).attr("transform", "scale(1.1)")
+        d3next.select(this).attr("transform", "scale(1.1)")
       })
       .on("mouseout", function (d) {
         if (!mousedownNode || d === mousedownNode) {
           return
         }
 
-        d3.select(this).attr("transform", "")
+        d3next.select(this).attr("transform", "")
       })
       .on("mousedown", (d) => {
         if (d3.event.ctrlKey) {
@@ -261,7 +276,7 @@ const main = () => {
           return
         }
 
-        d3.select(this).attr("transform", "")
+        d3next.select(this).attr("transform", "")
 
         if (mousedownNode.id < mouseupNode.id) {
           source = mousedownNode
@@ -295,17 +310,19 @@ const main = () => {
 
         restart()
       })
+
     g.append("svg:text")
       .attr("x", 0)
       .attr("y", 4)
       .attr("class", "id")
       .text((d) => d.id)
+
     circle.exit().remove()
 
-    return force.start()
+    force.start()
   }
 
-  const mousedown = function () {
+  const mousedownSVG = function () {
     svg.classed("active", true)
 
     if (d3.event.ctrlKey || mousedownNode || mousedownLink) {
@@ -325,7 +342,7 @@ const main = () => {
     restart()
   }
 
-  const mousemove = function () {
+  const mousemoveSVG = function () {
     if (!mousedownNode) {
       return
     }
@@ -340,14 +357,14 @@ const main = () => {
     restart()
   }
 
-  const mouseup = function () {
+  const mouseupSVG = function () {
     if (mousedownNode) {
       dragLine.classed("hidden", true).style("marker-end", "")
     }
 
     svg.classed("active", false)
 
-    return resetMouseVars()
+    resetMouseVars()
   }
 
   const spliceLinksForNode = (node) => {
@@ -356,18 +373,16 @@ const main = () => {
     return toSplice.map((l) => links.splice(links.indexOf(l), 1))
   }
 
-  let lastKeyDown = -1
-
-  const keydown = function () {
-    d3.event.preventDefault()
+  const keydown = function (ev) {
+    ev.preventDefault()
 
     if (lastKeyDown !== -1) {
       return
     }
 
-    lastKeyDown = d3.event.keyCode
+    lastKeyDown = ev.keyCode
 
-    if (d3.event.keyCode === 17) {
+    if (lastKeyDown === 17) {
       circle.call(force.drag)
       svg.classed("ctrl", true)
     }
@@ -376,7 +391,7 @@ const main = () => {
       return
     }
 
-    switch (d3.event.keyCode) {
+    switch (lastKeyDown) {
       case 46:
         if (selectedNode) {
           nodes.splice(nodes.indexOf(selectedNode), 1)
@@ -423,10 +438,10 @@ const main = () => {
     }
   }
 
-  const keyup = function () {
+  const keyup = function (ev) {
     lastKeyDown = -1
 
-    if (d3.event.keyCode === 17) {
+    if (ev.keyCode === 17) {
       circle.on("mousedown.drag", null).on("touchstart.drag", null)
 
       svg.classed("ctrl", false)
@@ -434,13 +449,19 @@ const main = () => {
   }
 
   svg
-    .on("mousedown", mousedown)
-    .on("mousemove", mousemove)
-    .on("mouseup", mouseup)
+    .on("mousedown", mousedownSVG)
+    .on("mousemove", mousemoveSVG)
+    .on("mouseup", mouseupSVG)
 
-  d3.select(window).on("keydown", keydown).on("keyup", keyup)
+  d3next.select(window).on("keydown", keydown).on("keyup", keyup)
 
   restart()
+}
+
+const main = () => {
+  const rootElId = "chart"
+
+  renderChart({ rootElId })
 }
 
 export default main

@@ -9,6 +9,8 @@ import {
   select,
 } from "d3"
 
+import "./bars.styl"
+
 type Data = number[]
 
 const height = 500
@@ -65,7 +67,6 @@ class BarsChart {
       .range([0, 1])
     const heatmapColour: ColorFn = scaleLinear()
       .domain(range(0, 1, 1.0 / colours.length))
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .range(colours as any) as any
 
     const color = (d: Data[number]) => heatmapColour(c(d))
@@ -187,7 +188,6 @@ class BarsChart {
       .select(".x-axis")
       .transition()
       .duration(500)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .call(axisBottom(newX) as any)
 
     chart

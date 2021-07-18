@@ -7,8 +7,6 @@ import Demo from "@/components/demo"
 // @ts-ignore
 import main from "@/demos/multiline-voronoi/multiline-voronoi"
 
-import "@/demos/multiline-voronoi/multiline-voronoi.styl"
-
 const MultilineVoronoi = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo demoInfo={demoInfo} main={main} scripts={["/vendors/d3/d3.min.js"]}>
     <form>

@@ -17,6 +17,7 @@
     "d3-delaunay": "^6.0.2",
     "d3-scale": "^4.0.0",
     "eslint": "^7.29.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-react": "^7.24.0",
     "gatsby": "^3.6.2",
     "gatsby-plugin-alias-imports": "^1.0.5",
@@ -40,7 +41,8 @@
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
     "topojson-client": "^3.1.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "typescript-coverage-report": "^0.6.0"
   },
   "devDependencies": {
     "eslint-plugin-prettier": "^3.4.0",
@@ -51,18 +53,24 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "npm run check:ts && gatsby build --prefix-paths",
+    "build": "rm -rf public && npm run check:ts && gatsby build --prefix-paths && npm run ts-coverage:gh-pages",
     "build:gh-pages": "ROOT_PATH=/demos/ npm run build",
-    "check:ts": "tsc --noEmit --project .",
     "check:ci": "npm run build && npm run lint",
+    "check:ts": "tsc --noEmit --project .",
     "clean": "gatsby clean",
     "develop": "gatsby develop",
     "lint": "eslint --ext .js --ext .ts --ext .tsx .",
     "lint-fix": "npm run lint -- --fix",
+    "print-d3utils-refactors": "ag d3utils src/ -l | xargs wc -l | sort -V",
     "print-js-demos": "find src/demos -type f | grep 'js$' | xargs -I{} wc -l {} | sort -V",
     "serve": "gatsby serve",
     "start": "npm run develop",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "test": "echo 'Tests are written in the page: src/pages/testing.tsx'",
+    "ts-coverage": "typescript-coverage-report",
+    "ts-coverage:gh-pages": "npm run ts-coverage && mv coverage-ts public"
+  },
+  "typeCoverage": {
+    "atLeast": 90
   },
   "repository": {
     "type": "git",

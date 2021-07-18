@@ -1,5 +1,7 @@
 import * as d3 from "d3"
 
+import "./collapsible-tree.styl"
+
 type DataNode = {
   _children: TreeNode[] | undefined
   children: DataNode[]

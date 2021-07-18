@@ -5,7 +5,11 @@ module.exports = {
     jest: true,
     node: true,
   },
-  extends: ["eslint:recommended", "plugin:react/recommended"],
+  extends: [
+    "eslint:recommended",
+    "plugin:eslint-comments/recommended",
+    "plugin:react/recommended",
+  ],
   globals: {
     $: false,
     ROOT_PATH: false,
@@ -28,7 +32,7 @@ module.exports = {
   plugins: ["prettier", "@typescript-eslint"],
   rules: {
     "@typescript-eslint/explicit-member-accessibility": 2,
-    "@typescript-eslint/no-explicit-any": 1,
+    "@typescript-eslint/no-explicit-any": 0, // too many at the moment to have this
     "@typescript-eslint/no-unused-vars": 2,
 
     "arrow-body-style": [2, "as-needed"],
@@ -36,6 +40,7 @@ module.exports = {
     camelcase: [2, { properties: "never" }],
     "class-methods-use-this": 2,
     "consistent-return": 2,
+    "eslint-comments/no-unused-disable": 2,
     "init-declarations": [2, "always"],
     "newline-before-return": 2,
     "no-console": 2,

@@ -1,8 +1,13 @@
+type DocName = string
+type DocLink = string
+
 type DemoBase = {
   data: string[]
+  docs: [DocName, DocLink][]
   name: string
   notes: string[]
   sources: string[]
+  summary: string[]
 }
 
 export type DemoInfo = DemoBase & {

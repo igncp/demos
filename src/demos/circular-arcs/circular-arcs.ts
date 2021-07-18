@@ -2,6 +2,8 @@ import { RaphaelPaper, RaphaelPath } from "raphael"
 
 import Raphael from "@/demos/_utils/browserRaphael"
 
+import "./circular-arcs.styl"
+
 const strokeWidth = 3
 
 type ExtendedRaphael = RaphaelPaper & {
