@@ -10,15 +10,9 @@ import main from "@/demos/mareys-schedule/mareys-schedule"
 const MareysSchedule = ({ pageContext: { demoInfo } }: DemoPageProps) => (
   <Demo
     demoInfo={demoInfo}
-    links={[
-      "/vendors/jquery-ui/themes/base/theme.css",
-      "/vendors/jquery-ui/themes/base/slider.css",
-    ]}
+    links={["/vendors/jquery-ui/themes/base/jquery-ui.min.css"]}
     main={main}
-    scripts={[
-      "/vendors/jquery-ui/jquery-ui.min.js",
-      "/vendors/jquery-ui/ui/slider.js",
-    ]}
+    scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
   >
     <div>
       <div className="slider" />

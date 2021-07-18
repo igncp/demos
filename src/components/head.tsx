@@ -54,22 +54,8 @@ const Head = () => (
           src={`${ROOT_PATH}vendors/jquery-ui/jquery-ui.min.js`}
           type="text/javascript"
         />
-        <script
-          src={`${ROOT_PATH}vendors/jquery-ui/ui/slider.js`}
-          type="text/javascript"
-        />
         <link
-          href={`${ROOT_PATH}vendors/jquery-ui/themes/base/theme.css`}
-          rel="stylesheet"
-          type="text/css"
-        />
-        <link
-          href={`${ROOT_PATH}vendors/jquery-ui/themes/base/tooltip.css`}
-          rel="stylesheet"
-          type="text/css"
-        />
-        <link
-          href={`${ROOT_PATH}vendors/jquery-ui/themes/base/slider.css`}
+          href={`${ROOT_PATH}vendors/jquery-ui/themes/base/jquery-ui.min.css`}
           rel="stylesheet"
           type="text/css"
         />
