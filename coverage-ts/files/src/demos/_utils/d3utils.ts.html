@@ -1,0 +1,191 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>d3utils.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">src/demos/_utils/d3utils.ts</td><td class="">86.12%</td><td class="">90%</td><td class="">245</td><td class="">211</td><td class="">34</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+import merge from &quot;lodash/merge&quot;
+
+type Margin = {
+  bottom: number
+  left: number
+  right: number
+  top: number
+}
+
+type SVG = d3.Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+
+// @TODO: types
+
+const d3utils = {
+  colorsScale&lt;P extends number = any&gt;(colors: any, extent: any) {
+    const c = d3.scaleLinear().domain(extent).range([0, 1])
+    const colorScale = d3
+      .scaleLinear()
+      .domain(d3.range(0, 1, 1.0 / colors.length))
+      .range(colors)
+
+    return function (p: P) {
+      return colorScale(c(p))
+    }
+  },
+  filterBlackOpacity(id: string, svg: SVG, deviation: number, slope: number) {
+    const defs = svg.append(&quot;defs&quot;)
+    const filter = defs
+      .append(&quot;filter&quot;)
+      .attr(&quot;height&quot;, &quot;500%&quot;)
+      .attr(&quot;id&quot;, `drop-shadow-${id}`)
+      .attr(&quot;width&quot;, &quot;500%&quot;)
+      .attr(&quot;x&quot;, &quot;-200%&quot;)
+      .attr(&quot;y&quot;, &quot;-200%&quot;)
+
+    filter
+      .append(&quot;feGaussianBlur&quot;)
+      .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+      .attr(&quot;stdDeviation&quot;, deviation)
+
+    filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+    filter
+      .append(&quot;feComponentTransfer&quot;)
+      .append(&quot;feFuncA&quot;)
+      .attr(&quot;slope&quot;, slope)
+      .attr(&quot;type&quot;, &quot;linear&quot;)
+
+    const feMerge = filter.append(&quot;feMerge&quot;)
+
+    feMerge.append(&quot;feMergeNode&quot;)
+
+    return feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+  },
+  filterColor(
+    id: string,
+    svg: SVG,
+    deviation: number,
+    slope: number,
+    extra?: any
+  ) {
+    if (extra == null) {
+      extra = false
+    }
+
+    const defs = svg.append(&quot;defs&quot;)
+    const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, `drop-shadow-${id}`)
+
+    if (extra) {
+      filter
+        .attr(&quot;height&quot;, &quot;500%&quot;)
+        .attr(&quot;width&quot;, &quot;500%&quot;)
+        .attr(&quot;x&quot;, &quot;-200%&quot;)
+        .attr(&quot;y&quot;, &quot;-200%&quot;)
+    }
+
+    filter
+      .append(&quot;feOffset&quot;)
+      .attr(&quot;dx&quot;, 0.5)
+      .attr(&quot;dy&quot;, 0.5)
+      .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+      .attr(&quot;result&quot;, &quot;offOut&quot;)
+
+    filter
+      .append(&quot;feGaussianBlur&quot;)
+      .attr(&quot;in&quot;, &quot;offOut&quot;)
+      .attr(&quot;result&quot;, &quot;blurOut&quot;)
+      .attr(&quot;stdDeviation&quot;, deviation)
+
+    filter
+      .append(&quot;feBlend&quot;)
+      .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+      .attr(&quot;in2&quot;, &quot;blurOut&quot;)
+      .attr(&quot;mode&quot;, &quot;normal&quot;)
+
+    return filter
+      .append(&quot;feComponentTransfer&quot;)
+      .append(&quot;feFuncA&quot;)
+      .attr(&quot;slope&quot;, slope)
+      .attr(&quot;type&quot;, &quot;linear&quot;)
+  },
+
+  middleTitle(svg: SVG, width: number, text: string, top: number | null) {
+    if (top == null) {
+      top = -15
+    }
+
+    svg
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, &quot;chart-title&quot;)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .attr(&quot;transform&quot;, `translate(${String(width / 2)},${top})`)
+      .text(text)
+      .style(&quot;font-weight&quot;, &quot;bold&quot;)
+  },
+  svg(selector: string, width: number, height: number, margin: Margin) {
+    return d3
+      .select(selector)
+      .text(&quot;&quot;)
+      .append(&quot;svg&quot;)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+      .attr(&quot;width&quot;, width + margin.left + margin.right)
+      .append(&quot;g&quot;)
+      .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+  },
+  tooltip(selector: string, customOpts: any) {
+    if (customOpts == null) {
+      customOpts = {}
+    }
+
+    const defaultOpts = {
+      elementSelector: &quot;&quot;,
+      followElement: false,
+      followMouse: false,
+      leftOffst: 60,
+      tOpts: {
+        container: &quot;body&quot;,
+        viewport: {
+          selector: &quot;#chart svg&quot;,
+        },
+      },
+      topOffst: 40,
+    }
+
+    const opts = merge(defaultOpts, customOpts)
+
+    const sel: any = $(selector)
+
+    sel.tooltip(opts.tOpts)
+
+    if (opts.followMouse) {
+      $(selector).hover((e) =&gt;
+        $(&quot;.tooltip&quot;).css({
+          left: `${String(e.pageX - opts.leftOffst)}px`,
+          top: `${String(e.pageY - opts.topOffst)}px`,
+        })
+      )
+    } else if (opts.followElement) {
+      $(selector).hover(() =&gt;
+        $(&quot;.tooltip&quot;).css({
+          left: `${String(
+            $(opts.elementSelector).position().left - opts.leftOffst
+          )}px`,
+          top: `${String(
+            $(opts.elementSelector).position().top - opts.topOffst
+          )}px`,
+        })
+      )
+    }
+  },
+}
+
+export default d3utils
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:38,&quot;text&quot;:&quot;colors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:51,&quot;text&quot;:&quot;extent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:35,&quot;text&quot;:&quot;colors&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:19,&quot;character&quot;:42,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:59,&quot;character&quot;:4,&quot;text&quot;:&quot;extra&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:61,&quot;character&quot;:8,&quot;text&quot;:&quot;extra&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:6,&quot;text&quot;:&quot;extra&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:8,&quot;text&quot;:&quot;extra&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:125,&quot;character&quot;:28,&quot;text&quot;:&quot;customOpts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:8,&quot;text&quot;:&quot;customOpts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:6,&quot;text&quot;:&quot;customOpts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:144,&quot;character&quot;:10,&quot;text&quot;:&quot;opts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:144,&quot;character&quot;:36,&quot;text&quot;:&quot;customOpts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:146,&quot;character&quot;:10,&quot;text&quot;:&quot;sel&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:4,&quot;text&quot;:&quot;sel&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:8,&quot;text&quot;:&quot;tooltip&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:16,&quot;text&quot;:&quot;opts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:21,&quot;text&quot;:&quot;tOpts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:150,&quot;character&quot;:8,&quot;text&quot;:&quot;opts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:150,&quot;character&quot;:13,&quot;text&quot;:&quot;followMouse&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:36,&quot;text&quot;:&quot;opts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:41,&quot;text&quot;:&quot;leftOffst&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:154,&quot;character&quot;:35,&quot;text&quot;:&quot;opts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:154,&quot;character&quot;:40,&quot;text&quot;:&quot;topOffst&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:157,&quot;character&quot;:15,&quot;text&quot;:&quot;opts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:157,&quot;character&quot;:20,&quot;text&quot;:&quot;followElement&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:14,&quot;text&quot;:&quot;opts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:19,&quot;text&quot;:&quot;elementSelector&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:54,&quot;text&quot;:&quot;opts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:59,&quot;text&quot;:&quot;leftOffst&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:164,&quot;character&quot;:14,&quot;text&quot;:&quot;opts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:164,&quot;character&quot;:19,&quot;text&quot;:&quot;elementSelector&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:164,&quot;character&quot;:53,&quot;text&quot;:&quot;opts&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/d3utils.ts&quot;,&quot;line&quot;:164,&quot;character&quot;:58,&quot;text&quot;:&quot;topOffst&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

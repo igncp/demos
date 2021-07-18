@@ -1,0 +1,246 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>files-details.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/components/files-details.tsx</td><td class="">100.00%</td><td class="">90%</td><td class="">324</td><td class="">324</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+
+// @ts-ignore
+import Prism from &quot;prismjs&quot;
+
+import &quot;prismjs/components/prism-jsx&quot;
+import &quot;prismjs/components/prism-typescript&quot;
+import &quot;prismjs/components/prism-stylus&quot;
+
+import &quot;prismjs/themes/prism-coy.css&quot;
+
+import { DemoInfo } from &quot;@/common&quot;
+
+const CodeInGH = ({ filePath }: { filePath: string }) =&gt; (
+  &lt;&gt;
+    &lt;span&gt;| &lt;/span&gt;
+    &lt;a
+      href={`https://github.com/igncp/demos/blob/main/src/${filePath}`}
+      rel=&quot;noreferrer&quot;
+      target=&quot;_blank&quot;
+    &gt;
+      Code in Github
+    &lt;/a&gt;
+  &lt;/&gt;
+)
+const CoverageReport = ({ filePath }: { filePath: string }) =&gt; (
+  &lt;&gt;
+    &lt;span&gt;| &lt;/span&gt;
+    &lt;a
+      href={`https://igncp.github.io/demos/coverage-ts/files/src/${filePath}.html`}
+      rel=&quot;noreferrer&quot;
+      target=&quot;_blank&quot;
+    &gt;
+      TypeScript coverage report
+    &lt;/a&gt;
+  &lt;/&gt;
+)
+
+type Props = {
+  demoInfo: DemoInfo
+}
+
+const FilesDetails = ({ demoInfo }: Props) =&gt; {
+  if (typeof window === &quot;undefined&quot;) {
+    return null
+  }
+
+  const demoFileName = `${demoInfo.key}.${demoInfo.files.demo.type}`
+  const pageFilePath = `pages/${demoInfo.category}/${demoInfo.key}.${demoInfo.files.page.type}`
+
+  return (
+    &lt;div&gt;
+      {!!demoInfo.notes.length &amp;&amp; (
+        &lt;div className=&quot;bs-callout bs-callout-info&quot; id=&quot;notes&quot;&gt;
+          &lt;p&gt;
+            &lt;strong&gt;Notes:&lt;/strong&gt;
+          &lt;/p&gt;
+          &lt;ul&gt;
+            {demoInfo.notes.map((note, idx) =&gt; (
+              &lt;li dangerouslySetInnerHTML={{ __html: note }} key={idx} /&gt;
+            ))}
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      )}
+      {!!demoInfo.summary.length &amp;&amp; (
+        &lt;div className=&quot;bs-callout bs-callout-summary&quot; id=&quot;notes&quot;&gt;
+          &lt;p&gt;
+            &lt;strong&gt;Implementation Summary:&lt;/strong&gt;
+          &lt;/p&gt;
+          &lt;ul&gt;
+            {demoInfo.summary.map((note, idx) =&gt; (
+              &lt;p dangerouslySetInnerHTML={{ __html: note }} key={idx} /&gt;
+            ))}
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      )}
+      &lt;div className=&quot;bs-callout bs-callout-primary&quot; id=&quot;sources-list&quot;&gt;
+        &lt;p&gt;
+          &lt;strong&gt;Sources:&lt;/strong&gt;
+        &lt;/p&gt;
+        &lt;ul&gt;
+          {demoInfo.sources.map((source, index) =&gt; (
+            &lt;li key={index}&gt;
+              &lt;span className=&quot;source-number&quot;&gt;[{index + 1}]&lt;/span&gt;:{&quot; &quot;}
+              &lt;a href={source}&gt;{source}&lt;/a&gt;
+            &lt;/li&gt;
+          ))}
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      {!!demoInfo.docs.length &amp;&amp; (
+        &lt;div className=&quot;bs-callout bs-callout-secondary&quot; id=&quot;docs&quot;&gt;
+          &lt;p&gt;
+            &lt;strong&gt;Docs:&lt;/strong&gt;
+          &lt;/p&gt;
+          &lt;ul&gt;
+            {demoInfo.docs.map((doc) =&gt; (
+              &lt;li key={doc[1]}&gt;
+                &lt;a href={doc[1]} rel=&quot;noreferrer&quot; target=&quot;_blank&quot;&gt;
+                  {doc[0]}
+                &lt;/a&gt;
+              &lt;/li&gt;
+            ))}
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      )}
+      {!!demoInfo.data.length &amp;&amp; (
+        &lt;div className=&quot;bs-callout bs-callout-warning&quot; id=&quot;data-list&quot;&gt;
+          &lt;p&gt;
+            &lt;strong&gt;Data: &lt;/strong&gt;
+            {demoInfo.data.map((file, index) =&gt; (
+              &lt;a
+                href={`${ROOT_PATH}data/${demoInfo.category}/${demoInfo.key}/${file}`}
+                key={index}
+              &gt;
+                {file}
+              &lt;/a&gt;
+            ))}
+          &lt;/p&gt;
+        &lt;/div&gt;
+      )}
+
+      &lt;div className=&quot;bs-callout bs-callout-success&quot; id=&quot;code&quot;&gt;
+        &lt;p&gt;
+          &lt;strong&gt;Code:&lt;/strong&gt;
+        &lt;/p&gt;
+        &lt;ul&gt;
+          &lt;li&gt;
+            &lt;p&gt;
+              {demoFileName}{&quot; &quot;}
+              {(() =&gt; {
+                const filePath = `demos/${demoInfo.key}/${demoFileName}`
+
+                return (
+                  &lt;&gt;
+                    &lt;CodeInGH filePath={filePath} /&gt;{&quot; &quot;}
+                    &lt;CoverageReport filePath={filePath} /&gt;
+                  &lt;/&gt;
+                )
+              })()}
+            &lt;/p&gt;
+            &lt;pre&gt;
+              &lt;code
+                dangerouslySetInnerHTML={{
+                  __html: Prism.highlight(
+                    demoInfo.files.demo.content,
+                    demoInfo.files.demo.type === &quot;ts&quot;
+                      ? Prism.languages.typescript
+                      : Prism.languages.jsx,
+                    demoInfo.files.demo.type === &quot;ts&quot; ? &quot;typescript&quot; : &quot;jsx&quot;
+                  ),
+                }}
+              /&gt;
+            &lt;/pre&gt;
+          &lt;/li&gt;
+          {demoInfo.files.d3utils &amp;&amp; (
+            &lt;li&gt;
+              &lt;p&gt;
+                d3utils.ts{&quot; &quot;}
+                {(() =&gt; {
+                  const filePath = `demos/_utils/d3utils.ts`
+
+                  return (
+                    &lt;&gt;
+                      &lt;CodeInGH filePath={filePath} /&gt;{&quot; &quot;}
+                      &lt;CoverageReport filePath={filePath} /&gt;
+                    &lt;/&gt;
+                  )
+                })()}
+              &lt;/p&gt;
+              &lt;pre&gt;
+                &lt;code
+                  dangerouslySetInnerHTML={{
+                    __html: Prism.highlight(
+                      demoInfo.files.d3utils,
+                      Prism.languages.jsx,
+                      &quot;jsx&quot;
+                    ),
+                  }}
+                /&gt;
+              &lt;/pre&gt;
+            &lt;/li&gt;
+          )}
+          &lt;li&gt;
+            &lt;p&gt;
+              {pageFilePath} &lt;CodeInGH filePath={pageFilePath} /&gt;{&quot; &quot;}
+              &lt;CoverageReport filePath={pageFilePath} /&gt;
+            &lt;/p&gt;
+            &lt;pre&gt;
+              &lt;code
+                dangerouslySetInnerHTML={{
+                  __html: Prism.highlight(
+                    demoInfo.files.page.content,
+                    demoInfo.files.page.type === &quot;tsx&quot;
+                      ? Prism.languages.typescript
+                      : Prism.languages.jsx,
+                    demoInfo.files.demo.type === &quot;tsx&quot; ? &quot;typescript&quot; : &quot;jsx&quot;
+                  ),
+                }}
+              /&gt;
+            &lt;/pre&gt;
+          &lt;/li&gt;
+          {demoInfo.files.styl &amp;&amp; (
+            &lt;li&gt;
+              &lt;p&gt;
+                {`${demoInfo.key}.styl`}{&quot; &quot;}
+                &lt;CodeInGH
+                  filePath={`demos/${demoInfo.key}/${demoInfo.key}.styl`}
+                /&gt;
+              &lt;/p&gt;
+              &lt;pre&gt;
+                &lt;code
+                  dangerouslySetInnerHTML={{
+                    __html: Prism.highlight(
+                      demoInfo.files.styl,
+                      Prism.languages.stylus
+                    ),
+                  }}
+                /&gt;
+              &lt;/pre&gt;
+            &lt;/li&gt;
+          )}
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default FilesDetails
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

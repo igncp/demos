@@ -1,0 +1,252 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>bars.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars/bars.ts</td><td class="">99.71%</td><td class="">90%</td><td class="">348</td><td class="">347</td><td class="">1</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Selection,
+  axisBottom,
+  axisLeft,
+  extent,
+  max,
+  range,
+  scaleLinear,
+  select,
+} from &quot;d3&quot;
+
+import &quot;./bars.styl&quot;
+
+type Data = number[]
+
+const height = 500
+const margin = { left: 160, top: 100 }
+const floor = height - margin.top * 2
+
+const barWidth = 30
+const barHeight = 7
+
+const colours = [&quot;#323247&quot;, &quot;#7C7CC9&quot;, &quot;#72B66C&quot;, &quot;#429742&quot;]
+const barYFn = (d: Data[number]) =&gt; floor - barHeight * d
+const barHeightFn = (d: Data[number]) =&gt; d * barHeight
+
+const fetchData = async (): Promise&lt;Data&gt; =&gt; {
+  const rawData = await fetch(`${ROOT_PATH}data/d3js/bars/data.json`)
+  const data = await rawData.json()
+
+  return data
+}
+
+type BarsChartOpts = {
+  data: Data
+  rootElId: string
+}
+
+type Interval = ReturnType&lt;typeof setInterval&gt;
+type Chart = Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+type ColorFn = (c: Data[number]) =&gt; string
+
+class BarsChart {
+  private data: Data
+  private rootElId: string
+  private interval: Interval | null
+  private chart: Chart | null
+  private color: ColorFn | null
+
+  public constructor({ data, rootElId }: BarsChartOpts) {
+    this.data = data
+    this.rootElId = rootElId
+
+    this.interval = null
+    this.chart = null
+    this.color = null
+  }
+
+  public render() {
+    const { data, rootElId } = this
+    const { width } = (document.getElementById(
+      rootElId
+    ) as HTMLElement).getBoundingClientRect()
+
+    const c = scaleLinear()
+      .domain(extent(data) as [number, number])
+      .range([0, 1])
+    const heatmapColour: ColorFn = scaleLinear()
+      .domain(range(0, 1, 1.0 / colours.length))
+      .range(colours as any) as any
+
+    const color = (d: Data[number]) =&gt; heatmapColour(c(d))
+
+    this.color = color as ColorFn
+
+    const svg = select(`#${rootElId}`).append(&quot;svg&quot;)
+
+    svg.attr(&quot;height&quot;, height).attr(&quot;width&quot;, width).attr(&quot;class&quot;, &quot;bars-chart&quot;)
+
+    const chart = svg.append(&quot;g&quot;)
+
+    this.chart = chart
+
+    chart.attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+
+    this.interval = setInterval(this.getIntervalFn(), 1000)
+
+    const x = scaleLinear()
+      .domain([0.5, data.length + 0.5])
+      .range([1, barWidth * data.length])
+
+    const y = scaleLinear()
+      .domain([0, max(data) as number])
+      .rangeRound([0, -1 * barHeight * (max(data) as number)])
+
+    const xAxisG = chart.append(&quot;g&quot;)
+
+    xAxisG
+      .attr(&quot;class&quot;, &quot;x-axis axis&quot;)
+      .attr(&quot;transform&quot;, `translate(0,${floor})`)
+      .call(axisBottom(x))
+
+    xAxisG
+      .append(&quot;text&quot;)
+      .attr(&quot;transform&quot;, `translate(${(barWidth * data.length) / 2} ,0)`)
+      .attr(&quot;class&quot;, &quot;x-axis-label&quot;)
+      .attr(&quot;y&quot;, 40)
+      .attr(&quot;font-size&quot;, &quot;1.3em&quot;)
+      .attr(&quot;fill&quot;, &quot;black&quot;)
+      .style(&quot;text-anchor&quot;, &quot;end&quot;)
+      .text(&quot;Number&quot;)
+
+    const yAxisG = chart.append(&quot;g&quot;)
+
+    yAxisG
+      .attr(&quot;class&quot;, &quot;x-axis axis&quot;)
+      .attr(&quot;transform&quot;, `translate(0,${floor})`)
+      .call(axisLeft(y))
+
+    yAxisG
+      .append(&quot;text&quot;)
+      .attr(&quot;transform&quot;, `translate(-30,${String((-1 * (height - 60)) / 2)})`)
+      .attr(&quot;y&quot;, 40)
+      .attr(&quot;font-size&quot;, &quot;1.3em&quot;)
+      .attr(&quot;fill&quot;, &quot;black&quot;)
+      .style(&quot;text-anchor&quot;, &quot;end&quot;)
+      .text(&quot;Value&quot;)
+
+    this.drawRectangles()
+  }
+
+  public refresh() {
+    this.drawRectangles()
+    this.redraw()
+  }
+
+  private clearInterval() {
+    if (this.interval) {
+      clearInterval(this.interval)
+    }
+  }
+
+  private drawRectangles() {
+    const { data, chart, color } = this
+
+    ;(chart as Chart)
+      .selectAll(&quot;rect&quot;)
+      .data(data)
+      .enter()
+      .append(&quot;rect&quot;)
+      .attr(&quot;x&quot;, (_d: unknown, i: number) =&gt; barWidth * i)
+      .attr(&quot;y&quot;, barYFn)
+      .attr(&quot;width&quot;, barWidth)
+      .attr(&quot;height&quot;, barHeightFn)
+      .attr(&quot;fill&quot;, (d: Data[number]) =&gt; (color as ColorFn)(d))
+      .on(&quot;mouseover&quot;, () =&gt; {
+        this.clearInterval()
+      })
+      .on(&quot;mouseleave&quot;, () =&gt; {
+        this.clearInterval()
+        this.interval = setInterval(this.getIntervalFn(), 1000)
+      })
+      .append(&quot;title&quot;)
+      .text((d: Data[number]) =&gt; d)
+  }
+
+  private getIntervalFn() {
+    return () =&gt; {
+      const { data } = this
+
+      data.unshift(data.pop() as Data[0])
+      this.redraw()
+    }
+  }
+
+  private redraw() {
+    const { data, chart, color } = this
+
+    if (!chart) {
+      return
+    }
+
+    const newX = scaleLinear()
+      .domain([0.5, data.length + 0.5])
+      .range([1, barWidth * data.length])
+
+    chart
+      .select(&quot;.x-axis&quot;)
+      .transition()
+      .duration(500)
+      .call(axisBottom(newX) as any)
+
+    chart
+      .select(&quot;.x-axis-label&quot;)
+      .transition()
+      .duration(500)
+      .attr(&quot;transform&quot;, `translate(${(barWidth * data.length) / 2} ,0)`)
+
+    chart
+      .selectAll(&quot;rect&quot;)
+      .data(data)
+      .transition()
+      .duration(500)
+      .attr(&quot;y&quot;, barYFn)
+      .attr(&quot;height&quot;, barHeightFn)
+      .attr(&quot;fill&quot;, color as ColorFn)
+      .select(&quot;title&quot;)
+      .text((d: Data[number]) =&gt; d)
+  }
+}
+
+const main = async () =&gt; {
+  const data = await fetchData()
+
+  const barsChart = new BarsChart({
+    data,
+    rootElId: &quot;chart&quot;,
+  })
+
+  barsChart.render()
+
+  const addItemEl = document.getElementById(&quot;add-item&quot;) as HTMLElement
+
+  addItemEl.addEventListener(&quot;click&quot;, () =&gt; {
+    if (data.length &lt; 20) {
+      data.push(Math.floor(Math.random() * (max(data) as number)) + 1)
+      barsChart.refresh()
+    } else {
+      addItemEl.setAttribute(&quot;disabled&quot;, &quot;disabled&quot;)
+    }
+  })
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/bars/bars.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

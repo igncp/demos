@@ -1,0 +1,245 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>concentric-circles.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/concentric-circles/concentric-circles.ts</td><td class="">94.48%</td><td class="">90%</td><td class="">344</td><td class="">325</td><td class="">19</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+import merge from &quot;lodash/merge&quot;
+
+type Data = Array&lt;{
+  count: string
+  name: string
+  sex: string
+  year: string
+}&gt;
+type SVG = d3.Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+
+// @TODO; use d3utils
+// requires jquery and jquery ui
+const tooltip = (
+  selector: string,
+  customOpts: Partial&lt;{
+    elementSelector: string
+    followElement: boolean
+    followMouse: boolean
+    leftOffst: number
+    tOpts: {
+      container: string
+      viewport: {
+        selector: string
+      }
+    }
+    topOffst: number
+  }&gt;,
+  rootElId: string
+) =&gt; {
+  const { $ } = window as any
+
+  if (customOpts == null) {
+    customOpts = {}
+  }
+
+  const defaultOpts = {
+    elementSelector: &quot;&quot;,
+    followElement: false,
+    followMouse: false,
+    leftOffst: 60,
+    tOpts: {
+      container: &quot;body&quot;,
+      viewport: {
+        selector: `#${rootElId} svg`,
+      },
+    },
+    topOffst: 40,
+  }
+
+  const opts = merge(defaultOpts, customOpts)
+
+  $(selector).tooltip(opts.tOpts)
+
+  if (opts.followMouse) {
+    $(selector).hover((e: MouseEvent) =&gt;
+      $(&quot;.tooltip&quot;).css({
+        left: `${String(e.pageX - opts.leftOffst)}px`,
+        top: `${String(e.pageY - opts.topOffst)}px`,
+      })
+    )
+  } else if (opts.followElement) {
+    $(selector).hover(() =&gt;
+      $(&quot;.tooltip&quot;).css({
+        left: `${String(
+          $(opts.elementSelector).position().left - opts.leftOffst
+        )}px`,
+        top: `${String(
+          $(opts.elementSelector).position().top - opts.topOffst
+        )}px`,
+      })
+    )
+  }
+}
+
+const fetchData = async (): Promise&lt;Data&gt; =&gt; {
+  const data = await d3.csv(`${ROOT_PATH}data/d3js/concentric-circles/data.csv`)
+
+  return (data as unknown) as Data
+}
+
+const colours = [&quot;#7C7CC9&quot;, &quot;#52D552&quot;, &quot;#337233&quot;, &quot;#323247&quot;]
+
+const margin = {
+  bottom: 20,
+  left: 20,
+  right: 20,
+  top: 20,
+}
+const strokeWidth = &quot;2px&quot;
+
+const addFilter = (svg: SVG) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;)
+
+  filter.attr(&quot;id&quot;, &quot;drop-shadow&quot;)
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, 9)
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 5).attr(&quot;dy&quot;, 5)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, &quot;.3&quot;)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+}
+
+type AddDescription = (o: { svg: SVG; height: number; width: number }) =&gt; void
+
+const addDescription: AddDescription = ({ svg, height, width }) =&gt; {
+  svg
+    .append(&quot;text&quot;)
+    .text(
+      &quot;Circles radius are proportional to the count of times the name appears&quot;
+    )
+    .attr(&quot;transform&quot;, `translate(${width / 2},${height - 10})`)
+    .attr(&quot;width&quot;, &quot;20px&quot;)
+}
+
+type RenderChart = (o: { data: Data; rootElId: string }) =&gt; void
+
+const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
+  const c = d3
+    .scaleLinear()
+    .domain(d3.extent(data, (d) =&gt; +d.count) as [number, number])
+    .range([0, 1])
+
+  const heatmapColour = d3
+    .scaleLinear()
+    .domain(d3.range(0, 1, 1.0 / colours.length))
+    .range(colours as any)
+
+  const colorize = (d: Data[number]) =&gt; {
+    const colorNormalized = c(+d.count)
+
+    return heatmapColour(colorNormalized)
+  }
+
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+  const { width: elWidth } = rootEl.getBoundingClientRect()
+
+  const width = elWidth - margin.left - margin.right
+  const height = (d3.max(data, (d) =&gt; +d.count) as number) * 2.5
+
+  const svg: SVG = d3
+    .select(`#${rootElId}`)
+    .append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, width + margin.left + margin.right)
+    .attr(&quot;height&quot;, height + margin.left + margin.right)
+    .append(&quot;g&quot;)
+
+  addFilter(svg)
+
+  const circleGroup = svg
+    .selectAll(&quot;g&quot;)
+    .data(data, (d: any) =&gt; (d as Data[number]).name)
+    .enter()
+    .append(&quot;g&quot;)
+
+  const circles = circleGroup.append(&quot;svg:circle&quot;)
+  const rScale = d3
+    .scalePow()
+    .exponent(0.9)
+    .range([5, 300])
+    .domain(d3.extent(data, (d) =&gt; +d.count) as [number, number])
+
+  const getTitle = (d: Data[number]) =&gt; `${d.name}: ${d.count}`
+  const dataMax = d3.max(data, (d) =&gt; +d.count) as number
+
+  circles
+    .attr(&quot;cx&quot;, width / 2)
+    .attr(&quot;cy&quot;, height / 2)
+    .attr(&quot;r&quot;, (d) =&gt; rScale(+d.count))
+    .attr(&quot;class&quot;, &quot;name-circle&quot;)
+    .attr(&quot;data-title&quot;, getTitle)
+    .style(&quot;fill&quot;, &quot;#fff&quot;)
+    .style(&quot;stroke&quot;, (d) =&gt; colorize(d))
+    .style(&quot;stroke-width&quot;, strokeWidth)
+    .style(&quot;filter&quot;, (d) =&gt; {
+      if (+d.count &gt; dataMax / 2.5) {
+        return &quot;url(#drop-shadow)&quot;
+      }
+
+      return &quot;&quot;
+    })
+    .on(&quot;mouseover&quot;, function () {
+      d3.select(this).style(&quot;stroke&quot;, &quot;#D88021&quot;).style(&quot;stroke-width&quot;, &quot;10px&quot;)
+    })
+    .on(&quot;mouseleave&quot;, function () {
+      d3.select(this)
+        .style(&quot;stroke&quot;, (d: any) =&gt; colorize(d))
+        .style(&quot;stroke-width&quot;, strokeWidth)
+    })
+
+  circles.append(&quot;title&quot;).text(getTitle)
+
+  tooltip(
+    &quot;.name-circle&quot;,
+    {
+      followMouse: true,
+    },
+    rootElId
+  )
+
+  addDescription({
+    height,
+    svg,
+    width,
+  })
+}
+
+const main = async () =&gt; {
+  const data = await fetchData()
+
+  renderChart({
+    data,
+    rootElId: &quot;chart&quot;,
+  })
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:10,&quot;text&quot;:&quot;$&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:2,&quot;text&quot;:&quot;$&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:14,&quot;text&quot;:&quot;tooltip&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:4,&quot;text&quot;:&quot;$&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:16,&quot;text&quot;:&quot;hover&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:6,&quot;text&quot;:&quot;$&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:20,&quot;text&quot;:&quot;css&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:4,&quot;text&quot;:&quot;$&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:16,&quot;text&quot;:&quot;hover&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:63,&quot;character&quot;:6,&quot;text&quot;:&quot;$&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:63,&quot;character&quot;:20,&quot;text&quot;:&quot;css&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:10,&quot;text&quot;:&quot;$&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:34,&quot;text&quot;:&quot;position&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:45,&quot;text&quot;:&quot;left&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:10,&quot;text&quot;:&quot;$&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:34,&quot;text&quot;:&quot;position&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:45,&quot;text&quot;:&quot;top&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:17,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:196,&quot;character&quot;:26,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

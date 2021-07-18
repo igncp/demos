@@ -1,0 +1,244 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>weekly-heatmap.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/weekly-heatmap/weekly-heatmap.ts</td><td class="">95.50%</td><td class="">90%</td><td class="">289</td><td class="">276</td><td class="">13</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { max as maxD3, scaleQuantile, select, tsv } from &quot;d3&quot;
+
+import &quot;./weekly-heatmap.styl&quot;
+
+type TimeItem = {
+  day: number
+  hour: number
+  value: number
+}
+
+const colors = [
+  &quot;#ffffd9&quot;,
+  &quot;#edf8b1&quot;,
+  &quot;#c7e9b4&quot;,
+  &quot;#7fcdbb&quot;,
+  &quot;#41b6c4&quot;,
+  &quot;#1d91c0&quot;,
+  &quot;#225ea8&quot;,
+  &quot;#253494&quot;,
+  &quot;#081d58&quot;,
+]
+const buckets = colors.length
+
+const days = [&quot;Mo&quot;, &quot;Tu&quot;, &quot;We&quot;, &quot;Th&quot;, &quot;Fr&quot;, &quot;Sa&quot;, &quot;Su&quot;]
+const hours = [
+  &quot;1 am&quot;,
+  &quot;2 am&quot;,
+  &quot;3 am&quot;,
+  &quot;4 am&quot;,
+  &quot;5 am&quot;,
+  &quot;6 am&quot;,
+  &quot;7 am&quot;,
+  &quot;8 am&quot;,
+  &quot;9 am&quot;,
+  &quot;10 am&quot;,
+  &quot;11 am&quot;,
+  &quot;12 am&quot;,
+  &quot;1 pm&quot;,
+  &quot;2 pm&quot;,
+  &quot;3 pm&quot;,
+  &quot;4 pm&quot;,
+  &quot;5 pm&quot;,
+  &quot;6 pm&quot;,
+  &quot;7 pm&quot;,
+  &quot;8 pm&quot;,
+  &quot;9 pm&quot;,
+  &quot;10 pm&quot;,
+  &quot;11 pm&quot;,
+  &quot;12 pm&quot;,
+]
+
+const fetchData = async (): Promise&lt;TimeItem[]&gt; =&gt; {
+  const data: any = await tsv(`${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`)
+
+  return data.map((timeItem: TimeItem) =&gt; ({
+    day: +timeItem.day,
+    hour: +timeItem.hour,
+    value: +timeItem.value,
+  }))
+}
+
+const margin = {
+  bottom: 100,
+  left: 50,
+  right: 50,
+  top: 50,
+}
+
+const hoursInDay = 24
+const rectRadiusSize = 100
+const extraHeight = 60
+const axisOffset = -6
+
+const workingDayMin = 0
+const workingDayMax = 4
+const workingHourMin = 7
+const workingHourMax = 16
+
+const legendStroke = &quot;#ccc&quot;
+
+const renderChart = async ({
+  data,
+  rootElId,
+}: {
+  data: TimeItem[]
+  rootElId: string
+}) =&gt; {
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add(&quot;weekly-heatmap-chart&quot;)
+
+  const width =
+    rootEl.getBoundingClientRect().width - margin.left - margin.right
+  const height =
+    Math.ceil((width * 10) / hoursInDay) -
+    margin.top -
+    margin.bottom +
+    extraHeight
+  const cellSize = Math.floor(width / hoursInDay)
+  const legendElementWidth = cellSize * 2
+
+  const max = maxD3(data, (timeItem) =&gt; timeItem.value)
+
+  const colorScale = scaleQuantile&lt;string&gt;()
+    .domain([0, buckets - 1, max])
+    .range(colors)
+
+  const svg = select(`#${rootElId}`)
+    .append(&quot;svg&quot;)
+    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+    .attr(&quot;width&quot;, width + margin.left + margin.right)
+    .append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+
+  svg
+    .selectAll(&quot;.dayLabel&quot;)
+    .data(days)
+    .enter()
+    .append(&quot;text&quot;)
+    .text((day) =&gt; day)
+    .attr(&quot;class&quot;, (_d, dayIndex) =&gt; {
+      if (dayIndex &gt;= workingDayMin &amp;&amp; dayIndex &lt;= workingDayMax) {
+        return &quot;dayLabel mono axis axis-workweek&quot;
+      }
+
+      return &quot;dayLabel mono axis&quot;
+    })
+    .attr(&quot;transform&quot;, `translate(${axisOffset},${cellSize / 1.5})`)
+    .attr(&quot;x&quot;, 0)
+    .attr(&quot;y&quot;, (_d, dayIndex) =&gt; dayIndex * cellSize)
+    .style(&quot;text-anchor&quot;, &quot;end&quot;)
+
+  svg
+    .selectAll(&quot;.timeLabel&quot;)
+    .data(hours)
+    .enter()
+    .append(&quot;text&quot;)
+    .text((hourStr) =&gt; hourStr)
+    .attr(&quot;class&quot;, (_d, hourIndex) =&gt; {
+      if (hourIndex &gt;= workingHourMin &amp;&amp; hourIndex &lt;= workingHourMax) {
+        return &quot;timeLabel mono axis axis-worktime&quot;
+      }
+
+      return &quot;timeLabel mono axis&quot;
+    })
+    .attr(&quot;transform&quot;, `translate(${cellSize / 2}, ${axisOffset})`)
+    .attr(&quot;x&quot;, (_d, hourIndex) =&gt; hourIndex * cellSize)
+    .attr(&quot;y&quot;, 0)
+    .style(&quot;text-anchor&quot;, &quot;middle&quot;)
+
+  const heatMap = svg
+    .selectAll(&quot;.hour&quot;)
+    .data(data)
+    .enter()
+    .append(&quot;rect&quot;)
+    .attr(&quot;class&quot;, &quot;hour bordered&quot;)
+    .attr(&quot;height&quot;, cellSize)
+    .attr(&quot;rx&quot;, rectRadiusSize)
+    .attr(&quot;ry&quot;, rectRadiusSize)
+    .attr(&quot;width&quot;, cellSize)
+    .attr(&quot;x&quot;, (timeItem) =&gt; (timeItem.hour - 1) * cellSize)
+    .attr(&quot;y&quot;, (timeItem) =&gt; (timeItem.day - 1) * cellSize)
+    .style(&quot;fill&quot;, colors[0])
+
+  heatMap
+    .transition()
+    .duration(6000)
+    .style(&quot;fill&quot;, (timeItem) =&gt; colorScale(timeItem.value))
+
+  heatMap.attr(&quot;data-title&quot;, (timeItem) =&gt; `Value: ${timeItem.value}`)
+
+  tooltip(&quot;.hour&quot;)
+
+  const legend = svg
+    .selectAll(&quot;.legend&quot;)
+    .data&lt;any&gt;([0].concat(colorScale.quantiles()), (d) =&gt; d)
+    .enter()
+    .append(&quot;g&quot;)
+    .attr(&quot;class&quot;, &quot;legend&quot;)
+
+  legend
+    .append(&quot;rect&quot;)
+    .attr(&quot;x&quot;, (_value, valueIndex) =&gt; legendElementWidth * valueIndex)
+    .attr(&quot;y&quot;, height)
+    .attr(&quot;width&quot;, legendElementWidth)
+    .attr(&quot;height&quot;, cellSize / 2)
+    .style(&quot;fill&quot;, (_value, valueIndex) =&gt; colors[valueIndex])
+    .style(&quot;stroke&quot;, legendStroke)
+
+  legend
+    .append(&quot;text&quot;)
+    .attr(&quot;class&quot;, &quot;mono&quot;)
+    .text((value) =&gt; `≥ ${value.toFixed(2)}`)
+    .attr(&quot;x&quot;, (_value, valueIndex) =&gt; legendElementWidth * valueIndex)
+    .attr(&quot;y&quot;, height + cellSize)
+}
+
+// @TODO: tooltip not working
+const tooltip = (selector: string) =&gt; {
+  const opts = {
+    leftOffst: 60,
+    tOpts: {
+      container: &quot;body&quot;,
+      delay: {
+        hide: 0,
+        show: 500,
+      },
+      viewport: {
+        selector: &quot;#chart svg&quot;,
+      },
+    },
+    topOffst: 40,
+  }
+
+  const sel: any = $(selector)
+
+  sel.tooltip(opts.tOpts)
+}
+
+const main = async () =&gt; {
+  const data = await fetchData()
+
+  renderChart({ data, rootElId: &quot;chart&quot; })
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:9,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:14,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:175,&quot;character&quot;:52,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:182,&quot;character&quot;:16,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:186,&quot;character&quot;:20,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:192,&quot;character&quot;:11,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:192,&quot;character&quot;:26,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:192,&quot;character&quot;:32,&quot;text&quot;:&quot;toFixed&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:193,&quot;character&quot;:16,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:214,&quot;character&quot;:8,&quot;text&quot;:&quot;sel&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:216,&quot;character&quot;:2,&quot;text&quot;:&quot;sel&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:216,&quot;character&quot;:6,&quot;text&quot;:&quot;tooltip&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

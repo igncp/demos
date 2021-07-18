@@ -1,0 +1,359 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>mareys-schedule.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/mareys-schedule.ts</td><td class="">98.59%</td><td class="">90%</td><td class="">498</td><td class="">491</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+import each from &quot;lodash/each&quot;
+import last from &quot;lodash/last&quot;
+
+import d3utils from &quot;@/demos/_utils/d3utils&quot;
+
+import &quot;./mareys-schedule.styl&quot;
+
+type RawDataItem = {
+  direction: string
+  number: string
+  type: string
+  [stop: string]: string
+}
+
+type Station = {
+  distance: number
+  key: string
+  name: string
+  zone: number
+}
+
+type Stop = {
+  station: Station
+  time: Date | null
+  trainIndex: number
+}
+
+type Train = {
+  direction: string
+  index: number
+  number: string
+  stops: Stop[]
+  type: string
+}
+
+type Data = {
+  stations: Station[]
+  trains: Train[]
+}
+
+type Limits = [number, number]
+type LimitsStr = [string, string]
+
+type Redraw = (range: LimitsStr) =&gt; void
+
+const fetchData = async (): Promise&lt;Data&gt; =&gt; {
+  const data = ((await d3.tsv(
+    `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`
+  )) as unknown) as RawDataItem[]
+
+  const stations: Station[] = []
+
+  const trains: Train[] = data.map((train, trainIndex) =&gt; {
+    if (trainIndex === 0) {
+      for (const key in train) {
+        if (/^stop\|/.test(key)) {
+          const stopFragments = key.split(&quot;|&quot;)
+
+          stations.push({
+            distance: +stopFragments[2],
+            key,
+            name: stopFragments[1],
+            zone: +stopFragments[3],
+          })
+        }
+      }
+    }
+
+    return {
+      direction: train.direction,
+      index: trainIndex,
+      number: train.number,
+      stops: stations
+        .map((station) =&gt; ({
+          station,
+          time: parseTime(train[station.key]),
+          trainIndex,
+        }))
+        .filter((station) =&gt; station.time !== null),
+      type: train.type,
+    }
+  })
+
+  return {
+    stations,
+    trains,
+  }
+}
+
+const getTrainTitle = (trainData: Train) =&gt; {
+  if (trainData.direction === &quot;S&quot;) {
+    return `${trainData.stops[0].station.name} -&gt; ${
+      last(trainData.stops)!.station.name
+    }`
+  }
+
+  return `${last(trainData.stops)!.station.name} -&gt; ${
+    trainData.stops[0].station.name
+  }`
+}
+
+const refreshOnHourChange = ({
+  limits,
+  redraw,
+}: {
+  limits: Limits
+  redraw: Redraw
+}) =&gt; {
+  const times: string[] = []
+
+  each(limits, (limit) =&gt; {
+    const wholeMinutes = (limit / 100) * 1200
+
+    let fragment = &quot;AM&quot;
+    let hours = Math.floor(wholeMinutes / 60)
+    let minutes = Math.floor(wholeMinutes % 60)
+
+    if (minutes &gt; 30) {
+      minutes = minutes - 30
+      hours = hours + 1
+    } else {
+      minutes = minutes + 30
+    }
+
+    hours = hours + 4
+
+    if (hours &gt; 23) {
+      if (hours === 24) {
+        hours = hours - 12
+      } else {
+        hours = hours - 24
+      }
+    } else if (hours &gt; 11) {
+      fragment = &quot;PM&quot;
+
+      if (hours !== 12) {
+        hours = hours - 12
+      }
+    }
+
+    const minutesStr = minutes &lt; 10 ? `0${String(minutes)}` : minutes.toString()
+
+    const finalTime = `${String(hours)}:${minutesStr}${fragment}`
+
+    return times.push(finalTime)
+  })
+
+  redraw(times as LimitsStr)
+}
+
+const getFormatTime = () =&gt; d3.timeParse(&quot;%I:%M%p&quot;)
+
+const parseTime = (timeStr: string) =&gt; {
+  const formatTime = getFormatTime()
+  const timeDate = formatTime(timeStr)
+
+  if (timeDate !== null &amp;&amp; timeDate.getHours() &lt; 3) {
+    timeDate.setDate(timeDate.getDate() + 1)
+  }
+
+  return timeDate
+}
+
+const formatAMPM = function (date: Date) {
+  let hours = date.getHours()
+  const ampm = hours &gt;= 12 ? &quot;PM&quot; : &quot;AM&quot;
+
+  hours = hours % 12
+  hours = hours ? hours : 12
+
+  const minutes = date.getMinutes()
+  const minutesStr = minutes &lt; 10 ? `0${minutes}` : minutes.toString()
+
+  return `${hours}:${minutesStr} ${ampm}`
+}
+
+const margin = {
+  bottom: 50,
+  left: 120,
+  right: 50,
+  top: 80,
+}
+
+const height = 600 - margin.top - margin.bottom
+
+const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt; {
+  const { stations, trains } = data
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add(&quot;mareys-schedule-chart&quot;)
+
+  const width =
+    rootEl.getBoundingClientRect().width - margin.left - margin.right
+
+  const redraw: Redraw = (timeRange) =&gt; {
+    const x = d3
+      .scaleTime()
+      .domain([parseTime(timeRange[0])!, parseTime(timeRange[1])!])
+      .range([0, width])
+    const y = d3.scaleLinear().range([0, height])
+    const formatTime = getFormatTime()
+    const xAxisTop = d3
+      .axisTop(x)
+      .ticks(8)
+      .tickFormat(formatTime as any)
+    const xAxisBottom = d3
+      .axisBottom(x)
+      .ticks(8)
+      .tickFormat(formatTime as any)
+
+    const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
+
+    d3utils.middleTitle(
+      svg,
+      width,
+      &quot;E.J. Marey’s graphical train schedule &quot; + &quot; (4:30AM - 1:30AM)&quot;,
+      -40
+    )
+    d3utils.filterBlackOpacity(&quot;trains&quot;, svg, 2, 0.2)
+    svg
+      .append(&quot;defs&quot;)
+      .append(&quot;clipPath&quot;)
+      .attr(&quot;id&quot;, &quot;clip&quot;)
+      .append(&quot;rect&quot;)
+      .attr(&quot;y&quot;, -margin.top)
+      .attr(&quot;width&quot;, width)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+
+    y.domain(d3.extent(stations, (station) =&gt; station.distance) as Limits)
+
+    const station = svg
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, &quot;station&quot;)
+      .selectAll(&quot;g&quot;)
+      .data(stations)
+      .enter()
+      .append(&quot;g&quot;)
+      .attr(&quot;transform&quot;, (d) =&gt; `translate(0,${y(d.distance)})`)
+
+    station
+      .append(&quot;text&quot;)
+      .attr(&quot;x&quot;, -6)
+      .attr(&quot;dy&quot;, &quot;.35em&quot;)
+      .text((d) =&gt; d.name)
+    station.append(&quot;line&quot;).attr(&quot;x2&quot;, width)
+    svg.append(&quot;g&quot;).attr(&quot;class&quot;, &quot;x top axis&quot;).call(xAxisTop)
+    svg
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, &quot;x bottom axis&quot;)
+      .attr(&quot;transform&quot;, `translate(0,${height})`)
+      .call(xAxisBottom)
+
+    const mouseover = function (_e: unknown, d: Train) {
+      d3.select(`.train-${d.index}`).select(&quot;path&quot;).style(&quot;stroke-width&quot;, &quot;5px&quot;)
+    }
+
+    const mouseleave = function (_e: unknown, d: Train) {
+      d3.select(`.train-${d.index}`)
+        .select(&quot;path&quot;)
+        .style(&quot;stroke-width&quot;, &quot;2.5px&quot;)
+    }
+
+    const train = svg
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, &quot;train&quot;)
+      .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
+      .selectAll(&quot;g&quot;)
+      .data(trains.filter((d) =&gt; /[NLB]/.test(d.type)))
+      .enter()
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, (d) =&gt; `${d.type} train-${d.index}`)
+      .on(&quot;mouseover&quot;, mouseover)
+      .on(&quot;mouseleave&quot;, mouseleave)
+
+    const line = d3
+      .line&lt;Stop&gt;()
+      .x((d) =&gt; x(d.time!))
+      .y((d) =&gt; y(d.station.distance))
+
+    train
+      .append(&quot;path&quot;)
+      .attr(&quot;d&quot;, (d) =&gt; line(d.stops))
+      .append(&quot;title&quot;)
+      .text((d) =&gt; getTrainTitle(d))
+
+    train
+      .selectAll(&quot;circle&quot;)
+      .data((d) =&gt; d.stops)
+      .enter()
+      .append(&quot;circle&quot;)
+      .attr(
+        &quot;transform&quot;,
+        (d) =&gt; `translate(${x(d.time!)},${y(d.station.distance)})`
+      )
+      .style(&quot;filter&quot;, &quot;url(#drop-shadow-trains)&quot;)
+      .attr(&quot;r&quot;, &quot;5px&quot;)
+      .append(&quot;title&quot;)
+      .text(
+        (d) =&gt;
+          `${getTrainTitle(trains[d.trainIndex])}\n${
+            d.station.name
+          } at ${formatAMPM(d.time!)}`
+      )
+  }
+
+  return {
+    refresh: (limits: [number, number]) =&gt; {
+      refreshOnHourChange({
+        limits,
+        redraw,
+      })
+    },
+  }
+}
+
+const main = async () =&gt; {
+  const rootElId = &quot;chart&quot;
+
+  const data = await fetchData()
+
+  const { refresh } = renderChart({
+    data,
+    rootElId,
+  })
+
+  const slider: any = $(&quot;.slider&quot;)
+
+  slider.slider({
+    change: () =&gt; {
+      const limits: Limits = slider.slider(&quot;values&quot;)
+
+      refresh(limits)
+    },
+    range: true,
+  })
+
+  slider.slider(&quot;values&quot;, [10, 50])
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:326,&quot;character&quot;:8,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:328,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:328,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:330,&quot;character&quot;:29,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:330,&quot;character&quot;:36,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:337,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:337,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

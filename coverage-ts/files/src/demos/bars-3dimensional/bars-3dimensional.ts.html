@@ -1,0 +1,260 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>bars-3dimensional.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars-3dimensional/bars-3dimensional.ts</td><td class="">94.21%</td><td class="">90%</td><td class="">432</td><td class="">407</td><td class="">25</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { RaphaelPaper } from &quot;raphael&quot;
+
+// @ts-ignore
+import Raphael from &quot;@/demos/_utils/browserRaphael&quot;
+
+import &quot;./bars-3dimensional.styl&quot;
+
+const fetchData = async () =&gt; {
+  const response = await fetch(
+    `${ROOT_PATH}data/raphael/bars-3dimensional/data.json`
+  )
+  const data = await response.json()
+
+  return data.results
+}
+
+type Data = {
+  keys: string[]
+  keysLength: number
+  seriesDisplayed: number
+  seriesLength: number
+} &amp; {
+  [key: string]: number[]
+}
+
+type Config = {
+  colorScheme: string[]
+  deep: number
+  easing: string
+  heightOffset: number
+  ratio: number
+  speed: number
+  width: number
+}
+
+type Dom = {
+  els: { [k: string]: any }
+  paper: RaphaelPaper
+}
+
+type ChartOpts = {
+  data: Data
+  rootElId: string
+}
+
+class Chart {
+  private rootElId: string
+  private cg!: Config
+  private dom!: Dom
+  private data!: Data
+
+  public constructor({ data, rootElId }: ChartOpts) {
+    this.rootElId = rootElId
+
+    this.setCg()
+    this.setDom()
+    this.setData(data)
+  }
+
+  public render() {
+    this.drawAxis()
+    this.data.keys.forEach((item) =&gt; {
+      this.dom.els[item].el = this.dom.paper.set()
+    })
+
+    this.createCountries(this.data.seriesDisplayed)
+  }
+
+  public displayNextSeries() {
+    const { data } = this
+
+    data.seriesDisplayed =
+      data.seriesDisplayed + 1 === data.seriesLength
+        ? 0
+        : data.seriesDisplayed + 1
+
+    this.animateCountries(data.seriesDisplayed)
+  }
+
+  private setCg() {
+    const { width } = (document.getElementById(
+      this.rootElId
+    ) as HTMLElement).getBoundingClientRect()
+
+    this.cg = {
+      colorScheme: [&quot;#C1252D&quot;, &quot;#5F3A5F&quot;, &quot;#51A8D0&quot;],
+      deep: 5,
+      easing: &quot;bounce&quot;,
+      heightOffset: 100,
+      ratio: 0.6,
+      speed: 800,
+      width,
+    }
+  }
+
+  private setDom() {
+    this.dom = {
+      els: {},
+      paper: Raphael(this.rootElId, this.cg.width, 245),
+    }
+    ;(document.getElementById(this.rootElId) as HTMLElement).classList.add(
+      &quot;bars-3dimensional-chart&quot;
+    )
+  }
+
+  private setData(data: Data) {
+    data.keys = Object.keys(data)
+    data.seriesDisplayed = 0
+    data.seriesLength = data[data.keys[0]].length
+    data.keysLength = data.keys.length
+
+    this.data = data
+
+    data.keys.forEach((item: string) =&gt; {
+      this.dom.els[item] = {}
+    })
+  }
+
+  private animateCountries(i: number) {
+    const { data } = this
+
+    data.keys.forEach((item) =&gt; {
+      this.dom.els[item].inner.animate(
+        {
+          path: this.calcInnerPath(item, i),
+        },
+        this.cg.speed,
+        this.cg.easing
+      )
+      this.dom.els[item].outer.animate(
+        {
+          path: this.calcOuterPath(item, i),
+        },
+        this.cg.speed,
+        this.cg.easing
+      )
+
+      return this.dom.els[item].el.animate(
+        {
+          fill: this.cg.colorScheme[i],
+        },
+        this.cg.speed
+      )
+    })
+  }
+
+  private drawAxis() {
+    const { paper } = this.dom
+    const { deep } = this.cg
+
+    for (let i = 0, _i = 0; _i &lt;= 3; i = ++_i) {
+      const path = `M5,${String(25 * i)} ${this.cg.width},${String(
+        this.cg.heightOffset + i * 25
+      )}`
+
+      paper.path(path).attr(&quot;stroke-dasharray&quot;, &quot;. &quot;)
+    }
+
+    return paper
+      .path(
+        `M0,${deep + 100} ${deep},100 ${this.cg.width},${
+          100 + this.cg.heightOffset
+        } ${this.cg.width - deep},${100 + this.cg.heightOffset + deep}Z`
+      )
+      .attr(&quot;fill&quot;, &quot;#999&quot;)
+      .attr(&quot;stroke&quot;, &quot;none&quot;)
+  }
+
+  private calcH0(it: string, se: number): number {
+    return 100 - this.data[it]![se]!
+  }
+
+  private calcH5(it: string, se: number) {
+    return 100 - this.data[it][se] + 5 * this.cg.ratio
+  }
+
+  private calcH10(it: string, se: number) {
+    return 100 - this.data[it][se] + 10 * this.cg.ratio
+  }
+
+  private calcInnerPath(it: string, se: number) {
+    return (
+      `M0,${this.calcH5(it, se)} 15,${this.calcH10(it, se)} ` +
+      `15,${100 + 10 * this.cg.ratio} 0,${100 + 5 * this.cg.ratio}Z`
+    )
+  }
+
+  private calcOuterPath(it: string, se: number) {
+    return `M0,${this.calcH5(it, se)} 5,${this.calcH0(it, se)} 20,${this.calcH5(
+      it,
+      se
+    )} 20,${100 + 5 * this.cg.ratio} 15,${100 + 10 * this.cg.ratio} 0,${
+      100 + 5 * this.cg.ratio
+    }Z`
+  }
+
+  private createCountries(i: number) {
+    const { data } = this
+    const { paper } = this.dom
+
+    return data.keys.forEach((item, index) =&gt; {
+      this.dom.els[item].inner = paper.path(this.calcInnerPath(item, i))
+      this.dom.els[item].outer = paper
+        .path(this.calcOuterPath(item, i))
+        .attr(&quot;opacity&quot;, 0.5)
+      this.dom.els[item].el.push(
+        this.dom.els[item].inner,
+        this.dom.els[item].outer
+      )
+      this.dom.els[item].el.transform(
+        `T ${String((this.cg.width / data.keysLength) * index)},` +
+          `${String((this.cg.heightOffset / data.keysLength) * index)}`
+      )
+
+      return this.dom.els[item].el
+        .attr(&quot;fill&quot;, &quot;#C1252D&quot;)
+        .attr(&quot;stroke&quot;, &quot;none&quot;)
+        .attr(&quot;title&quot;, `${item}: ${data[item][i]}`)
+    })
+  }
+}
+
+const main = async () =&gt; {
+  const data = await fetchData()
+
+  const chart = new Chart({
+    data,
+    rootElId: &quot;chart&quot;,
+  })
+
+  chart.render()
+  ;(document.querySelector(&quot;.animate-bars&quot;) as HTMLElement).addEventListener(
+    &quot;click&quot;,
+    (e) =&gt; {
+      e.preventDefault()
+
+      chart.displayNextSeries()
+    }
+  )
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:3,&quot;character&quot;:7,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:9,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:14,&quot;text&quot;:&quot;results&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:25,&quot;text&quot;:&quot;el&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:98,&quot;character&quot;:13,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:25,&quot;text&quot;:&quot;inner&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:31,&quot;text&quot;:&quot;animate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:129,&quot;character&quot;:25,&quot;text&quot;:&quot;outer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:129,&quot;character&quot;:31,&quot;text&quot;:&quot;animate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:32,&quot;text&quot;:&quot;el&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:35,&quot;text&quot;:&quot;animate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:201,&quot;character&quot;:25,&quot;text&quot;:&quot;inner&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:202,&quot;character&quot;:25,&quot;text&quot;:&quot;outer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:205,&quot;character&quot;:25,&quot;text&quot;:&quot;el&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:205,&quot;character&quot;:28,&quot;text&quot;:&quot;push&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:206,&quot;character&quot;:27,&quot;text&quot;:&quot;inner&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:207,&quot;character&quot;:27,&quot;text&quot;:&quot;outer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:25,&quot;text&quot;:&quot;el&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:28,&quot;text&quot;:&quot;transform&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:214,&quot;character&quot;:32,&quot;text&quot;:&quot;el&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:215,&quot;character&quot;:9,&quot;text&quot;:&quot;attr&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:216,&quot;character&quot;:9,&quot;text&quot;:&quot;attr&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:217,&quot;character&quot;:9,&quot;text&quot;:&quot;attr&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:223,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

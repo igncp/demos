@@ -1,0 +1,310 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>chord.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/chord/chord.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">477</td><td class="">477</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+
+import &quot;./chord.styl&quot;
+
+type CSVDataItem = {
+  amount: string
+  creditor: string
+  debtor: string
+  risk: string
+}
+
+type Country = {
+  name: string
+  id: number
+}
+
+type Creditor = Country
+type Debtor = Country &amp; { risk: string }
+
+type CSVParsedItem = {
+  amount: string
+  creditor: Creditor
+  debtor: Debtor
+  risk: string
+}
+
+type Debits = (CSVParsedItem | null)[][]
+type Credits = (CSVParsedItem | null)[][]
+
+type Data = {
+  fullList: Country[]
+  debits: Debits
+  credits: Credits
+}
+
+const fetchData = async () =&gt; {
+  const list = (await d3.csv(
+    `${ROOT_PATH}data/d3js/chord/data.csv`
+  )) as CSVDataItem[]
+
+  const fullList: Country[] = []
+  const countries: Record&lt;string, Country&gt; = {}
+  const debits: Debits = []
+  const credits: Credits = []
+
+  let id = 0
+
+  const country = function (countryName: string): Country {
+    if (!countries[countryName]) {
+      countries[countryName] = {
+        id: id++,
+        name: countryName,
+      }
+    }
+
+    return countries[countryName]
+  }
+
+  const parsedList: CSVParsedItem[] = list.map((d) =&gt; ({
+    ...d,
+    creditor: country(d.creditor),
+    debtor: {
+      ...country(d.debtor),
+      risk: d.risk,
+    },
+  }))
+
+  Array.from({ length: id }).forEach((_, idx) =&gt; {
+    debits[idx] = []
+    credits[idx] = []
+
+    Array.from({ length: id }).forEach((_2, idx2) =&gt; {
+      debits[idx][idx2] = null
+      credits[idx][idx2] = null
+    })
+  })
+
+  parsedList.forEach((d) =&gt; {
+    debits[d.creditor.id][d.debtor.id] = d
+    credits[d.debtor.id][d.creditor.id] = d
+    fullList[d.creditor.id] = d.creditor
+    fullList[d.debtor.id] = d.debtor
+  })
+
+  return {
+    credits,
+    debits,
+    fullList,
+  }
+}
+
+const addDropShadowFilter = function &lt;A&gt;(
+  charts: d3.Selection&lt;d3.BaseType, A, d3.BaseType, unknown&gt;,
+  name: string,
+  deviation: number,
+  slope: number
+) {
+  const defs = charts.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, `drop-shadow-${name}`)
+
+  filter
+    .append(&quot;feOffset&quot;)
+    .attr(&quot;dx&quot;, 0.5)
+    .attr(&quot;dy&quot;, 0.5)
+    .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+    .attr(&quot;result&quot;, &quot;offOut&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;offOut&quot;)
+    .attr(&quot;result&quot;, &quot;blurOut&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter
+    .append(&quot;feBlend&quot;)
+    .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+    .attr(&quot;in2&quot;, &quot;blurOut&quot;)
+    .attr(&quot;mode&quot;, &quot;normal&quot;)
+
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+}
+
+const colours = [
+  &quot;#39B347&quot;,
+  &quot;#C92E47&quot;,
+  &quot;#DB704D&quot;,
+  &quot;#FFA22C&quot;,
+  &quot;#5E92AA&quot;,
+  &quot;#F8EDD3&quot;,
+]
+
+const margin = {
+  bottom: 20,
+  top: 50,
+}
+const height = 500
+
+type RenderChart = (o: { rootElId: string; data: Data }) =&gt; void
+
+const renderChart: RenderChart = ({ rootElId, data }) =&gt; {
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add(&quot;chord-chart&quot;)
+
+  const width = rootEl.getBoundingClientRect().width / 2 - 20
+
+  const r1 = Math.min(width, height) / 2 - 4
+  const r0 = r1 - 20
+  const formatCurrency = d3.format(&quot;,.3r&quot;)
+
+  const arc = d3.arc().innerRadius(r0).outerRadius(r1)
+  const svg = d3.select(`#${rootElId}`)
+
+  const { debits, credits, fullList } = data
+
+  const charts = svg
+    .selectAll(&quot;div&quot;)
+    .data([debits, credits])
+    .enter()
+    .append(&quot;div&quot;)
+    .style(&quot;display&quot;, &quot;inline-block&quot;)
+    .style(&quot;width&quot;, `${width}px`)
+    .style(&quot;height&quot;, `${height + margin.top + margin.bottom}px`)
+    .append(&quot;svg:svg&quot;)
+    .attr(&quot;width&quot;, width)
+    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+    .append(&quot;svg:g&quot;)
+    .attr(
+      &quot;transform&quot;,
+      `translate(${width / 2},${String(height / 2 + margin.top)})`
+    )
+
+  const leftChart = charts.filter((_d, i) =&gt; i === 0)
+  const rightChart = charts.filter((_d, i) =&gt; i === 1)
+
+  const setLabel = function (
+    chart: d3.Selection&lt;d3.BaseType, Debits, d3.BaseType, unknown&gt;,
+    label: string
+  ) {
+    return chart
+      .append(&quot;text&quot;)
+      .text(label)
+      .attr(&quot;transform&quot;, `translate(0,${(-1 * height) / 2 - 10})`)
+      .attr(&quot;class&quot;, &quot;chart-title&quot;)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+  }
+
+  setLabel(leftChart, &quot;Debits&quot;)
+  setLabel(rightChart, &quot;Credits&quot;)
+
+  addDropShadowFilter(charts, &quot;chords&quot;, 2, 0.4)
+  addDropShadowFilter(charts, &quot;headings&quot;, 3, 0.5)
+
+  const colorDomain = d3
+    .scaleLinear()
+    .domain(d3.extent([0, fullList.length - 1]) as [number, number])
+    .range([0, 1])
+
+  const heatmapColour = d3
+    .scaleLinear&lt;string&gt;()
+    .domain(d3.range(0, 1, 1.0 / colours.length))
+    .range(colours)
+
+  const fill = function (d: number) {
+    return heatmapColour(colorDomain(d))
+  }
+
+  charts.each(function (dataMatrix, chartIndex) {
+    const svgComp = d3.select(this)
+    const numberMatrix = dataMatrix.map((row) =&gt;
+      row.map((item) =&gt; (item ? +item.amount : 0))
+    )
+
+    const chordData = d3
+      .chord()
+      .sortGroups(d3.descending)
+      .sortSubgroups(d3.descending)
+      .sortChords(d3.descending)(numberMatrix)
+
+    const ribbonLayout = d3.ribbon().radius(r0)
+
+    svgComp
+      .selectAll(&quot;path.chord&quot;)
+      .data(chordData)
+      .enter()
+      .append(&quot;svg:path&quot;)
+      .attr(&quot;class&quot;, &quot;chord&quot;)
+      .style(&quot;fill&quot;, (d) =&gt; fill(d.target.index))
+      .style(&quot;filter&quot;, &quot;url(#drop-shadow-chords)&quot;)
+      .style(&quot;stroke&quot;, (d) =&gt; {
+        const originalColor = fill(d.target.index)
+        const newColor = d3.rgb(originalColor).darker()
+
+        return newColor.formatHex()
+      })
+      .style(&quot;stroke-width&quot;, 2)
+      .attr(&quot;d&quot;, ribbonLayout as any)
+      .append(&quot;svg:title&quot;)
+      .text((d) =&gt; {
+        const sourceData = fullList[d.source.index]
+        const targetData = fullList[d.target.index]
+
+        return `${sourceData.name} owes ${targetData.name} $${formatCurrency(
+          d.source.value
+        )}B.`
+      })
+
+    const g = svgComp
+      .selectAll(&quot;g.group&quot;)
+      .data(chordData.groups)
+      .enter()
+      .append(&quot;svg:g&quot;)
+      .attr(&quot;class&quot;, &quot;group&quot;)
+
+    g.append(&quot;svg:path&quot;)
+      .style(&quot;fill&quot;, (d) =&gt; fill(d.index))
+      .attr(&quot;id&quot;, (d) =&gt; `group${d.index}-${chartIndex}`)
+      .attr(&quot;d&quot;, arc as any)
+      .style(&quot;filter&quot;, () =&gt; &quot;url(#drop-shadow-headings)&quot;)
+      .append(&quot;svg:title&quot;)
+      .text(
+        (d) =&gt;
+          `${fullList[d.index].name} ${
+            chartIndex ? &quot;owes&quot; : &quot;is owed&quot;
+          } $${formatCurrency(d.value)}B.`
+      )
+
+    g.append(&quot;svg:text&quot;)
+      .attr(&quot;x&quot;, 6)
+      .attr(&quot;dy&quot;, 15)
+      .filter((d) =&gt; d.value &gt; 150)
+      .append(&quot;svg:textPath&quot;)
+      .attr(&quot;xlink:href&quot;, (d) =&gt; `#group${d.index}-${chartIndex}`)
+      .text((d) =&gt; fullList[d.index].name)
+      .attr(&quot;class&quot;, &quot;heading-title&quot;)
+  })
+}
+
+const main = async () =&gt; {
+  const data = await fetchData()
+
+  renderChart({
+    data,
+    rootElId: &quot;chart&quot;,
+  })
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

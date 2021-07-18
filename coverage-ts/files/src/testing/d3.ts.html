@@ -1,0 +1,194 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>d3.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/testing/d3.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">298</td><td class="">298</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+import QUnitType from &quot;qunit&quot;
+
+const d3Tests = (QUnit: QUnitType) =&gt; {
+  QUnit.test(&quot;d3.arc&quot;, (assert) =&gt; {
+    const arc = d3.arc().outerRadius(10).innerRadius(0)
+
+    assert.deepEqual(typeof arc({} as any), &quot;string&quot;)
+  })
+
+  QUnit.test(&quot;d3.arc#centroid&quot;, (assert) =&gt; {
+    const arc = d3
+      .arc()
+      .outerRadius(50)
+      .innerRadius(0)
+      .startAngle(0)
+      .endAngle(Math.PI)
+
+    // https://github.com/d3/d3-shape/blob/54f0f111a0fc356d8a71205686cd59033a931631/src/arc.js
+    assert.deepEqual(arc.centroid({} as any), [25, 0])
+  })
+
+  QUnit.test(&quot;d3.extent returns expected values&quot;, (assert) =&gt; {
+    assert.deepEqual(d3.extent([0, -10, 5, 100, -50, 7]), [-50, 100])
+    assert.deepEqual(d3.extent([]), [undefined, undefined])
+    assert.deepEqual(d3.extent([1, 1]), [1, 1])
+  })
+
+  QUnit.test(&quot;d3.interpolateNumber simple&quot;, (assert) =&gt; {
+    const interpolator = d3.interpolateNumber(10, 30)
+
+    assert.deepEqual(interpolator(0), 10)
+    assert.deepEqual(interpolator(0.5), 20)
+    assert.deepEqual(interpolator(1), 30)
+  })
+
+  QUnit.test(&quot;d3.interpolate hex colors&quot;, (assert) =&gt; {
+    const interpolator = d3.interpolate(&quot;#ccc&quot;, &quot;#fff&quot;)
+
+    assert.deepEqual(interpolator(0), &quot;rgb(204, 204, 204)&quot;)
+    assert.deepEqual(interpolator(0.5), &quot;rgb(230, 230, 230)&quot;)
+    assert.deepEqual(interpolator(1), &quot;rgb(255, 255, 255)&quot;)
+  })
+
+  QUnit.test(&quot;d3.interpolate nested&quot;, (assert) =&gt; {
+    const interpolator = d3.interpolate(
+      {
+        bar: &quot;white&quot;,
+        foo: 1,
+      },
+      {
+        bar: &quot;black&quot;,
+        foo: 3,
+      }
+    )
+
+    assert.deepEqual(interpolator(0), {
+      bar: &quot;rgb(255, 255, 255)&quot;,
+      foo: 1,
+    })
+    assert.deepEqual(interpolator(0.5), {
+      bar: &quot;rgb(128, 128, 128)&quot;,
+      foo: 2,
+    })
+    assert.deepEqual(interpolator(1), {
+      bar: &quot;rgb(0, 0, 0)&quot;,
+      foo: 3,
+    })
+  })
+
+  QUnit.test(&quot;d3.geoOrthographic&quot;, (assert) =&gt; {
+    const projection100 = d3.geoOrthographic().scale(100)
+    const projection1 = d3.geoOrthographic().scale(1)
+
+    assert.deepEqual(projection100([0, 0]), [480, 250])
+    assert.deepEqual(projection1([0, 0]), [480, 250])
+  })
+
+  QUnit.test(&quot;d3.max&quot;, (assert) =&gt; {
+    assert.deepEqual(
+      d3.max([{ foo: 1 }, { foo: 2 }, { foo: -1 }], (d) =&gt; d.foo),
+      2
+    )
+  })
+
+  QUnit.test(&quot;d3.pie generates the expected data&quot;, (assert) =&gt; {
+    type Data = { val: number }
+
+    const pie = d3
+      .pie&lt;Data&gt;()
+      .sort(null)
+      .value((d) =&gt; d.val)
+
+    assert.deepEqual(pie([{ val: 1 }, { val: 1 }]), [
+      {
+        data: {
+          val: 1,
+        },
+        endAngle: Math.PI,
+        index: 0,
+        padAngle: 0,
+        startAngle: 0,
+        value: 1,
+      },
+      {
+        data: {
+          val: 1,
+        },
+        endAngle: Math.PI * 2,
+        index: 1,
+        padAngle: 0,
+        startAngle: Math.PI,
+        value: 1,
+      },
+    ])
+  })
+
+  QUnit.test(&quot;d3.range returns expected values&quot;, (assert) =&gt; {
+    assert.deepEqual(d3.range(0, 10, 1), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    assert.deepEqual(d3.range(0, 10, 5), [0, 5])
+    assert.deepEqual(d3.range(0, 10, 6), [0, 6])
+    assert.deepEqual(d3.range(0, 10, 11), [0])
+  })
+
+  QUnit.test(&quot;d3.scaleLinear simple&quot;, (assert) =&gt; {
+    const scale = d3.scaleLinear().domain([0, 10]).range([1, 2])
+
+    assert.deepEqual(scale(0), 1)
+    assert.deepEqual(scale(10), 2)
+    assert.deepEqual(scale(5), 1.5)
+  })
+
+  QUnit.test(&quot;d3.scaleLinear simple 2&quot;, (assert) =&gt; {
+    const scale = d3.scaleLinear().domain([0, 1]).range([0, 100])
+
+    assert.deepEqual(scale(0), 0)
+    assert.deepEqual(scale(0.1), 10)
+    assert.deepEqual(scale(0.2), 20)
+  })
+
+  QUnit.test(&quot;d3.scaleOrdinal with color&quot;, (assert) =&gt; {
+    const scale = d3.scaleOrdinal(d3.schemePastel2)
+
+    assert.deepEqual(scale(&quot;0&quot;), &quot;#b3e2cd&quot;)
+  })
+
+  // https://observablehq.com/@d3/quantile-quantize-and-threshold-scales
+  QUnit.test(&quot;d3.scaleQuantile&quot;, (assert) =&gt; {
+    const colors = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;]
+    const colorScale = d3.scaleQuantile&lt;string&gt;().domain([0, 100]).range(colors)
+
+    assert.deepEqual(colorScale(0), &quot;A&quot;)
+    assert.deepEqual(colorScale(19), &quot;A&quot;)
+    assert.deepEqual(colorScale(20), &quot;B&quot;)
+    assert.deepEqual(colorScale(100), &quot;E&quot;)
+  })
+
+  QUnit.test(&quot;d3.select&quot;, (assert) =&gt; {
+    const div = document.createElement(&quot;div&quot;)
+    const svg: d3.Selection&lt;SVGSVGElement, unknown, null, unknown&gt; = d3
+      .select(div)
+      .append(&quot;svg&quot;)
+    // note that here the parent is still null in the types
+    const g: d3.Selection&lt;SVGPathElement, number, null, unknown&gt; = svg
+      .append(&quot;path&quot;)
+      .data([1])
+
+    svg.attr(&quot;id&quot;, &quot;foo&quot;)
+
+    assert.deepEqual(svg.node() instanceof SVGElement, true)
+    assert.deepEqual(svg.node()!.getAttribute(&quot;id&quot;), &quot;foo&quot;)
+    assert.deepEqual(g.node() instanceof SVGPathElement, true)
+  })
+}
+
+export default d3Tests
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

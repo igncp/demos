@@ -1,0 +1,188 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>moving-line.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/moving-line/moving-line.ts</td><td class="">96.46%</td><td class="">90%</td><td class="">254</td><td class="">245</td><td class="">9</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { RaphaelPaper, RaphaelPath, RaphaelElement } from &quot;raphael&quot;
+
+import Raphael from &quot;@/demos/_utils/browserRaphael&quot;
+
+import &quot;./moving-line.styl&quot;
+
+type Data = {
+  charts: Array&lt;{
+    lower: string
+    points: Array&lt;{
+      point: RaphaelElement
+      value: number
+    }&gt;
+    upper: string
+  }&gt;
+  current: number
+  line: RaphaelPath
+  paper: RaphaelPaper
+  xDelta: number
+  xOffset: number
+  yOffset: number
+}
+
+const fetchData = async (): Promise&lt;Data&gt; =&gt; {
+  const response = await fetch(`${ROOT_PATH}data/raphael/moving-line/data.json`)
+  const data = await response.json()
+
+  return data
+}
+
+const height = 300
+
+type RenderChartOpts = { rootElId: string; graphData: Data }
+
+const renderChart = ({ graphData, rootElId }: RenderChartOpts) =&gt; {
+  const initLineGraph = function () {
+    const rootEl = document.getElementById(rootElId) as HTMLElement
+
+    rootEl.classList.add(&quot;moving-line-chart&quot;)
+
+    const { width } = rootEl.getBoundingClientRect()
+    const paper = Raphael(rootElId, width, height)
+
+    graphData.paper = paper
+
+    const path = createPathString()
+
+    const line = paper.path(path)
+
+    graphData.line = line
+    drawPoints()
+
+    setInterval(advanceGraph, 3000)
+  }
+
+  const advanceGraph = function () {
+    if (graphData.current &lt; graphData.charts.length - 1) {
+      graphData.current++
+    } else {
+      graphData.current = 1
+    }
+
+    animateChart()
+  }
+
+  const drawPoints = function () {
+    const radius = 6
+    const { points } = graphData.charts[0]
+
+    let i = 0
+
+    const { length } = points
+
+    while (i &lt; length) {
+      const xPos = graphData.xOffset + i * graphData.xDelta
+      const yPos = graphData.yOffset
+
+      const circle = graphData.paper.circle(xPos, yPos, radius)
+
+      circle.node.className.baseVal = &quot;point&quot;
+      circle.attr(&quot;title&quot;, `Value: ${0}`)
+      points[i].point = circle
+      i++
+    }
+  }
+
+  const animateChart = function () {
+    const newData = graphData.charts[graphData.current]
+    let newPath = &quot;&quot;
+
+    const upperLimit = parseInt(newData.upper) || 1
+    const lowerLimit = parseInt(newData.lower) || 0
+    const scaleFactor = graphData.yOffset / (upperLimit - lowerLimit)
+
+    const { points } = graphData.charts[0]
+
+    let i = 0
+
+    const { length } = points
+
+    while (i &lt; length) {
+      if (i === 0) {
+        newPath += &quot;M &quot;
+        newPath += `${graphData.xOffset} `
+        newPath += `${
+          graphData.yOffset -
+          (newData.points[i].value - lowerLimit) * scaleFactor
+        } `
+      } else {
+        newPath += &quot;L &quot;
+        newPath += `${graphData.xOffset + i * graphData.xDelta} `
+        newPath +=
+          graphData.yOffset -
+          (newData.points[i].value - lowerLimit) * scaleFactor
+      }
+
+      points[i].point.animate(
+        {
+          cy:
+            graphData.yOffset -
+            (newData.points[i].value - lowerLimit) * scaleFactor,
+        },
+        800,
+        &quot;ease-in-out&quot;
+      )
+      points[i].point.node.childNodes[0].remove()
+      points[i].point.attr(&quot;title&quot;, `Value: ${newData.points[i].value}`)
+      i++
+    }
+
+    graphData.line.animate(
+      {
+        path: newPath,
+      },
+      800,
+      &quot;ease-in-out&quot;
+    )
+  }
+
+  const createPathString = function () {
+    const { points } = graphData.charts[graphData.current]
+
+    let path = `M ${graphData.xOffset} ${graphData.yOffset - points[0].value}`
+    let i = 0
+
+    const { length } = points
+
+    while (i &lt; length) {
+      path += &quot; L &quot;
+      path += `${graphData.xOffset + i * graphData.xDelta} `
+      path += graphData.yOffset - points[i].value
+      i++
+    }
+
+    return path
+  }
+
+  initLineGraph()
+}
+
+const main = async () =&gt; {
+  const data = await fetchData()
+
+  renderChart({
+    graphData: data,
+    rootElId: &quot;chart&quot;,
+  })
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:7,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:25,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:10,&quot;text&quot;:&quot;paper&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:18,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:10,&quot;text&quot;:&quot;line&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:17,&quot;text&quot;:&quot;paper&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:23,&quot;text&quot;:&quot;path&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:79,&quot;character&quot;:18,&quot;text&quot;:&quot;className&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:79,&quot;character&quot;:28,&quot;text&quot;:&quot;baseVal&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

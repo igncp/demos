@@ -1,0 +1,131 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>world-map.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/world-map/world-map.ts</td><td class="">95.36%</td><td class="">90%</td><td class="">151</td><td class="">144</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+import * as topojson from &quot;topojson-client&quot;
+
+type Data = {
+  id: number
+} &amp; d3.GeoPermissibleObjects
+
+const fetchData = () =&gt; d3.json(`${ROOT_PATH}data/d3js/world-map/world.json`)
+
+const color = d3.scaleOrdinal(d3.schemePastel2)
+
+type RenderChart = (o: { world: any; rootElId: string }) =&gt; void
+
+const renderChart: RenderChart = ({ world, rootElId }) =&gt; {
+  const { width } = (document.getElementById(
+    rootElId
+  ) as HTMLElement).getBoundingClientRect()
+  const height = 500
+
+  const colorFn = function (d: Data) {
+    return color(d.id.toString())
+  }
+
+  const setZoom = function (_e: unknown, d: Data) {
+    if (!d) {
+      countries
+        .transition()
+        .duration(3500)
+        .attr(
+          &quot;transform&quot;,
+          `translate(${width / 2},${height / 2})scale(${1})translate(${
+            -width / 2
+          },${-height / 2})`
+        )
+
+      return
+    }
+
+    const centroid = path.centroid(d)
+
+    const x = centroid[0]
+    const y = centroid[1]
+
+    countries
+      .transition()
+      .duration(3500)
+      .attr(
+        &quot;transform&quot;,
+        `translate(${width / 2},${height / 2})scale(${8})translate(${-x},${-y})`
+      )
+  }
+
+  const svg = d3
+    .select(`#${rootElId}`)
+    .append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, width)
+    .attr(&quot;height&quot;, height)
+
+  svg
+    .append(&quot;rect&quot;)
+    .attr(&quot;class&quot;, &quot;background&quot;)
+    .attr(&quot;height&quot;, height)
+    .attr(&quot;width&quot;, width)
+    .on(&quot;click&quot;, setZoom as any)
+    .style(&quot;fill&quot;, &quot;#daedff&quot;)
+
+  const content = svg.append(&quot;g&quot;)
+
+  const projection = d3
+    .geoMercator()
+    .center([0, 45.4])
+    .scale(150)
+    .translate([width / 2, height / 2])
+
+  const path = d3.geoPath().projection(projection)
+  const data = (topojson.feature(world, world.objects.countries) as any)
+    .features
+
+  const countries = content
+    .selectAll(&quot;.country&quot;)
+    .data&lt;Data&gt;(data)
+    .enter()
+    .append(&quot;path&quot;)
+    .attr(&quot;class&quot;, (d: Data) =&gt; `country ${d.id}`)
+    .attr(&quot;d&quot;, path)
+    .style(&quot;fill&quot;, colorFn)
+    .style(&quot;stroke&quot;, &quot;#FFF&quot;)
+    .style(&quot;stroke-width&quot;, 0.2)
+
+  countries.on(&quot;mouseover&quot;, function () {
+    return d3.select(this).style(&quot;stroke&quot;, &quot;black&quot;).style(&quot;stroke-width&quot;, &quot;1px&quot;)
+  })
+
+  countries.on(&quot;mouseout&quot;, function () {
+    return d3
+      .select(this)
+      .style(&quot;stroke&quot;, &quot;white&quot;)
+      .style(&#x27;&quot;stroke-width&quot;&#x27;, &quot;.2px&quot;)
+  })
+
+  countries.on(&quot;click&quot;, setZoom)
+}
+
+const main = async () =&gt; {
+  const world = await fetchData()
+
+  renderChart({
+    rootElId: &quot;chart&quot;,
+    world,
+  })
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/world-map/world-map.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:25,&quot;text&quot;:&quot;world&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/world-map/world-map.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:36,&quot;text&quot;:&quot;world&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/world-map/world-map.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/world-map/world-map.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:40,&quot;text&quot;:&quot;world&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/world-map/world-map.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:46,&quot;text&quot;:&quot;objects&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/world-map/world-map.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:54,&quot;text&quot;:&quot;countries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/world-map/world-map.ts&quot;,&quot;line&quot;:76,&quot;character&quot;:5,&quot;text&quot;:&quot;features&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

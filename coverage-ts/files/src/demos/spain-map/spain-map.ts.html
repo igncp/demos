@@ -1,0 +1,196 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>spain-map.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/spain-map/spain-map.ts</td><td class="">97.74%</td><td class="">90%</td><td class="">265</td><td class="">259</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+import * as topojson from &quot;topojson-client&quot;
+import * as GeoJSON from &quot;geojson&quot;
+import { Topology, Objects } from &quot;topojson-specification&quot;
+
+const fetchData = (): Promise&lt;Data | undefined&gt; =&gt;
+  d3.json(`${ROOT_PATH}data/d3js/spain-map/data.json`)
+
+const colorsScheme = [&quot;#323247&quot;, &quot;#7C7CC9&quot;, &quot;#72B66C&quot;, &quot;#429742&quot;]
+const height = 500
+const margin = {
+  bottom: 20,
+  top: 50,
+}
+const strokeWidth = 0.4
+
+type SVG = d3.Selection&lt;d3.BaseType, unknown, HTMLElement, unknown&gt;
+
+type DataShape = {
+  index: number
+  properties: {
+    NAME_2: string
+  }
+} &amp; d3.GeoPermissibleObjects
+
+type Data = Topology&lt;Objects&lt;GeoJSON.GeoJsonProperties&gt;&gt;
+
+const addDropShadowFilter = function (
+  id: number,
+  svg: SVG,
+  deviation: number,
+  slope: number
+) {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, `drop-shadow-${id}`)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+}
+
+const renderChart = async ({
+  data,
+  rootElId,
+}: {
+  data: Data
+  rootElId: string
+}) =&gt; {
+  const widthChart = (document.getElementById(
+    rootElId
+  ) as HTMLElement).getBoundingClientRect().width
+  const widthCanarias = widthChart / 3.5
+  const widthPeninsula = widthChart - widthCanarias - 10
+
+  const dataRoot = data.objects.data1
+  const dataGeo = (topojson.feature(data, dataRoot) as any).features
+
+  dataGeo.forEach((d: DataShape, i: number) =&gt; {
+    d.index = i
+  })
+
+  const colorScale = d3
+    .scaleLinear()
+    .domain([0, (dataRoot as any).geometries.length])
+    .range([0, 1])
+  const colorScaleConversion = d3
+    .scaleLinear&lt;string&gt;()
+    .domain(d3.range(0, 1, 1.0 / colorsScheme.length))
+    .range(colorsScheme)
+
+  const colorFn = function (d: DataShape) {
+    return colorScaleConversion(colorScale(d.index))
+  }
+
+  const svg = d3.select(`#${rootElId}`)
+
+  const generateSvg = function (width: number) {
+    return svg
+      .append(&quot;div&quot;)
+      .style(&quot;display&quot;, &quot;inline-block&quot;)
+      .style(&quot;height&quot;, `${height + margin.top + margin.bottom}px`)
+      .style(&quot;width&quot;, `${width}px`)
+      .append(&quot;svg:svg&quot;)
+      .attr(&quot;width&quot;, width)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+      .append(&quot;svg:g&quot;)
+      .attr(
+        &quot;transform&quot;,
+        `translate(${width / 2},${String(height / 2 + margin.top)})`
+      )
+  }
+
+  const generateProjection = (center: [number, number]) =&gt;
+    d3
+      .geoMercator()
+      .center(center)
+      .scale(2650)
+      .translate([widthPeninsula / 2, height / 2])
+
+  const generatePath = function (projection: d3.GeoProjection) {
+    return d3.geoPath().projection(projection)
+  }
+
+  const generateAreas = function (
+    svgComp: SVG,
+    path: d3.GeoPath&lt;SVGPathElement, d3.GeoPermissibleObjects&gt;,
+    filterId: number
+  ) {
+    svgComp
+      .selectAll(&quot;.area&quot;)
+      .data&lt;DataShape&gt;(dataGeo)
+      .enter()
+      .append(&quot;path&quot;)
+      .attr(&quot;d&quot;, path)
+      .style(&quot;fill&quot;, colorFn)
+      .style(&quot;stroke&quot;, &quot;#FFF&quot;)
+      .style(&quot;stroke-width&quot;, strokeWidth)
+      .style(&quot;filter&quot;, () =&gt; `url(#drop-shadow-${filterId})`)
+      .on(&quot;mouseover&quot;, function () {
+        return d3
+          .select(this)
+          .style(&quot;fill&quot;, &quot;#FFB61A&quot;)
+          .style(&quot;stroke-width&quot;, &quot;1px&quot;)
+      })
+      .on(&quot;mouseleave&quot;, function () {
+        return d3
+          .select&lt;SVGPathElement, DataShape&gt;(this)
+          .style(&quot;fill&quot;, colorFn)
+          .style(&quot;stroke-width&quot;, strokeWidth)
+      })
+      .append(&quot;title&quot;)
+      .text((d) =&gt; d.properties.NAME_2)
+  }
+
+  const svgLeft = generateSvg(widthCanarias)
+  const svgRight = generateSvg(widthPeninsula)
+
+  addDropShadowFilter(1, svgLeft, 2, 0.3)
+  addDropShadowFilter(2, svgRight, 2, 0.3)
+
+  const projectionCanarias = generateProjection([-7, 23])
+  const projectionPeninsula = generateProjection([6, 35.5])
+
+  const pathCanarias = generatePath(projectionCanarias)
+  const pathPeninsula = generatePath(projectionPeninsula)
+
+  generateAreas(svgLeft, pathCanarias, 1)
+  generateAreas(svgRight, pathPeninsula, 2)
+}
+
+const main = async () =&gt; {
+  const data = await fetchData()
+
+  if (!data) {
+    return
+  }
+
+  renderChart({
+    data,
+    rootElId: &quot;chart&quot;,
+  })
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:8,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:60,&quot;text&quot;:&quot;features&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:2,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:10,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:77,&quot;character&quot;:34,&quot;text&quot;:&quot;geometries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:77,&quot;character&quot;:45,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

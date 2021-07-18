@@ -1,0 +1,170 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>bubbles.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">src/demos/bubbles/bubbles.ts</td><td class="">78.28%</td><td class="">90%</td><td class="">221</td><td class="">173</td><td class="">48</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import &quot;./bubbles.styl&quot;
+
+const fetchScript = (src: string) =&gt;
+  new Promise((resolve) =&gt; {
+    const script = document.createElement(&quot;script&quot;)
+
+    script.setAttribute(&quot;type&quot;, &quot;text/javascript&quot;)
+    script.setAttribute(&quot;src&quot;, src)
+    script.onload = resolve
+
+    document.body.appendChild(script)
+  })
+
+const fetchLink = (href: string) =&gt;
+  new Promise((resolve) =&gt; {
+    const link = document.createElement(&quot;link&quot;)
+
+    link.onload = resolve
+
+    link.href = href
+    link.setAttribute(&quot;rel&quot;, &quot;stylesheet&quot;)
+    link.setAttribute(&quot;type&quot;, &quot;text/css&quot;)
+
+    document.head.appendChild(link)
+  })
+
+const fetchDependencies = async () =&gt; {
+  await Promise.all([
+    fetchLink(`${ROOT_PATH}vendors/nvd3/nv.d3.min.css`),
+    (async () =&gt; {
+      await fetchScript(`${ROOT_PATH}vendors/d3/d3.min.js`)
+      await fetchScript(`${ROOT_PATH}vendors/nvd3/nv.d3.min.js`)
+    })(),
+  ])
+}
+
+type JsonData = {
+  data: Array&lt;{
+    activityId: string
+    activityTimeZone: string
+    activityType: string
+    deviceType: string
+    links: unknown
+    metricSummary: {
+      calories: string
+      distance: string
+      duration: string
+      fuel: string
+      steps: string
+    }
+    metrics: unknown
+    startTime: string
+    status: string
+    tags: unknown
+  }&gt;
+}
+
+const durationToMinutes = (str: string) =&gt; {
+  const strParts = str.split(&quot;:&quot;)
+
+  return (
+    60 * Number(strParts[0]) + Number(strParts[1]) + Number(strParts[2]) / 60
+  )
+}
+
+const margin = {
+  bottom: 100,
+  left: 100,
+  right: 100,
+  top: 100,
+}
+
+const fetchData = async () =&gt; {
+  const data = await fetch(`${ROOT_PATH}data/d3js/bubbles/data.json`)
+  const jsonData = await data.json()
+
+  return jsonData
+}
+
+type RenderChart = (o: { rootElId: string; jsonData: JsonData }) =&gt; void
+
+const renderChart: RenderChart = ({ rootElId, jsonData }) =&gt; {
+  const { d3, nv } = window as any
+
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add(&quot;bubbles-chart&quot;)
+
+  const { width } = rootEl.getBoundingClientRect()
+
+  const color = d3.scale.category20b()
+
+  const chartData = [
+    {
+      key: &quot;Data&quot;,
+      values: jsonData.data.map((d, i, arr) =&gt; {
+        const distance = +d.metricSummary.distance
+        const time = durationToMinutes(d.metricSummary.duration)
+        const pace = time / distance
+
+        return {
+          color: color(distance),
+          data: d,
+          size: distance,
+          x: arr.length - i,
+          y: pace,
+        }
+      }),
+    },
+  ]
+
+  type ChartData = typeof chartData
+  type ChartDataItem = ChartData[0][&quot;values&quot;][0]
+
+  const chart = nv.models.scatterChart()
+
+  chart.margin(margin)
+
+  nv.utils.windowResize(chart.update)
+
+  chart.forceY([4.5, 6.5]).forceX([0, 135])
+
+  chart.tooltipContent(
+    (_key: unknown, _x: unknown, _y: unknown, obj: { point: ChartDataItem }) =&gt;
+      `${obj.point.size.toFixed(1)} km - ${obj.point.data.deviceType}`
+  )
+  chart.xAxis
+    .axisLabelDistance(45)
+    .tickFormat(d3.format(&quot;f&quot;))
+    .axisLabel(&quot;Person Number&quot;)
+  chart.yAxis
+    .tickFormat(d3.format(&quot;.2f&quot;))
+    .axisLabelDistance(10)
+    .axisLabel(&quot;Pace (min/km)&quot;)
+
+  d3.select(`#${rootElId}`)
+    .append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, width)
+    .datum(chartData)
+    .call(chart)
+}
+
+const main = async () =&gt; {
+  const [jsonData] = await Promise.all([fetchData(), fetchDependencies()])
+
+  renderChart({
+    jsonData,
+    rootElId: &quot;chart&quot;,
+  })
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:74,&quot;character&quot;:8,&quot;text&quot;:&quot;jsonData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:76,&quot;character&quot;:9,&quot;text&quot;:&quot;jsonData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:10,&quot;text&quot;:&quot;d3&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:14,&quot;text&quot;:&quot;nv&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:8,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:16,&quot;text&quot;:&quot;d3&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:19,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:25,&quot;text&quot;:&quot;category20b&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:101,&quot;character&quot;:10,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:101,&quot;character&quot;:17,&quot;text&quot;:&quot;color&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:8,&quot;text&quot;:&quot;chart&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:16,&quot;text&quot;:&quot;nv&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:19,&quot;text&quot;:&quot;models&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:26,&quot;text&quot;:&quot;scatterChart&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:116,&quot;character&quot;:2,&quot;text&quot;:&quot;chart&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:116,&quot;character&quot;:8,&quot;text&quot;:&quot;margin&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:2,&quot;text&quot;:&quot;nv&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:5,&quot;text&quot;:&quot;utils&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:11,&quot;text&quot;:&quot;windowResize&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:24,&quot;text&quot;:&quot;chart&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:30,&quot;text&quot;:&quot;update&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:120,&quot;character&quot;:2,&quot;text&quot;:&quot;chart&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:120,&quot;character&quot;:8,&quot;text&quot;:&quot;forceY&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:120,&quot;character&quot;:27,&quot;text&quot;:&quot;forceX&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:2,&quot;text&quot;:&quot;chart&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:8,&quot;text&quot;:&quot;tooltipContent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:2,&quot;text&quot;:&quot;chart&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:8,&quot;text&quot;:&quot;xAxis&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:5,&quot;text&quot;:&quot;axisLabelDistance&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:128,&quot;character&quot;:5,&quot;text&quot;:&quot;tickFormat&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:128,&quot;character&quot;:16,&quot;text&quot;:&quot;d3&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:128,&quot;character&quot;:19,&quot;text&quot;:&quot;format&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:129,&quot;character&quot;:5,&quot;text&quot;:&quot;axisLabel&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:130,&quot;character&quot;:2,&quot;text&quot;:&quot;chart&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:130,&quot;character&quot;:8,&quot;text&quot;:&quot;yAxis&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:5,&quot;text&quot;:&quot;tickFormat&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:16,&quot;text&quot;:&quot;d3&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:19,&quot;text&quot;:&quot;format&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:132,&quot;character&quot;:5,&quot;text&quot;:&quot;axisLabelDistance&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:5,&quot;text&quot;:&quot;axisLabel&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:2,&quot;text&quot;:&quot;d3&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:5,&quot;text&quot;:&quot;select&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:5,&quot;text&quot;:&quot;append&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:5,&quot;text&quot;:&quot;attr&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:138,&quot;character&quot;:5,&quot;text&quot;:&quot;datum&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:139,&quot;character&quot;:5,&quot;text&quot;:&quot;call&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:139,&quot;character&quot;:10,&quot;text&quot;:&quot;chart&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bubbles/bubbles.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:9,&quot;text&quot;:&quot;jsonData&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  

@@ -1,0 +1,160 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>circular-arcs.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/circular-arcs/circular-arcs.ts</td><td class="">95.52%</td><td class="">90%</td><td class="">201</td><td class="">192</td><td class="">9</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { RaphaelPaper, RaphaelPath } from &quot;raphael&quot;
+
+import Raphael from &quot;@/demos/_utils/browserRaphael&quot;
+
+import &quot;./circular-arcs.styl&quot;
+
+const strokeWidth = 3
+
+type ExtendedRaphael = RaphaelPaper &amp; {
+  arc: typeof arcFn
+  circularArc: typeof circularArc
+}
+
+type ArcFnOpts = {
+  angle: number
+  endX: number
+  endY: number
+  radius1: number
+  radius2: number
+  startX: number
+  startY: number
+}
+
+function arcFn(
+  this: RaphaelPaper,
+  { angle, endX, endY, radius1, radius2, startX, startY }: ArcFnOpts
+) {
+  const arcSVG = [radius1, radius2, angle, 0, 1, endX, endY].join(&quot; &quot;)
+
+  return this.path(`M${startX} ${startY} a ${arcSVG}`)
+}
+
+type CircularArcOpts = {
+  centerX: number
+  centerY: number
+  endAngle: number
+  radius: number
+  startAngle: number
+}
+
+function circularArc(
+  this: ExtendedRaphael,
+  { centerX, centerY, radius, startAngle, endAngle }: CircularArcOpts
+) {
+  const startX = centerX + radius * Math.cos((startAngle * Math.PI) / 180)
+  const startY = centerY + radius * Math.sin((startAngle * Math.PI) / 180)
+
+  const endX = centerX + radius * Math.cos((endAngle * Math.PI) / 180)
+  const endY = centerY + radius * Math.sin((endAngle * Math.PI) / 180)
+
+  return this.arc({
+    angle: 0,
+    endX: endX - startX,
+    endY: endY - startY,
+    radius1: radius,
+    radius2: radius,
+    startX,
+    startY,
+  })
+}
+
+const addHoverHandlers = function (el: RaphaelPath) {
+  const widthMultiplier = 2.5
+
+  el.hover(
+    function () {
+      this.attr(&quot;fill-opacity&quot;, 0.3)
+
+      this.animate(
+        {
+          &quot;stroke-width&quot;: strokeWidth * widthMultiplier,
+        },
+        500,
+        &quot;bounce&quot;
+      )
+    },
+    function () {
+      this.attr(&quot;fill-opacity&quot;, 0.2)
+
+      this.animate(
+        {
+          &quot;stroke-width&quot;: strokeWidth,
+        },
+        500,
+        &quot;bounce&quot;
+      )
+    }
+  )
+}
+
+type CreateArcOpts = {
+  arcI: number
+  fill: string
+  paper: ExtendedRaphael
+  stroke: string
+}
+
+const createArc = ({ stroke, fill, arcI, paper }: CreateArcOpts) =&gt; {
+  const center = paper.width / (4 + arcI) + (strokeWidth - 1)
+
+  const arc = paper.circularArc({
+    centerX: center + 30 + Math.pow(arcI, 1.5),
+    centerY: paper.height - (100 - arcI * 2),
+    endAngle: 0,
+    radius: paper.width / (4 + arcI),
+    startAngle: 180,
+  })
+
+  arc
+    .attr(&quot;fill&quot;, fill)
+    .attr(&quot;fill-opacity&quot;, 0.2)
+    .attr(&quot;stroke&quot;, stroke)
+    .attr(&quot;stroke-width&quot;, strokeWidth)
+
+  addHoverHandlers(arc)
+}
+
+const main = () =&gt; {
+  const rootElId = &quot;chart&quot;
+  const chartWrapper = document.getElementById(rootElId) as HTMLElement
+
+  chartWrapper.classList.add(&quot;circular-arcs-chart&quot;)
+
+  const { width } = chartWrapper.getBoundingClientRect()
+  const height = 500
+
+  Raphael.fn.circularArc = circularArc
+  Raphael.fn.arc = arcFn
+
+  const paper = Raphael(rootElId, width, height)
+
+  for (let arcI = 0; arcI &lt;= 50; ++arcI) {
+    createArc({
+      arcI,
+      fill: &quot;#85D588&quot;,
+      paper,
+      stroke: &quot;#558857&quot;,
+    })
+  }
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/circular-arcs/circular-arcs.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:7,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/circular-arcs/circular-arcs.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:2,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/circular-arcs/circular-arcs.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:10,&quot;text&quot;:&quot;fn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/circular-arcs/circular-arcs.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:13,&quot;text&quot;:&quot;circularArc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/circular-arcs/circular-arcs.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:2,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/circular-arcs/circular-arcs.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:10,&quot;text&quot;:&quot;fn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/circular-arcs/circular-arcs.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:13,&quot;text&quot;:&quot;arc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/circular-arcs/circular-arcs.ts&quot;,&quot;line&quot;:129,&quot;character&quot;:8,&quot;text&quot;:&quot;paper&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/circular-arcs/circular-arcs.ts&quot;,&quot;line&quot;:129,&quot;character&quot;:16,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+    </body>
+  </html>
+  
