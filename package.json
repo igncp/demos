@@ -6,9 +6,11 @@
   "author": "igncp",
   "dependencies": {
     "@types/d3": "^7.0.0",
-    "@types/jquery": "^3.5.5",
+    "@types/jquery": "^3.5.6",
+    "@types/jqueryui": "^1.12.16",
     "@types/qunit": "^2.11.1",
     "@types/raphael": "^2.3.1",
+    "@types/react-helmet": "^6.1.2",
     "@types/topojson-client": "^3.1.0",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",

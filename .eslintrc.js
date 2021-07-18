@@ -33,6 +33,7 @@ module.exports = {
   rules: {
     "@typescript-eslint/explicit-member-accessibility": 2,
     "@typescript-eslint/no-explicit-any": 0, // too many at the moment to have this
+    "@typescript-eslint/no-shadow": 2,
     "@typescript-eslint/no-unused-vars": 2,
 
     "arrow-body-style": [2, "as-needed"],
@@ -49,7 +50,7 @@ module.exports = {
     "no-multi-assign": 2,
     "no-restricted-globals": [2, "global"],
     "no-return-assign": [2, "always"],
-    "no-shadow": 2,
+    "no-shadow": 0, // using ts plugin one
     "no-useless-computed-key": 2,
     "no-var": 2,
     "object-shorthand": [2, "always"],

@@ -1,4 +1,20 @@
-const d3Selection = [
+const d3ShapeItems = [
+  ["d3-shape API reference", "https://github.com/d3/d3-shape"],
+  [
+    "d3-shape Types",
+    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-shape/index.d.ts",
+  ],
+]
+
+const d3FetchItems = [
+  ["d3-fetch API reference", "https://github.com/d3/d3-fetch#api-reference"],
+  [
+    "d3-fetch Types",
+    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-fetch/index.d.ts",
+  ],
+]
+
+const d3SelectionItems = [
   [
     "d3-selection API reference",
     "https://github.com/d3/d3-selection#selecting-elements",
@@ -7,11 +23,6 @@ const d3Selection = [
     "d3-selection Types",
     "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-selection/index.d.ts",
   ],
-]
-
-const d3ShapeTypes = [
-  "d3-shape Types",
-  "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-shape/index.d.ts",
 ]
 
 const d3AxisItems = [
@@ -37,20 +48,21 @@ const d3DelaunayItems = [
   ],
 ]
 
-const d3ScaleTypes = [
-  "d3-scale Types",
-  "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-scale/index.d.ts",
+const d3ScaleItems = [
+  ["d3-scale API reference", "https://github.com/d3/d3-scale"],
+  [
+    "d3-scale Types",
+    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-scale/index.d.ts",
+  ],
 ]
 
 module.exports = {
   area: {
     data: ["data.csv"],
     docs: [
-      ["d3-shape#line API reference", "https://github.com/d3/d3-shape#lines"],
-      ["d3-shape#area API reference", "https://github.com/d3/d3-shape#areas"],
-      ...d3Selection,
-      d3ScaleTypes,
-      d3ShapeTypes,
+      ...d3SelectionItems,
+      ...d3ShapeItems,
+      ...d3ScaleItems,
       ...d3AxisItems,
       ...d3DelaunayItems,
     ],
@@ -162,7 +174,12 @@ module.exports = {
   },
   "map-distorsions": {
     data: ["data.tsv"],
-    docs: [],
+    docs: [
+      ...d3ShapeItems,
+      ...d3AxisItems,
+      ...d3SelectionItems,
+      ...d3ScaleItems,
+    ],
     name: "Map Distorsions",
     notes: [
       "Dynamic (for performance) shadow",
@@ -170,7 +187,11 @@ module.exports = {
       "Tooltip and minor style changes",
     ],
     sources: ["http://bl.ocks.org/mbostock/3709000"],
-    summary: [],
+    summary: [
+      "This chart has some special characteristics like multiple vertical axis, color scale with many values, and the interaction with the mouse.",
+      "When hovering a line, the rest are converted to gray, and this one gets appended to the parent element, so it renders on top.",
+      "There is a drop-shadow filter applied but only to the focused line, which improves a lot the performance.",
+    ],
   },
   "mareys-schedule": {
     data: ["data.tsv"],
@@ -198,9 +219,12 @@ module.exports = {
   },
   partition: {
     data: ["flare.json"],
-    docs: ["Needs fix: Change between types like 2016 chart"],
+    docs: [],
     name: "Partition (needs fix)",
-    notes: ["Added title attributes, labels and change colors with events"],
+    notes: [
+      "Added title attributes, labels and change colors with events",
+      "Needs fix: Change between types like 2016 chart",
+    ],
     sources: ["http://bl.ocks.org/mbostock/4063423"],
     summary: [],
   },
@@ -266,16 +290,9 @@ module.exports = {
   },
   "weekly-heatmap": {
     data: ["data.tsv"],
-    docs: [
-      ...d3Selection,
-      [
-        "d3-scale Quantile API reference",
-        "https://github.com/d3/d3-scale#quantile-scales",
-      ],
-      d3ScaleTypes,
-    ],
-    name: "Weekly Heatmap (needs fix)",
-    notes: ["Needs fix: Tooltip not working"],
+    docs: [...d3SelectionItems, ...d3ScaleItems, ...d3FetchItems],
+    name: "Weekly Heatmap",
+    notes: [],
     sources: ["http://bl.ocks.org/tjdecke/5558084"],
     summary: [
       "This chart is a grid of days and hours using a quantile to group the data values by nine colors. The number of groups is directly tied to the colors array, so removing or adding colors to the array also affects the number of groups.",

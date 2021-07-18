@@ -10,7 +10,7 @@ type Margin = {
 
 type SVG = d3.Selection<SVGGElement, unknown, HTMLElement, unknown>
 
-// @TODO: types
+// @TODO: remove when no longer used
 
 const d3utils = {
   colorsScale<P extends number = any>(colors: any, extent: any) {

@@ -7,13 +7,13 @@ type Props = {
 
 const DemoTitle = ({ name, mainSource }: Props) => (
   <h2 className="row" id="demo-title">
-    <span className="col-lg-10">
+    <span className="col-xs-10">
       {name} Chart{" "}
-      <small id="main-source">
-        main source: <a href={mainSource}>···</a>
+      <small id="main-source" title="Main Source">
+        <a href={mainSource}>···</a>
       </small>
     </span>
-    <span className="col-lg-2 back-home">
+    <span className="col-xs-2 back-home">
       <a className="btn btn-default" href={ROOT_PATH}>
         <span className="glyphicon glyphicon-home" /> Home
       </a>

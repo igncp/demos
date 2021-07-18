@@ -21,6 +21,7 @@ I am updating this repository after it was inactive for several years. The initi
     - When necessary to use global dependencies, they should be requested from the script
 1. [ ] Remove or change dependencies
     - [x] Remove Bower
+    - [ ] Remove Lodash except complex methods
     - [ ] Remove jQuery
         - Normal usage: `ag '\$\(' src/demos`
         - Tooltip
@@ -43,7 +44,7 @@ I am updating this repository after it was inactive for several years. The initi
     - [ ] Resolve cases with `@ts-ignore`
     - [ ] Set the threshold to 99%
 1. [ ] Extra refactors:
-    - Extract texts, some dimensions and state into variables
+    - Extract texts, some dimensions and state (`let` usage) into explicit variables
     - Improve naming of variables and functions
     - Add references to relevant documentations
     - Add some personal description of the implementation
@@ -91,7 +92,7 @@ You need to have Node.js installed
 |fish-eye|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
 |force|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
 |icosahedron|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|map-distorsions|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|map-distorsions|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |mareys-schedule|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
 |moving-line|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
 |multiline-voronoi|No|No|No|No|No|

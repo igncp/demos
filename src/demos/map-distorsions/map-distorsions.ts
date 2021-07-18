@@ -1,11 +1,18 @@
-import * as d3 from "d3"
-import sortBy from "lodash/sortBy"
-
-import d3utils from "@/demos/_utils/d3utils"
+import {
+  axisLeft,
+  extent,
+  line as lineD3,
+  range,
+  scaleLinear,
+  scalePoint,
+  scaleSqrt,
+  select,
+  tsv,
+} from "d3"
 
 import "./map-distorsions.styl"
 
-type Data = {
+type ProjectionItem = {
   "Acc. 40º 150%": string
   Angular: string
   Areal: string
@@ -13,8 +20,10 @@ type Data = {
   name: string
 }
 
-const fetchData = (): Promise<Data[]> =>
-  d3.tsv(`${ROOT_PATH}data/d3js/map-distorsions/data.tsv`) as Promise<any>
+const fetchData = () =>
+  (tsv(`${ROOT_PATH}data/d3js/map-distorsions/data.tsv`) as unknown) as Promise<
+    ProjectionItem[]
+  >
 
 const margin = {
   bottom: 20,
@@ -23,6 +32,7 @@ const margin = {
   top: 90,
 }
 const height = 750 - margin.top - margin.bottom
+const axisYOffset = -9
 
 const colors = ["#7C7CC9", "#429742", "#63BD28", "#D14141"]
 
@@ -31,10 +41,32 @@ const texts = {
     "Comparison of 41 map projections by four different types of distortion. Lower is better.",
 }
 
-type RenderChart = (o: { data: Data[]; rootElId: string }) => void
+type RenderChart = (o: { data: ProjectionItem[]; rootElId: string }) => void
+
+enum DimensionName {
+  Acc40 = "Acc. 40º 150%",
+  Scale = "Scale",
+  Areal = "Areal",
+  Angular = "Angular",
+}
+
+const tooltipText = function (projectionItem: ProjectionItem) {
+  const dimensionsNames = [
+    DimensionName.Acc40,
+    DimensionName.Scale,
+    DimensionName.Areal,
+    DimensionName.Angular,
+  ] as (keyof ProjectionItem)[]
+  const valuesWithDimension = dimensionsNames.map(
+    (dimensionName) =>
+      `${Number(projectionItem[dimensionName]).toFixed(2)} (${dimensionName})`
+  )
+
+  return `${projectionItem.name}: ${valuesWithDimension.join(", ")}`
+}
 
 type Dimension = {
-  name: string
+  name: DimensionName | "name"
   scale: any
   type: Function
 }
@@ -50,41 +82,51 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   const dimensions: Dimension[] = [
     {
       name: "name",
-      scale: d3.scalePoint().range([0, height]),
+      scale: scalePoint().range([0, height]),
       type: String,
     },
     {
-      name: "Acc. 40º 150%",
-      scale: d3.scaleLinear().range([0, height]),
+      name: DimensionName.Acc40,
+      scale: scaleLinear().range([0, height]),
       type: Number,
     },
     {
-      name: "Scale",
-      scale: d3.scaleLinear().range([height, 0]),
+      name: DimensionName.Scale,
+      scale: scaleLinear().range([height, 0]),
       type: Number,
     },
     {
-      name: "Areal",
-      scale: d3.scaleSqrt().range([height, 0]),
+      name: DimensionName.Areal,
+      scale: scaleSqrt().range([height, 0]),
       type: Number,
     },
     {
-      name: "Angular",
-      scale: d3.scaleLinear().range([height, 0]),
+      name: DimensionName.Angular,
+      scale: scaleLinear().range([height, 0]),
       type: Number,
     },
   ]
 
-  const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
+  const svg = select(`#${rootElId}`)
+    .append("svg")
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width + margin.left + margin.right)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`)
 
-  d3utils.middleTitle(svg, width, texts.title, -60)
+  svg
+    .append("text")
+    .attr("class", "chart-title")
+    .attr("text-anchor", "middle")
+    .attr("transform", `translate(${width / 2},-60)`)
+    .text(texts.title)
+    .style("font-weight", "bold")
 
-  const x = d3
-    .scalePoint()
+  const x = scalePoint()
     .domain(dimensions.map((d) => d.name))
     .range([0, width])
 
-  const line = d3.line().defined((d) => !isNaN(d[1]))
+  const line = lineD3().defined((d) => !isNaN(d[1]))
 
   const dimension = svg
     .selectAll(".dimension")
@@ -94,49 +136,51 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .attr("class", "dimension")
     .attr("transform", (d) => `translate(${x(d.name)})`)
 
-  d3utils.filterColor("lines", svg, 2, 0.4)
+  filterColor("lines", svg, 2, 0.4)
 
-  const sortedData: Data[] = sortBy<Data>(data, "name")
-  const colorFn = d3utils.colorsScale(colors, [0, sortedData.length - 1])
+  const sortedData: ProjectionItem[] = data
+    .slice(0)
+    .sort(({ name: nameA }, { name: nameB }) => {
+      if (nameA === nameB) {
+        return 0
+      }
+
+      return nameA < nameB ? -1 : 1
+    })
+
+  const colorFn = colorsScale([0, sortedData.length - 1])
 
   dimensions.forEach((dimItem: Dimension) =>
     dimItem.scale.domain(
       dimItem.type === Number
-        ? d3.extent(sortedData, (d: Data) => +d[dimItem.name as keyof Data])
-        : sortedData.map((d: Data) => d[dimItem.name as keyof Data]).sort()
+        ? extent(
+            sortedData,
+            (d: ProjectionItem) => +d[dimItem.name as keyof ProjectionItem]
+          )
+        : sortedData
+            .map((d: ProjectionItem) => d[dimItem.name as keyof ProjectionItem])
+            .sort()
     )
   )
 
-  const draw = function (d: any) {
-    return line(
-      dimensions.map((dimItem) => [
-        x(dimItem.name),
-        dimItem.scale(d[dimItem.name]),
-      ]) as any
-    )
-  }
+  const draw = (projectionItem: ProjectionItem) => {
+    const allPoints: [number, number][] = dimensions.map((dimItem) => [
+      x(dimItem.name) as number,
+      dimItem.scale(projectionItem[dimItem.name as keyof ProjectionItem]),
+    ])
 
-  const tooltipText = function (d: Data) {
-    const keys = [
-      "Acc. 40º 150%",
-      "Scale",
-      "Areal",
-      "Angular",
-    ] as (keyof Data)[]
-    const vals = keys.map((item) => String(Number(d[item]).toFixed(2)))
-
-    return `${d.name}:  ${vals.join(" - ")}`
+    return line(allPoints)
   }
 
   svg
     .append("g")
     .attr("class", "background")
     .selectAll("path")
-    .data<Data>(sortedData)
+    .data<ProjectionItem>(sortedData)
     .enter()
     .append("path")
     .attr("d", draw)
-    .attr("data-title", tooltipText)
+    .attr("title", tooltipText)
 
   svg
     .append("g")
@@ -151,23 +195,23 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   dimension
     .append("g")
     .attr("class", "axis")
-    .each(function (d: Dimension) {
-      const yAxis = d3.axisLeft(d.scale)
+    .each(function (dimensionItem: Dimension) {
+      const yAxis = axisLeft(dimensionItem.scale)
 
-      return d3.select(this).call(yAxis)
+      return select(this).call(yAxis)
     })
     .append("text")
     .attr("class", "title")
     .attr("text-anchor", "middle")
-    .attr("y", -9)
-    .text((d) => d.name)
+    .attr("y", axisYOffset)
+    .text((dimensionItem) => dimensionItem.name)
 
   svg
     .select(".axis")
-    .selectAll<SVGElement, Data>("text:not(.title)")
+    .selectAll<SVGElement, ProjectionItem>("text:not(.title)")
     .attr("class", "label")
-    .data(sortedData, (d: any) => d.name || d)
-    .style("fill", (_d, i) => colorFn(i))
+    .data(sortedData, (projectionItem: ProjectionItem) => projectionItem.name)
+    .style("fill", (_d, projectionIndex) => colorFn(projectionIndex))
 
   const moveToFront = function (this: SVGElement) {
     const el = this.parentNode as HTMLElement
@@ -175,12 +219,21 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     el.appendChild(this)
   }
 
-  const mouseover = (_e: unknown, d: Data) => {
+  const mouseover = (_e: unknown, overProjection: ProjectionItem) => {
     svg.selectAll(".foreground path").style("filter", "none")
     svg.classed("active", true)
-    projection.classed("inactive", (p: Data) => p.name !== d.name)
+    projection.classed(
+      "inactive",
+      (otherProjection: ProjectionItem) =>
+        otherProjection.name !== overProjection.name
+    )
 
-    projection.filter((p: Data) => p.name === d.name).each(moveToFront)
+    projection
+      .filter(
+        (otherProjection: ProjectionItem) =>
+          otherProjection.name === overProjection.name
+      )
+      .each(moveToFront)
   }
 
   const mouseout = () => {
@@ -192,18 +245,64 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   svg
     .selectAll(".foreground path")
     .style("filter", "url(#drop-shadow-lines)")
-    .style("stroke", (_d, i) => colorFn(i))
+    .style("stroke", (_d, projectionItemIndex) => colorFn(projectionItemIndex))
 
   const projection = svg
-    .selectAll<SVGElement, Data>(".axis text,.background path,.foreground path")
+    .selectAll<SVGElement, ProjectionItem>(
+      ".axis text,.background path,.foreground path"
+    )
     .on("mouseover", mouseover)
     .on("mouseout", mouseout)
 
-  d3utils.tooltip(".background path, .foreground path", {
-    followMouse: true,
-    leftOffst: 100,
-    topOffst: 50,
+  $(".background path, .foreground path").tooltip({
+    track: true,
   })
+}
+
+const colorsScale = <P extends number = any>(domain: [number, number]) => {
+  const c = scaleLinear().domain(domain).range([0, 1])
+  const colorScale = scaleLinear<string>()
+    .domain(range(0, 1, 1.0 / colors.length))
+    .range(colors)
+
+  return function (p: P) {
+    return colorScale(c(p))
+  }
+}
+
+const filterColor = (
+  id: string,
+  svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  deviation: number,
+  slope: number
+) => {
+  const defs = svg.append("defs")
+  const filter = defs.append("filter").attr("id", `drop-shadow-${id}`)
+
+  filter
+    .append("feOffset")
+    .attr("dx", 0.5)
+    .attr("dy", 0.5)
+    .attr("in", "SourceGraphic")
+    .attr("result", "offOut")
+
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "offOut")
+    .attr("result", "blurOut")
+    .attr("stdDeviation", deviation)
+
+  filter
+    .append("feBlend")
+    .attr("in", "SourceGraphic")
+    .attr("in2", "blurOut")
+    .attr("mode", "normal")
+
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", slope)
+    .attr("type", "linear")
 }
 
 const main = async () => {

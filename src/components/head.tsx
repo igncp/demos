@@ -64,6 +64,11 @@ const Head = () => (
           type="text/css"
         />
         <link
+          href={`${ROOT_PATH}vendors/jquery-ui/themes/base/tooltip.css`}
+          rel="stylesheet"
+          type="text/css"
+        />
+        <link
           href={`${ROOT_PATH}vendors/jquery-ui/themes/base/slider.css`}
           rel="stylesheet"
           type="text/css"

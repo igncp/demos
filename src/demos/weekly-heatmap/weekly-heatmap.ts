@@ -22,32 +22,11 @@ const colors = [
 const buckets = colors.length
 
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
-const hours = [
-  "1 am",
-  "2 am",
-  "3 am",
-  "4 am",
-  "5 am",
-  "6 am",
-  "7 am",
-  "8 am",
-  "9 am",
-  "10 am",
-  "11 am",
-  "12 am",
-  "1 pm",
-  "2 pm",
-  "3 pm",
-  "4 pm",
-  "5 pm",
-  "6 pm",
-  "7 pm",
-  "8 pm",
-  "9 pm",
-  "10 pm",
-  "11 pm",
-  "12 pm",
-]
+const hours = Array.from({ length: 24 }).map((_, index: number) => {
+  const num = index % 12
+
+  return `${num + 1} ${index > 12 ? "pm" : "am"}`
+})
 
 const fetchData = async (): Promise<TimeItem[]> => {
   const data: any = await tsv(`${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`)
@@ -77,6 +56,11 @@ const workingHourMin = 7
 const workingHourMax = 16
 
 const legendStroke = "#ccc"
+
+const texts = {
+  hoursTooltip: (timeItem: TimeItem) => `Value: ${timeItem.value}`,
+  legendText: (value: number) => `≥ ${value.toFixed(2)}`,
+}
 
 const renderChart = async ({
   data,
@@ -160,6 +144,7 @@ const renderChart = async ({
     .attr("width", cellSize)
     .attr("x", (timeItem) => (timeItem.hour - 1) * cellSize)
     .attr("y", (timeItem) => (timeItem.day - 1) * cellSize)
+    .attr("title", texts.hoursTooltip)
     .style("fill", colors[0])
 
   heatMap
@@ -167,9 +152,7 @@ const renderChart = async ({
     .duration(6000)
     .style("fill", (timeItem) => colorScale(timeItem.value))
 
-  heatMap.attr("data-title", (timeItem) => `Value: ${timeItem.value}`)
-
-  tooltip(".hour")
+  $(".hour").tooltip()
 
   const legend = svg
     .selectAll(".legend")
@@ -190,31 +173,9 @@ const renderChart = async ({
   legend
     .append("text")
     .attr("class", "mono")
-    .text((value) => `≥ ${value.toFixed(2)}`)
+    .text(texts.legendText)
     .attr("x", (_value, valueIndex) => legendElementWidth * valueIndex)
     .attr("y", height + cellSize)
-}
-
-// @TODO: tooltip not working
-const tooltip = (selector: string) => {
-  const opts = {
-    leftOffst: 60,
-    tOpts: {
-      container: "body",
-      delay: {
-        hide: 0,
-        show: 500,
-      },
-      viewport: {
-        selector: "#chart svg",
-      },
-    },
-    topOffst: 40,
-  }
-
-  const sel: any = $(selector)
-
-  sel.tooltip(opts.tOpts)
 }
 
 const main = async () => {

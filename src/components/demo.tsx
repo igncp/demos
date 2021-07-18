@@ -1,5 +1,4 @@
 import React, { useEffect } from "react"
-// @ts-ignore
 import { Helmet } from "react-helmet"
 
 import { DemoInfo } from "@/common"
@@ -52,7 +51,7 @@ const Demo = ({
             type: "text/javascript",
           })
         )}
-        title={`${demoInfo.name} | demos igncp`}
+        title={`${demoInfo.name} | Demos igncp`}
       />
       <DemoTitle mainSource={sources[0]} name={name} />
       {children}

@@ -1,5 +1,6 @@
 import * as React from "react"
 import sortBy from "lodash/sortBy"
+import { Helmet } from "react-helmet"
 
 import Layout from "@/components/layout"
 import DemosList from "@/components/demos-list"
@@ -48,6 +49,16 @@ const IndexPage = () => {
 
   return (
     <Layout>
+      <Helmet
+        meta={[
+          {
+            content:
+              "HTML data visualization demos for the web, rewritten and extended. Using TypeScript with libraries like d3js, Raphael, jQuery UI or Stylus, rendering SVG or Canvas elements.",
+            name: "description",
+          },
+        ]}
+        title={"Demos - igncp"}
+      />
       <div className="bs-callout bs-callout-info">
         Here are some <i>interactive data visualization demos</i> that are built
         with examples found on the web, which I've rewritten with ideas from
