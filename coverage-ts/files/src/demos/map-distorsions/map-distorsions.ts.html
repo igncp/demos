@@ -11,14 +11,21 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/map-distorsions/map-distorsions.ts</td><td class="">97.21%</td><td class="">90%</td><td class="">359</td><td class="">349</td><td class="">10</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
-import sortBy from &quot;lodash/sortBy&quot;
-
-import d3utils from &quot;@/demos/_utils/d3utils&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/map-distorsions/map-distorsions.ts</td><td class="">98.92%</td><td class="">90%</td><td class="">461</td><td class="">456</td><td class="">5</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  axisLeft,
+  extent,
+  line as lineD3,
+  range,
+  scaleLinear,
+  scalePoint,
+  scaleSqrt,
+  select,
+  tsv,
+} from &quot;d3&quot;
 
 import &quot;./map-distorsions.styl&quot;
 
-type Data = {
+type ProjectionItem = {
   &quot;Acc. 40º 150%&quot;: string
   Angular: string
   Areal: string
@@ -26,8 +33,10 @@ type Data = {
   name: string
 }
 
-const fetchData = (): Promise&lt;Data[]&gt; =&gt;
-  d3.tsv(`${ROOT_PATH}data/d3js/map-distorsions/data.tsv`) as Promise&lt;any&gt;
+const fetchData = () =&gt;
+  (tsv(`${ROOT_PATH}data/d3js/map-distorsions/data.tsv`) as unknown) as Promise&lt;
+    ProjectionItem[]
+  &gt;
 
 const margin = {
   bottom: 20,
@@ -36,6 +45,7 @@ const margin = {
   top: 90,
 }
 const height = 750 - margin.top - margin.bottom
+const axisYOffset = -9
 
 const colors = [&quot;#7C7CC9&quot;, &quot;#429742&quot;, &quot;#63BD28&quot;, &quot;#D14141&quot;]
 
@@ -44,10 +54,32 @@ const texts = {
     &quot;Comparison of 41 map projections by four different types of distortion. Lower is better.&quot;,
 }
 
-type RenderChart = (o: { data: Data[]; rootElId: string }) =&gt; void
+type RenderChart = (o: { data: ProjectionItem[]; rootElId: string }) =&gt; void
+
+enum DimensionName {
+  Acc40 = &quot;Acc. 40º 150%&quot;,
+  Scale = &quot;Scale&quot;,
+  Areal = &quot;Areal&quot;,
+  Angular = &quot;Angular&quot;,
+}
+
+const tooltipText = function (projectionItem: ProjectionItem) {
+  const dimensionsNames = [
+    DimensionName.Acc40,
+    DimensionName.Scale,
+    DimensionName.Areal,
+    DimensionName.Angular,
+  ] as (keyof ProjectionItem)[]
+  const valuesWithDimension = dimensionsNames.map(
+    (dimensionName) =&gt;
+      `${Number(projectionItem[dimensionName]).toFixed(2)} (${dimensionName})`
+  )
+
+  return `${projectionItem.name}: ${valuesWithDimension.join(&quot;, &quot;)}`
+}
 
 type Dimension = {
-  name: string
+  name: DimensionName | &quot;name&quot;
   scale: any
   type: Function
 }
@@ -63,41 +95,51 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   const dimensions: Dimension[] = [
     {
       name: &quot;name&quot;,
-      scale: d3.scalePoint().range([0, height]),
+      scale: scalePoint().range([0, height]),
       type: String,
     },
     {
-      name: &quot;Acc. 40º 150%&quot;,
-      scale: d3.scaleLinear().range([0, height]),
+      name: DimensionName.Acc40,
+      scale: scaleLinear().range([0, height]),
       type: Number,
     },
     {
-      name: &quot;Scale&quot;,
-      scale: d3.scaleLinear().range([height, 0]),
+      name: DimensionName.Scale,
+      scale: scaleLinear().range([height, 0]),
       type: Number,
     },
     {
-      name: &quot;Areal&quot;,
-      scale: d3.scaleSqrt().range([height, 0]),
+      name: DimensionName.Areal,
+      scale: scaleSqrt().range([height, 0]),
       type: Number,
     },
     {
-      name: &quot;Angular&quot;,
-      scale: d3.scaleLinear().range([height, 0]),
+      name: DimensionName.Angular,
+      scale: scaleLinear().range([height, 0]),
       type: Number,
     },
   ]
 
-  const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
+  const svg = select(`#${rootElId}`)
+    .append(&quot;svg&quot;)
+    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+    .attr(&quot;width&quot;, width + margin.left + margin.right)
+    .append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
 
-  d3utils.middleTitle(svg, width, texts.title, -60)
+  svg
+    .append(&quot;text&quot;)
+    .attr(&quot;class&quot;, &quot;chart-title&quot;)
+    .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+    .attr(&quot;transform&quot;, `translate(${width / 2},-60)`)
+    .text(texts.title)
+    .style(&quot;font-weight&quot;, &quot;bold&quot;)
 
-  const x = d3
-    .scalePoint()
+  const x = scalePoint()
     .domain(dimensions.map((d) =&gt; d.name))
     .range([0, width])
 
-  const line = d3.line().defined((d) =&gt; !isNaN(d[1]))
+  const line = lineD3().defined((d) =&gt; !isNaN(d[1]))
 
   const dimension = svg
     .selectAll(&quot;.dimension&quot;)
@@ -107,49 +149,51 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
     .attr(&quot;class&quot;, &quot;dimension&quot;)
     .attr(&quot;transform&quot;, (d) =&gt; `translate(${x(d.name)})`)
 
-  d3utils.filterColor(&quot;lines&quot;, svg, 2, 0.4)
+  filterColor(&quot;lines&quot;, svg, 2, 0.4)
 
-  const sortedData: Data[] = sortBy&lt;Data&gt;(data, &quot;name&quot;)
-  const colorFn = d3utils.colorsScale(colors, [0, sortedData.length - 1])
+  const sortedData: ProjectionItem[] = data
+    .slice(0)
+    .sort(({ name: nameA }, { name: nameB }) =&gt; {
+      if (nameA === nameB) {
+        return 0
+      }
+
+      return nameA &lt; nameB ? -1 : 1
+    })
+
+  const colorFn = colorsScale([0, sortedData.length - 1])
 
   dimensions.forEach((dimItem: Dimension) =&gt;
     dimItem.scale.domain(
       dimItem.type === Number
-        ? d3.extent(sortedData, (d: Data) =&gt; +d[dimItem.name as keyof Data])
-        : sortedData.map((d: Data) =&gt; d[dimItem.name as keyof Data]).sort()
+        ? extent(
+            sortedData,
+            (d: ProjectionItem) =&gt; +d[dimItem.name as keyof ProjectionItem]
+          )
+        : sortedData
+            .map((d: ProjectionItem) =&gt; d[dimItem.name as keyof ProjectionItem])
+            .sort()
     )
   )
 
-  const draw = function (d: any) {
-    return line(
-      dimensions.map((dimItem) =&gt; [
-        x(dimItem.name),
-        dimItem.scale(d[dimItem.name]),
-      ]) as any
-    )
-  }
+  const draw = (projectionItem: ProjectionItem) =&gt; {
+    const allPoints: [number, number][] = dimensions.map((dimItem) =&gt; [
+      x(dimItem.name) as number,
+      dimItem.scale(projectionItem[dimItem.name as keyof ProjectionItem]),
+    ])
 
-  const tooltipText = function (d: Data) {
-    const keys = [
-      &quot;Acc. 40º 150%&quot;,
-      &quot;Scale&quot;,
-      &quot;Areal&quot;,
-      &quot;Angular&quot;,
-    ] as (keyof Data)[]
-    const vals = keys.map((item) =&gt; String(Number(d[item]).toFixed(2)))
-
-    return `${d.name}:  ${vals.join(&quot; - &quot;)}`
+    return line(allPoints)
   }
 
   svg
     .append(&quot;g&quot;)
     .attr(&quot;class&quot;, &quot;background&quot;)
     .selectAll(&quot;path&quot;)
-    .data&lt;Data&gt;(sortedData)
+    .data&lt;ProjectionItem&gt;(sortedData)
     .enter()
     .append(&quot;path&quot;)
     .attr(&quot;d&quot;, draw)
-    .attr(&quot;data-title&quot;, tooltipText)
+    .attr(&quot;title&quot;, tooltipText)
 
   svg
     .append(&quot;g&quot;)
@@ -164,23 +208,23 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   dimension
     .append(&quot;g&quot;)
     .attr(&quot;class&quot;, &quot;axis&quot;)
-    .each(function (d: Dimension) {
-      const yAxis = d3.axisLeft(d.scale)
+    .each(function (dimensionItem: Dimension) {
+      const yAxis = axisLeft(dimensionItem.scale)
 
-      return d3.select(this).call(yAxis)
+      return select(this).call(yAxis)
     })
     .append(&quot;text&quot;)
     .attr(&quot;class&quot;, &quot;title&quot;)
     .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-    .attr(&quot;y&quot;, -9)
-    .text((d) =&gt; d.name)
+    .attr(&quot;y&quot;, axisYOffset)
+    .text((dimensionItem) =&gt; dimensionItem.name)
 
   svg
     .select(&quot;.axis&quot;)
-    .selectAll&lt;SVGElement, Data&gt;(&quot;text:not(.title)&quot;)
+    .selectAll&lt;SVGElement, ProjectionItem&gt;(&quot;text:not(.title)&quot;)
     .attr(&quot;class&quot;, &quot;label&quot;)
-    .data(sortedData, (d: any) =&gt; d.name || d)
-    .style(&quot;fill&quot;, (_d, i) =&gt; colorFn(i))
+    .data(sortedData, (projectionItem: ProjectionItem) =&gt; projectionItem.name)
+    .style(&quot;fill&quot;, (_d, projectionIndex) =&gt; colorFn(projectionIndex))
 
   const moveToFront = function (this: SVGElement) {
     const el = this.parentNode as HTMLElement
@@ -188,12 +232,21 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
     el.appendChild(this)
   }
 
-  const mouseover = (_e: unknown, d: Data) =&gt; {
+  const mouseover = (_e: unknown, overProjection: ProjectionItem) =&gt; {
     svg.selectAll(&quot;.foreground path&quot;).style(&quot;filter&quot;, &quot;none&quot;)
     svg.classed(&quot;active&quot;, true)
-    projection.classed(&quot;inactive&quot;, (p: Data) =&gt; p.name !== d.name)
+    projection.classed(
+      &quot;inactive&quot;,
+      (otherProjection: ProjectionItem) =&gt;
+        otherProjection.name !== overProjection.name
+    )
 
-    projection.filter((p: Data) =&gt; p.name === d.name).each(moveToFront)
+    projection
+      .filter(
+        (otherProjection: ProjectionItem) =&gt;
+          otherProjection.name === overProjection.name
+      )
+      .each(moveToFront)
   }
 
   const mouseout = () =&gt; {
@@ -205,18 +258,64 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   svg
     .selectAll(&quot;.foreground path&quot;)
     .style(&quot;filter&quot;, &quot;url(#drop-shadow-lines)&quot;)
-    .style(&quot;stroke&quot;, (_d, i) =&gt; colorFn(i))
+    .style(&quot;stroke&quot;, (_d, projectionItemIndex) =&gt; colorFn(projectionItemIndex))
 
   const projection = svg
-    .selectAll&lt;SVGElement, Data&gt;(&quot;.axis text,.background path,.foreground path&quot;)
+    .selectAll&lt;SVGElement, ProjectionItem&gt;(
+      &quot;.axis text,.background path,.foreground path&quot;
+    )
     .on(&quot;mouseover&quot;, mouseover)
     .on(&quot;mouseout&quot;, mouseout)
 
-  d3utils.tooltip(&quot;.background path, .foreground path&quot;, {
-    followMouse: true,
-    leftOffst: 100,
-    topOffst: 50,
+  $(&quot;.background path, .foreground path&quot;).tooltip({
+    track: true,
   })
+}
+
+const colorsScale = &lt;P extends number = any&gt;(domain: [number, number]) =&gt; {
+  const c = scaleLinear().domain(domain).range([0, 1])
+  const colorScale = scaleLinear&lt;string&gt;()
+    .domain(range(0, 1, 1.0 / colors.length))
+    .range(colors)
+
+  return function (p: P) {
+    return colorScale(c(p))
+  }
+}
+
+const filterColor = (
+  id: string,
+  svg: d3.Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;,
+  deviation: number,
+  slope: number
+) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, `drop-shadow-${id}`)
+
+  filter
+    .append(&quot;feOffset&quot;)
+    .attr(&quot;dx&quot;, 0.5)
+    .attr(&quot;dy&quot;, 0.5)
+    .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+    .attr(&quot;result&quot;, &quot;offOut&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;offOut&quot;)
+    .attr(&quot;result&quot;, &quot;blurOut&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter
+    .append(&quot;feBlend&quot;)
+    .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+    .attr(&quot;in2&quot;, &quot;blurOut&quot;)
+    .attr(&quot;mode&quot;, &quot;normal&quot;)
+
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
 }
 
 const main = async () =&gt; {
@@ -227,8 +326,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:2,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:12,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:18,&quot;text&quot;:&quot;domain&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:109,&quot;character&quot;:25,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:16,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:22,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:154,&quot;character&quot;:34,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:168,&quot;character&quot;:23,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:168,&quot;character&quot;:34,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:168,&quot;character&quot;:36,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 17:48:28 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:2,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:12,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:18,&quot;text&quot;:&quot;domain&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:168,&quot;character&quot;:14,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/map-distorsions/map-distorsions.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:43,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 18 Jul 2021 22:21:42 GMT</p>
     </body>
   </html>
   

@@ -3,181 +3,167 @@
   "anys": [
     {
       "file": "src/pages/index.tsx",
-      "line": 11,
+      "line": 12,
       "character": 6,
       "text": "info",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 13,
+      "line": 14,
       "character": 0,
       "text": "info",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 13,
+      "line": 14,
       "character": 5,
       "text": "d3js",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 14,
+      "line": 15,
       "character": 0,
       "text": "info",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 14,
+      "line": 15,
       "character": 5,
       "text": "raphael",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 22,
+      "line": 23,
       "character": 2,
       "text": "info",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 22,
+      "line": 23,
       "character": 7,
       "text": "d3js",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 22,
+      "line": 23,
       "character": 12,
       "text": "push",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 31,
+      "line": 32,
       "character": 2,
       "text": "info",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 31,
+      "line": 32,
       "character": 7,
       "text": "raphael",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 31,
+      "line": 32,
       "character": 15,
       "text": "push",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 34,
+      "line": 35,
       "character": 6,
       "text": "demosD3",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 34,
+      "line": 35,
       "character": 16,
       "text": "info",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 35,
+      "line": 36,
       "character": 6,
       "text": "demosRaphael",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 35,
+      "line": 36,
       "character": 21,
       "text": "info",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 37,
+      "line": 38,
       "character": 4,
       "text": "demos",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 37,
+      "line": 38,
       "character": 12,
       "text": "demosD3",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 37,
+      "line": 38,
       "character": 20,
       "text": "concat",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 37,
+      "line": 38,
       "character": 27,
       "text": "demosRaphael",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 39,
+      "line": 40,
       "character": 0,
       "text": "demos",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 39,
+      "line": 40,
       "character": 15,
       "text": "demos",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 42,
+      "line": 43,
       "character": 35,
       "text": "demos",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 42,
+      "line": 43,
       "character": 41,
       "text": "length",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 45,
-      "character": 20,
-      "text": "demos",
-      "kind": 1
-    },
-    {
-      "file": "src/pages/index.tsx",
-      "line": 45,
-      "character": 26,
-      "text": "slice",
-      "kind": 1
-    },
-    {
-      "file": "src/pages/index.tsx",
       "line": 46,
       "character": 20,
       "text": "demos",
@@ -192,14 +178,28 @@
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 46,
+      "line": 47,
+      "character": 20,
+      "text": "demos",
+      "kind": 1
+    },
+    {
+      "file": "src/pages/index.tsx",
+      "line": 47,
+      "character": 26,
+      "text": "slice",
+      "kind": 1
+    },
+    {
+      "file": "src/pages/index.tsx",
+      "line": 47,
       "character": 48,
       "text": "demos",
       "kind": 1
     },
     {
       "file": "src/pages/index.tsx",
-      "line": 46,
+      "line": 47,
       "character": 54,
       "text": "length",
       "kind": 1
@@ -2131,72 +2131,37 @@
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 37,
+      "line": 69,
       "character": 2,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 102,
+      "line": 153,
       "character": 12,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 102,
+      "line": 153,
       "character": 18,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 109,
-      "character": 25,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 113,
-      "character": 16,
+      "line": 168,
+      "character": 14,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 113,
-      "character": 22,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 154,
-      "character": 34,
+      "line": 198,
+      "character": 43,
       "text": "scale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 168,
-      "character": 23,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 168,
-      "character": 34,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 168,
-      "character": 36,
-      "text": "name",
       "kind": 1
     },
     {
@@ -5862,93 +5827,51 @@
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 52,
+      "line": 31,
       "character": 8,
       "text": "data",
       "kind": 1
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 54,
+      "line": 33,
       "character": 9,
       "text": "data",
       "kind": 1
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 54,
+      "line": 33,
       "character": 14,
       "text": "map",
       "kind": 1
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 175,
+      "line": 158,
       "character": 52,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 182,
+      "line": 165,
       "character": 16,
       "text": "_value",
       "kind": 1
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 186,
+      "line": 169,
       "character": 20,
       "text": "_value",
       "kind": 1
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 192,
-      "character": 11,
-      "text": "value",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 192,
-      "character": 26,
-      "text": "value",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 192,
-      "character": 32,
-      "text": "toFixed",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 193,
+      "line": 176,
       "character": 16,
       "text": "_value",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 214,
-      "character": 8,
-      "text": "sel",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 216,
-      "character": 2,
-      "text": "sel",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 216,
-      "character": 6,
-      "text": "tooltip",
       "kind": 1
     },
     {
@@ -6001,8 +5924,8 @@
       "kind": 1
     }
   ],
-  "percentage": 91.20935480562109,
-  "total": 9749,
-  "covered": 8892,
-  "uncovered": 857
+  "percentage": 91.42161833299534,
+  "total": 9862,
+  "covered": 9016,
+  "uncovered": 846
 }
