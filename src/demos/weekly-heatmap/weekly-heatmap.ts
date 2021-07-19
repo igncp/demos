@@ -25,7 +25,7 @@ const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
 const hours = Array.from({ length: 24 }).map((_, index: number) => {
   const num = index % 12
 
-  return `${num + 1} ${index > 12 ? "pm" : "am"}`
+  return `${num + 1} ${index >= 11 && index !== 23 ? "pm" : "am"}`
 })
 
 const fetchData = async (): Promise<TimeItem[]> => {
@@ -174,7 +174,12 @@ const renderChart = async ({
     .append("text")
     .attr("class", "mono")
     .text(texts.legendText)
-    .attr("x", (_value, valueIndex) => legendElementWidth * valueIndex)
+    .style("text-anchor", "middle")
+    .attr(
+      "x",
+      (_value, valueIndex) =>
+        legendElementWidth * valueIndex + legendElementWidth / 2
+    )
     .attr("y", height + cellSize)
 }
 

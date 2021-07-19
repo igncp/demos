@@ -45,11 +45,15 @@ I am updating this repository after it was inactive for several years. The initi
     - [ ] Set the threshold to 99%
 1. [ ] Extra refactors:
     - Extract texts, some dimensions and state (`let` usage) into explicit variables
-    - Improve naming of variables and functions
+    - Improve naming of variables and functions, avoiding one-letter or very generic names
     - Add references to relevant documentations
     - Add some personal description of the implementation
     - Remove the usage of d3utils, even if it creates duplication in charts
     - Use `import { foo, bar } from "baz"` instead of `import * as baz from "baz"` where possible
+    - Use arrow function except when `this` is used
+    - Remove unnecessary `String(...)`
+    - Future: remove mutations of original data
+    - Future: avoid circular structures
 
 Some new examples may be added at the same time, especially when more progress is done
 
@@ -95,7 +99,7 @@ You need to have Node.js installed
 |map-distorsions|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 |mareys-schedule|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
 |moving-line|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|multiline-voronoi|No|No|No|No|No|
+|multiline-voronoi|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|:white_check_mark:|
 |partition|No|:white_check_mark:|No|No|No|
 |pie|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
 |spain-map|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|

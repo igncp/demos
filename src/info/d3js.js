@@ -1,3 +1,14 @@
+const d3ScaleChromaticItems = [
+  [
+    "d3-scale-chromatic API reference",
+    "https://github.com/d3/d3-scale-chromatic#api-reference",
+  ],
+  [
+    "d3-scale-chromatic Types",
+    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-scale-chromatic/index.d.ts",
+  ],
+]
+
 const d3ShapeItems = [
   ["d3-shape API reference", "https://github.com/d3/d3-shape"],
   [
@@ -207,7 +218,15 @@ module.exports = {
   },
   "multiline-voronoi": {
     data: ["data.tsv"],
-    docs: [],
+    docs: [
+      ...d3AxisItems,
+      ...d3ShapeItems,
+      ...d3ScaleItems,
+      ...d3SelectionItems,
+      ...d3DelaunayItems,
+      ...d3ScaleChromaticItems,
+      ...d3FetchItems,
+    ],
     name: "Multi-Line Voronoi",
     notes: [
       "Click one time to just show a line, click again to sho all",
