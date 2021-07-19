@@ -5869,8 +5869,8 @@
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 176,
-      "character": 16,
+      "line": 179,
+      "character": 7,
       "text": "_value",
       "kind": 1
     },
@@ -5924,8 +5924,8 @@
       "kind": 1
     }
   ],
-  "percentage": 91.4163961038961,
-  "total": 9856,
-  "covered": 9010,
+  "percentage": 91.8347649840749,
+  "total": 10361,
+  "covered": 9515,
   "uncovered": 846
 }
