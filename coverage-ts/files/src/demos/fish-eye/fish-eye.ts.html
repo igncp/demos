@@ -11,10 +11,9 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye.ts</td><td class="">95.30%</td><td class="">90%</td><td class="">489</td><td class="">466</td><td class="">23</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye.ts</td><td class="">95.59%</td><td class="">90%</td><td class="">522</td><td class="">499</td><td class="">23</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
 
 import d3Fisheye, { FishEyeScale } from &quot;@/demos/_utils/fish-eye&quot;
-import d3utils from &quot;@/demos/_utils/d3utils&quot;
 
 import &quot;./fish-eye.styl&quot;
 
@@ -124,13 +123,16 @@ class FishEyeChart {
   }
 
   private setChartTitle() {
-    return d3utils.middleTitle(
-      this.dom.svg,
-      this.width,
-      &quot;Income Per Capita vs &quot; +
-        &quot;Life Expectancy vs Population vs Region - 180 Countries&quot;,
-      -40
-    )
+    this.dom.svg
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, &quot;chart-title&quot;)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .attr(&quot;transform&quot;, `translate(${this.width / 2},-40)`)
+      .text(
+        &quot;Income Per Capita vs &quot; +
+          &quot;Life Expectancy vs Population vs Region - 180 Countries&quot;
+      )
+      .style(&quot;font-weight&quot;, &quot;bold&quot;)
   }
 
   private setVars() {
@@ -210,7 +212,39 @@ class FishEyeChart {
   }
 
   private setFilter() {
-    return d3utils.filterColor(&quot;circles&quot;, this.dom.svg, 1.5, 0.6, true)
+    const defs = this.dom.svg.append(&quot;defs&quot;)
+    const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, `drop-shadow-circles`)
+
+    filter
+      .attr(&quot;height&quot;, &quot;500%&quot;)
+      .attr(&quot;width&quot;, &quot;500%&quot;)
+      .attr(&quot;x&quot;, &quot;-200%&quot;)
+      .attr(&quot;y&quot;, &quot;-200%&quot;)
+
+    filter
+      .append(&quot;feOffset&quot;)
+      .attr(&quot;dx&quot;, 0.5)
+      .attr(&quot;dy&quot;, 0.5)
+      .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+      .attr(&quot;result&quot;, &quot;offOut&quot;)
+
+    filter
+      .append(&quot;feGaussianBlur&quot;)
+      .attr(&quot;in&quot;, &quot;offOut&quot;)
+      .attr(&quot;result&quot;, &quot;blurOut&quot;)
+      .attr(&quot;stdDeviation&quot;, 1.5)
+
+    filter
+      .append(&quot;feBlend&quot;)
+      .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+      .attr(&quot;in2&quot;, &quot;blurOut&quot;)
+      .attr(&quot;mode&quot;, &quot;normal&quot;)
+
+    filter
+      .append(&quot;feComponentTransfer&quot;)
+      .append(&quot;feFuncA&quot;)
+      .attr(&quot;slope&quot;, 0.6)
+      .attr(&quot;type&quot;, &quot;linear&quot;)
   }
 
   private position() {
@@ -309,8 +343,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:4,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:12,&quot;text&quot;:&quot;FishEyeScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:66,&quot;character&quot;:4,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:66,&quot;character&quot;:12,&quot;text&quot;:&quot;FishEyeScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:10,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:138,&quot;character&quot;:7,&quot;text&quot;:&quot;domain&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:139,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:140,&quot;character&quot;:10,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:142,&quot;character&quot;:7,&quot;text&quot;:&quot;domain&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:149,&quot;character&quot;:6,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:150,&quot;character&quot;:6,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:52,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:160,&quot;character&quot;:46,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:204,&quot;character&quot;:40,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:205,&quot;character&quot;:35,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:241,&quot;character&quot;:14,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:241,&quot;character&quot;:21,&quot;text&quot;:&quot;distortion&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:241,&quot;character&quot;:37,&quot;text&quot;:&quot;focus&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:14,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:21,&quot;text&quot;:&quot;distortion&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:242,&quot;character&quot;:37,&quot;text&quot;:&quot;focus&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:257,&quot;character&quot;:41,&quot;text&quot;:&quot;ev&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 19 Jul 2021 22:43:24 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:4,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:12,&quot;text&quot;:&quot;FishEyeScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:4,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:12,&quot;text&quot;:&quot;FishEyeScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:138,&quot;character&quot;:10,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:140,&quot;character&quot;:7,&quot;text&quot;:&quot;domain&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:141,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:142,&quot;character&quot;:10,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:144,&quot;character&quot;:7,&quot;text&quot;:&quot;domain&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:145,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:151,&quot;character&quot;:6,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:6,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:158,&quot;character&quot;:52,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:162,&quot;character&quot;:46,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:238,&quot;character&quot;:40,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:239,&quot;character&quot;:35,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:14,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:21,&quot;text&quot;:&quot;distortion&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:37,&quot;text&quot;:&quot;focus&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:14,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:21,&quot;text&quot;:&quot;distortion&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:37,&quot;text&quot;:&quot;focus&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:291,&quot;character&quot;:41,&quot;text&quot;:&quot;ev&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 20 Jul 2021 23:12:40 GMT</p>
     </body>
   </html>
   

@@ -11,11 +11,9 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/mareys-schedule.ts</td><td class="">98.59%</td><td class="">90%</td><td class="">498</td><td class="">491</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/mareys-schedule.ts</td><td class="">98.75%</td><td class="">90%</td><td class="">561</td><td class="">554</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
 import each from &quot;lodash/each&quot;
 import last from &quot;lodash/last&quot;
-
-import d3utils from &quot;@/demos/_utils/d3utils&quot;
 
 import &quot;./mareys-schedule.styl&quot;
 
@@ -222,15 +220,25 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt;
       .ticks(8)
       .tickFormat(formatTime as any)
 
-    const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
+    const svg = d3
+      .select(`#${rootElId}`)
+      .text(&quot;&quot;)
+      .append(&quot;svg&quot;)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+      .attr(&quot;width&quot;, width + margin.left + margin.right)
+      .append(&quot;g&quot;)
+      .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
 
-    d3utils.middleTitle(
-      svg,
-      width,
-      &quot;E.J. Marey’s graphical train schedule &quot; + &quot; (4:30AM - 1:30AM)&quot;,
-      -40
-    )
-    d3utils.filterBlackOpacity(&quot;trains&quot;, svg, 2, 0.2)
+    svg
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, &quot;chart-title&quot;)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .attr(&quot;transform&quot;, `translate(${width / 2},-40)`)
+      .text(&quot;E.J. Marey’s graphical train schedule &quot; + &quot; (4:30AM - 1:30AM)&quot;)
+      .style(&quot;font-weight&quot;, &quot;bold&quot;)
+
+    filterBlackOpacity(&quot;trains&quot;, svg, 2, 0.2)
+
     svg
       .append(&quot;defs&quot;)
       .append(&quot;clipPath&quot;)
@@ -351,9 +359,43 @@ const main = async () =&gt; {
   slider.slider(&quot;values&quot;, [10, 50])
 }
 
+const filterBlackOpacity = (
+  id: string,
+  svg: d3.Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;,
+  deviation: number,
+  slope: number
+) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs
+    .append(&quot;filter&quot;)
+    .attr(&quot;height&quot;, &quot;500%&quot;)
+    .attr(&quot;id&quot;, `drop-shadow-${id}`)
+    .attr(&quot;width&quot;, &quot;500%&quot;)
+    .attr(&quot;x&quot;, &quot;-200%&quot;)
+    .attr(&quot;y&quot;, &quot;-200%&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+}
+
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:326,&quot;character&quot;:8,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:328,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:328,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:330,&quot;character&quot;:29,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:330,&quot;character&quot;:36,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:337,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:337,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 19 Jul 2021 22:43:24 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:334,&quot;character&quot;:8,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:336,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:336,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:338,&quot;character&quot;:29,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:338,&quot;character&quot;:36,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:345,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:345,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 20 Jul 2021 23:12:40 GMT</p>
     </body>
   </html>
   

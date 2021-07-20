@@ -1,0 +1,321 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>partition.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/partition/partition.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">476</td><td class="">476</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  HierarchyRectangularNode,
+  Selection,
+  arc as arcD3,
+  easeBounce,
+  hierarchy,
+  interpolate,
+  json,
+  partition as partitionD3,
+  scaleOrdinal,
+  schemePastel2,
+  select,
+} from &quot;d3&quot;
+
+type DataNode = {
+  children: DataNode[]
+  name: string
+  size?: number
+}
+
+type HierarchyRectNode = HierarchyRectangularNode&lt;DataNode&gt;
+type PartitionType = &quot;count&quot; | &quot;size&quot;
+
+const fetchData = () =&gt;
+  (json(`${ROOT_PATH}data/d3js/partition/flare.json`) as unknown) as DataNode
+
+const height = 700
+const overColor = &quot;#de7c03&quot;
+const transitionDuration = 2000
+const easeFn = easeBounce
+
+const addTitle = &lt;A extends SVGElement, B extends SVGElement&gt;(
+  selector: Selection&lt;A, HierarchyRectNode, B, unknown&gt;
+) =&gt; {
+  selector.append(&quot;title&quot;).text((node) =&gt; `${node.data.name}\n${node.value}`)
+}
+
+const getNodeText = (node: HierarchyRectNode) =&gt; {
+  const dx = Math.abs(node.x0 - node.x1)
+
+  if (dx &gt; 0.07 &amp;&amp; node.parent &amp;&amp; node.data.name.length &lt; 10) {
+    return node.data.name
+  }
+
+  return &quot;&quot;
+}
+
+type RenderChart = (o: {
+  rootData: DataNode
+  rootElId: string
+  partitionType: PartitionType
+}) =&gt; {
+  updatePartition(partitionType: PartitionType): void
+}
+
+const getDataHierarchy = (
+  rootData: DataNode,
+  partitionType: PartitionType,
+  radius: number
+) =&gt; {
+  const dataHierarchySize = hierarchy(rootData).sum(
+    (d: DataNode) =&gt; d.size || 0
+  )
+  const dataHierarchyCount = hierarchy(rootData).sum(() =&gt; 1)
+  const partition = partitionD3&lt;DataNode&gt;().size([2 * Math.PI, radius])
+
+  const hierarchyResult = partition(
+    partitionType === &quot;size&quot; ? dataHierarchySize : dataHierarchyCount
+  )
+
+  return hierarchyResult.descendants()
+}
+
+const extractTweenObj = (node: HierarchyRectNode) =&gt; ({
+  depth: node.depth,
+  x0: node.x0,
+  x1: node.x1,
+  y0: node.y0,
+  y1: node.y1,
+})
+
+const getInterpolatorFn = (
+  initialData: HierarchyRectNode[],
+  fn: (n: HierarchyRectNode) =&gt; string | null
+) =&gt; (finalNode: HierarchyRectNode, nodeIndex: number) =&gt; {
+  const initialNode = initialData[nodeIndex]
+
+  const interpolateFn = interpolate(
+    extractTweenObj(initialNode),
+    extractTweenObj(finalNode)
+  )
+
+  return (t: number) =&gt; {
+    const transitientState = interpolateFn(t)
+
+    return fn(transitientState as HierarchyRectNode)!
+  }
+}
+
+const renderChart: RenderChart = ({ rootData, rootElId, partitionType }) =&gt; {
+  const { width } = (document.getElementById(
+    &quot;chart&quot;
+  ) as HTMLElement).getBoundingClientRect()
+  const radius = Math.min(width, height) / 2
+  const colorScale = scaleOrdinal(schemePastel2)
+
+  const color = (node: HierarchyRectNode) =&gt;
+    node.children
+      ? colorScale(node.data.name)
+      : colorScale(node.parent!.data.name)
+
+  const svg = select(`#${rootElId}`)
+    .append(&quot;svg&quot;)
+    .text(&quot;&quot;)
+    .attr(&quot;width&quot;, width)
+    .attr(&quot;height&quot;, height)
+    .append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, `translate(${width / 2},${height * 0.52})`)
+
+  addFilter(svg)
+
+  const descendants = getDataHierarchy(rootData, partitionType, radius)
+
+  const arc = arcD3&lt;HierarchyRectNode&gt;()
+    .startAngle((node) =&gt; node.x0)
+    .endAngle((node) =&gt; node.x1)
+    .innerRadius((node) =&gt; node.y0)
+    .outerRadius((node) =&gt; node.y1)
+
+  const textsTransform = (node: HierarchyRectNode) =&gt; {
+    if (!node.depth) {
+      return &quot;&quot;
+    }
+
+    const centroid = arc.centroid(node)
+    const rotationDeg = (() =&gt; {
+      const rotation =
+        90 + ((node.x0 + (node.x1 - node.x0) / 2) * 180) / Math.PI
+
+      return rotation &gt; 90 &amp;&amp; rotation &lt; 270 ? rotation - 180 : rotation
+    })()
+
+    return [
+      `rotate(${rotationDeg},${centroid[0]},${centroid[1]})`,
+      `translate(${centroid[0]},${centroid[1]})`,
+    ].join(&quot; &quot;)
+  }
+
+  const renderDescendants = (
+    usedDescendants: HierarchyRectangularNode&lt;DataNode&gt;[]
+  ) =&gt; {
+    const pathSel = svg.selectAll&lt;SVGPathElement, HierarchyRectNode&gt;(&quot;path&quot;)
+    const pathInitialData = pathSel.data()
+    const path = pathSel.data(usedDescendants)
+
+    path.exit().remove()
+
+    const pathEnter = path
+      .enter()
+      .append(&quot;path&quot;)
+      .attr(&quot;display&quot;, (node) =&gt; (node.depth ? null : &quot;none&quot;))
+      .attr(&quot;data-index&quot;, (_d, i: number) =&gt; i)
+      .style(&quot;stroke&quot;, &quot;#000&quot;)
+      .style(&quot;stroke-width&quot;, &quot;0.5px&quot;)
+      .style(&quot;stroke-dasharray&quot;, &quot;1,3&quot;)
+      .style(&quot;fill&quot;, color)
+      .style(&quot;filter&quot;, (_node, index) =&gt;
+        // not adding drop-shadow in all to avoid too much saturation
+        index % 3 !== 0 ? &quot;url(#drop-shadow)&quot; : null
+      )
+      .attr(&quot;d&quot;, arc)
+
+    path
+      .transition()
+      .duration(transitionDuration)
+      .ease(easeFn)
+      .attrTween(&quot;d&quot;, getInterpolatorFn(pathInitialData, arc))
+
+    const textsSel = svg.selectAll&lt;SVGTextElement, HierarchyRectNode&gt;(&quot;text&quot;)
+    const textsInitialData = textsSel.data()
+    const texts = textsSel.data(usedDescendants)
+
+    texts.exit().remove()
+
+    const textsEnter = texts
+      .enter()
+      .append(&quot;text&quot;)
+      .text(getNodeText)
+      .attr(&quot;transform&quot;, textsTransform)
+      .attr(&quot;data-index&quot;, (_d, index) =&gt; index)
+      .style(&quot;fill&quot;, &quot;#333&quot;)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .style(&quot;font&quot;, &quot;bold 12px Arial&quot;)
+      .style(&quot;cursor&quot;, &quot;default&quot;)
+      .attr(&quot;transform&quot;, textsTransform)
+
+    texts
+      .transition()
+      .duration(transitionDuration)
+      .ease(easeFn)
+      .attrTween(
+        &quot;transform&quot;,
+        getInterpolatorFn(textsInitialData, textsTransform)
+      )
+
+    const updatedGroups = [pathEnter, textsEnter]
+
+    updatedGroups.forEach((set) =&gt; {
+      set.on(&quot;mouseover&quot;, function () {
+        const index = select(this).attr(&quot;data-index&quot;)
+
+        select(`path[data-index=&quot;${index}&quot;]`).style(&quot;fill&quot;, overColor)
+        select(`text[data-index=&quot;${index}&quot;]`).style(&quot;fill&quot;, &quot;white&quot;)
+      })
+
+      set.on(&quot;mouseout&quot;, function () {
+        const index = select(this).attr(&quot;data-index&quot;)
+
+        select&lt;SVGPathElement, HierarchyRectNode&gt;(
+          `path[data-index=&quot;${index}&quot;]`
+        ).style(&quot;fill&quot;, color)
+        select(`text[data-index=&quot;${index}&quot;]`).style(&quot;fill&quot;, &quot;#000&quot;)
+      })
+    })
+
+    addTitle(path)
+    addTitle(texts)
+  }
+
+  renderDescendants(descendants)
+
+  return {
+    updatePartition: (newPartitionType: PartitionType) =&gt; {
+      const newDescendants = getDataHierarchy(
+        rootData,
+        newPartitionType,
+        radius
+      )
+
+      renderDescendants(newDescendants)
+    },
+  }
+}
+
+const main = async () =&gt; {
+  const rootData = await fetchData()
+
+  const formEl = document.getElementById(&quot;type-form&quot;) as HTMLFormElement
+
+  const getCurrentSelectedRadio = (): PartitionType =&gt; {
+    const result = Array.from(
+      (formEl.elements as unknown) as HTMLInputElement[]
+    ).reduce((acc, el: HTMLInputElement) =&gt; {
+      if (acc) return acc
+
+      if (el.checked) return el.value
+
+      return &quot;&quot;
+    }, &quot;&quot;)
+
+    return result as PartitionType
+  }
+
+  formEl.addEventListener(&quot;change&quot;, () =&gt; {
+    const newPartitionType = getCurrentSelectedRadio()
+
+    updatePartition(newPartitionType)
+  })
+
+  const partitionType = getCurrentSelectedRadio()
+
+  const { updatePartition } = renderChart({
+    partitionType,
+    rootData,
+    rootElId: &quot;chart&quot;,
+  })
+}
+
+const addFilter = (
+  svg: d3.Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;)
+
+  filter.attr(&quot;id&quot;, &quot;drop-shadow&quot;)
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, 9)
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 2).attr(&quot;dy&quot;, 5)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, &quot;.5&quot;)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+}
+
+export default main
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 20 Jul 2021 23:12:40 GMT</p>
+    </body>
+  </html>
+  
