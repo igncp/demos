@@ -1,7 +1,6 @@
 import * as d3 from "d3"
 
 import d3Fisheye, { FishEyeScale } from "@/demos/_utils/fish-eye"
-import d3utils from "@/demos/_utils/d3utils"
 
 import "./fish-eye.styl"
 
@@ -111,13 +110,16 @@ class FishEyeChart {
   }
 
   private setChartTitle() {
-    return d3utils.middleTitle(
-      this.dom.svg,
-      this.width,
-      "Income Per Capita vs " +
-        "Life Expectancy vs Population vs Region - 180 Countries",
-      -40
-    )
+    this.dom.svg
+      .append("text")
+      .attr("class", "chart-title")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${this.width / 2},-40)`)
+      .text(
+        "Income Per Capita vs " +
+          "Life Expectancy vs Population vs Region - 180 Countries"
+      )
+      .style("font-weight", "bold")
   }
 
   private setVars() {
@@ -197,7 +199,39 @@ class FishEyeChart {
   }
 
   private setFilter() {
-    return d3utils.filterColor("circles", this.dom.svg, 1.5, 0.6, true)
+    const defs = this.dom.svg.append("defs")
+    const filter = defs.append("filter").attr("id", `drop-shadow-circles`)
+
+    filter
+      .attr("height", "500%")
+      .attr("width", "500%")
+      .attr("x", "-200%")
+      .attr("y", "-200%")
+
+    filter
+      .append("feOffset")
+      .attr("dx", 0.5)
+      .attr("dy", 0.5)
+      .attr("in", "SourceGraphic")
+      .attr("result", "offOut")
+
+    filter
+      .append("feGaussianBlur")
+      .attr("in", "offOut")
+      .attr("result", "blurOut")
+      .attr("stdDeviation", 1.5)
+
+    filter
+      .append("feBlend")
+      .attr("in", "SourceGraphic")
+      .attr("in2", "blurOut")
+      .attr("mode", "normal")
+
+    filter
+      .append("feComponentTransfer")
+      .append("feFuncA")
+      .attr("slope", 0.6)
+      .attr("type", "linear")
   }
 
   private position() {

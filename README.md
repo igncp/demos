@@ -39,21 +39,21 @@ I am updating this repository after it was inactive for several years. The initi
 1. [ ] Add disclaimer for old charts
 1. [ ] Port codebase to TypeScript with a high type coverage
     - [x] Generate report and hosted along with the pages
-    - [ ] Port components, pages and other utils
+    - [x] Port components, pages and other utils
     - [ ] Resolve cases with `any`
     - [ ] Resolve cases with `@ts-ignore`
-    - [ ] Set the threshold to 99%
+    - [ ] Set the threshold to 95% and then to 99%
+1. [x] Remove the usage of d3utils, even if it creates duplication in charts
 1. [ ] Extra refactors:
     - Extract texts, some dimensions and state (`let` usage) into explicit variables
     - Improve naming of variables and functions, avoiding one-letter or very generic names
     - Add references to relevant documentations
     - Add some personal description of the implementation
-    - Remove the usage of d3utils, even if it creates duplication in charts
     - Use `import { foo, bar } from "baz"` instead of `import * as baz from "baz"` where possible
     - Use arrow function except when `this` is used
     - Remove unnecessary `String(...)`
     - Future: remove mutations of original data
-    - Future: avoid circular structures
+    - Future: avoid circular structures on original data
 
 Some new examples may be added at the same time, especially when more progress is done
 
@@ -83,31 +83,31 @@ You need to have Node.js installed
 
 ## Refactoring Progress
 
-|Name|Ported to TS|Removed global dependencies|Reusable structure|Docs|Extra Refactors|
-|:--:|:--:|:--:|:--:|:--:|:--:|
-|area|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|bars|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|bars-3dimensional|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|bubbles|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|chord|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|circular-arcs|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|collapsible-tree|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|concentric-circles|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|fish-eye|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|force|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|icosahedron|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|map-distorsions|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|mareys-schedule|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|moving-line|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|multiline-voronoi|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|:white_check_mark:|
-|partition|No|:white_check_mark:|No|No|No|
-|pie|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|spain-map|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|timeline|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|trend-line|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
-|vectors|No|No|No|No|No|
-|weekly-heatmap|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-|world-map|:white_check_mark:|:white_check_mark:|:white_check_mark:|No|No|
+|Name|Reusable structure|Docs|Extra Refactors|
+|:--:|:--:|:--:|:--:|
+|area|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+|bars|:white_check_mark:|No|No|
+|bars-3dimensional|:white_check_mark:|No|No|
+|bubbles|:white_check_mark:|No|No|
+|chord|:white_check_mark:|No|No|
+|circular-arcs|:white_check_mark:|No|No|
+|collapsible-tree|:white_check_mark:|No|No|
+|concentric-circles|:white_check_mark:|No|No|
+|fish-eye|:white_check_mark:|No|No|
+|force|:white_check_mark:|No|No|
+|icosahedron|:white_check_mark:|No|No|
+|map-distorsions|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+|mareys-schedule|:white_check_mark:|No|No|
+|moving-line|:white_check_mark:|No|No|
+|multiline-voronoi|:white_check_mark:|No|:white_check_mark:|
+|partition|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+|pie|:white_check_mark:|No|No|
+|spain-map|:white_check_mark:|No|No|
+|timeline|:white_check_mark:|No|No|
+|trend-line|:white_check_mark:|No|No|
+|vectors|No|No|No|
+|weekly-heatmap|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+|world-map|:white_check_mark:|No|No|
 
 ## License
 

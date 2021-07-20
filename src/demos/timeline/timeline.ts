@@ -1,7 +1,5 @@
 import * as d3 from "d3"
 
-import d3utils from "@/demos/_utils/d3utils"
-
 import "./timeline.styl"
 
 type DataItem = {
@@ -87,10 +85,24 @@ class Timeline {
     this.components = []
     this.bands = {}
 
-    const svg = d3utils.svg(`#${rootElId}`, outerWidth, outerHeight, margin)
+    const svg = d3
+      .select(`#${rootElId}`)
+      .text("")
+      .append("svg")
+      .attr("height", outerHeight + margin.top + margin.bottom)
+      .attr("width", outerWidth + margin.left + margin.right)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`)
 
-    d3utils.middleTitle(svg, outerWidth, "Philosophers through History", -20)
-    d3utils.filterBlackOpacity("intervals", svg, 1, 0.2)
+    svg
+      .append("text")
+      .attr("class", "chart-title")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${outerWidth / 2},-20)`)
+      .text("Philosophers through History")
+      .style("font-weight", "bold")
+
+    filterBlackOpacity("intervals", svg, 1, 0.2)
 
     svg
       .append("clipPath")
@@ -280,9 +292,8 @@ class Timeline {
   }
 
   public createTooltip() {
-    d3utils.tooltip(".part.instant, .part.interval", {
-      followMouse: true,
-      leftOffst: 80,
+    $(".part.instant, .part.interval").tooltip({
+      track: true,
     })
 
     return this
@@ -331,7 +342,7 @@ class Timeline {
       .append("svg")
       .attr("y", (d: DataItem) => band.yScale(d.track))
       .attr("height", band.itemHeight)
-      .attr("data-title", (d: DataItem) => {
+      .attr("title", (d: DataItem) => {
         if (d.instant) {
           return `${d.label}: ${toYear(d.start)}`
         }
@@ -532,8 +543,44 @@ class Timeline {
   }
 
   public redraw() {
-    return this.components.forEach((component: any) => component.redraw())
+    this.components.forEach((component: any) => component.redraw())
+
+    return this
   }
+}
+
+const filterBlackOpacity = (
+  id: string,
+  svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  deviation: number,
+  slope: number
+) => {
+  const defs = svg.append("defs")
+  const filter = defs
+    .append("filter")
+    .attr("height", "500%")
+    .attr("id", `drop-shadow-${id}`)
+    .attr("width", "500%")
+    .attr("x", "-200%")
+    .attr("y", "-200%")
+
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", deviation)
+
+  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", slope)
+    .attr("type", "linear")
+
+  const feMerge = filter.append("feMerge")
+
+  feMerge.append("feMergeNode")
+
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
 const main = async () => {
@@ -548,8 +595,8 @@ const main = async () => {
     .labels("mainBand")
     .labels("naviBand")
     .brush("naviBand", ["mainBand"])
-    .createTooltip()
     .redraw()
+    .createTooltip()
 }
 
 export default main

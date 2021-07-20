@@ -66,7 +66,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .append("text")
     .attr("class", "chart-title")
     .attr("text-anchor", "middle")
-    .attr("transform", `translate(${String(width / 2)},${titleYOffset})`)
+    .attr("transform", `translate(${width / 2},${titleYOffset})`)
     .text(texts.title)
     .style("font-weight", "bold")
 
@@ -93,7 +93,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   svg
     .append("g")
     .attr("class", "x axis")
-    .attr("transform", `translate(0,${String(height)})`)
+    .attr("transform", `translate(0,${height})`)
     .call(xAxis)
     .selectAll("text")
     .attr("dy", "1.25em")

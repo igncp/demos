@@ -119,7 +119,7 @@ class BarsChart {
 
     yAxisG
       .append("text")
-      .attr("transform", `translate(-30,${String((-1 * (height - 60)) / 2)})`)
+      .attr("transform", `translate(-30,${(-1 * (height - 60)) / 2})`)
       .attr("y", 40)
       .attr("font-size", "1.3em")
       .attr("fill", "black")

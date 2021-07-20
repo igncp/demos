@@ -1,31 +1,50 @@
-import * as d3 from "d3"
-import * as topojson from "topojson-client"
+import {
+  geoMercator,
+  geoPath,
+  interpolateRdYlGn,
+  json,
+  scaleLinear,
+  select,
+} from "d3"
+import { feature } from "topojson-client"
 
 type Data = {
   id: number
 } & d3.GeoPermissibleObjects
 
-const fetchData = () => d3.json(`${ROOT_PATH}data/d3js/world-map/world.json`)
+const fetchData = () => json(`${ROOT_PATH}data/d3js/world-map/world.json`)
 
-const color = d3.scaleOrdinal(d3.schemePastel2)
+const transitionDuration = 1500
 
 type RenderChart = (o: { world: any; rootElId: string }) => void
 
 const renderChart: RenderChart = ({ world, rootElId }) => {
+  const state: {
+    lastZoomId: null | number
+  } = {
+    lastZoomId: null,
+  }
+
+  const data = (feature(world, world.objects.countries) as any).features
+
+  const colorScale = scaleLinear()
+    .domain([0, data.length - 1])
+    .range([0, 1])
+  const colorFn = (_d: Data, index: number) =>
+    interpolateRdYlGn(colorScale(index))
+
   const { width } = (document.getElementById(
     rootElId
   ) as HTMLElement).getBoundingClientRect()
   const height = 500
 
-  const colorFn = function (d: Data) {
-    return color(d.id.toString())
-  }
+  const setZoom = (_e: unknown, d: Data) => {
+    if (!d || state.lastZoomId === d.id) {
+      state.lastZoomId = null
 
-  const setZoom = function (_e: unknown, d: Data) {
-    if (!d) {
       countries
         .transition()
-        .duration(3500)
+        .duration(transitionDuration)
         .attr(
           "transform",
           `translate(${width / 2},${height / 2})scale(${1})translate(${
@@ -36,6 +55,8 @@ const renderChart: RenderChart = ({ world, rootElId }) => {
       return
     }
 
+    state.lastZoomId = d.id
+
     const centroid = path.centroid(d)
 
     const x = centroid[0]
@@ -43,15 +64,14 @@ const renderChart: RenderChart = ({ world, rootElId }) => {
 
     countries
       .transition()
-      .duration(3500)
+      .duration(transitionDuration)
       .attr(
         "transform",
         `translate(${width / 2},${height / 2})scale(${8})translate(${-x},${-y})`
       )
   }
 
-  const svg = d3
-    .select(`#${rootElId}`)
+  const svg = select(`#${rootElId}`)
     .append("svg")
     .attr("width", width)
     .attr("height", height)
@@ -66,15 +86,12 @@ const renderChart: RenderChart = ({ world, rootElId }) => {
 
   const content = svg.append("g")
 
-  const projection = d3
-    .geoMercator()
+  const projection = geoMercator()
     .center([0, 45.4])
     .scale(150)
     .translate([width / 2, height / 2])
 
-  const path = d3.geoPath().projection(projection)
-  const data = (topojson.feature(world, world.objects.countries) as any)
-    .features
+  const path = geoPath().projection(projection)
 
   const countries = content
     .selectAll(".country")
@@ -88,14 +105,11 @@ const renderChart: RenderChart = ({ world, rootElId }) => {
     .style("stroke-width", 0.2)
 
   countries.on("mouseover", function () {
-    return d3.select(this).style("stroke", "black").style("stroke-width", "1px")
+    return select(this).style("stroke", "black").style("stroke-width", "1px")
   })
 
   countries.on("mouseout", function () {
-    return d3
-      .select(this)
-      .style("stroke", "white")
-      .style('"stroke-width"', ".2px")
+    return select(this).style("stroke", "white").style('"stroke-width"', ".2px")
   })
 
   countries.on("click", setZoom)

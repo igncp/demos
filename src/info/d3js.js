@@ -1,69 +1,35 @@
-const d3ScaleChromaticItems = [
+const getCommonItems = (packageName) => [
   [
-    "d3-scale-chromatic API reference",
-    "https://github.com/d3/d3-scale-chromatic#api-reference",
+    `${packageName} API reference`,
+    `https://github.com/d3/${packageName}#api-reference`,
   ],
   [
-    "d3-scale-chromatic Types",
-    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-scale-chromatic/index.d.ts",
-  ],
-]
-
-const d3ShapeItems = [
-  ["d3-shape API reference", "https://github.com/d3/d3-shape"],
-  [
-    "d3-shape Types",
-    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-shape/index.d.ts",
+    `${packageName} Types`,
+    `https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/${packageName}/index.d.ts`,
   ],
 ]
 
-const d3FetchItems = [
-  ["d3-fetch API reference", "https://github.com/d3/d3-fetch#api-reference"],
+const d3EaseItems = [
+  ...getCommonItems("d3-ease"),
   [
-    "d3-fetch Types",
-    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-fetch/index.d.ts",
+    "d3-ease functions examples",
+    "https://bl.ocks.org/d3noob/1ea51d03775b9650e8dfd03474e202fe",
   ],
 ]
-
-const d3SelectionItems = [
-  [
-    "d3-selection API reference",
-    "https://github.com/d3/d3-selection#selecting-elements",
-  ],
-  [
-    "d3-selection Types",
-    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-selection/index.d.ts",
-  ],
-]
-
-const d3AxisItems = [
-  ["d3-axis API reference", "https://github.com/d3/d3-axis#api-reference"],
-  [
-    "d3-axis Types",
-    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-axis/index.d.ts",
-  ],
-]
-
+const d3TransitionItems = getCommonItems("d3-transition")
+const d3HierarchyItems = getCommonItems("d3-hierarchy")
+const d3InterpolateItems = getCommonItems("d3-interpolate")
+const d3ScaleChromaticItems = getCommonItems("d3-scale-chromatic")
+const d3ShapeItems = getCommonItems("d3-shape")
+const d3FetchItems = getCommonItems("d3-fetch")
+const d3SelectionItems = getCommonItems("d3-selection")
+const d3AxisItems = getCommonItems("d3-axis")
+const d3ScaleItems = getCommonItems("d3-scale")
 const d3DelaunayItems = [
-  [
-    "d3-delaunay API reference",
-    "https://github.com/d3/d3-delaunay#api-reference",
-  ],
-  [
-    "d3-delaunay Types",
-    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-delaunay/index.d.ts",
-  ],
+  ...getCommonItems("d3-delaunay"),
   [
     "Delaunay Triangulation Wikipedia Article",
     "https://en.wikipedia.org/wiki/Delaunay_triangulation",
-  ],
-]
-
-const d3ScaleItems = [
-  ["d3-scale API reference", "https://github.com/d3/d3-scale"],
-  [
-    "d3-scale Types",
-    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/d3-scale/index.d.ts",
   ],
 ]
 
@@ -238,14 +204,26 @@ module.exports = {
   },
   partition: {
     data: ["flare.json"],
-    docs: [],
-    name: "Partition (needs fix)",
+    docs: [
+      ...d3EaseItems,
+      ...d3FetchItems,
+      ...d3HierarchyItems,
+      ...d3InterpolateItems,
+      ...d3ScaleItems,
+      ...d3SelectionItems,
+      ...d3TransitionItems,
+    ],
+    name: "Partition",
     notes: [
       "Added title attributes, labels and change colors with events",
-      "Needs fix: Change between types like 2016 chart",
+      "Added bounce ease function",
     ],
     sources: ["http://bl.ocks.org/mbostock/4063423"],
-    summary: [],
+    summary: [
+      "This is a good example of how to uses hierarchies in combination with arc shapes. It includes a couple of ways of generating the hierarchy: via the size (value) of each leaf or via the count.",
+      "It is also illustrative about how to create custom tween functions for transitions. One possible improvement is the effect of the texts when flipping the direction during a transition due to being oriented vertical.",
+      "The chart displays the common flow for updating elements bound to data. Removing exited elements, adding new elements and applying the tween function to the selection.",
+    ],
   },
   pie: {
     data: ["data.json"],
@@ -323,7 +301,7 @@ module.exports = {
     name: "World Map",
     notes: [
       "Added the mouse over stroke and the zooming-unzooming when clicking in countries (from third source)",
-      "Click a country to zoom, click in the water to set zoom back to normal",
+      "Click a country to zoom, click in the water or the same country to set zoom back to normal",
     ],
     sources: [
       "http://bost.ocks.org/mike/map/",

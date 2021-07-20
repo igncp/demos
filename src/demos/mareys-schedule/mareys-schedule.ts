@@ -2,8 +2,6 @@ import * as d3 from "d3"
 import each from "lodash/each"
 import last from "lodash/last"
 
-import d3utils from "@/demos/_utils/d3utils"
-
 import "./mareys-schedule.styl"
 
 type RawDataItem = {
@@ -209,15 +207,25 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) => {
       .ticks(8)
       .tickFormat(formatTime as any)
 
-    const svg = d3utils.svg(`#${rootElId}`, width, height, margin)
+    const svg = d3
+      .select(`#${rootElId}`)
+      .text("")
+      .append("svg")
+      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", width + margin.left + margin.right)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`)
 
-    d3utils.middleTitle(
-      svg,
-      width,
-      "E.J. Marey’s graphical train schedule " + " (4:30AM - 1:30AM)",
-      -40
-    )
-    d3utils.filterBlackOpacity("trains", svg, 2, 0.2)
+    svg
+      .append("text")
+      .attr("class", "chart-title")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${width / 2},-40)`)
+      .text("E.J. Marey’s graphical train schedule " + " (4:30AM - 1:30AM)")
+      .style("font-weight", "bold")
+
+    filterBlackOpacity("trains", svg, 2, 0.2)
+
     svg
       .append("defs")
       .append("clipPath")
@@ -336,6 +344,40 @@ const main = async () => {
   })
 
   slider.slider("values", [10, 50])
+}
+
+const filterBlackOpacity = (
+  id: string,
+  svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  deviation: number,
+  slope: number
+) => {
+  const defs = svg.append("defs")
+  const filter = defs
+    .append("filter")
+    .attr("height", "500%")
+    .attr("id", `drop-shadow-${id}`)
+    .attr("width", "500%")
+    .attr("x", "-200%")
+    .attr("y", "-200%")
+
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", deviation)
+
+  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", slope)
+    .attr("type", "linear")
+
+  const feMerge = filter.append("feMerge")
+
+  feMerge.append("feMergeNode")
+
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
 export default main

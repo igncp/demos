@@ -13,7 +13,6 @@ type DemoBase = {
 export type DemoInfo = DemoBase & {
   category: string
   files: {
-    d3utils: string
     demo: {
       content: string
       type: string

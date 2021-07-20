@@ -1,5 +1,4 @@
 import * as d3 from "d3"
-import merge from "lodash/merge"
 
 type Data = Array<{
   count: string
@@ -8,70 +7,6 @@ type Data = Array<{
   year: string
 }>
 type SVG = d3.Selection<SVGGElement, unknown, HTMLElement, unknown>
-
-// @TODO; use d3utils
-// requires jquery and jquery ui
-const tooltip = (
-  selector: string,
-  customOpts: Partial<{
-    elementSelector: string
-    followElement: boolean
-    followMouse: boolean
-    leftOffst: number
-    tOpts: {
-      container: string
-      viewport: {
-        selector: string
-      }
-    }
-    topOffst: number
-  }>,
-  rootElId: string
-) => {
-  const { $ } = window as any
-
-  if (customOpts == null) {
-    customOpts = {}
-  }
-
-  const defaultOpts = {
-    elementSelector: "",
-    followElement: false,
-    followMouse: false,
-    leftOffst: 60,
-    tOpts: {
-      container: "body",
-      viewport: {
-        selector: `#${rootElId} svg`,
-      },
-    },
-    topOffst: 40,
-  }
-
-  const opts = merge(defaultOpts, customOpts)
-
-  $(selector).tooltip(opts.tOpts)
-
-  if (opts.followMouse) {
-    $(selector).hover((e: MouseEvent) =>
-      $(".tooltip").css({
-        left: `${String(e.pageX - opts.leftOffst)}px`,
-        top: `${String(e.pageY - opts.topOffst)}px`,
-      })
-    )
-  } else if (opts.followElement) {
-    $(selector).hover(() =>
-      $(".tooltip").css({
-        left: `${String(
-          $(opts.elementSelector).position().left - opts.leftOffst
-        )}px`,
-        top: `${String(
-          $(opts.elementSelector).position().top - opts.topOffst
-        )}px`,
-      })
-    )
-  }
-}
 
 const fetchData = async (): Promise<Data> => {
   const data = await d3.csv(`${ROOT_PATH}data/d3js/concentric-circles/data.csv`)
@@ -178,7 +113,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .attr("cy", height / 2)
     .attr("r", (d) => rScale(+d.count))
     .attr("class", "name-circle")
-    .attr("data-title", getTitle)
+    .attr("title", getTitle)
     .style("fill", "#fff")
     .style("stroke", (d) => colorize(d))
     .style("stroke-width", strokeWidth)
@@ -198,15 +133,9 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
         .style("stroke-width", strokeWidth)
     })
 
-  circles.append("title").text(getTitle)
-
-  tooltip(
-    ".name-circle",
-    {
-      followMouse: true,
-    },
-    rootElId
-  )
+  $(".name-circle").tooltip({
+    track: true,
+  })
 
   addDescription({
     height,

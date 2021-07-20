@@ -94,7 +94,16 @@ const FilesDetails = ({ demoInfo }: Props) => {
           </p>
           <ul>
             {demoInfo.docs.map((doc) => (
-              <li key={doc[1]}>
+              <li
+                key={doc[1]}
+                style={{
+                  border: "1px solid #157ad4",
+                  borderRadius: 5,
+                  display: "inline-block",
+                  margin: 5,
+                  padding: 5,
+                }}
+              >
                 <a href={doc[1]} rel="noreferrer" target="_blank">
                   {doc[0]}
                 </a>
@@ -152,34 +161,6 @@ const FilesDetails = ({ demoInfo }: Props) => {
               />
             </pre>
           </li>
-          {demoInfo.files.d3utils && (
-            <li>
-              <p>
-                d3utils.ts{" "}
-                {(() => {
-                  const filePath = `demos/_utils/d3utils.ts`
-
-                  return (
-                    <>
-                      <CodeInGH filePath={filePath} />{" "}
-                      <CoverageReport filePath={filePath} />
-                    </>
-                  )
-                })()}
-              </p>
-              <pre>
-                <code
-                  dangerouslySetInnerHTML={{
-                    __html: Prism.highlight(
-                      demoInfo.files.d3utils,
-                      Prism.languages.jsx,
-                      "jsx"
-                    ),
-                  }}
-                />
-              </pre>
-            </li>
-          )}
           <li>
             <p>
               {pageFilePath} <CodeInGH filePath={pageFilePath} />{" "}

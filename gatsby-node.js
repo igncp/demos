@@ -57,15 +57,10 @@ const getDemoInfo = (slugs) => {
   const demo = getDemo(demoName)
   const page = getPage(demoName, category)
 
-  const d3utils = demo.content.includes("d3utils")
-    ? readIfExists(`src/demos/_utils/d3utils.ts`)
-    : null
-
   return {
     ...categoryToData[category][demoName],
     category,
     files: {
-      d3utils,
       demo,
       page,
       styl: readIfExists(`src/demos/${demoName}/${demoName}.styl`),
