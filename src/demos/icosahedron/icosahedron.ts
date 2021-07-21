@@ -195,7 +195,9 @@ class Icosahedron {
       })
       .attr("d", (d) => `M${d.polygon.join("L")}Z`)
       .on("click", () => {
-        if (String(this.vars.velocity) === String(this.config.zeroVelocity)) {
+        if (
+          this.vars.velocity?.toString() === this.config.zeroVelocity.toString()
+        ) {
           this.vars.velocity = this.config.defaultVelocity
 
           return

@@ -1,5 +1,15 @@
+import {
+  DefaultArcObject,
+  PieArcDatum,
+  arc as arcD3,
+  easeBack,
+  interpolate,
+  pie as pieD3,
+  scaleOrdinal,
+  schemePastel2,
+  select,
+} from "d3"
 import cloneDeep from "lodash/cloneDeep"
-import * as d3 from "d3"
 
 const fetchData = async () => {
   const data = await fetch(`${ROOT_PATH}data/d3js/pie/data.json`)
@@ -8,25 +18,23 @@ const fetchData = async () => {
   return jsonData
 }
 
-type Data = Array<{
-  ea0?: d3.PieArcDatum<Data[0]>
+type Slice = {
+  ea0?: SliceArc
   label: string
   val: number
-}>
+}
+type SliceArc = PieArcDatum<Slice>
 
 const height = 300
 const outerRadius = 100
 
-const stashArcs = (d: d3.PieArcDatum<Data[9]>) => {
+const stashArcs = (d: SliceArc) => {
   d.data.ea0 = cloneDeep(d)
 }
 
-const arc = d3.arc().outerRadius(outerRadius).innerRadius(0)
+const arc = arcD3<SliceArc>().outerRadius(outerRadius).innerRadius(0)
 
-type ArcDatum = Omit<
-  d3.DefaultArcObject & d3.PieArcDatum<Data[0]>,
-  "outerRadius" | "innerRadius"
->
+type ArcDatum = Omit<DefaultArcObject & SliceArc, "outerRadius" | "innerRadius">
 
 const textTransform = (d: ArcDatum): string => {
   const centroidD = {
@@ -38,42 +46,34 @@ const textTransform = (d: ArcDatum): string => {
   return `translate(${arc.centroid(centroidD)})`
 }
 
-const pie = d3
-  .pie<Data[0]>()
+const pie = pieD3<Slice>()
   .sort(null)
-  .value((d: Data[0]) => d.val)
+  .value((slice: Slice) => slice.val)
 
-const color = d3.scaleOrdinal(d3.schemePastel2)
+const color = scaleOrdinal(schemePastel2)
+const easeFn = easeBack
+const transitionDuration = 3000
 
-const arcTween: any = (d: d3.PieArcDatum<Data[0]>) => {
-  const interpolateFn = d3.interpolate(d.data.ea0, d)
+const arcTween = (finalSlice: SliceArc) => {
+  const initialSlice = finalSlice.data.ea0
+  const interpolateFn = interpolate(initialSlice, finalSlice)
 
-  d.data.ea0 = interpolateFn(0)
+  finalSlice.data.ea0 = interpolateFn(0)
 
-  return (normalizedTime: number) => arc(interpolateFn(normalizedTime) as any)
+  return (normalizedTime: number) => arc(interpolateFn(normalizedTime))!
 }
 
 type PieChartOpts = {
-  data: Data
+  data: Slice[]
   rootElId: string
 }
 
-type ChartPaths = d3.Selection<
-  SVGPathElement,
-  d3.PieArcDatum<Data[0]>,
-  SVGGElement,
-  unknown
->
-type ChartLabels = d3.Selection<
-  SVGTextElement,
-  d3.PieArcDatum<Data[0]>,
-  SVGGElement,
-  unknown
->
+type ChartPaths = d3.Selection<SVGPathElement, SliceArc, SVGGElement, unknown>
+type ChartLabels = d3.Selection<SVGTextElement, SliceArc, SVGGElement, unknown>
 
 class PieChart {
   private rootElId: string
-  private data: Data
+  private data: Slice[]
   private paths: ChartPaths | null
   private labels: ChartLabels | null
 
@@ -95,17 +95,19 @@ class PieChart {
     ;(paths as ChartPaths)
       .data(pie(data))
       .transition()
-      .duration(1000)
+      .duration(transitionDuration)
+      .ease(easeFn)
       .attrTween("d", arcTween)
     ;(labels as ChartLabels)
       .data(pie(data))
       .transition()
-      .duration(1000)
+      .duration(transitionDuration)
+      .ease(easeFn)
       .attr("transform", textTransform)
-      .each(function (d: { data: Data[0] }) {
+      .each(function (d: { data: Slice }) {
         const el: SVGTextElement = this
 
-        d3.select(el).text(d.data.val)
+        select(el).text(d.data.val)
       })
   }
 
@@ -115,8 +117,7 @@ class PieChart {
       rootElId
     ) as HTMLElement).getBoundingClientRect()
 
-    const svg = d3
-      .select(`#${rootElId}`)
+    const svg = select(`#${rootElId}`)
       .append("svg:svg")
       .attr("height", height)
       .attr("width", width)
@@ -132,12 +133,12 @@ class PieChart {
 
     this.paths = slices
       .append("path")
-      .attr("d", arc as any)
+      .attr("d", arc)
       .attr("fill", (_d, i) => color(i.toString()))
       .each(stashArcs)
 
     this.labels = slices
-      .filter((d) => d.endAngle - d.startAngle > 0.2)
+      .filter((slice: SliceArc) => slice.endAngle - slice.startAngle > 0.2)
       .append("text")
       .attr("text-anchor", "middle")
       .attr("dy", ".35em")

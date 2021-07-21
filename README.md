@@ -51,7 +51,6 @@ I am updating this repository after it was inactive for several years. The initi
     - Add some personal description of the implementation
     - Use `import { foo, bar } from "baz"` instead of `import * as baz from "baz"` where possible
     - Use arrow function except when `this` is used
-    - Remove unnecessary `String(...)`
     - Future: remove mutations of original data
     - Future: avoid circular structures on original data
 

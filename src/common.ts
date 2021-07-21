@@ -26,10 +26,18 @@ export type DemoInfo = DemoBase & {
   key: string
 }
 
-export type DemoSummary = DemoBase & {
+export type DemoSummary = {
+  name: DemoBase["name"]
   category: string
   key: string
   route: string
+}
+
+export type IndexPageProps = {
+  pageContext: {
+    groupedDemos: DemoSummary[][]
+    numberPerGroup: number
+  }
 }
 
 export type DemoPageProps = {

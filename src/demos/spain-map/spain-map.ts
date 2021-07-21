@@ -1,10 +1,10 @@
-import * as d3 from "d3"
-import * as topojson from "topojson-client"
-import * as GeoJSON from "geojson"
+import { json, scaleLinear, range, select, geoMercator, geoPath } from "d3"
+import { feature } from "topojson-client"
+import { GeoJsonProperties } from "geojson"
 import { Topology, Objects } from "topojson-specification"
 
 const fetchData = (): Promise<Data | undefined> =>
-  d3.json(`${ROOT_PATH}data/d3js/spain-map/data.json`)
+  json(`${ROOT_PATH}data/d3js/spain-map/data.json`)
 
 const colorsScheme = ["#323247", "#7C7CC9", "#72B66C", "#429742"]
 const height = 500
@@ -23,7 +23,7 @@ type DataShape = {
   }
 } & d3.GeoPermissibleObjects
 
-type Data = Topology<Objects<GeoJSON.GeoJsonProperties>>
+type Data = Topology<Objects<GeoJsonProperties>>
 
 const addDropShadowFilter = function (
   id: number,
@@ -67,26 +67,24 @@ const renderChart = async ({
   const widthPeninsula = widthChart - widthCanarias - 10
 
   const dataRoot = data.objects.data1
-  const dataGeo = (topojson.feature(data, dataRoot) as any).features
+  const dataGeo = (feature(data, dataRoot) as any).features
 
   dataGeo.forEach((d: DataShape, i: number) => {
     d.index = i
   })
 
-  const colorScale = d3
-    .scaleLinear()
+  const colorScale = scaleLinear()
     .domain([0, (dataRoot as any).geometries.length])
     .range([0, 1])
-  const colorScaleConversion = d3
-    .scaleLinear<string>()
-    .domain(d3.range(0, 1, 1.0 / colorsScheme.length))
+  const colorScaleConversion = scaleLinear<string>()
+    .domain(range(0, 1, 1.0 / colorsScheme.length))
     .range(colorsScheme)
 
   const colorFn = function (d: DataShape) {
     return colorScaleConversion(colorScale(d.index))
   }
 
-  const svg = d3.select(`#${rootElId}`)
+  const svg = select(`#${rootElId}`)
 
   const generateSvg = function (width: number) {
     return svg
@@ -98,21 +96,17 @@ const renderChart = async ({
       .attr("width", width)
       .attr("height", height + margin.top + margin.bottom)
       .append("svg:g")
-      .attr(
-        "transform",
-        `translate(${width / 2},${String(height / 2 + margin.top)})`
-      )
+      .attr("transform", `translate(${width / 2},${height / 2 + margin.top})`)
   }
 
   const generateProjection = (center: [number, number]) =>
-    d3
-      .geoMercator()
+    geoMercator()
       .center(center)
       .scale(2650)
       .translate([widthPeninsula / 2, height / 2])
 
   const generatePath = function (projection: d3.GeoProjection) {
-    return d3.geoPath().projection(projection)
+    return geoPath().projection(projection)
   }
 
   const generateAreas = function (
@@ -131,15 +125,13 @@ const renderChart = async ({
       .style("stroke-width", strokeWidth)
       .style("filter", () => `url(#drop-shadow-${filterId})`)
       .on("mouseover", function () {
-        return d3
-          .select(this)
+        return select(this)
           .style("fill", "#FFB61A")
           .style("stroke-width", "1px")
       })
       .on("mouseleave", function () {
-        return d3
-          .select<SVGPathElement, DataShape>(this)
-          .style("fill", colorFn)
+        return select<SVGPathElement, DataShape>(this)
+          .style("fill", (d) => colorFn(d))
           .style("stroke-width", strokeWidth)
       })
       .append("title")

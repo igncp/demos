@@ -1,4 +1,16 @@
-import * as d3 from "d3"
+import {
+  Selection,
+  axisBottom,
+  axisTop,
+  extent,
+  line as lineD3,
+  scaleLinear,
+  scaleTime,
+  select,
+  timeParse,
+  tsv,
+} from "d3"
+
 import each from "lodash/each"
 import last from "lodash/last"
 
@@ -43,7 +55,7 @@ type LimitsStr = [string, string]
 type Redraw = (range: LimitsStr) => void
 
 const fetchData = async (): Promise<Data> => {
-  const data = ((await d3.tsv(
+  const data = ((await tsv(
     `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`
   )) as unknown) as RawDataItem[]
 
@@ -137,9 +149,9 @@ const refreshOnHourChange = ({
       }
     }
 
-    const minutesStr = minutes < 10 ? `0${String(minutes)}` : minutes.toString()
+    const minutesStr = minutes < 10 ? `0${minutes}` : minutes.toString()
 
-    const finalTime = `${String(hours)}:${minutesStr}${fragment}`
+    const finalTime = `${hours}:${minutesStr}${fragment}`
 
     return times.push(finalTime)
   })
@@ -147,7 +159,7 @@ const refreshOnHourChange = ({
   redraw(times as LimitsStr)
 }
 
-const getFormatTime = () => d3.timeParse("%I:%M%p")
+const getFormatTime = () => timeParse("%I:%M%p")
 
 const parseTime = (timeStr: string) => {
   const formatTime = getFormatTime()
@@ -192,23 +204,19 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) => {
     rootEl.getBoundingClientRect().width - margin.left - margin.right
 
   const redraw: Redraw = (timeRange) => {
-    const x = d3
-      .scaleTime()
+    const x = scaleTime()
       .domain([parseTime(timeRange[0])!, parseTime(timeRange[1])!])
       .range([0, width])
-    const y = d3.scaleLinear().range([0, height])
+    const y = scaleLinear().range([0, height])
     const formatTime = getFormatTime()
-    const xAxisTop = d3
-      .axisTop(x)
+    const xAxisTop = axisTop(x)
       .ticks(8)
       .tickFormat(formatTime as any)
-    const xAxisBottom = d3
-      .axisBottom(x)
+    const xAxisBottom = axisBottom(x)
       .ticks(8)
       .tickFormat(formatTime as any)
 
-    const svg = d3
-      .select(`#${rootElId}`)
+    const svg = select(`#${rootElId}`)
       .text("")
       .append("svg")
       .attr("height", height + margin.top + margin.bottom)
@@ -235,7 +243,7 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) => {
       .attr("width", width)
       .attr("height", height + margin.top + margin.bottom)
 
-    y.domain(d3.extent(stations, (station) => station.distance) as Limits)
+    y.domain(extent(stations, (station) => station.distance) as Limits)
 
     const station = svg
       .append("g")
@@ -260,13 +268,11 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) => {
       .call(xAxisBottom)
 
     const mouseover = function (_e: unknown, d: Train) {
-      d3.select(`.train-${d.index}`).select("path").style("stroke-width", "5px")
+      select(`.train-${d.index}`).select("path").style("stroke-width", "5px")
     }
 
     const mouseleave = function (_e: unknown, d: Train) {
-      d3.select(`.train-${d.index}`)
-        .select("path")
-        .style("stroke-width", "2.5px")
+      select(`.train-${d.index}`).select("path").style("stroke-width", "2.5px")
     }
 
     const train = svg
@@ -281,8 +287,7 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) => {
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave)
 
-    const line = d3
-      .line<Stop>()
+    const line = lineD3<Stop>()
       .x((d) => x(d.time!))
       .y((d) => y(d.station.distance))
 
@@ -348,7 +353,7 @@ const main = async () => {
 
 const filterBlackOpacity = (
   id: string,
-  svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
   deviation: number,
   slope: number
 ) => {

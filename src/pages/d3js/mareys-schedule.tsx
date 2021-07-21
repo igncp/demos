@@ -4,7 +4,6 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-// @ts-ignore
 import main from "@/demos/mareys-schedule/mareys-schedule"
 
 const MareysSchedule = ({ pageContext: { demoInfo } }: DemoPageProps) => (

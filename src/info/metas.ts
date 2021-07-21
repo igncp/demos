@@ -1,3 +1,5 @@
+// @TODO: move to gatsby config dir
+
 export default {
   d3js: {
     area: {

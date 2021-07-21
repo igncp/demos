@@ -1,6 +1,5 @@
 import { RaphaelPaper } from "raphael"
 
-// @ts-ignore
 import Raphael from "@/demos/_utils/browserRaphael"
 
 import "./bars-3dimensional.styl"
@@ -149,9 +148,9 @@ class Chart {
     const { deep } = this.cg
 
     for (let i = 0, _i = 0; _i <= 3; i = ++_i) {
-      const path = `M5,${String(25 * i)} ${this.cg.width},${String(
+      const path = `M5,${25 * i} ${this.cg.width},${
         this.cg.heightOffset + i * 25
-      )}`
+      }`
 
       paper.path(path).attr("stroke-dasharray", ". ")
     }
@@ -208,8 +207,8 @@ class Chart {
         this.dom.els[item].outer
       )
       this.dom.els[item].el.transform(
-        `T ${String((this.cg.width / data.keysLength) * index)},` +
-          `${String((this.cg.heightOffset / data.keysLength) * index)}`
+        `T ${(this.cg.width / data.keysLength) * index},` +
+          `${(this.cg.heightOffset / data.keysLength) * index}`
       )
 
       return this.dom.els[item].el

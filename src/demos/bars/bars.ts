@@ -65,9 +65,9 @@ class BarsChart {
     const c = scaleLinear()
       .domain(extent(data) as [number, number])
       .range([0, 1])
-    const heatmapColour: ColorFn = scaleLinear()
+    const heatmapColour: ColorFn = scaleLinear<string>()
       .domain(range(0, 1, 1.0 / colours.length))
-      .range(colours as any) as any
+      .range(colours)
 
     const color = (d: Data[number]) => heatmapColour(c(d))
 
@@ -184,11 +184,13 @@ class BarsChart {
       .domain([0.5, data.length + 0.5])
       .range([1, barWidth * data.length])
 
+    const newAxis = axisBottom(newX)
+
     chart
-      .select(".x-axis")
+      .select<SVGGElement>(".x-axis")
       .transition()
       .duration(500)
-      .call(axisBottom(newX) as any)
+      .call(newAxis)
 
     chart
       .select(".x-axis-label")

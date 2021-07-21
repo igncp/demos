@@ -1,4 +1,6 @@
-module.exports = {
+// @TODO: move to gatsby config dir
+
+export default {
   "bars-3dimensional": {
     data: ["data.json"],
     docs: [],

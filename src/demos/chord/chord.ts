@@ -1,4 +1,16 @@
-import * as d3 from "d3"
+import {
+  arc as arcD3,
+  chord,
+  csv,
+  descending,
+  extent,
+  format,
+  range,
+  rgb,
+  ribbon,
+  scaleLinear,
+  select,
+} from "d3"
 
 import "./chord.styl"
 
@@ -34,7 +46,7 @@ type Data = {
 }
 
 const fetchData = async () => {
-  const list = (await d3.csv(
+  const list = (await csv(
     `${ROOT_PATH}data/d3js/chord/data.csv`
   )) as CSVDataItem[]
 
@@ -150,10 +162,10 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
 
   const r1 = Math.min(width, height) / 2 - 4
   const r0 = r1 - 20
-  const formatCurrency = d3.format(",.3r")
+  const formatCurrency = format(",.3r")
 
-  const arc = d3.arc().innerRadius(r0).outerRadius(r1)
-  const svg = d3.select(`#${rootElId}`)
+  const arc = arcD3().innerRadius(r0).outerRadius(r1)
+  const svg = select(`#${rootElId}`)
 
   const { debits, credits, fullList } = data
 
@@ -169,10 +181,7 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
     .attr("width", width)
     .attr("height", height + margin.top + margin.bottom)
     .append("svg:g")
-    .attr(
-      "transform",
-      `translate(${width / 2},${String(height / 2 + margin.top)})`
-    )
+    .attr("transform", `translate(${width / 2},${height / 2 + margin.top})`)
 
   const leftChart = charts.filter((_d, i) => i === 0)
   const rightChart = charts.filter((_d, i) => i === 1)
@@ -195,14 +204,12 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
   addDropShadowFilter(charts, "chords", 2, 0.4)
   addDropShadowFilter(charts, "headings", 3, 0.5)
 
-  const colorDomain = d3
-    .scaleLinear()
-    .domain(d3.extent([0, fullList.length - 1]) as [number, number])
+  const colorDomain = scaleLinear()
+    .domain(extent([0, fullList.length - 1]) as [number, number])
     .range([0, 1])
 
-  const heatmapColour = d3
-    .scaleLinear<string>()
-    .domain(d3.range(0, 1, 1.0 / colours.length))
+  const heatmapColour = scaleLinear<string>()
+    .domain(range(0, 1, 1.0 / colours.length))
     .range(colours)
 
   const fill = function (d: number) {
@@ -210,18 +217,17 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
   }
 
   charts.each(function (dataMatrix, chartIndex) {
-    const svgComp = d3.select(this)
+    const svgComp = select(this)
     const numberMatrix = dataMatrix.map((row) =>
       row.map((item) => (item ? +item.amount : 0))
     )
 
-    const chordData = d3
-      .chord()
-      .sortGroups(d3.descending)
-      .sortSubgroups(d3.descending)
-      .sortChords(d3.descending)(numberMatrix)
+    const chordData = chord()
+      .sortGroups(descending)
+      .sortSubgroups(descending)
+      .sortChords(descending)(numberMatrix)
 
-    const ribbonLayout = d3.ribbon().radius(r0)
+    const ribbonLayout = ribbon().radius(r0)
 
     svgComp
       .selectAll("path.chord")
@@ -233,7 +239,7 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
       .style("filter", "url(#drop-shadow-chords)")
       .style("stroke", (d) => {
         const originalColor = fill(d.target.index)
-        const newColor = d3.rgb(originalColor).darker()
+        const newColor = rgb(originalColor).darker()
 
         return newColor.formatHex()
       })

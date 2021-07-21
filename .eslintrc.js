@@ -23,6 +23,13 @@ module.exports = {
         "@typescript-eslint/explicit-member-accessibility": 0,
       },
     },
+    {
+      files: ["*.d.ts"],
+      rules: {
+        "init-declarations": 0,
+        "no-var": 0,
+      },
+    },
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {

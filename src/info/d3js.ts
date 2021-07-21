@@ -1,4 +1,6 @@
-const getCommonItems = (packageName) => [
+// @TODO: move to gatsby config dir
+
+const getCommonItems = (packageName: string) => [
   [
     `${packageName} API reference`,
     `https://github.com/d3/${packageName}#api-reference`,
@@ -33,7 +35,7 @@ const d3DelaunayItems = [
   ],
 ]
 
-module.exports = {
+export default {
   area: {
     data: ["data.csv"],
     docs: [
