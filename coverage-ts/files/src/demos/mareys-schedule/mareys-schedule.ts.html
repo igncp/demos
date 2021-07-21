@@ -11,7 +11,19 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/mareys-schedule.ts</td><td class="">98.75%</td><td class="">90%</td><td class="">561</td><td class="">554</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/mareys-schedule.ts</td><td class="">98.74%</td><td class="">90%</td><td class="">557</td><td class="">550</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Selection,
+  axisBottom,
+  axisTop,
+  extent,
+  line as lineD3,
+  scaleLinear,
+  scaleTime,
+  select,
+  timeParse,
+  tsv,
+} from &quot;d3&quot;
+
 import each from &quot;lodash/each&quot;
 import last from &quot;lodash/last&quot;
 
@@ -56,7 +68,7 @@ type LimitsStr = [string, string]
 type Redraw = (range: LimitsStr) =&gt; void
 
 const fetchData = async (): Promise&lt;Data&gt; =&gt; {
-  const data = ((await d3.tsv(
+  const data = ((await tsv(
     `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`
   )) as unknown) as RawDataItem[]
 
@@ -150,9 +162,9 @@ const refreshOnHourChange = ({
       }
     }
 
-    const minutesStr = minutes &lt; 10 ? `0${String(minutes)}` : minutes.toString()
+    const minutesStr = minutes &lt; 10 ? `0${minutes}` : minutes.toString()
 
-    const finalTime = `${String(hours)}:${minutesStr}${fragment}`
+    const finalTime = `${hours}:${minutesStr}${fragment}`
 
     return times.push(finalTime)
   })
@@ -160,7 +172,7 @@ const refreshOnHourChange = ({
   redraw(times as LimitsStr)
 }
 
-const getFormatTime = () =&gt; d3.timeParse(&quot;%I:%M%p&quot;)
+const getFormatTime = () =&gt; timeParse(&quot;%I:%M%p&quot;)
 
 const parseTime = (timeStr: string) =&gt; {
   const formatTime = getFormatTime()
@@ -205,23 +217,19 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt;
     rootEl.getBoundingClientRect().width - margin.left - margin.right
 
   const redraw: Redraw = (timeRange) =&gt; {
-    const x = d3
-      .scaleTime()
+    const x = scaleTime()
       .domain([parseTime(timeRange[0])!, parseTime(timeRange[1])!])
       .range([0, width])
-    const y = d3.scaleLinear().range([0, height])
+    const y = scaleLinear().range([0, height])
     const formatTime = getFormatTime()
-    const xAxisTop = d3
-      .axisTop(x)
+    const xAxisTop = axisTop(x)
       .ticks(8)
       .tickFormat(formatTime as any)
-    const xAxisBottom = d3
-      .axisBottom(x)
+    const xAxisBottom = axisBottom(x)
       .ticks(8)
       .tickFormat(formatTime as any)
 
-    const svg = d3
-      .select(`#${rootElId}`)
+    const svg = select(`#${rootElId}`)
       .text(&quot;&quot;)
       .append(&quot;svg&quot;)
       .attr(&quot;height&quot;, height + margin.top + margin.bottom)
@@ -248,7 +256,7 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt;
       .attr(&quot;width&quot;, width)
       .attr(&quot;height&quot;, height + margin.top + margin.bottom)
 
-    y.domain(d3.extent(stations, (station) =&gt; station.distance) as Limits)
+    y.domain(extent(stations, (station) =&gt; station.distance) as Limits)
 
     const station = svg
       .append(&quot;g&quot;)
@@ -273,13 +281,11 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt;
       .call(xAxisBottom)
 
     const mouseover = function (_e: unknown, d: Train) {
-      d3.select(`.train-${d.index}`).select(&quot;path&quot;).style(&quot;stroke-width&quot;, &quot;5px&quot;)
+      select(`.train-${d.index}`).select(&quot;path&quot;).style(&quot;stroke-width&quot;, &quot;5px&quot;)
     }
 
     const mouseleave = function (_e: unknown, d: Train) {
-      d3.select(`.train-${d.index}`)
-        .select(&quot;path&quot;)
-        .style(&quot;stroke-width&quot;, &quot;2.5px&quot;)
+      select(`.train-${d.index}`).select(&quot;path&quot;).style(&quot;stroke-width&quot;, &quot;2.5px&quot;)
     }
 
     const train = svg
@@ -294,8 +300,7 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt;
       .on(&quot;mouseover&quot;, mouseover)
       .on(&quot;mouseleave&quot;, mouseleave)
 
-    const line = d3
-      .line&lt;Stop&gt;()
+    const line = lineD3&lt;Stop&gt;()
       .x((d) =&gt; x(d.time!))
       .y((d) =&gt; y(d.station.distance))
 
@@ -361,7 +366,7 @@ const main = async () =&gt; {
 
 const filterBlackOpacity = (
   id: string,
-  svg: d3.Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;,
+  svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;,
   deviation: number,
   slope: number
 ) =&gt; {
@@ -394,8 +399,8 @@ const filterBlackOpacity = (
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:334,&quot;character&quot;:8,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:336,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:336,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:338,&quot;character&quot;:29,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:338,&quot;character&quot;:36,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:345,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:345,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 20 Jul 2021 23:12:40 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:339,&quot;character&quot;:8,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:341,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:341,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:343,&quot;character&quot;:29,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:343,&quot;character&quot;:36,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:350,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:350,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 21 Jul 2021 23:15:12 GMT</p>
     </body>
   </html>
   

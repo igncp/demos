@@ -11,133 +11,79 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">src/demos/_utils/fish-eye.ts</td><td class="">54.63%</td><td class="">90%</td><td class="">216</td><td class="">118</td><td class="">98</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">src/demos/_utils/fish-eye.ts</td><td class="">69.64%</td><td class="">90%</td><td class="">112</td><td class="">78</td><td class="">34</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { extent } from &quot;d3&quot;
 
-export type FishEyeScale = any
+function createFishEyeScale(
+  scale: any,
+  initialDistortion: number,
+  initialFocus: number
+) {
+  let distortion = initialDistortion
+  let focus = initialFocus
 
-// https://github.com/d3/d3/blob/v3.5.17/src/core/rebind.js
-const rebind = function (target: any, source: any, ...methods: any[]) {
-  methods.forEach((method) =&gt; {
-    target[method] = d3Rebind(target, source, source[method])
-  })
+  const fishEyeScale = (val: any): number =&gt; {
+    const x = scale(val)
+    const isLeft = x &lt; focus
+    const range = extent&lt;number&gt;(scale.range()) as [number, number]
+    const min = range[0]
+    const max = range[1]
 
-  return target
-}
+    const m = isLeft ? focus - min : max - focus
+    const n = m === 0 ? max - min : m
 
-function d3Rebind(target: any, source: any, method: any) {
-  return function () {
-    const value = method.apply(source, arguments)
+    const result =
+      ((isLeft ? -1 : 1) * n * (distortion + 1)) /
+        (distortion + n / Math.abs(x - focus)) +
+      focus
 
-    return value === source ? target : value
+    return result
   }
+
+  fishEyeScale.distortion = (val: number) =&gt; {
+    distortion = val
+
+    return fishEyeScale
+  }
+
+  fishEyeScale.focus = (val: number) =&gt; {
+    focus = val
+
+    return fishEyeScale
+  }
+
+  fishEyeScale.copy = () =&gt; createFishEyeScale(scale.copy(), distortion, focus)
+
+  fishEyeScale.domain = (...args: any[]) =&gt; {
+    const result = scale.domain(...args)
+
+    return result === scale ? fishEyeScale : result
+  }
+
+  fishEyeScale.range = (...args: any[]) =&gt; {
+    const result = scale.range(...args)
+
+    return result === scale ? fishEyeScale : result
+  }
+
+  fishEyeScale.nice = scale.nice
+  fishEyeScale.ticks = scale.ticks
+  fishEyeScale.tickFormat = scale.tickFormat
+
+  return fishEyeScale
 }
+
+export type FishEyeScale = ReturnType&lt;typeof createFishEyeScale&gt;
 
 // https://github.com/d3/d3-plugins/blob/master/fisheye/fisheye.js
 const d3Fisheye = {
-  circular() {
-    let radius = 200
-
-    let distortion = 2
-    let k0: any = null
-    let k1: any = null
-    let focus = [0, 0]
-
-    function fisheye(d: any) {
-      const dx = d.x - focus[0]
-      const dy = d.y - focus[1]
-      const dd = Math.sqrt(dx * dx + dy * dy)
-
-      if (!dd || dd &gt;= radius)
-        return { x: d.x, y: d.y, z: dd &gt;= radius ? 1 : 10 }
-
-      const k = ((k0 * (1 - Math.exp(-dd * k1))) / dd) * 0.75 + 0.25
-
-      return {
-        x: focus[0] + dx * k,
-        y: focus[1] + dy * k,
-        z: Math.min(k, 10),
-      }
-    }
-
-    function rescale() {
-      k0 = Math.exp(distortion)
-      k0 = (k0 / (k0 - 1)) * radius
-      k1 = distortion / radius
-
-      return fisheye
-    }
-
-    fisheye.radius = function (_: any) {
-      if (!arguments.length) return radius
-      radius = +_
-
-      return rescale()
-    }
-
-    fisheye.distortion = function (_: any) {
-      if (!arguments.length) return distortion
-      distortion = +_
-
-      return rescale()
-    }
-
-    fisheye.focus = function (_: any) {
-      if (!arguments.length) return focus
-      focus = _
-
-      return fisheye
-    }
-
-    return rescale()
+  scale(scaleType: any): FishEyeScale {
+    return createFishEyeScale(scaleType(), 3, 0)
   },
-  scale(scaleType: any) {
-    return d3FisheyeScale(scaleType(), 3, 0)
-  },
-}
-
-function d3FisheyeScale(scale: any, d: any, a: any) {
-  function fisheye(_: any) {
-    const x = scale(_)
-    const left = x &lt; a
-    const range = d3.extent(scale.range())
-    const min: any = range[0]
-    const max: any = range[1]
-    let m = left ? a - min : max - a
-
-    if (m == 0) m = max - min
-
-    return ((left ? -1 : 1) * m * (d + 1)) / (d + m / Math.abs(x - a)) + a
-  }
-
-  fisheye.distortion = function (_: any) {
-    if (!arguments.length) return d
-    d = +_
-
-    return fisheye
-  }
-
-  fisheye.focus = function (_: any) {
-    if (!arguments.length) return a
-    a = +_
-
-    return fisheye
-  }
-
-  fisheye.copy = function () {
-    return d3FisheyeScale(scale.copy(), d, a)
-  }
-
-  fisheye.nice = scale.nice
-  fisheye.ticks = scale.ticks
-  fisheye.tickFormat = scale.tickFormat
-  fisheye.range = scale.range
-
-  return rebind(fisheye, scale, &quot;domain&quot;, &quot;range&quot;)
 }
 
 export default d3Fisheye
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:12,&quot;text&quot;:&quot;FishEyeScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:5,&quot;character&quot;:25,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:5,&quot;character&quot;:38,&quot;text&quot;:&quot;source&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:6,&quot;character&quot;:19,&quot;text&quot;:&quot;method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:4,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:11,&quot;text&quot;:&quot;method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:30,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:38,&quot;text&quot;:&quot;source&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:46,&quot;text&quot;:&quot;source&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:53,&quot;text&quot;:&quot;method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:9,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:18,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:31,&quot;text&quot;:&quot;source&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:44,&quot;text&quot;:&quot;method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:10,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:18,&quot;text&quot;:&quot;method&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:25,&quot;text&quot;:&quot;apply&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:31,&quot;text&quot;:&quot;source&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:11,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:21,&quot;text&quot;:&quot;source&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:30,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:39,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:27,&quot;character&quot;:8,&quot;text&quot;:&quot;k0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:8,&quot;text&quot;:&quot;k1&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:21,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:17,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:19,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:17,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:19,&quot;text&quot;:&quot;y&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:17,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:20,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:22,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:25,&quot;text&quot;:&quot;y&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:28,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:30,&quot;text&quot;:&quot;y&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:18,&quot;text&quot;:&quot;k0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:43,&quot;text&quot;:&quot;k1&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:6,&quot;text&quot;:&quot;k0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:6,&quot;text&quot;:&quot;k0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:12,&quot;text&quot;:&quot;k0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:18,&quot;text&quot;:&quot;k0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:6,&quot;text&quot;:&quot;k1&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:31,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:58,&quot;character&quot;:16,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:63,&quot;character&quot;:35,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:20,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:70,&quot;character&quot;:30,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:79,&quot;character&quot;:8,&quot;text&quot;:&quot;scaleType&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:80,&quot;character&quot;:26,&quot;text&quot;:&quot;scaleType&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:24,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:36,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:44,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:85,&quot;character&quot;:19,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:10,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:14,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:20,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:17,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:21,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:28,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:34,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:89,&quot;character&quot;:10,&quot;text&quot;:&quot;min&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:10,&quot;text&quot;:&quot;max&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:19,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:23,&quot;text&quot;:&quot;min&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:29,&quot;text&quot;:&quot;max&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:35,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:93,&quot;character&quot;:20,&quot;text&quot;:&quot;max&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:93,&quot;character&quot;:26,&quot;text&quot;:&quot;min&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:35,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:46,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:63,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:67,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:73,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:98,&quot;character&quot;:33,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:99,&quot;character&quot;:34,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:4,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:9,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:105,&quot;character&quot;:28,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:106,&quot;character&quot;:34,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:4,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:9,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:26,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:32,&quot;text&quot;:&quot;copy&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:40,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:43,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:116,&quot;character&quot;:10,&quot;text&quot;:&quot;nice&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:116,&quot;character&quot;:17,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:116,&quot;character&quot;:23,&quot;text&quot;:&quot;nice&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:10,&quot;text&quot;:&quot;ticks&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:18,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:24,&quot;text&quot;:&quot;ticks&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:10,&quot;text&quot;:&quot;tickFormat&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:23,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:118,&quot;character&quot;:29,&quot;text&quot;:&quot;tickFormat&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:10,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:18,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:24,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:25,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 20 Jul 2021 23:12:40 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:3,&quot;character&quot;:2,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:24,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:10,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:14,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:20,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:19,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:33,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:13,&quot;character&quot;:39,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:22,&quot;character&quot;:35,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:47,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:53,&quot;text&quot;:&quot;copy&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:10,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:19,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:25,&quot;text&quot;:&quot;domain&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:11,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:22,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:45,&quot;character&quot;:45,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:10,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:19,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:49,&quot;character&quot;:25,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:11,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:22,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:45,&quot;text&quot;:&quot;result&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:15,&quot;text&quot;:&quot;nice&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:22,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:28,&quot;text&quot;:&quot;nice&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:15,&quot;text&quot;:&quot;ticks&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:23,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:29,&quot;text&quot;:&quot;ticks&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:15,&quot;text&quot;:&quot;tickFormat&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:28,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:34,&quot;text&quot;:&quot;tickFormat&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:8,&quot;text&quot;:&quot;scaleType&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:66,&quot;character&quot;:30,&quot;text&quot;:&quot;scaleType&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 21 Jul 2021 23:15:12 GMT</p>
     </body>
   </html>
   

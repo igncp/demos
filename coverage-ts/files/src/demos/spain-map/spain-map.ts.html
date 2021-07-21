@@ -11,13 +11,13 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/spain-map/spain-map.ts</td><td class="">97.74%</td><td class="">90%</td><td class="">265</td><td class="">259</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
-import * as topojson from &quot;topojson-client&quot;
-import * as GeoJSON from &quot;geojson&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/spain-map/spain-map.ts</td><td class="">97.69%</td><td class="">90%</td><td class="">260</td><td class="">254</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { json, scaleLinear, range, select, geoMercator, geoPath } from &quot;d3&quot;
+import { feature } from &quot;topojson-client&quot;
+import { GeoJsonProperties } from &quot;geojson&quot;
 import { Topology, Objects } from &quot;topojson-specification&quot;
 
 const fetchData = (): Promise&lt;Data | undefined&gt; =&gt;
-  d3.json(`${ROOT_PATH}data/d3js/spain-map/data.json`)
+  json(`${ROOT_PATH}data/d3js/spain-map/data.json`)
 
 const colorsScheme = [&quot;#323247&quot;, &quot;#7C7CC9&quot;, &quot;#72B66C&quot;, &quot;#429742&quot;]
 const height = 500
@@ -36,7 +36,7 @@ type DataShape = {
   }
 } &amp; d3.GeoPermissibleObjects
 
-type Data = Topology&lt;Objects&lt;GeoJSON.GeoJsonProperties&gt;&gt;
+type Data = Topology&lt;Objects&lt;GeoJsonProperties&gt;&gt;
 
 const addDropShadowFilter = function (
   id: number,
@@ -80,26 +80,24 @@ const renderChart = async ({
   const widthPeninsula = widthChart - widthCanarias - 10
 
   const dataRoot = data.objects.data1
-  const dataGeo = (topojson.feature(data, dataRoot) as any).features
+  const dataGeo = (feature(data, dataRoot) as any).features
 
   dataGeo.forEach((d: DataShape, i: number) =&gt; {
     d.index = i
   })
 
-  const colorScale = d3
-    .scaleLinear()
+  const colorScale = scaleLinear()
     .domain([0, (dataRoot as any).geometries.length])
     .range([0, 1])
-  const colorScaleConversion = d3
-    .scaleLinear&lt;string&gt;()
-    .domain(d3.range(0, 1, 1.0 / colorsScheme.length))
+  const colorScaleConversion = scaleLinear&lt;string&gt;()
+    .domain(range(0, 1, 1.0 / colorsScheme.length))
     .range(colorsScheme)
 
   const colorFn = function (d: DataShape) {
     return colorScaleConversion(colorScale(d.index))
   }
 
-  const svg = d3.select(`#${rootElId}`)
+  const svg = select(`#${rootElId}`)
 
   const generateSvg = function (width: number) {
     return svg
@@ -111,21 +109,17 @@ const renderChart = async ({
       .attr(&quot;width&quot;, width)
       .attr(&quot;height&quot;, height + margin.top + margin.bottom)
       .append(&quot;svg:g&quot;)
-      .attr(
-        &quot;transform&quot;,
-        `translate(${width / 2},${String(height / 2 + margin.top)})`
-      )
+      .attr(&quot;transform&quot;, `translate(${width / 2},${height / 2 + margin.top})`)
   }
 
   const generateProjection = (center: [number, number]) =&gt;
-    d3
-      .geoMercator()
+    geoMercator()
       .center(center)
       .scale(2650)
       .translate([widthPeninsula / 2, height / 2])
 
   const generatePath = function (projection: d3.GeoProjection) {
-    return d3.geoPath().projection(projection)
+    return geoPath().projection(projection)
   }
 
   const generateAreas = function (
@@ -144,15 +138,13 @@ const renderChart = async ({
       .style(&quot;stroke-width&quot;, strokeWidth)
       .style(&quot;filter&quot;, () =&gt; `url(#drop-shadow-${filterId})`)
       .on(&quot;mouseover&quot;, function () {
-        return d3
-          .select(this)
+        return select(this)
           .style(&quot;fill&quot;, &quot;#FFB61A&quot;)
           .style(&quot;stroke-width&quot;, &quot;1px&quot;)
       })
       .on(&quot;mouseleave&quot;, function () {
-        return d3
-          .select&lt;SVGPathElement, DataShape&gt;(this)
-          .style(&quot;fill&quot;, colorFn)
+        return select&lt;SVGPathElement, DataShape&gt;(this)
+          .style(&quot;fill&quot;, (d) =&gt; colorFn(d))
           .style(&quot;stroke-width&quot;, strokeWidth)
       })
       .append(&quot;title&quot;)
@@ -189,8 +181,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:8,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:60,&quot;text&quot;:&quot;features&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:2,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:10,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:77,&quot;character&quot;:34,&quot;text&quot;:&quot;geometries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:77,&quot;character&quot;:45,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 20 Jul 2021 23:12:40 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:8,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:51,&quot;text&quot;:&quot;features&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:2,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:10,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:76,&quot;character&quot;:34,&quot;text&quot;:&quot;geometries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map.ts&quot;,&quot;line&quot;:76,&quot;character&quot;:45,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 21 Jul 2021 23:15:12 GMT</p>
     </body>
   </html>
   

@@ -11,8 +11,18 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/pie/pie.ts</td><td class="">98.54%</td><td class="">90%</td><td class="">274</td><td class="">270</td><td class="">4</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import cloneDeep from &quot;lodash/cloneDeep&quot;
-import * as d3 from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/pie/pie.ts</td><td class="">98.92%</td><td class="">90%</td><td class="">279</td><td class="">276</td><td class="">3</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  DefaultArcObject,
+  PieArcDatum,
+  arc as arcD3,
+  easeBack,
+  interpolate,
+  pie as pieD3,
+  scaleOrdinal,
+  schemePastel2,
+  select,
+} from &quot;d3&quot;
+import cloneDeep from &quot;lodash/cloneDeep&quot;
 
 const fetchData = async () =&gt; {
   const data = await fetch(`${ROOT_PATH}data/d3js/pie/data.json`)
@@ -21,25 +31,23 @@ const fetchData = async () =&gt; {
   return jsonData
 }
 
-type Data = Array&lt;{
-  ea0?: d3.PieArcDatum&lt;Data[0]&gt;
+type Slice = {
+  ea0?: SliceArc
   label: string
   val: number
-}&gt;
+}
+type SliceArc = PieArcDatum&lt;Slice&gt;
 
 const height = 300
 const outerRadius = 100
 
-const stashArcs = (d: d3.PieArcDatum&lt;Data[9]&gt;) =&gt; {
+const stashArcs = (d: SliceArc) =&gt; {
   d.data.ea0 = cloneDeep(d)
 }
 
-const arc = d3.arc().outerRadius(outerRadius).innerRadius(0)
+const arc = arcD3&lt;SliceArc&gt;().outerRadius(outerRadius).innerRadius(0)
 
-type ArcDatum = Omit&lt;
-  d3.DefaultArcObject &amp; d3.PieArcDatum&lt;Data[0]&gt;,
-  &quot;outerRadius&quot; | &quot;innerRadius&quot;
-&gt;
+type ArcDatum = Omit&lt;DefaultArcObject &amp; SliceArc, &quot;outerRadius&quot; | &quot;innerRadius&quot;&gt;
 
 const textTransform = (d: ArcDatum): string =&gt; {
   const centroidD = {
@@ -51,42 +59,34 @@ const textTransform = (d: ArcDatum): string =&gt; {
   return `translate(${arc.centroid(centroidD)})`
 }
 
-const pie = d3
-  .pie&lt;Data[0]&gt;()
+const pie = pieD3&lt;Slice&gt;()
   .sort(null)
-  .value((d: Data[0]) =&gt; d.val)
+  .value((slice: Slice) =&gt; slice.val)
 
-const color = d3.scaleOrdinal(d3.schemePastel2)
+const color = scaleOrdinal(schemePastel2)
+const easeFn = easeBack
+const transitionDuration = 3000
 
-const arcTween: any = (d: d3.PieArcDatum&lt;Data[0]&gt;) =&gt; {
-  const interpolateFn = d3.interpolate(d.data.ea0, d)
+const arcTween = (finalSlice: SliceArc) =&gt; {
+  const initialSlice = finalSlice.data.ea0
+  const interpolateFn = interpolate(initialSlice, finalSlice)
 
-  d.data.ea0 = interpolateFn(0)
+  finalSlice.data.ea0 = interpolateFn(0)
 
-  return (normalizedTime: number) =&gt; arc(interpolateFn(normalizedTime) as any)
+  return (normalizedTime: number) =&gt; arc(interpolateFn(normalizedTime))!
 }
 
 type PieChartOpts = {
-  data: Data
+  data: Slice[]
   rootElId: string
 }
 
-type ChartPaths = d3.Selection&lt;
-  SVGPathElement,
-  d3.PieArcDatum&lt;Data[0]&gt;,
-  SVGGElement,
-  unknown
-&gt;
-type ChartLabels = d3.Selection&lt;
-  SVGTextElement,
-  d3.PieArcDatum&lt;Data[0]&gt;,
-  SVGGElement,
-  unknown
-&gt;
+type ChartPaths = d3.Selection&lt;SVGPathElement, SliceArc, SVGGElement, unknown&gt;
+type ChartLabels = d3.Selection&lt;SVGTextElement, SliceArc, SVGGElement, unknown&gt;
 
 class PieChart {
   private rootElId: string
-  private data: Data
+  private data: Slice[]
   private paths: ChartPaths | null
   private labels: ChartLabels | null
 
@@ -108,17 +108,19 @@ class PieChart {
     ;(paths as ChartPaths)
       .data(pie(data))
       .transition()
-      .duration(1000)
+      .duration(transitionDuration)
+      .ease(easeFn)
       .attrTween(&quot;d&quot;, arcTween)
     ;(labels as ChartLabels)
       .data(pie(data))
       .transition()
-      .duration(1000)
+      .duration(transitionDuration)
+      .ease(easeFn)
       .attr(&quot;transform&quot;, textTransform)
-      .each(function (d: { data: Data[0] }) {
+      .each(function (d: { data: Slice }) {
         const el: SVGTextElement = this
 
-        d3.select(el).text(d.data.val)
+        select(el).text(d.data.val)
       })
   }
 
@@ -128,8 +130,7 @@ class PieChart {
       rootElId
     ) as HTMLElement).getBoundingClientRect()
 
-    const svg = d3
-      .select(`#${rootElId}`)
+    const svg = select(`#${rootElId}`)
       .append(&quot;svg:svg&quot;)
       .attr(&quot;height&quot;, height)
       .attr(&quot;width&quot;, width)
@@ -145,12 +146,12 @@ class PieChart {
 
     this.paths = slices
       .append(&quot;path&quot;)
-      .attr(&quot;d&quot;, arc as any)
+      .attr(&quot;d&quot;, arc)
       .attr(&quot;fill&quot;, (_d, i) =&gt; color(i.toString()))
       .each(stashArcs)
 
     this.labels = slices
-      .filter((d) =&gt; d.endAngle - d.startAngle &gt; 0.2)
+      .filter((slice: SliceArc) =&gt; slice.endAngle - slice.startAngle &gt; 0.2)
       .append(&quot;text&quot;)
       .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
       .attr(&quot;dy&quot;, &quot;.35em&quot;)
@@ -182,8 +183,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:5,&quot;character&quot;:8,&quot;text&quot;:&quot;jsonData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:7,&quot;character&quot;:9,&quot;text&quot;:&quot;jsonData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:6,&quot;text&quot;:&quot;arcTween&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 20 Jul 2021 23:12:40 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:8,&quot;text&quot;:&quot;jsonData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:9,&quot;text&quot;:&quot;jsonData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:154,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 21 Jul 2021 23:15:12 GMT</p>
     </body>
   </html>
   

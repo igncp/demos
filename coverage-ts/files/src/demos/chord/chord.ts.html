@@ -11,7 +11,19 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/chord/chord.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">477</td><td class="">477</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/chord/chord.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">472</td><td class="">472</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  arc as arcD3,
+  chord,
+  csv,
+  descending,
+  extent,
+  format,
+  range,
+  rgb,
+  ribbon,
+  scaleLinear,
+  select,
+} from &quot;d3&quot;
 
 import &quot;./chord.styl&quot;
 
@@ -47,7 +59,7 @@ type Data = {
 }
 
 const fetchData = async () =&gt; {
-  const list = (await d3.csv(
+  const list = (await csv(
     `${ROOT_PATH}data/d3js/chord/data.csv`
   )) as CSVDataItem[]
 
@@ -163,10 +175,10 @@ const renderChart: RenderChart = ({ rootElId, data }) =&gt; {
 
   const r1 = Math.min(width, height) / 2 - 4
   const r0 = r1 - 20
-  const formatCurrency = d3.format(&quot;,.3r&quot;)
+  const formatCurrency = format(&quot;,.3r&quot;)
 
-  const arc = d3.arc().innerRadius(r0).outerRadius(r1)
-  const svg = d3.select(`#${rootElId}`)
+  const arc = arcD3().innerRadius(r0).outerRadius(r1)
+  const svg = select(`#${rootElId}`)
 
   const { debits, credits, fullList } = data
 
@@ -182,10 +194,7 @@ const renderChart: RenderChart = ({ rootElId, data }) =&gt; {
     .attr(&quot;width&quot;, width)
     .attr(&quot;height&quot;, height + margin.top + margin.bottom)
     .append(&quot;svg:g&quot;)
-    .attr(
-      &quot;transform&quot;,
-      `translate(${width / 2},${String(height / 2 + margin.top)})`
-    )
+    .attr(&quot;transform&quot;, `translate(${width / 2},${height / 2 + margin.top})`)
 
   const leftChart = charts.filter((_d, i) =&gt; i === 0)
   const rightChart = charts.filter((_d, i) =&gt; i === 1)
@@ -208,14 +217,12 @@ const renderChart: RenderChart = ({ rootElId, data }) =&gt; {
   addDropShadowFilter(charts, &quot;chords&quot;, 2, 0.4)
   addDropShadowFilter(charts, &quot;headings&quot;, 3, 0.5)
 
-  const colorDomain = d3
-    .scaleLinear()
-    .domain(d3.extent([0, fullList.length - 1]) as [number, number])
+  const colorDomain = scaleLinear()
+    .domain(extent([0, fullList.length - 1]) as [number, number])
     .range([0, 1])
 
-  const heatmapColour = d3
-    .scaleLinear&lt;string&gt;()
-    .domain(d3.range(0, 1, 1.0 / colours.length))
+  const heatmapColour = scaleLinear&lt;string&gt;()
+    .domain(range(0, 1, 1.0 / colours.length))
     .range(colours)
 
   const fill = function (d: number) {
@@ -223,18 +230,17 @@ const renderChart: RenderChart = ({ rootElId, data }) =&gt; {
   }
 
   charts.each(function (dataMatrix, chartIndex) {
-    const svgComp = d3.select(this)
+    const svgComp = select(this)
     const numberMatrix = dataMatrix.map((row) =&gt;
       row.map((item) =&gt; (item ? +item.amount : 0))
     )
 
-    const chordData = d3
-      .chord()
-      .sortGroups(d3.descending)
-      .sortSubgroups(d3.descending)
-      .sortChords(d3.descending)(numberMatrix)
+    const chordData = chord()
+      .sortGroups(descending)
+      .sortSubgroups(descending)
+      .sortChords(descending)(numberMatrix)
 
-    const ribbonLayout = d3.ribbon().radius(r0)
+    const ribbonLayout = ribbon().radius(r0)
 
     svgComp
       .selectAll(&quot;path.chord&quot;)
@@ -246,7 +252,7 @@ const renderChart: RenderChart = ({ rootElId, data }) =&gt; {
       .style(&quot;filter&quot;, &quot;url(#drop-shadow-chords)&quot;)
       .style(&quot;stroke&quot;, (d) =&gt; {
         const originalColor = fill(d.target.index)
-        const newColor = d3.rgb(originalColor).darker()
+        const newColor = rgb(originalColor).darker()
 
         return newColor.formatHex()
       })
@@ -304,7 +310,7 @@ const main = async () =&gt; {
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 20 Jul 2021 23:12:40 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 21 Jul 2021 23:15:12 GMT</p>
     </body>
   </html>
   
