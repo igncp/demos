@@ -1,6 +1,15 @@
-// @TODO: move to gatsby config dir
+import { Meta } from "../../src/common"
 
-export default {
+import { D3JS } from "./d3js"
+import { Raphael } from "./raphael"
+
+type Metas = {
+  d3js: Record<keyof D3JS, Meta>
+  home: Meta
+  raphael: Record<keyof Raphael, Meta>
+}
+
+const metas: Metas = {
   d3js: {
     area: {
       description:
@@ -25,6 +34,9 @@ export default {
     "concentric-circles": {
       description:
         "Concentric circles example using D3.js, with a non repeated series of data and with a new style that heavily uses the svg drop-shadow type filter.",
+    },
+    "energy-sankey": {
+      description: "",
     },
     "fish-eye": {
       description:
@@ -85,7 +97,7 @@ export default {
   },
   home: {
     description:
-      "Interactive data visualization examples, using open source JavaScript libraries, and usually starting from already made demos, which are always referenced.",
+      "HTML data visualization demos for the web, rewritten and extended. Using TypeScript with libraries like d3js, Raphael, jQuery UI or Stylus, rendering SVG or Canvas elements.",
   },
   raphael: {
     "bars-3dimensional": {
@@ -101,3 +113,5 @@ export default {
     },
   },
 }
+
+export default metas

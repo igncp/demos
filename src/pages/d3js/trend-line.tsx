@@ -6,8 +6,8 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/trend-line/trend-line"
 
-const TrendLine = ({ pageContext: { demoInfo } }: DemoPageProps) => (
-  <Demo demoInfo={demoInfo} main={main}>
+const TrendLine = ({ pageContext }: DemoPageProps) => (
+  <Demo main={main} pageContext={pageContext}>
     <form>
       <label>
         <input defaultChecked name="mode" type="radio" value="zoom" /> Zoom

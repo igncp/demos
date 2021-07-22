@@ -6,8 +6,8 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/moving-line/moving-line"
 
-const CircularArcs = ({ pageContext: { demoInfo } }: DemoPageProps) => (
-  <Demo demoInfo={demoInfo} main={main}>
+const CircularArcs = ({ pageContext }: DemoPageProps) => (
+  <Demo main={main} pageContext={pageContext}>
     <div id="chart" />
   </Demo>
 )

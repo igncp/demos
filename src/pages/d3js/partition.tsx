@@ -6,8 +6,8 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/partition/partition"
 
-const Partition = ({ pageContext: { demoInfo } }: DemoPageProps) => (
-  <Demo demoInfo={demoInfo} main={main}>
+const Partition = ({ pageContext }: DemoPageProps) => (
+  <Demo main={main} pageContext={pageContext}>
     <form id="type-form">
       <label>
         <input name="mode" type="radio" value="size" /> Size

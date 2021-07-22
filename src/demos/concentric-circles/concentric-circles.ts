@@ -1,15 +1,25 @@
-import * as d3 from "d3"
+import {
+  Selection,
+  csv,
+  extent,
+  max,
+  range,
+  scaleLinear,
+  scalePow,
+  select,
+} from "d3"
 
-type Data = Array<{
+type DataItem = {
   count: string
   name: string
   sex: string
   year: string
-}>
-type SVG = d3.Selection<SVGGElement, unknown, HTMLElement, unknown>
+}
+type Data = DataItem[]
+type SVG = Selection<SVGGElement, unknown, HTMLElement, unknown>
 
 const fetchData = async (): Promise<Data> => {
-  const data = await d3.csv(`${ROOT_PATH}data/d3js/concentric-circles/data.csv`)
+  const data = await csv(`${ROOT_PATH}data/d3js/concentric-circles/data.csv`)
 
   return (data as unknown) as Data
 }
@@ -61,15 +71,13 @@ const addDescription: AddDescription = ({ svg, height, width }) => {
 type RenderChart = (o: { data: Data; rootElId: string }) => void
 
 const renderChart: RenderChart = ({ data, rootElId }) => {
-  const c = d3
-    .scaleLinear()
-    .domain(d3.extent(data, (d) => +d.count) as [number, number])
+  const c = scaleLinear()
+    .domain(extent(data, (d) => +d.count) as [number, number])
     .range([0, 1])
 
-  const heatmapColour = d3
-    .scaleLinear()
-    .domain(d3.range(0, 1, 1.0 / colours.length))
-    .range(colours as any)
+  const heatmapColour = scaleLinear<string>()
+    .domain(range(0, 1, 1.0 / colours.length))
+    .range(colours)
 
   const colorize = (d: Data[number]) => {
     const colorNormalized = c(+d.count)
@@ -81,10 +89,9 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   const { width: elWidth } = rootEl.getBoundingClientRect()
 
   const width = elWidth - margin.left - margin.right
-  const height = (d3.max(data, (d) => +d.count) as number) * 2.5
+  const height = (max(data, (d) => +d.count) as number) * 2.5
 
-  const svg: SVG = d3
-    .select(`#${rootElId}`)
+  const svg: SVG = select(`#${rootElId}`)
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.left + margin.right)
@@ -93,20 +100,19 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   addFilter(svg)
 
   const circleGroup = svg
-    .selectAll("g")
-    .data(data, (d: any) => (d as Data[number]).name)
+    .selectAll<SVGGElement, DataItem>("g")
+    .data(data, (d: DataItem) => d.name)
     .enter()
     .append("g")
 
-  const circles = circleGroup.append("svg:circle")
-  const rScale = d3
-    .scalePow()
+  const circles = circleGroup.append<SVGCircleElement>("svg:circle")
+  const rScale = scalePow()
     .exponent(0.9)
     .range([5, 300])
-    .domain(d3.extent(data, (d) => +d.count) as [number, number])
+    .domain(extent(data, (d) => +d.count) as [number, number])
 
   const getTitle = (d: Data[number]) => `${d.name}: ${d.count}`
-  const dataMax = d3.max(data, (d) => +d.count) as number
+  const dataMax = max(data, (d) => +d.count) as number
 
   circles
     .attr("cx", width / 2)
@@ -125,11 +131,11 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
       return ""
     })
     .on("mouseover", function () {
-      d3.select(this).style("stroke", "#D88021").style("stroke-width", "10px")
+      select(this).style("stroke", "#D88021").style("stroke-width", "10px")
     })
     .on("mouseleave", function () {
-      d3.select(this)
-        .style("stroke", (d: any) => colorize(d))
+      select<SVGCircleElement, DataItem>(this)
+        .style("stroke", (d) => colorize(d))
         .style("stroke-width", strokeWidth)
     })
 

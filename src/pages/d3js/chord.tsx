@@ -6,8 +6,8 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/chord/chord"
 
-const Chord = ({ pageContext: { demoInfo } }: DemoPageProps) => (
-  <Demo demoInfo={demoInfo} main={main}>
+const Chord = ({ pageContext }: DemoPageProps) => (
+  <Demo main={main} pageContext={pageContext}>
     <div id="chart" />
   </Demo>
 )

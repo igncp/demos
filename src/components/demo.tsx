@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { Helmet } from "react-helmet"
 
-import { DemoInfo } from "@/common"
+import { DemoPageProps } from "@/common"
 
 import DemoTitle from "./demo-title"
 import FilesDetails from "./files-details"
@@ -12,20 +12,21 @@ const parsePath = (str: string) =>
 
 type Props = {
   children: React.ReactNode
-  demoInfo: DemoInfo
   links?: string[]
   main: (() => void) | (() => Promise<void>)
+  pageContext: DemoPageProps["pageContext"]
   scripts?: string[]
 }
 
 const Demo = ({
-  demoInfo,
   main,
   children,
   scripts = [],
   links = [],
+  pageContext,
 }: Props) => {
-  const { name, sources } = demoInfo
+  const { demoInfo, meta } = pageContext
+  const { name, sources, isCompleted } = demoInfo
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -45,6 +46,12 @@ const Demo = ({
             type: "text/css",
           })
         )}
+        meta={[
+          {
+            content: meta.description,
+            name: "description",
+          },
+        ]}
         script={(process.env.NODE_ENV === "production" ? scripts : []).map(
           (src) => ({
             src: parsePath(src),
@@ -53,7 +60,11 @@ const Demo = ({
         )}
         title={`${demoInfo.name} | Demos igncp`}
       />
-      <DemoTitle mainSource={sources[0]} name={name} />
+      <DemoTitle
+        isCompleted={isCompleted}
+        mainSource={sources[0]}
+        name={name}
+      />
       {children}
       <FilesDetails demoInfo={demoInfo} />
     </Layout>

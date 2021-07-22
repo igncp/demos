@@ -6,8 +6,8 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/collapsible-tree/collapsible-tree"
 
-const CollapsibleTree = ({ pageContext: { demoInfo } }: DemoPageProps) => (
-  <Demo demoInfo={demoInfo} main={main}>
+const CollapsibleTree = ({ pageContext }: DemoPageProps) => (
+  <Demo main={main} pageContext={pageContext}>
     <div id="chart" />
   </Demo>
 )

@@ -6,8 +6,8 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/circular-arcs/circular-arcs"
 
-const CircularArcs = ({ pageContext: { demoInfo } }: DemoPageProps) => (
-  <Demo demoInfo={demoInfo} main={main}>
+const CircularArcs = ({ pageContext }: DemoPageProps) => (
+  <Demo main={main} pageContext={pageContext}>
     <div id="chart" />
   </Demo>
 )

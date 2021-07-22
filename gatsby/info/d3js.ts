@@ -1,6 +1,6 @@
-// @TODO: move to gatsby config dir
+import { DemoBase } from "@/common"
 
-const getCommonItems = (packageName: string) => [
+const getCommonItems = (packageName: string): DemoBase["docs"] => [
   [
     `${packageName} API reference`,
     `https://github.com/d3/${packageName}#api-reference`,
@@ -27,6 +27,7 @@ const d3FetchItems = getCommonItems("d3-fetch")
 const d3SelectionItems = getCommonItems("d3-selection")
 const d3AxisItems = getCommonItems("d3-axis")
 const d3ScaleItems = getCommonItems("d3-scale")
+const d3SankeyItems = getCommonItems("d3-sankey")
 const d3DelaunayItems = [
   ...getCommonItems("d3-delaunay"),
   [
@@ -35,7 +36,31 @@ const d3DelaunayItems = [
   ],
 ]
 
-export default {
+export type D3JS = {
+  area: DemoBase
+  bars: DemoBase
+  bubbles: DemoBase
+  chord: DemoBase
+  "collapsible-tree": DemoBase
+  "concentric-circles": DemoBase
+  "energy-sankey": DemoBase
+  "fish-eye": DemoBase
+  force: DemoBase
+  icosahedron: DemoBase
+  "map-distorsions": DemoBase
+  "mareys-schedule": DemoBase
+  "multiline-voronoi": DemoBase
+  partition: DemoBase
+  pie: DemoBase
+  "spain-map": DemoBase
+  timeline: DemoBase
+  "trend-line": DemoBase
+  vectors: DemoBase
+  "weekly-heatmap": DemoBase
+  "world-map": DemoBase
+}
+
+const d3js: D3JS = {
   area: {
     data: ["data.csv"],
     docs: [
@@ -44,7 +69,8 @@ export default {
       ...d3ScaleItems,
       ...d3AxisItems,
       ...d3DelaunayItems,
-    ],
+    ] as DemoBase["docs"],
+    isCompleted: true,
     name: "Area",
     notes: ["Changed style", "Added point and voronoi functionality"],
     sources: ["http://codepen.io/notno/pen/ilvsd"],
@@ -58,6 +84,7 @@ export default {
   bars: {
     data: ["data.json"],
     docs: [],
+    isCompleted: true,
     name: "Bars",
     notes: [
       "Added axis",
@@ -71,6 +98,7 @@ export default {
   bubbles: {
     data: ["data.json"],
     docs: [],
+    isCompleted: true,
     name: "Bubbles",
     notes: [
       'Using the <a href="https://github.com/novus/nvd3" target="_blank">NV3D</a> extension for D3JS',
@@ -83,6 +111,7 @@ export default {
   chord: {
     data: ["data.csv"],
     docs: [],
+    isCompleted: true,
     name: "Chord",
     notes: [
       "Added filters with drop shadow and low opacity",
@@ -94,6 +123,7 @@ export default {
   "collapsible-tree": {
     data: ["data.json"],
     docs: [],
+    isCompleted: true,
     name: "Collapsible Tree",
     notes: [],
     sources: [
@@ -105,6 +135,7 @@ export default {
   "concentric-circles": {
     data: [],
     docs: [],
+    isCompleted: true,
     name: "Concentric Circles",
     notes: [
       "Data of baby names in New York 2012",
@@ -118,9 +149,22 @@ export default {
     ],
     summary: [],
   },
+  "energy-sankey": {
+    data: [],
+    docs: [...d3SankeyItems] as DemoBase["docs"],
+    isCompleted: false,
+    name: "Energy Sankey",
+    notes: ["Added interaction on click"],
+    sources: [
+      "https://observablehq.com/@d3/sankey-diagram",
+      "https://www.gov.uk/guidance/2050-pathways-analysis",
+    ],
+    summary: [],
+  },
   "fish-eye": {
     data: ["data.json"],
     docs: [],
+    isCompleted: true,
     name: "Fish Eye",
     notes: [
       "Uses the Fish Eye plugin",
@@ -134,6 +178,7 @@ export default {
   force: {
     data: ["links.json", "nodes.json"],
     docs: [],
+    isCompleted: true,
     name: "Force",
     notes: [],
     sources: ["http://codepen.io/MidnightLightning/pen/dclbA"],
@@ -142,6 +187,7 @@ export default {
   icosahedron: {
     data: [],
     docs: [],
+    isCompleted: true,
     name: "Icosahedron",
     notes: [
       "No data bound to it, it could be to the speed, size, colors",
@@ -159,6 +205,7 @@ export default {
       ...d3SelectionItems,
       ...d3ScaleItems,
     ],
+    isCompleted: true,
     name: "Map Distorsions",
     notes: [
       "Dynamic (for performance) shadow",
@@ -175,6 +222,7 @@ export default {
   "mareys-schedule": {
     data: ["data.tsv"],
     docs: [],
+    isCompleted: true,
     name: "Marey's Schedule",
     notes: [
       "Added titles with information in stops and trains",
@@ -194,7 +242,8 @@ export default {
       ...d3DelaunayItems,
       ...d3ScaleChromaticItems,
       ...d3FetchItems,
-    ],
+    ] as DemoBase["docs"],
+    isCompleted: true,
     name: "Multi-Line Voronoi",
     notes: [
       "Click one time to just show a line, click again to sho all",
@@ -214,7 +263,8 @@ export default {
       ...d3ScaleItems,
       ...d3SelectionItems,
       ...d3TransitionItems,
-    ],
+    ] as DemoBase["docs"],
+    isCompleted: true,
     name: "Partition",
     notes: [
       "Added title attributes, labels and change colors with events",
@@ -230,6 +280,7 @@ export default {
   pie: {
     data: ["data.json"],
     docs: [],
+    isCompleted: true,
     name: "Pie",
     notes: [
       "Added the animation (transition) by changing a random slice data by a random integer between range",
@@ -240,6 +291,7 @@ export default {
   "spain-map": {
     data: ["data.json"],
     docs: [],
+    isCompleted: true,
     name: "Spanish Map",
     notes: [
       "For this chart I reused the code from the World Map chart and other demos",
@@ -251,6 +303,7 @@ export default {
   timeline: {
     data: ["data.csv"],
     docs: [],
+    isCompleted: true,
     name: "Timeline",
     notes: [
       "Change to bootstrap tooltip",
@@ -263,6 +316,7 @@ export default {
   "trend-line": {
     data: ["data.tsv"],
     docs: [],
+    isCompleted: true,
     name: "Trend line",
     notes: ["Added both line animations", "Changed y scale domain"],
     sources: [
@@ -279,6 +333,7 @@ export default {
         "https://github.com/d3/d3-force#forceSimulation",
       ],
     ],
+    isCompleted: false,
     name: "Vectors (needs fix)",
     notes: [
       "Use the <strong>Ctrl</strong> key to move nodes instead of creating vectors",
@@ -290,6 +345,7 @@ export default {
   "weekly-heatmap": {
     data: ["data.tsv"],
     docs: [...d3SelectionItems, ...d3ScaleItems, ...d3FetchItems],
+    isCompleted: true,
     name: "Weekly Heatmap",
     notes: [],
     sources: ["http://bl.ocks.org/tjdecke/5558084"],
@@ -300,6 +356,7 @@ export default {
   "world-map": {
     data: ["world.json"],
     docs: [],
+    isCompleted: true,
     name: "World Map",
     notes: [
       "Added the mouse over stroke and the zooming-unzooming when clicking in countries (from third source)",
@@ -313,3 +370,5 @@ export default {
     summary: [],
   },
 }
+
+export default d3js

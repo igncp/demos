@@ -1,4 +1,13 @@
-import * as d3 from "d3"
+import {
+  HierarchyNode,
+  HierarchyPointLink,
+  HierarchyPointNode,
+  hierarchy,
+  json,
+  linkHorizontal,
+  select,
+  tree as treeD3,
+} from "d3"
 
 import "./collapsible-tree.styl"
 
@@ -12,15 +21,15 @@ type DataNode = {
   y0: number
   y: number
 }
-type HierarchyDataNode = d3.HierarchyNode<DataNode>
-type TreeNode = d3.HierarchyPointNode<DataNode>
-type TreeLink = d3.HierarchyPointLink<DataNode>
+type HierarchyDataNode = HierarchyNode<DataNode>
+type TreeNode = HierarchyPointNode<DataNode>
+type TreeLink = HierarchyPointLink<DataNode>
 
 type DiagonalNode = { x: number; y: number }
 type DiagonalLink = { source: DiagonalNode; target: DiagonalNode }
 
 const fetchData = async (): Promise<DataNode> => {
-  const data = (await d3.json(
+  const data = (await json(
     `${ROOT_PATH}data/d3js/collapsible-tree/data.json`
   )) as DataNode
 
@@ -40,7 +49,7 @@ const height = 800 - margin.top - margin.bottom
 type RenderChart = (o: { rootElId: string; rootData: DataNode }) => void
 
 const renderChart: RenderChart = ({ rootElId, rootData }) => {
-  const root = d3.hierarchy<DataNode>(rootData)
+  const root = hierarchy<DataNode>(rootData)
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
@@ -52,7 +61,7 @@ const renderChart: RenderChart = ({ rootElId, rootData }) => {
   root.data.x0 = height / 2
   root.data.y0 = 0
 
-  const tree = d3.tree<DataNode>().nodeSize([20, 100])
+  const tree = treeD3<DataNode>().nodeSize([20, 100])
 
   const rootTree = tree(root)
 
@@ -65,13 +74,11 @@ const renderChart: RenderChart = ({ rootElId, rootData }) => {
     }
   })
 
-  const diagonal = d3
-    .linkHorizontal<DiagonalLink, DiagonalNode>()
+  const diagonal = linkHorizontal<DiagonalLink, DiagonalNode>()
     .x((d: DiagonalNode) => d.y)
     .y((d: DiagonalNode) => d.x)
 
-  const svg = d3
-    .select<SVGElement, TreeNode>(`#${rootElId}`)
+  const svg = select<SVGElement, TreeNode>(`#${rootElId}`)
     .append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)

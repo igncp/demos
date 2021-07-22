@@ -1,9 +1,16 @@
-// @TODO: move to gatsby config dir
+import { DemoBase } from "@/common"
 
-export default {
+export type Raphael = {
+  "bars-3dimensional": DemoBase
+  "circular-arcs": DemoBase
+  "moving-line": DemoBase
+}
+
+const raphael: Raphael = {
   "bars-3dimensional": {
     data: ["data.json"],
     docs: [],
+    isCompleted: true,
     name: "Bars 3D",
     notes: ["Added titles on hover", "Dynamic dimensions"],
     sources: ["http://codepen.io/djam/pen/edjCz"],
@@ -12,6 +19,7 @@ export default {
   "circular-arcs": {
     data: [],
     docs: [],
+    isCompleted: true,
     name: "Circular Arcs",
     notes: [
       "This demo doesn't have data, but it wouldn't be hard (e.g. bound to the radius if all are different)",
@@ -22,6 +30,7 @@ export default {
   "moving-line": {
     data: ["data.json"],
     docs: [],
+    isCompleted: true,
     name: "Moving Line",
     notes: [
       "The axis is not included as it is part of the background image",
@@ -31,3 +40,5 @@ export default {
     summary: [],
   },
 }
+
+export default raphael

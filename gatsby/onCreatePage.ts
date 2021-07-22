@@ -1,22 +1,31 @@
 import fs from "fs"
+import { GatsbyNode } from "gatsby"
 
-import { DemoSummary, IndexPageProps, DemoPageProps } from "../src/common"
+import {
+  DemoBase,
+  DemoPageProps,
+  DemoSummary,
+  IndexPageProps,
+} from "../src/common"
 
-import d3Data from "../src/info/d3js"
-import raphaelData from "../src/info/raphael"
+import d3Data from "./info/d3js"
+import raphaelData from "./info/raphael"
+import metas from "./info/metas"
 
 import { ROOT_PATH } from "./constants"
 
-const categoryToData: any = {
+const categoryToData = {
   d3js: d3Data,
   raphael: raphaelData,
 }
+
+type Category = keyof typeof categoryToData
 
 const readIfExists = (filePath: string) => {
   try {
     return fs.readFileSync(filePath, "utf-8")
   } catch (_) {
-    return null
+    return ""
   }
 }
 
@@ -30,18 +39,23 @@ const getPage = (demoName: string, category: string) => ({
   type: "tsx",
 })
 
-const getDemoInfo = (slugs: any) => {
+const getDemoInfo = (slugs: string[]) => {
   const [category, demoName] = slugs
+  const categoryData = categoryToData[category as Category]
 
-  if (!categoryToData[category] || !demoName) {
+  if (!categoryData || !demoName) {
     return null
   }
 
   const demo = getDemo(demoName)
   const page = getPage(demoName, category)
 
+  type DemoKey = keyof typeof categoryData
+
+  const demoBase = categoryData[demoName as DemoKey] as DemoBase
+
   return {
-    ...categoryToData[category][demoName],
+    ...demoBase,
     category,
     files: {
       demo,
@@ -57,7 +71,7 @@ const raphaelDemosSummaries: DemoSummary[] = []
 
 for (const item in d3Data) {
   const demoSummary: DemoSummary = {
-    ...(d3Data as any)[item],
+    ...d3Data[item as keyof typeof d3Data],
     category: "d3js",
     key: item,
     route: `${ROOT_PATH}d3js/${item}`,
@@ -68,7 +82,7 @@ for (const item in d3Data) {
 
 for (const item in raphaelData) {
   const demoSummary = {
-    ...(raphaelData as any)[item],
+    ...raphaelData[item as keyof typeof raphaelData],
     category: "raphael",
     key: item,
     route: `${ROOT_PATH}raphael/${item}`,
@@ -85,7 +99,7 @@ const demosSummaries = d3jsDemosSummaries
     return a.name < b.name ? -1 : 1
   })
 
-const onCreatePage = ({ page, actions }: any) => {
+const onCreatePage: GatsbyNode["onCreatePage"] = ({ page, actions }) => {
   const slugs = page.path.split("/").filter(Boolean)
   const demoInfo = getDemoInfo(slugs)
 
@@ -100,21 +114,29 @@ const onCreatePage = ({ page, actions }: any) => {
       demosSummaries.slice(numberPerGroup, demosSummaries.length),
     ]
 
+    const context: IndexPageProps["pageContext"] = {
+      groupedDemos,
+      meta: metas.home,
+      numberPerGroup,
+    }
+
     createPage({
       ...page,
-      context: {
-        groupedDemos,
-        numberPerGroup,
-      } as IndexPageProps["pageContext"],
+      context,
     })
   } else if (demoInfo) {
     deletePage(page)
 
+    const categoryMetas = metas[demoInfo.category as Category]
+
+    const context: DemoPageProps["pageContext"] = {
+      demoInfo,
+      meta: categoryMetas[demoInfo.key as keyof typeof categoryMetas],
+    }
+
     createPage({
       ...page,
-      context: {
-        demoInfo,
-      } as DemoPageProps["pageContext"],
+      context,
     })
   }
 }

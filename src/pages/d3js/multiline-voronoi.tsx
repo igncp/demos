@@ -6,8 +6,8 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/multiline-voronoi/multiline-voronoi"
 
-const MultilineVoronoi = ({ pageContext: { demoInfo } }: DemoPageProps) => (
-  <Demo demoInfo={demoInfo} main={main}>
+const MultilineVoronoi = ({ pageContext }: DemoPageProps) => (
+  <Demo main={main} pageContext={pageContext}>
     <form>
       <input id="show-voronoi" type="checkbox" />{" "}
       <label htmlFor="show-voronoi">Show Voronoi lines</label>

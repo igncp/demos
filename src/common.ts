@@ -1,9 +1,14 @@
 type DocName = string
 type DocLink = string
 
-type DemoBase = {
+export type Meta = {
+  description: string
+}
+
+export type DemoBase = {
   data: string[]
   docs: [DocName, DocLink][]
+  isCompleted: boolean
   name: string
   notes: string[]
   sources: string[]
@@ -36,6 +41,7 @@ export type DemoSummary = {
 export type IndexPageProps = {
   pageContext: {
     groupedDemos: DemoSummary[][]
+    meta: Meta
     numberPerGroup: number
   }
 }
@@ -43,5 +49,6 @@ export type IndexPageProps = {
 export type DemoPageProps = {
   pageContext: {
     demoInfo: DemoInfo
+    meta: Meta
   }
 }

@@ -1,4 +1,14 @@
-import * as d3 from "d3"
+import {
+  axisBottom,
+  brushX,
+  csv,
+  max as maxD3,
+  min as minD3,
+  scaleTime,
+  select,
+  selectAll,
+  timeParse,
+} from "d3"
 
 import "./timeline.styl"
 
@@ -11,7 +21,7 @@ type DataItem = {
 }
 
 const fetchData = () =>
-  (d3.csv(`${ROOT_PATH}data/d3js/timeline/data.csv`) as unknown) as DataItem[]
+  (csv(`${ROOT_PATH}data/d3js/timeline/data.csv`) as unknown) as DataItem[]
 
 const margin = {
   bottom: 0,
@@ -25,7 +35,7 @@ const height = outerHeight - margin.top - margin.bottom
 const bandGap = 25
 
 const parseDate = function (dateString: string) {
-  const format = d3.timeParse("%Y-%m-%d")
+  const format = timeParse("%Y-%m-%d")
 
   let date = format(dateString)
 
@@ -65,7 +75,7 @@ class Timeline {
   private bandY: number
   private bandNum: number
   private dataContent: any
-  private components: any
+  private components: Array<any>
   private bands: any
   private width: number
 
@@ -85,8 +95,7 @@ class Timeline {
     this.components = []
     this.bands = {}
 
-    const svg = d3
-      .select(`#${rootElId}`)
+    const svg = select(`#${rootElId}`)
       .text("")
       .append("svg")
       .attr("height", outerHeight + margin.top + margin.bottom)
@@ -112,9 +121,7 @@ class Timeline {
       .attr("height", height)
 
     svg.on("mouseup", () =>
-      d3
-        .selectAll(".interval rect")
-        .style("filter", "url(#drop-shadow-intervals)")
+      selectAll(".interval rect").style("filter", "url(#drop-shadow-intervals)")
     )
 
     this.chart = svg
@@ -126,7 +133,8 @@ class Timeline {
   public data(timelineItems: DataItem[]) {
     const today = new Date()
 
-    const tracks: any = []
+    const tracks: Date[] = []
+
     const yearMillis = 31622400000
     const instantOffset = 100 * yearMillis
 
@@ -259,24 +267,23 @@ class Timeline {
     calculateTracks(this.dataContent.items, "descending", "backward")
 
     this.dataContent.nTracks = tracks.length
-    this.dataContent.minDate = d3.min(
+    this.dataContent.minDate = minD3(
       this.dataContent.items,
       (d: any) => d.start
     )
-    this.dataContent.maxDate = d3.max(this.dataContent.items, (d: any) => d.end)
+    this.dataContent.maxDate = maxD3(this.dataContent.items, (d: any) => d.end)
 
     return this
   }
 
-  public xAxis(bandName: any) {
+  public xAxis(bandName: string) {
     const band = this.bands[bandName]
 
-    const axis = (d3 as any)
-      .axisBottom(band.xScale)
-      .tickSize(6, 0)
+    const axis = axisBottom(band.xScale)
+      .tickSize(6)
       .tickFormat((d: any) => toYear(d))
 
-    const xAxis: any = this.chart
+    const xAxis = this.chart
       .append("g")
       .attr("class", "axis")
       .attr("transform", `translate(0,${band.y + band.h})`)
@@ -299,7 +306,7 @@ class Timeline {
     return this
   }
 
-  public band(bandName: any, sizeFactor: any) {
+  public band(bandName: string, sizeFactor: any) {
     const band: any = {}
 
     band.id = `band${this.bandNum}`
@@ -315,8 +322,7 @@ class Timeline {
     band.itemHeight = band.trackHeight * 0.7
     band.parts = []
     band.instantWidth = 100
-    band.xScale = d3
-      .scaleTime()
+    band.xScale = scaleTime()
       .domain([this.dataContent.minDate, this.dataContent.maxDate])
       .range([0, band.w])
 
@@ -357,7 +363,7 @@ class Timeline {
         return "part interval"
       })
 
-    const intervals = d3.select(`#band${this.bandNum}`).selectAll(".interval")
+    const intervals = select(`#band${this.bandNum}`).selectAll(".interval")
 
     intervals
       .append("rect")
@@ -373,7 +379,7 @@ class Timeline {
       .attr("x", 3)
       .attr("y", 9.5)
 
-    const instants = d3.select(`#band${this.bandNum}`).selectAll(".instant")
+    const instants = select(`#band${this.bandNum}`).selectAll(".instant")
 
     instants
       .append("circle")
@@ -503,10 +509,9 @@ class Timeline {
 
   public brush(bandName: any, targetNames: any) {
     const band = this.bands[bandName]
-    const brush = d3.brushX()
+    const brush = brushX()
 
-    const selectionScale = d3
-      .scaleTime()
+    const selectionScale = scaleTime()
       .domain([0, 1000])
       .range([
         this.dataContent.minDate.getTime(),
@@ -523,7 +528,7 @@ class Timeline {
         ]
       }
 
-      d3.selectAll(".interval rect").style("filter", "none")
+      selectAll(".interval rect").style("filter", "none")
 
       targetNames.forEach((d: any) => {
         this.bands[d].xScale.domain(newDomain)

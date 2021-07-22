@@ -4,12 +4,12 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/bubbles/bubbles"
+import main from "@/demos/energy-sankey/energy-sankey"
 
-const Bubbles = ({ pageContext }: DemoPageProps) => (
+const Pie = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
-    <div id="chart" style={{ height: 600 }} />
+    <div id="chart" />
   </Demo>
 )
 
-export default Bubbles
+export default Pie

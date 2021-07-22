@@ -6,8 +6,8 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/world-map/world-map"
 
-const WorldMap = ({ pageContext: { demoInfo } }: DemoPageProps) => (
-  <Demo demoInfo={demoInfo} main={main}>
+const WorldMap = ({ pageContext }: DemoPageProps) => (
+  <Demo main={main} pageContext={pageContext}>
     <div className="world-map-chart" id="chart" />
   </Demo>
 )

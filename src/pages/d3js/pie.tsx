@@ -6,8 +6,8 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/pie/pie"
 
-const Pie = ({ pageContext: { demoInfo } }: DemoPageProps) => (
-  <Demo demoInfo={demoInfo} main={main}>
+const Pie = ({ pageContext }: DemoPageProps) => (
+  <Demo main={main} pageContext={pageContext}>
     <form>
       <button className="btn btn-success" id="change-data" type="button">
         Change

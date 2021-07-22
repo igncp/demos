@@ -7,14 +7,13 @@ import Layout from "@/components/layout"
 import DemosList from "@/components/demos-list"
 
 const IndexPage = ({
-  pageContext: { groupedDemos, numberPerGroup },
+  pageContext: { groupedDemos, numberPerGroup, meta },
 }: IndexPageProps) => (
   <Layout>
     <Helmet
       meta={[
         {
-          content:
-            "HTML data visualization demos for the web, rewritten and extended. Using TypeScript with libraries like d3js, Raphael, jQuery UI or Stylus, rendering SVG or Canvas elements.",
+          content: meta.description,
           name: "description",
         },
       ]}

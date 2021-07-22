@@ -1,6 +1,11 @@
+import { GatsbyNode } from "gatsby"
+
 import { ROOT_PATH } from "./constants"
 
-const onCreateWebpackConfig = ({ plugins, actions }: any) => {
+const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] = ({
+  plugins,
+  actions,
+}) => {
   actions.setWebpackConfig({
     plugins: [
       plugins.define({

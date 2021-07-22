@@ -6,8 +6,8 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/force/force"
 
-const Force = ({ pageContext: { demoInfo } }: DemoPageProps) => (
-  <Demo demoInfo={demoInfo} main={main}>
+const Force = ({ pageContext }: DemoPageProps) => (
+  <Demo main={main} pageContext={pageContext}>
     <div id="chart" />
   </Demo>
 )
