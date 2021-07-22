@@ -11,18 +11,28 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/concentric-circles/concentric-circles.ts</td><td class="">99.22%</td><td class="">90%</td><td class="">255</td><td class="">253</td><td class="">2</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/concentric-circles/concentric-circles.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">255</td><td class="">255</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Selection,
+  csv,
+  extent,
+  max,
+  range,
+  scaleLinear,
+  scalePow,
+  select,
+} from &quot;d3&quot;
 
-type Data = Array&lt;{
+type DataItem = {
   count: string
   name: string
   sex: string
   year: string
-}&gt;
-type SVG = d3.Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+}
+type Data = DataItem[]
+type SVG = Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
 
 const fetchData = async (): Promise&lt;Data&gt; =&gt; {
-  const data = await d3.csv(`${ROOT_PATH}data/d3js/concentric-circles/data.csv`)
+  const data = await csv(`${ROOT_PATH}data/d3js/concentric-circles/data.csv`)
 
   return (data as unknown) as Data
 }
@@ -74,15 +84,13 @@ const addDescription: AddDescription = ({ svg, height, width }) =&gt; {
 type RenderChart = (o: { data: Data; rootElId: string }) =&gt; void
 
 const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
-  const c = d3
-    .scaleLinear()
-    .domain(d3.extent(data, (d) =&gt; +d.count) as [number, number])
+  const c = scaleLinear()
+    .domain(extent(data, (d) =&gt; +d.count) as [number, number])
     .range([0, 1])
 
-  const heatmapColour = d3
-    .scaleLinear()
-    .domain(d3.range(0, 1, 1.0 / colours.length))
-    .range(colours as any)
+  const heatmapColour = scaleLinear&lt;string&gt;()
+    .domain(range(0, 1, 1.0 / colours.length))
+    .range(colours)
 
   const colorize = (d: Data[number]) =&gt; {
     const colorNormalized = c(+d.count)
@@ -94,10 +102,9 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   const { width: elWidth } = rootEl.getBoundingClientRect()
 
   const width = elWidth - margin.left - margin.right
-  const height = (d3.max(data, (d) =&gt; +d.count) as number) * 2.5
+  const height = (max(data, (d) =&gt; +d.count) as number) * 2.5
 
-  const svg: SVG = d3
-    .select(`#${rootElId}`)
+  const svg: SVG = select(`#${rootElId}`)
     .append(&quot;svg&quot;)
     .attr(&quot;width&quot;, width + margin.left + margin.right)
     .attr(&quot;height&quot;, height + margin.left + margin.right)
@@ -106,20 +113,19 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   addFilter(svg)
 
   const circleGroup = svg
-    .selectAll(&quot;g&quot;)
-    .data(data, (d: any) =&gt; (d as Data[number]).name)
+    .selectAll&lt;SVGGElement, DataItem&gt;(&quot;g&quot;)
+    .data(data, (d: DataItem) =&gt; d.name)
     .enter()
     .append(&quot;g&quot;)
 
-  const circles = circleGroup.append(&quot;svg:circle&quot;)
-  const rScale = d3
-    .scalePow()
+  const circles = circleGroup.append&lt;SVGCircleElement&gt;(&quot;svg:circle&quot;)
+  const rScale = scalePow()
     .exponent(0.9)
     .range([5, 300])
-    .domain(d3.extent(data, (d) =&gt; +d.count) as [number, number])
+    .domain(extent(data, (d) =&gt; +d.count) as [number, number])
 
   const getTitle = (d: Data[number]) =&gt; `${d.name}: ${d.count}`
-  const dataMax = d3.max(data, (d) =&gt; +d.count) as number
+  const dataMax = max(data, (d) =&gt; +d.count) as number
 
   circles
     .attr(&quot;cx&quot;, width / 2)
@@ -138,11 +144,11 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
       return &quot;&quot;
     })
     .on(&quot;mouseover&quot;, function () {
-      d3.select(this).style(&quot;stroke&quot;, &quot;#D88021&quot;).style(&quot;stroke-width&quot;, &quot;10px&quot;)
+      select(this).style(&quot;stroke&quot;, &quot;#D88021&quot;).style(&quot;stroke-width&quot;, &quot;10px&quot;)
     })
     .on(&quot;mouseleave&quot;, function () {
-      d3.select(this)
-        .style(&quot;stroke&quot;, (d: any) =&gt; colorize(d))
+      select&lt;SVGCircleElement, DataItem&gt;(this)
+        .style(&quot;stroke&quot;, (d) =&gt; colorize(d))
         .style(&quot;stroke-width&quot;, strokeWidth)
     })
 
@@ -167,8 +173,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:96,&quot;character&quot;:17,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/concentric-circles/concentric-circles.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:26,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 21 Jul 2021 23:15:12 GMT</p>
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 22 Jul 2021 23:19:22 GMT</p>
     </body>
   </html>
   

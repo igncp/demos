@@ -11,25 +11,34 @@
 <link href="../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">gatsby/onCreatePage.ts</td><td class="">75.16%</td><td class="">90%</td><td class="">157</td><td class="">118</td><td class="">39</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import fs from &quot;fs&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">gatsby/onCreatePage.ts</td><td class="">99.47%</td><td class="">90%</td><td class="">188</td><td class="">187</td><td class="">1</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import fs from &quot;fs&quot;
+import { GatsbyNode } from &quot;gatsby&quot;
 
-import { DemoSummary, IndexPageProps, DemoPageProps } from &quot;../src/common&quot;
+import {
+  DemoBase,
+  DemoPageProps,
+  DemoSummary,
+  IndexPageProps,
+} from &quot;../src/common&quot;
 
-import d3Data from &quot;../src/info/d3js&quot;
-import raphaelData from &quot;../src/info/raphael&quot;
+import d3Data from &quot;./info/d3js&quot;
+import raphaelData from &quot;./info/raphael&quot;
+import metas from &quot;./info/metas&quot;
 
 import { ROOT_PATH } from &quot;./constants&quot;
 
-const categoryToData: any = {
+const categoryToData = {
   d3js: d3Data,
   raphael: raphaelData,
 }
+
+type Category = keyof typeof categoryToData
 
 const readIfExists = (filePath: string) =&gt; {
   try {
     return fs.readFileSync(filePath, &quot;utf-8&quot;)
   } catch (_) {
-    return null
+    return &quot;&quot;
   }
 }
 
@@ -43,18 +52,23 @@ const getPage = (demoName: string, category: string) =&gt; ({
   type: &quot;tsx&quot;,
 })
 
-const getDemoInfo = (slugs: any) =&gt; {
+const getDemoInfo = (slugs: string[]) =&gt; {
   const [category, demoName] = slugs
+  const categoryData = categoryToData[category as Category]
 
-  if (!categoryToData[category] || !demoName) {
+  if (!categoryData || !demoName) {
     return null
   }
 
   const demo = getDemo(demoName)
   const page = getPage(demoName, category)
 
+  type DemoKey = keyof typeof categoryData
+
+  const demoBase = categoryData[demoName as DemoKey] as DemoBase
+
   return {
-    ...categoryToData[category][demoName],
+    ...demoBase,
     category,
     files: {
       demo,
@@ -70,7 +84,7 @@ const raphaelDemosSummaries: DemoSummary[] = []
 
 for (const item in d3Data) {
   const demoSummary: DemoSummary = {
-    ...(d3Data as any)[item],
+    ...d3Data[item as keyof typeof d3Data],
     category: &quot;d3js&quot;,
     key: item,
     route: `${ROOT_PATH}d3js/${item}`,
@@ -81,7 +95,7 @@ for (const item in d3Data) {
 
 for (const item in raphaelData) {
   const demoSummary = {
-    ...(raphaelData as any)[item],
+    ...raphaelData[item as keyof typeof raphaelData],
     category: &quot;raphael&quot;,
     key: item,
     route: `${ROOT_PATH}raphael/${item}`,
@@ -98,7 +112,7 @@ const demosSummaries = d3jsDemosSummaries
     return a.name &lt; b.name ? -1 : 1
   })
 
-const onCreatePage = ({ page, actions }: any) =&gt; {
+const onCreatePage: GatsbyNode[&quot;onCreatePage&quot;] = ({ page, actions }) =&gt; {
   const slugs = page.path.split(&quot;/&quot;).filter(Boolean)
   const demoInfo = getDemoInfo(slugs)
 
@@ -113,28 +127,36 @@ const onCreatePage = ({ page, actions }: any) =&gt; {
       demosSummaries.slice(numberPerGroup, demosSummaries.length),
     ]
 
+    const context: IndexPageProps[&quot;pageContext&quot;] = {
+      groupedDemos,
+      meta: metas.home,
+      numberPerGroup,
+    }
+
     createPage({
       ...page,
-      context: {
-        groupedDemos,
-        numberPerGroup,
-      } as IndexPageProps[&quot;pageContext&quot;],
+      context,
     })
   } else if (demoInfo) {
     deletePage(page)
 
+    const categoryMetas = metas[demoInfo.category as Category]
+
+    const context: DemoPageProps[&quot;pageContext&quot;] = {
+      demoInfo,
+      meta: categoryMetas[demoInfo.key as keyof typeof categoryMetas],
+    }
+
     createPage({
       ...page,
-      context: {
-        demoInfo,
-      } as DemoPageProps[&quot;pageContext&quot;],
+      context,
     })
   }
 }
 
 export { onCreatePage }
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:6,&quot;text&quot;:&quot;categoryToData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:11,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:32,&quot;character&quot;:21,&quot;text&quot;:&quot;slugs&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:9,&quot;text&quot;:&quot;category&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:19,&quot;text&quot;:&quot;demoName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:7,&quot;text&quot;:&quot;categoryToData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:22,&quot;text&quot;:&quot;category&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:35,&quot;character&quot;:36,&quot;text&quot;:&quot;demoName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:7,&quot;text&quot;:&quot;categoryToData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:22,&quot;text&quot;:&quot;category&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:32,&quot;text&quot;:&quot;demoName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:4,&quot;text&quot;:&quot;category&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:38,&quot;text&quot;:&quot;demoName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:50,&quot;text&quot;:&quot;demoName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:4,&quot;text&quot;:&quot;key&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:9,&quot;text&quot;:&quot;demoName&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:69,&quot;character&quot;:8,&quot;text&quot;:&quot;demoSummary&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:24,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:30,&quot;text&quot;:&quot;actions&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:8,&quot;text&quot;:&quot;slugs&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:16,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:21,&quot;text&quot;:&quot;path&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:26,&quot;text&quot;:&quot;split&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:37,&quot;text&quot;:&quot;filter&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:89,&quot;character&quot;:8,&quot;text&quot;:&quot;demoInfo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:89,&quot;character&quot;:31,&quot;text&quot;:&quot;slugs&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:10,&quot;text&quot;:&quot;createPage&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:22,&quot;text&quot;:&quot;deletePage&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:93,&quot;character&quot;:6,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:93,&quot;character&quot;:11,&quot;text&quot;:&quot;path&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:94,&quot;character&quot;:4,&quot;text&quot;:&quot;deletePage&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:94,&quot;character&quot;:15,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:4,&quot;text&quot;:&quot;createPage&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:103,&quot;character&quot;:9,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:109,&quot;character&quot;:13,&quot;text&quot;:&quot;demoInfo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:110,&quot;character&quot;:4,&quot;text&quot;:&quot;deletePage&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:110,&quot;character&quot;:15,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:112,&quot;character&quot;:4,&quot;text&quot;:&quot;createPage&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:113,&quot;character&quot;:9,&quot;text&quot;:&quot;page&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 21 Jul 2021 23:15:12 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;gatsby/onCreatePage.ts&quot;,&quot;line&quot;:26,&quot;character&quot;:11,&quot;text&quot;:&quot;_&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 22 Jul 2021 23:19:22 GMT</p>
     </body>
   </html>
   

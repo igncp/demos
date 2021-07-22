@@ -1,0 +1,135 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>metas.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">gatsby/info/metas.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">55</td><td class="">55</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Meta } from &quot;../../src/common&quot;
+
+import { D3JS } from &quot;./d3js&quot;
+import { Raphael } from &quot;./raphael&quot;
+
+type Metas = {
+  d3js: Record&lt;keyof D3JS, Meta&gt;
+  home: Meta
+  raphael: Record&lt;keyof Raphael, Meta&gt;
+}
+
+const metas: Metas = {
+  d3js: {
+    area: {
+      description:
+        &quot;Area Chart example, using D3.js, with a transparent Voronoi overlay that gives the functionality know fast the nearest point to the mouse.&quot;,
+    },
+    bars: {
+      description:
+        &quot;Bar Chart example with a traslation interval, a custom color scale and dynamic entry of new data. You can also see how to animate an axis change.&quot;,
+    },
+    bubbles: {
+      description:
+        &quot;Bubbles Chart example with NV3D as D3.js extension, using data from the Nike API, and with a depurated style, an horizontal axis and other color scheme.&quot;,
+    },
+    chord: {
+      description:
+        &quot;Chord Chart example using D3.js, which has a different color scheme with a color for each country, and a special drop shadow filter for a 3D effect.&quot;,
+    },
+    &quot;collapsible-tree&quot;: {
+      description:
+        &quot;Collapsible Tree example using D3.js, with circular nodes and styled links. With transitions, it manages the text placing depending if the node is expanded.&quot;,
+    },
+    &quot;concentric-circles&quot;: {
+      description:
+        &quot;Concentric circles example using D3.js, with a non repeated series of data and with a new style that heavily uses the svg drop-shadow type filter.&quot;,
+    },
+    &quot;energy-sankey&quot;: {
+      description: &quot;&quot;,
+    },
+    &quot;fish-eye&quot;: {
+      description:
+        &quot;Fisheye Chart example using D3.js, with the Fisheye plugin. It has a more depurated style, and the ability to stop the scale changes when it&#x27;s clicked.&quot;,
+    },
+    force: {
+      description:
+        &quot;Force Chart example using D3.js with two source files of data, that shows how a process with several cycles and paths can be represented.&quot;,
+    },
+    icosahedron: {
+      description:
+        &quot;Example using D3.js of a 3D geometric figure, which has each face with a different color using a color scale and a sinusoidal animated movement.&quot;,
+    },
+    &quot;map-distorsions&quot;: {
+      description:
+        &quot;Cuadruple variable example using D3.js, with a colored chart and four axis that are connected by lines and with an improved and depurated style.&quot;,
+    },
+    &quot;mareys-schedule&quot;: {
+      description:
+        &quot;Trains schedule example using D3.js, with San Francisco as example, and with the addition of a translucent tooltip and a 3D style.&quot;,
+    },
+    &quot;multiline-voronoi&quot;: {
+      description:
+        &quot;Multiline chart example using D3.js, with Voronoi functionality and the ability to show a single line after it is clicked. The label and style are also changed.&quot;,
+    },
+    partition: {
+      description:
+        &quot;Radial treemap example using D3.js, with data from a partition, where labels, mouse events and titles are added.&quot;,
+    },
+    pie: {
+      description:
+        &quot;Pie chart example using D3.js, with an animated transition and a random change of values to show how to animate between states.&quot;,
+    },
+    &quot;spain-map&quot;: {
+      description:
+        &quot;Example of a geographic map using D3.js, where some styles have been added to give it a 3D effect.&quot;,
+    },
+    timeline: {
+      description:
+        &quot;Example of historical timeline using D3.js, where a legend is place to ease the navigation, as well as a more depurated style with tooltips.&quot;,
+    },
+    &quot;trend-line&quot;: {
+      description: &quot;Example of trend-line using D3.js, with extra animations.&quot;,
+    },
+    vectors: {
+      description:
+        &quot;Not actually a chart, but the representation of pointing vectors, with the possibility of creation and movement, made with D3.js&quot;,
+    },
+    &quot;weekly-heatmap&quot;: {
+      description:
+        &quot;Heatmap chart example using D3.js, very similar to the one displayed in the GitHub site, with a few additions from the original.&quot;,
+    },
+
+    &quot;world-map&quot;: {
+      description:
+        &quot;Example of world map using D3.js, with the zoom functionality and also the possibility to unzoom. The color scale is changed, among other properties.&quot;,
+    },
+  },
+  home: {
+    description:
+      &quot;HTML data visualization demos for the web, rewritten and extended. Using TypeScript with libraries like d3js, Raphael, jQuery UI or Stylus, rendering SVG or Canvas elements.&quot;,
+  },
+  raphael: {
+    &quot;bars-3dimensional&quot;: {
+      description: &quot;&quot;,
+    },
+    &quot;circular-arcs&quot;: {
+      description:
+        &quot;Circular Arcs example, using Raphaël, which is not bound to any data but it would be easy to. It shows how to create a semicircle and the hover functionality.&quot;,
+    },
+    &quot;moving-line&quot;: {
+      description:
+        &quot;Moving Line example, using Raphaël, with some important modifications like the path line, the exclusion of the axis (is an image), or the addition of tites.&quot;,
+    },
+  },
+}
+
+export default metas
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 22 Jul 2021 23:19:22 GMT</p>
+    </body>
+  </html>
+  
