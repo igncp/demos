@@ -11,14 +11,27 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">src/demos/energy-sankey/energy-sankey.ts</td><td class="">69.89%</td><td class="">90%</td><td class="">352</td><td class="">246</td><td class="">106</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
-  json,
-  select,
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/energy-sankey/energy-sankey.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">555</td><td class="">555</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Selection,
   format as formatD3,
+  json,
   scaleOrdinal,
   schemePastel2,
+  select,
 } from &quot;d3&quot;
-import { sankey as sankeyD3, sankeyLinkHorizontal, sankeyLeft } from &quot;d3-sankey&quot;
+import {
+  SankeyLink,
+  SankeyNode,
+  sankey as sankeyD3,
+  sankeyLeft,
+  sankeyLinkHorizontal,
+} from &quot;d3-sankey&quot;
+import qs from &quot;query-string&quot;
+import chroma from &quot;chroma-js&quot;
+import anime from &quot;animejs&quot;
+import hotkeys from &quot;hotkeys-js&quot;
+
+import &quot;./energy-sankey.styl&quot;
 
 type EnergyDataLink = {
   source: string
@@ -37,20 +50,44 @@ type EnergyData = {
   units: string
 }
 
+type EnergySankeyNode = SankeyNode&lt;EnergyDataNode, EnergyDataLink&gt;
+type EnergySankeyLink = SankeyLink&lt;EnergyDataNode, EnergyDataLink&gt;
+
+type State = {
+  isInTransition: boolean
+  linkSelected: boolean
+  selectedNode: string
+}
+
+type AddedGradients = { [k: string]: true }
+
+type ShouldPreventDefault = boolean
+type OnNodeClick = (node: EnergySankeyNode) =&gt; ShouldPreventDefault
+
+const getRandomInt = (min: number, max: number): number =&gt; {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 const fetchData = () =&gt;
   json(`${ROOT_PATH}data/d3js/energy-sankey/data.json`) as Promise&lt;EnergyData&gt;
 
-const height = 1000
-const defaultOpacity = 0.7
+const sankeyHeight = 1000
+const legendHeight = 0
+const svgHeight = sankeyHeight + legendHeight
 
 const renderChart = ({
-  rootElId,
   data,
+  onNodeClick,
+  rootElId,
 }: {
-  rootElId: string
   data: EnergyData
+  onNodeClick?: OnNodeClick
+  rootElId: string
 }) =&gt; {
-  const state = {
+  const state: State = {
     isInTransition: false,
     linkSelected: false,
     selectedNode: &quot;&quot;,
@@ -61,134 +98,143 @@ const renderChart = ({
   const format = (() =&gt; {
     const formatFn = formatD3(&quot;,.0f&quot;)
 
-    return (d: any) =&gt; `${formatFn(d)} ${data.units}`
+    return (d: number) =&gt; `${formatFn(d)} ${data.units}`
   })()
   const color = (() =&gt; {
     const colorFn = scaleOrdinal(schemePastel2)
 
-    return (d: any) =&gt; colorFn(d.category === undefined ? d.name : d.category)
+    return (d: EnergyDataNode) =&gt; colorFn(d.name)
   })()
 
   const { width } = el.getBoundingClientRect()
   const svg = select(`#${rootElId}`)
     .append&lt;SVGElement&gt;(&quot;svg&quot;)
-    .attr(&quot;height&quot;, height)
+    .attr(&quot;height&quot;, svgHeight)
     .attr(&quot;width&quot;, width)
 
-  const sankeyVal = sankeyD3()
-    .nodeId((d: any) =&gt; d.name)
+  const sankeyVal = sankeyD3&lt;EnergyDataNode, EnergyDataLink&gt;()
+    .nodeId((d) =&gt; d.name)
     .nodeAlign(sankeyLeft)
     .nodeWidth(15)
     .nodePadding(10)
     .extent([
       [1, 5],
-      [width - 1, height - 5],
+      [width - 1, sankeyHeight - 5],
     ])
 
   const { nodes, links } = sankeyVal({
-    links: data.links.map((d: any) =&gt; Object.assign({}, d)),
-    nodes: data.nodes.map((d: any) =&gt; Object.assign({}, d)),
-  }) as any
+    links: data.links.map((d: EnergyDataLink) =&gt; Object.assign({}, d)),
+    nodes: data.nodes.map((d: EnergyDataNode) =&gt; Object.assign({}, d)),
+  })
 
-  const node = svg
-    .append(&quot;g&quot;)
-    .attr(&quot;stroke&quot;, &quot;#000&quot;)
+  const nodeG = svg.append(&quot;g&quot;).attr(&quot;stroke&quot;, &quot;#000&quot;)
+
+  let lastAnime = () =&gt; {}
+
+  const node = nodeG
     .selectAll(&quot;rect&quot;)
-    .data(nodes)
+    .data&lt;EnergySankeyNode&gt;(nodes)
     .join(&quot;rect&quot;)
-    .attr(&quot;x&quot;, (d: any) =&gt; d.x0)
-    .attr(&quot;y&quot;, (d: any) =&gt; d.y0)
-    .attr(&quot;height&quot;, (d: any) =&gt; d.y1 - d.y0)
-    .attr(&quot;width&quot;, (d: any) =&gt; d.x1 - d.x0)
-    .attr(&quot;fill&quot;, color as any)
-    .style(&quot;opacity&quot;, defaultOpacity)
-    .style(&quot;cursor&quot;, &quot;pointer&quot;)
+    .attr(&quot;class&quot;, &quot;energy-node&quot;)
+    .attr(&quot;x&quot;, (d: EnergySankeyNode) =&gt; d.x0!)
+    .attr(&quot;y&quot;, (d: EnergySankeyNode) =&gt; d.y0!)
+    .attr(&quot;height&quot;, (d: EnergySankeyNode) =&gt; d.y1! - d.y0!)
+    .attr(&quot;width&quot;, (d: EnergySankeyNode) =&gt; d.x1! - d.x0!)
+    .attr(&quot;fill&quot;, color)
     .on(&quot;mouseenter&quot;, function () {
-      if (state.isInTransition) return
-      select(this).style(&quot;opacity&quot;, 1)
-    })
-    .on(&quot;mouseleave&quot;, function () {
-      if (state.isInTransition) return
-      select(this).style(&quot;opacity&quot;, defaultOpacity)
-    })
-    .on(&quot;click&quot;, (_e, d: any) =&gt; {
-      if (state.isInTransition) return
+      lastAnime()
 
-      if (state.selectedNode === d.name) {
-        linkPath.attr(&quot;display&quot;, null).style(&quot;opacity&quot;, defaultOpacity)
-        state.selectedNode = &quot;&quot;
-      } else {
-        state.isInTransition = true
+      const animationFirst = anime({
+        direction: &quot;alternate&quot;,
+        duration: 1000,
+        easing: &quot;easeInOutSine&quot;,
+        loop: false,
+        strokeDashoffset: [anime.setDashoffset, 0],
+        targets: this,
+      })
+      const animationSecond = anime({
+        direction: &quot;alternate&quot;,
+        duration: 2000,
+        easing: &quot;spring(1, 80, 10, 0)&quot;,
+        loop: true,
+        opacity: [0.6, 1, 0.6],
+        targets: this,
+      })
 
-        if (state.selectedNode) {
-          linkPath
-            .style(&quot;opacity&quot;, (l: any) =&gt;
-              [l.source.name, l.target.name].includes(state.selectedNode)
-                ? defaultOpacity
-                : 0
-            )
-            .attr(&quot;display&quot;, null)
-        }
-
-        requestAnimationFrame(() =&gt; {
-          linkPath
-            .transition()
-            .duration(500)
-            .style(&quot;opacity&quot;, (l: any) =&gt;
-              [l.source.name, l.target.name].includes(d.name)
-                ? defaultOpacity
-                : 0
-            )
-            .on(&quot;end&quot;, () =&gt; {
-              state.isInTransition = false
-              linkPath.attr(&quot;display&quot;, (l: any) =&gt;
-                [l.source.name, l.target.name].includes(d.name) ? null : &quot;none&quot;
-              )
-            })
-
-          state.selectedNode = d.name
-        })
+      lastAnime = () =&gt; {
+        animationFirst.seek(animationFirst.duration)
+        animationSecond.seek(0)
+        anime.remove(this)
+        lastAnime = () =&gt; {}
       }
     })
-
-  node
-    .append(&quot;title&quot;)
-    .text((d: any) =&gt;
-      [d.category === d.name ? &quot;&quot; : d.category, d.name, format(d.value)]
-        .filter(Boolean)
-        .join(&quot;\n&quot;)
+    .on(&quot;mouseleave&quot;, () =&gt; {
+      lastAnime()
+    })
+    .on(&quot;click&quot;, (_e: unknown, d: EnergySankeyNode) =&gt;
+      nodeClickHandler({
+        d,
+        linkPath,
+        onNodeClick,
+        state,
+      })
     )
+
+  node.attr(&quot;title&quot;, (d) =&gt;
+    [d.category === d.name ? &quot;&quot; : d.category, d.name, format(d.value!)]
+      .filter(Boolean)
+      .join(&quot;\n&quot;)
+  )
+
+  $(&quot;.energy-node&quot;).tooltip({
+    track: true,
+  })
 
   const link = svg
     .append(&quot;g&quot;)
     .attr(&quot;fill&quot;, &quot;none&quot;)
-    .attr(&quot;stroke-opacity&quot;, 0.5)
     .selectAll(&quot;g&quot;)
-    .data(links as any)
+    .data&lt;EnergySankeyLink&gt;(links)
     .join(&quot;g&quot;)
-    .style(&quot;mix-blend-mode&quot;, &quot;multiply&quot;)
+    .attr(&quot;class&quot;, &quot;energy-link-g&quot;)
+
+  const linkPathGenerator = sankeyLinkHorizontal()
+  const addedGradients: AddedGradients = {}
 
   const linkPath = link
     .append(&quot;path&quot;)
-    .attr(&quot;d&quot;, sankeyLinkHorizontal() as any)
-    .style(&quot;opacity&quot;, defaultOpacity)
-    .attr(&quot;stroke&quot;, &quot;#aaa&quot;)
-    .attr(&quot;stroke-width&quot;, (d: any) =&gt; Math.max(1, d.width))
-    .on(&quot;mouseenter&quot;, function () {
-      if (state.isInTransition) return
-      select(this).style(&quot;opacity&quot;, 1)
+    .attr(&quot;d&quot;, (d: EnergySankeyLink) =&gt; {
+      const isHorizontalLine = d.y0 === d.y1
+      const result = linkPathGenerator(
+        // this is necessary for the default gradientUnits (objectBoundingBox) to work
+        // https://stackoverflow.com/a/34687362
+        isHorizontalLine
+          ? {
+              ...d,
+              y1: d.y1! + 0.1,
+            }
+          : d
+      )
+
+      return result
     })
-    .on(&quot;mouseleave&quot;, function () {
-      if (state.isInTransition) return
-      select(this).style(&quot;opacity&quot;, defaultOpacity)
+    .attr(&quot;stroke&quot;, (d) =&gt; {
+      const fromColor = color(d.source as EnergyDataNode)
+      const toColor = color(d.target as EnergyDataNode)
+
+      const id = createGradients(svg, fromColor, toColor, addedGradients)
+
+      return `url(#${id})`
     })
+    .attr(&quot;class&quot;, &quot;energy-link&quot;)
+    .attr(&quot;stroke-width&quot;, (d) =&gt; Math.max(1, d.width!))
     .on(&quot;click&quot;, function () {
       if (state.isInTransition) return
 
       const currentLink = select(this)
 
       if (state.linkSelected) {
-        linkPath.attr(&quot;display&quot;, null)
+        linkPath.attr(&quot;display&quot;, null).style(&quot;opacity&quot;, null)
       } else {
         linkPath.attr(&quot;display&quot;, &quot;none&quot;)
         currentLink.attr(&quot;display&quot;, null)
@@ -198,36 +244,170 @@ const renderChart = ({
       state.linkSelected = !state.linkSelected
     })
 
-  link
-    .append(&quot;title&quot;)
-    .text((d: any) =&gt; `${d.source.name} → ${d.target.name}\n${format(d.value)}`)
+  link.attr(
+    &quot;title&quot;,
+    (d) =&gt;
+      `${(d.source as EnergySankeyNode).name} → ${
+        (d.target as EnergySankeyNode).name
+      }\n${format(d.value)}`
+  )
+
+  $(&quot;.energy-link&quot;).tooltip({
+    track: true,
+  })
+
+  nodeG.each(function (this) {
+    const parentEl = this.parentNode as HTMLElement
+
+    parentEl.appendChild(this)
+  })
 
   svg
     .append(&quot;g&quot;)
     .attr(&quot;font-family&quot;, &quot;sans-serif&quot;)
-    .attr(&quot;font-size&quot;, 10)
     .selectAll(&quot;text&quot;)
     .data(nodes)
     .join(&quot;text&quot;)
-    .attr(&quot;x&quot;, (d: any) =&gt; (d.x0 &lt; width / 2 ? d.x1 + 6 : d.x0 - 6))
-    .attr(&quot;y&quot;, (d: any) =&gt; (d.y1 + d.y0) / 2)
+    .attr(&quot;x&quot;, (d) =&gt; (d.x0! &lt; width / 2 ? d.x1! + 6 : d.x0! - 6))
+    .attr(&quot;y&quot;, (d) =&gt; (d.y1! + d.y0!) / 2)
     .attr(&quot;dy&quot;, &quot;0.35em&quot;)
-    .attr(&quot;text-anchor&quot;, (d: any) =&gt; (d.x0 &lt; width / 2 ? &quot;start&quot; : &quot;end&quot;))
-    .text((d: any) =&gt; d.name)
+    .style(&quot;font-size&quot;, &quot;16px&quot;)
+    .attr(&quot;text-anchor&quot;, (d) =&gt; (d.x0! &lt; width / 2 ? &quot;start&quot; : &quot;end&quot;))
+    .text((d) =&gt; d.name)
+}
+
+const nodeClickHandler = ({
+  d,
+  linkPath,
+  onNodeClick,
+  state,
+}: {
+  d: EnergySankeyNode
+  linkPath: Selection&lt;SVGPathElement, EnergySankeyLink, SVGGElement, unknown&gt;
+  onNodeClick?: OnNodeClick
+  state: State
+}) =&gt; {
+  if (state.isInTransition) return
+
+  if (onNodeClick) {
+    const shouldPreventDefault = onNodeClick(d)
+
+    if (shouldPreventDefault) return
+  }
+
+  if (state.selectedNode === d.name) {
+    linkPath.attr(&quot;display&quot;, null).style(&quot;opacity&quot;, null)
+    state.selectedNode = &quot;&quot;
+  } else {
+    state.isInTransition = true
+
+    if (state.selectedNode) {
+      linkPath
+        .style(&quot;opacity&quot;, (l) =&gt;
+          [
+            (l.source as EnergySankeyNode).name,
+            (l.target as EnergySankeyNode).name,
+          ].includes(state.selectedNode)
+            ? null
+            : 0
+        )
+        .attr(&quot;display&quot;, null)
+    }
+
+    requestAnimationFrame(() =&gt; {
+      linkPath
+        .transition()
+        .duration(500)
+        .style(&quot;opacity&quot;, (l) =&gt;
+          [
+            (l.source as EnergySankeyNode).name,
+            (l.target as EnergySankeyNode).name,
+          ].includes(d.name)
+            ? null
+            : 0
+        )
+        .on(&quot;end&quot;, () =&gt; {
+          state.isInTransition = false
+          linkPath.attr(&quot;display&quot;, (l) =&gt;
+            [
+              (l.source as EnergySankeyNode).name,
+              (l.target as EnergySankeyNode).name,
+            ].includes(d.name)
+              ? null
+              : &quot;none&quot;
+          )
+        })
+
+      state.selectedNode = d.name
+    })
+  }
+}
+
+const createGradients = (
+  svg: Selection&lt;SVGElement, unknown, HTMLElement, unknown&gt;,
+  fromColor: string,
+  toColor: string,
+  addedGradients: AddedGradients
+): string =&gt; {
+  const id = `link-gradient-${fromColor}-${toColor}`.replace(/#/g, &quot;&quot;)
+
+  if (addedGradients[id]) {
+    return id
+  }
+
+  const duration = getRandomInt(1, 3)
+  const colorScale = chroma.scale([fromColor, toColor])
+
+  const text = `
+&lt;linearGradient id=&quot;${id}&quot;&gt;
+  &lt;stop offset=&quot;0%&quot; stop-color=&quot;${fromColor}&quot; /&gt;
+  &lt;stop offset=&quot;50%&quot; stop-color=&quot;${colorScale(0.5)}&quot;&gt;
+    &lt;animate attributeName=&quot;offset&quot;
+      values=&quot;${[5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2, 3, 4]
+        .map((n) =&gt; `.${n}`)
+        .join(&quot;;&quot;)}&quot;
+      dur=&quot;${duration}s&quot;
+      repeatCount=&quot;indefinite&quot; /&gt;
+  &lt;/stop&gt;
+  &lt;stop offset=&quot;100%&quot; stop-color=&quot;${toColor}&quot; /&gt;
+&lt;/linearGradient&gt;
+`.trim()
+
+  svg.append(&quot;defs&quot;).html(text)
+
+  addedGradients[id] = true
+
+  return id
 }
 
 const main = async () =&gt; {
+  hotkeys(&quot;control&quot;, () =&gt; {})
+
   const data = await fetchData()
 
   renderChart({
     data,
+    onNodeClick: (node) =&gt; {
+      if (!hotkeys.isPressed(&quot;control&quot;)) {
+        return false
+      }
+
+      window.open(
+        `https://www.google.com/search?${qs.stringify({
+          ie: &quot;UTF-8&quot;,
+          q: `Energy ${node.name}`,
+        })}`
+      )
+
+      return true
+    },
     rootElId: &quot;chart&quot;,
   })
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:50,&quot;character&quot;:12,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:12,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:31,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:33,&quot;text&quot;:&quot;category&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:58,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:60,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:67,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:55,&quot;character&quot;:69,&quot;text&quot;:&quot;category&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:13,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:24,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:26,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:74,&quot;character&quot;:10,&quot;text&quot;:&quot;nodes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:74,&quot;character&quot;:17,&quot;text&quot;:&quot;links&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:27,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:56,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:76,&quot;character&quot;:27,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:76,&quot;character&quot;:56,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:85,&quot;character&quot;:16,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:85,&quot;character&quot;:27,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:85,&quot;character&quot;:29,&quot;text&quot;:&quot;x0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:16,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:27,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:29,&quot;text&quot;:&quot;y0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:21,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:32,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:34,&quot;text&quot;:&quot;y1&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:39,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:41,&quot;text&quot;:&quot;y0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:20,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:31,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:33,&quot;text&quot;:&quot;x1&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:38,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:40,&quot;text&quot;:&quot;x0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:18,&quot;text&quot;:&quot;_e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:22,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:103,&quot;character&quot;:33,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:103,&quot;character&quot;:35,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:111,&quot;character&quot;:31,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:112,&quot;character&quot;:15,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:112,&quot;character&quot;:17,&quot;text&quot;:&quot;source&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:112,&quot;character&quot;:24,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:112,&quot;character&quot;:30,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:112,&quot;character&quot;:32,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:112,&quot;character&quot;:39,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:123,&quot;character&quot;:31,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:15,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:17,&quot;text&quot;:&quot;source&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:24,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:30,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:32,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:39,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:54,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:56,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:130,&quot;character&quot;:40,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:17,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:19,&quot;text&quot;:&quot;source&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:26,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:32,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:34,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:41,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:56,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:58,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:31,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:33,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:142,&quot;character&quot;:11,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:7,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:9,&quot;text&quot;:&quot;category&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:22,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:24,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:36,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:38,&quot;text&quot;:&quot;category&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:48,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:50,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:63,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:65,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:10,&quot;text&quot;:&quot;links&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:162,&quot;character&quot;:27,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:162,&quot;character&quot;:50,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:162,&quot;character&quot;:52,&quot;text&quot;:&quot;width&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:189,&quot;character&quot;:11,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:189,&quot;character&quot;:25,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:189,&quot;character&quot;:27,&quot;text&quot;:&quot;source&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:189,&quot;character&quot;:34,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:189,&quot;character&quot;:44,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:189,&quot;character&quot;:46,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:189,&quot;character&quot;:53,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:189,&quot;character&quot;:69,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:189,&quot;character&quot;:71,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:16,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:28,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:30,&quot;text&quot;:&quot;x0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:47,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:49,&quot;text&quot;:&quot;x1&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:58,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:198,&quot;character&quot;:60,&quot;text&quot;:&quot;x0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:16,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:28,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:30,&quot;text&quot;:&quot;y1&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:35,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:37,&quot;text&quot;:&quot;y0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:201,&quot;character&quot;:26,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:201,&quot;character&quot;:38,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:201,&quot;character&quot;:40,&quot;text&quot;:&quot;x0&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:202,&quot;character&quot;:11,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:202,&quot;character&quot;:22,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/energy-sankey/energy-sankey.ts&quot;,&quot;line&quot;:202,&quot;character&quot;:24,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 22 Jul 2021 23:19:22 GMT</p>
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 24 Jul 2021 14:34:37 GMT</p>
     </body>
   </html>
   

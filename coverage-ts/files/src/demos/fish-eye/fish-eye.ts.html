@@ -11,7 +11,23 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye.ts</td><td class="">99.04%</td><td class="">90%</td><td class="">522</td><td class="">517</td><td class="">5</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye.ts</td><td class="">99.03%</td><td class="">90%</td><td class="">518</td><td class="">513</td><td class="">5</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Axis,
+  ScaleOrdinal,
+  ScalePower,
+  Selection,
+  axisBottom,
+  axisLeft,
+  format,
+  json,
+  pointer as pointerD3,
+  scaleLinear,
+  scaleLog,
+  scaleOrdinal,
+  scaleSqrt,
+  schemePastel2,
+  select,
+} from &quot;d3&quot;
 
 import d3Fisheye, { FishEyeScale } from &quot;@/demos/_utils/fish-eye&quot;
 
@@ -27,7 +43,7 @@ type DataItem = {
 type Data = DataItem[]
 
 const fetchData = async (): Promise&lt;Data | undefined&gt; =&gt;
-  d3.json(`${ROOT_PATH}data/d3js/fish-eye/data.json`)
+  json(`${ROOT_PATH}data/d3js/fish-eye/data.json`)
 
 const humanizeNumber = (initialN: number): string =&gt; {
   let n = initialN.toString()
@@ -65,16 +81,16 @@ class FishEyeChart {
 
   private width!: number
   private dom!: {
-    svg: d3.Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
-    dot?: d3.Selection&lt;SVGCircleElement, DataItem, SVGGElement, unknown&gt;
-    pointer?: d3.Selection&lt;SVGTextElement, unknown, HTMLElement, unknown&gt;
-    xAxis?: d3.Axis&lt;DataItem[&quot;income&quot;]&gt;
-    yAxis?: d3.Axis&lt;DataItem[&quot;lifeExpectancy&quot;]&gt;
+    svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+    dot?: Selection&lt;SVGCircleElement, DataItem, SVGGElement, unknown&gt;
+    pointer?: Selection&lt;SVGTextElement, unknown, HTMLElement, unknown&gt;
+    xAxis?: Axis&lt;DataItem[&quot;income&quot;]&gt;
+    yAxis?: Axis&lt;DataItem[&quot;lifeExpectancy&quot;]&gt;
   }
   private vars!: {
-    colorScale: d3.ScaleOrdinal&lt;string, string, never&gt;
+    colorScale: ScaleOrdinal&lt;string, string, never&gt;
     focused: boolean
-    radiusScale: d3.ScalePower&lt;number, number, never&gt;
+    radiusScale: ScalePower&lt;number, number, never&gt;
     xScale: FishEyeScale
     yScale: FishEyeScale
   }
@@ -112,8 +128,7 @@ class FishEyeChart {
 
   private setDom() {
     this.dom = {
-      svg: d3
-        .select(`#${this.rootElId}`)
+      svg: select(`#${this.rootElId}`)
         .append(&quot;svg&quot;)
         .attr(&quot;width&quot;, this.width + margin.left + margin.right)
         .attr(&quot;height&quot;, height + margin.top + margin.bottom)
@@ -136,8 +151,7 @@ class FishEyeChart {
   }
 
   private setVars() {
-    const colorScale = d3
-      .scaleOrdinal&lt;string&gt;()
+    const colorScale = scaleOrdinal&lt;string&gt;()
       .domain([
         &quot;Sub-Saharan Africa&quot;,
         &quot;South Asia&quot;,
@@ -146,15 +160,15 @@ class FishEyeChart {
         &quot;Europe &amp; Central Asia&quot;,
         &quot;East Asia &amp; Pacific&quot;,
       ])
-      .range(d3.schemePastel2)
+      .range(schemePastel2)
 
-    const radiusScale = d3.scaleSqrt().domain([0, 5e8]).range([5, 60])
+    const radiusScale = scaleSqrt().domain([0, 5e8]).range([5, 60])
     const xScale = d3Fisheye
-      .scale(d3.scaleLog)
+      .scale(scaleLog)
       .domain([300, 1e5])
       .range([0, this.width])
     const yScale = d3Fisheye
-      .scale(d3.scaleLinear)
+      .scale(scaleLinear)
       .domain([20, 90])
       .range([height, 0])
 
@@ -168,13 +182,12 @@ class FishEyeChart {
   }
 
   private setAxis() {
-    this.dom.xAxis = d3
-      .axisBottom&lt;DataItem[&quot;population&quot;]&gt;(this.vars.xScale)
-      .tickFormat(d3.format(&quot;,d&quot;))
+    this.dom.xAxis = axisBottom&lt;DataItem[&quot;population&quot;]&gt;(this.vars.xScale)
+      .tickFormat(format(&quot;,d&quot;))
       .tickSize(-height)
-    this.dom.yAxis = d3
-      .axisLeft&lt;DataItem[&quot;income&quot;]&gt;(this.vars.yScale)
-      .tickSize(-this.width)
+    this.dom.yAxis = axisLeft&lt;DataItem[&quot;income&quot;]&gt;(this.vars.yScale).tickSize(
+      -this.width
+    )
     this.dom.svg
       .append(&quot;g&quot;)
       .attr(&quot;class&quot;, &quot;x axis&quot;)
@@ -284,7 +297,7 @@ class FishEyeChart {
   }
 
   private zoom(ev: Event) {
-    const mouse = d3.pointer(ev)
+    const mouse = pointerD3(ev)
 
     this.vars.xScale.distortion(2.5).focus(mouse[0])
     this.vars.yScale.distortion(2.5).focus(mouse[1])
@@ -314,7 +327,7 @@ class FishEyeChart {
       this.vars.focused = !this.vars.focused
 
       if (this.vars.focused) {
-        const pointer = d3.pointer(this)
+        const pointer = pointerD3(this)
 
         this.dom
           .pointer!.attr(&quot;x&quot;, pointer[0])
@@ -343,8 +356,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:138,&quot;character&quot;:10,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:141,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:142,&quot;character&quot;:10,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:145,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:291,&quot;character&quot;:41,&quot;text&quot;:&quot;ev&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 22 Jul 2021 23:19:22 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:10,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:10,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:159,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:304,&quot;character&quot;:41,&quot;text&quot;:&quot;ev&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 24 Jul 2021 14:34:37 GMT</p>
     </body>
   </html>
   
