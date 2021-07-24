@@ -1,4 +1,20 @@
-import * as d3 from "d3"
+import {
+  Axis,
+  ScaleOrdinal,
+  ScalePower,
+  Selection,
+  axisBottom,
+  axisLeft,
+  format,
+  json,
+  pointer as pointerD3,
+  scaleLinear,
+  scaleLog,
+  scaleOrdinal,
+  scaleSqrt,
+  schemePastel2,
+  select,
+} from "d3"
 
 import d3Fisheye, { FishEyeScale } from "@/demos/_utils/fish-eye"
 
@@ -14,7 +30,7 @@ type DataItem = {
 type Data = DataItem[]
 
 const fetchData = async (): Promise<Data | undefined> =>
-  d3.json(`${ROOT_PATH}data/d3js/fish-eye/data.json`)
+  json(`${ROOT_PATH}data/d3js/fish-eye/data.json`)
 
 const humanizeNumber = (initialN: number): string => {
   let n = initialN.toString()
@@ -52,16 +68,16 @@ class FishEyeChart {
 
   private width!: number
   private dom!: {
-    svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>
-    dot?: d3.Selection<SVGCircleElement, DataItem, SVGGElement, unknown>
-    pointer?: d3.Selection<SVGTextElement, unknown, HTMLElement, unknown>
-    xAxis?: d3.Axis<DataItem["income"]>
-    yAxis?: d3.Axis<DataItem["lifeExpectancy"]>
+    svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
+    dot?: Selection<SVGCircleElement, DataItem, SVGGElement, unknown>
+    pointer?: Selection<SVGTextElement, unknown, HTMLElement, unknown>
+    xAxis?: Axis<DataItem["income"]>
+    yAxis?: Axis<DataItem["lifeExpectancy"]>
   }
   private vars!: {
-    colorScale: d3.ScaleOrdinal<string, string, never>
+    colorScale: ScaleOrdinal<string, string, never>
     focused: boolean
-    radiusScale: d3.ScalePower<number, number, never>
+    radiusScale: ScalePower<number, number, never>
     xScale: FishEyeScale
     yScale: FishEyeScale
   }
@@ -99,8 +115,7 @@ class FishEyeChart {
 
   private setDom() {
     this.dom = {
-      svg: d3
-        .select(`#${this.rootElId}`)
+      svg: select(`#${this.rootElId}`)
         .append("svg")
         .attr("width", this.width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -123,8 +138,7 @@ class FishEyeChart {
   }
 
   private setVars() {
-    const colorScale = d3
-      .scaleOrdinal<string>()
+    const colorScale = scaleOrdinal<string>()
       .domain([
         "Sub-Saharan Africa",
         "South Asia",
@@ -133,15 +147,15 @@ class FishEyeChart {
         "Europe & Central Asia",
         "East Asia & Pacific",
       ])
-      .range(d3.schemePastel2)
+      .range(schemePastel2)
 
-    const radiusScale = d3.scaleSqrt().domain([0, 5e8]).range([5, 60])
+    const radiusScale = scaleSqrt().domain([0, 5e8]).range([5, 60])
     const xScale = d3Fisheye
-      .scale(d3.scaleLog)
+      .scale(scaleLog)
       .domain([300, 1e5])
       .range([0, this.width])
     const yScale = d3Fisheye
-      .scale(d3.scaleLinear)
+      .scale(scaleLinear)
       .domain([20, 90])
       .range([height, 0])
 
@@ -155,13 +169,12 @@ class FishEyeChart {
   }
 
   private setAxis() {
-    this.dom.xAxis = d3
-      .axisBottom<DataItem["population"]>(this.vars.xScale)
-      .tickFormat(d3.format(",d"))
+    this.dom.xAxis = axisBottom<DataItem["population"]>(this.vars.xScale)
+      .tickFormat(format(",d"))
       .tickSize(-height)
-    this.dom.yAxis = d3
-      .axisLeft<DataItem["income"]>(this.vars.yScale)
-      .tickSize(-this.width)
+    this.dom.yAxis = axisLeft<DataItem["income"]>(this.vars.yScale).tickSize(
+      -this.width
+    )
     this.dom.svg
       .append("g")
       .attr("class", "x axis")
@@ -271,7 +284,7 @@ class FishEyeChart {
   }
 
   private zoom(ev: Event) {
-    const mouse = d3.pointer(ev)
+    const mouse = pointerD3(ev)
 
     this.vars.xScale.distortion(2.5).focus(mouse[0])
     this.vars.yScale.distortion(2.5).focus(mouse[1])
@@ -301,7 +314,7 @@ class FishEyeChart {
       this.vars.focused = !this.vars.focused
 
       if (this.vars.focused) {
-        const pointer = d3.pointer(this)
+        const pointer = pointerD3(this)
 
         this.dom
           .pointer!.attr("x", pointer[0])

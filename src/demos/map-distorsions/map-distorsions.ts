@@ -1,4 +1,5 @@
 import {
+  Selection,
   axisLeft,
   extent,
   line as lineD3,
@@ -272,7 +273,7 @@ const colorsScale = <P extends number = any>(domain: [number, number]) => {
 
 const filterColor = (
   id: string,
-  svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
   deviation: number,
   slope: number
 ) => {

@@ -1,5 +1,13 @@
 import { DemoBase } from "@/common"
 
+import {
+  animeItems,
+  chromaItems,
+  gradientUnitsSVGAttribute,
+  hotkeysItems,
+  mixBlendModeCSS,
+} from "./commonDocs"
+
 const getCommonItems = (packageName: string): DemoBase["docs"] => [
   [
     `${packageName} API reference`,
@@ -151,13 +159,24 @@ const d3js: D3JS = {
   },
   "energy-sankey": {
     data: [],
-    docs: [...d3SankeyItems] as DemoBase["docs"],
+    docs: [
+      ...d3SankeyItems,
+      mixBlendModeCSS,
+      gradientUnitsSVGAttribute,
+      ...chromaItems,
+      ...animeItems,
+      ...hotkeysItems,
+    ] as DemoBase["docs"],
     isCompleted: false,
     name: "Energy Sankey",
-    notes: ["Added interaction on click"],
+    notes: [
+      "Added interaction on click",
+      "You can click a rect while pressing control to Google Search",
+    ],
     sources: [
       "https://observablehq.com/@d3/sankey-diagram",
       "https://www.gov.uk/guidance/2050-pathways-analysis",
+      "https://designmodo.com/animate-svg-gradients/",
     ],
     summary: [],
   },

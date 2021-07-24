@@ -1,4 +1,5 @@
 import {
+  Selection,
   area as areaD3,
   axisBottom,
   axisLeft,
@@ -203,7 +204,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
 
 const filterBlackOpacity = (
   id: string,
-  svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
   deviation: number,
   slope: number
 ) => {

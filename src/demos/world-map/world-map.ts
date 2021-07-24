@@ -1,4 +1,5 @@
 import {
+  GeoPermissibleObjects,
   geoMercator,
   geoPath,
   interpolateRdYlGn,
@@ -10,7 +11,7 @@ import { feature } from "topojson-client"
 
 type Data = {
   id: number
-} & d3.GeoPermissibleObjects
+} & GeoPermissibleObjects
 
 const fetchData = () => json(`${ROOT_PATH}data/d3js/world-map/world.json`)
 

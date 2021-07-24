@@ -1,11 +1,24 @@
 import {
-  json,
-  select,
+  Selection,
   format as formatD3,
+  json,
   scaleOrdinal,
   schemePastel2,
+  select,
 } from "d3"
-import { sankey as sankeyD3, sankeyLinkHorizontal, sankeyLeft } from "d3-sankey"
+import {
+  SankeyLink,
+  SankeyNode,
+  sankey as sankeyD3,
+  sankeyLeft,
+  sankeyLinkHorizontal,
+} from "d3-sankey"
+import qs from "query-string"
+import chroma from "chroma-js"
+import anime from "animejs"
+import hotkeys from "hotkeys-js"
+
+import "./energy-sankey.styl"
 
 type EnergyDataLink = {
   source: string
@@ -24,20 +37,44 @@ type EnergyData = {
   units: string
 }
 
+type EnergySankeyNode = SankeyNode<EnergyDataNode, EnergyDataLink>
+type EnergySankeyLink = SankeyLink<EnergyDataNode, EnergyDataLink>
+
+type State = {
+  isInTransition: boolean
+  linkSelected: boolean
+  selectedNode: string
+}
+
+type AddedGradients = { [k: string]: true }
+
+type ShouldPreventDefault = boolean
+type OnNodeClick = (node: EnergySankeyNode) => ShouldPreventDefault
+
+const getRandomInt = (min: number, max: number): number => {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 const fetchData = () =>
   json(`${ROOT_PATH}data/d3js/energy-sankey/data.json`) as Promise<EnergyData>
 
-const height = 1000
-const defaultOpacity = 0.7
+const sankeyHeight = 1000
+const legendHeight = 0
+const svgHeight = sankeyHeight + legendHeight
 
 const renderChart = ({
-  rootElId,
   data,
+  onNodeClick,
+  rootElId,
 }: {
-  rootElId: string
   data: EnergyData
+  onNodeClick?: OnNodeClick
+  rootElId: string
 }) => {
-  const state = {
+  const state: State = {
     isInTransition: false,
     linkSelected: false,
     selectedNode: "",
@@ -48,134 +85,143 @@ const renderChart = ({
   const format = (() => {
     const formatFn = formatD3(",.0f")
 
-    return (d: any) => `${formatFn(d)} ${data.units}`
+    return (d: number) => `${formatFn(d)} ${data.units}`
   })()
   const color = (() => {
     const colorFn = scaleOrdinal(schemePastel2)
 
-    return (d: any) => colorFn(d.category === undefined ? d.name : d.category)
+    return (d: EnergyDataNode) => colorFn(d.name)
   })()
 
   const { width } = el.getBoundingClientRect()
   const svg = select(`#${rootElId}`)
     .append<SVGElement>("svg")
-    .attr("height", height)
+    .attr("height", svgHeight)
     .attr("width", width)
 
-  const sankeyVal = sankeyD3()
-    .nodeId((d: any) => d.name)
+  const sankeyVal = sankeyD3<EnergyDataNode, EnergyDataLink>()
+    .nodeId((d) => d.name)
     .nodeAlign(sankeyLeft)
     .nodeWidth(15)
     .nodePadding(10)
     .extent([
       [1, 5],
-      [width - 1, height - 5],
+      [width - 1, sankeyHeight - 5],
     ])
 
   const { nodes, links } = sankeyVal({
-    links: data.links.map((d: any) => Object.assign({}, d)),
-    nodes: data.nodes.map((d: any) => Object.assign({}, d)),
-  }) as any
+    links: data.links.map((d: EnergyDataLink) => Object.assign({}, d)),
+    nodes: data.nodes.map((d: EnergyDataNode) => Object.assign({}, d)),
+  })
 
-  const node = svg
-    .append("g")
-    .attr("stroke", "#000")
+  const nodeG = svg.append("g").attr("stroke", "#000")
+
+  let lastAnime = () => {}
+
+  const node = nodeG
     .selectAll("rect")
-    .data(nodes)
+    .data<EnergySankeyNode>(nodes)
     .join("rect")
-    .attr("x", (d: any) => d.x0)
-    .attr("y", (d: any) => d.y0)
-    .attr("height", (d: any) => d.y1 - d.y0)
-    .attr("width", (d: any) => d.x1 - d.x0)
-    .attr("fill", color as any)
-    .style("opacity", defaultOpacity)
-    .style("cursor", "pointer")
+    .attr("class", "energy-node")
+    .attr("x", (d: EnergySankeyNode) => d.x0!)
+    .attr("y", (d: EnergySankeyNode) => d.y0!)
+    .attr("height", (d: EnergySankeyNode) => d.y1! - d.y0!)
+    .attr("width", (d: EnergySankeyNode) => d.x1! - d.x0!)
+    .attr("fill", color)
     .on("mouseenter", function () {
-      if (state.isInTransition) return
-      select(this).style("opacity", 1)
-    })
-    .on("mouseleave", function () {
-      if (state.isInTransition) return
-      select(this).style("opacity", defaultOpacity)
-    })
-    .on("click", (_e, d: any) => {
-      if (state.isInTransition) return
+      lastAnime()
 
-      if (state.selectedNode === d.name) {
-        linkPath.attr("display", null).style("opacity", defaultOpacity)
-        state.selectedNode = ""
-      } else {
-        state.isInTransition = true
+      const animationFirst = anime({
+        direction: "alternate",
+        duration: 1000,
+        easing: "easeInOutSine",
+        loop: false,
+        strokeDashoffset: [anime.setDashoffset, 0],
+        targets: this,
+      })
+      const animationSecond = anime({
+        direction: "alternate",
+        duration: 2000,
+        easing: "spring(1, 80, 10, 0)",
+        loop: true,
+        opacity: [0.6, 1, 0.6],
+        targets: this,
+      })
 
-        if (state.selectedNode) {
-          linkPath
-            .style("opacity", (l: any) =>
-              [l.source.name, l.target.name].includes(state.selectedNode)
-                ? defaultOpacity
-                : 0
-            )
-            .attr("display", null)
-        }
-
-        requestAnimationFrame(() => {
-          linkPath
-            .transition()
-            .duration(500)
-            .style("opacity", (l: any) =>
-              [l.source.name, l.target.name].includes(d.name)
-                ? defaultOpacity
-                : 0
-            )
-            .on("end", () => {
-              state.isInTransition = false
-              linkPath.attr("display", (l: any) =>
-                [l.source.name, l.target.name].includes(d.name) ? null : "none"
-              )
-            })
-
-          state.selectedNode = d.name
-        })
+      lastAnime = () => {
+        animationFirst.seek(animationFirst.duration)
+        animationSecond.seek(0)
+        anime.remove(this)
+        lastAnime = () => {}
       }
     })
-
-  node
-    .append("title")
-    .text((d: any) =>
-      [d.category === d.name ? "" : d.category, d.name, format(d.value)]
-        .filter(Boolean)
-        .join("\n")
+    .on("mouseleave", () => {
+      lastAnime()
+    })
+    .on("click", (_e: unknown, d: EnergySankeyNode) =>
+      nodeClickHandler({
+        d,
+        linkPath,
+        onNodeClick,
+        state,
+      })
     )
+
+  node.attr("title", (d) =>
+    [d.category === d.name ? "" : d.category, d.name, format(d.value!)]
+      .filter(Boolean)
+      .join("\n")
+  )
+
+  $(".energy-node").tooltip({
+    track: true,
+  })
 
   const link = svg
     .append("g")
     .attr("fill", "none")
-    .attr("stroke-opacity", 0.5)
     .selectAll("g")
-    .data(links as any)
+    .data<EnergySankeyLink>(links)
     .join("g")
-    .style("mix-blend-mode", "multiply")
+    .attr("class", "energy-link-g")
+
+  const linkPathGenerator = sankeyLinkHorizontal()
+  const addedGradients: AddedGradients = {}
 
   const linkPath = link
     .append("path")
-    .attr("d", sankeyLinkHorizontal() as any)
-    .style("opacity", defaultOpacity)
-    .attr("stroke", "#aaa")
-    .attr("stroke-width", (d: any) => Math.max(1, d.width))
-    .on("mouseenter", function () {
-      if (state.isInTransition) return
-      select(this).style("opacity", 1)
+    .attr("d", (d: EnergySankeyLink) => {
+      const isHorizontalLine = d.y0 === d.y1
+      const result = linkPathGenerator(
+        // this is necessary for the default gradientUnits (objectBoundingBox) to work
+        // https://stackoverflow.com/a/34687362
+        isHorizontalLine
+          ? {
+              ...d,
+              y1: d.y1! + 0.1,
+            }
+          : d
+      )
+
+      return result
     })
-    .on("mouseleave", function () {
-      if (state.isInTransition) return
-      select(this).style("opacity", defaultOpacity)
+    .attr("stroke", (d) => {
+      const fromColor = color(d.source as EnergyDataNode)
+      const toColor = color(d.target as EnergyDataNode)
+
+      const id = createGradients(svg, fromColor, toColor, addedGradients)
+
+      return `url(#${id})`
     })
+    .attr("class", "energy-link")
+    .attr("stroke-width", (d) => Math.max(1, d.width!))
     .on("click", function () {
       if (state.isInTransition) return
 
       const currentLink = select(this)
 
       if (state.linkSelected) {
-        linkPath.attr("display", null)
+        linkPath.attr("display", null).style("opacity", null)
       } else {
         linkPath.attr("display", "none")
         currentLink.attr("display", null)
@@ -185,29 +231,163 @@ const renderChart = ({
       state.linkSelected = !state.linkSelected
     })
 
-  link
-    .append("title")
-    .text((d: any) => `${d.source.name} → ${d.target.name}\n${format(d.value)}`)
+  link.attr(
+    "title",
+    (d) =>
+      `${(d.source as EnergySankeyNode).name} → ${
+        (d.target as EnergySankeyNode).name
+      }\n${format(d.value)}`
+  )
+
+  $(".energy-link").tooltip({
+    track: true,
+  })
+
+  nodeG.each(function (this) {
+    const parentEl = this.parentNode as HTMLElement
+
+    parentEl.appendChild(this)
+  })
 
   svg
     .append("g")
     .attr("font-family", "sans-serif")
-    .attr("font-size", 10)
     .selectAll("text")
     .data(nodes)
     .join("text")
-    .attr("x", (d: any) => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6))
-    .attr("y", (d: any) => (d.y1 + d.y0) / 2)
+    .attr("x", (d) => (d.x0! < width / 2 ? d.x1! + 6 : d.x0! - 6))
+    .attr("y", (d) => (d.y1! + d.y0!) / 2)
     .attr("dy", "0.35em")
-    .attr("text-anchor", (d: any) => (d.x0 < width / 2 ? "start" : "end"))
-    .text((d: any) => d.name)
+    .style("font-size", "16px")
+    .attr("text-anchor", (d) => (d.x0! < width / 2 ? "start" : "end"))
+    .text((d) => d.name)
+}
+
+const nodeClickHandler = ({
+  d,
+  linkPath,
+  onNodeClick,
+  state,
+}: {
+  d: EnergySankeyNode
+  linkPath: Selection<SVGPathElement, EnergySankeyLink, SVGGElement, unknown>
+  onNodeClick?: OnNodeClick
+  state: State
+}) => {
+  if (state.isInTransition) return
+
+  if (onNodeClick) {
+    const shouldPreventDefault = onNodeClick(d)
+
+    if (shouldPreventDefault) return
+  }
+
+  if (state.selectedNode === d.name) {
+    linkPath.attr("display", null).style("opacity", null)
+    state.selectedNode = ""
+  } else {
+    state.isInTransition = true
+
+    if (state.selectedNode) {
+      linkPath
+        .style("opacity", (l) =>
+          [
+            (l.source as EnergySankeyNode).name,
+            (l.target as EnergySankeyNode).name,
+          ].includes(state.selectedNode)
+            ? null
+            : 0
+        )
+        .attr("display", null)
+    }
+
+    requestAnimationFrame(() => {
+      linkPath
+        .transition()
+        .duration(500)
+        .style("opacity", (l) =>
+          [
+            (l.source as EnergySankeyNode).name,
+            (l.target as EnergySankeyNode).name,
+          ].includes(d.name)
+            ? null
+            : 0
+        )
+        .on("end", () => {
+          state.isInTransition = false
+          linkPath.attr("display", (l) =>
+            [
+              (l.source as EnergySankeyNode).name,
+              (l.target as EnergySankeyNode).name,
+            ].includes(d.name)
+              ? null
+              : "none"
+          )
+        })
+
+      state.selectedNode = d.name
+    })
+  }
+}
+
+const createGradients = (
+  svg: Selection<SVGElement, unknown, HTMLElement, unknown>,
+  fromColor: string,
+  toColor: string,
+  addedGradients: AddedGradients
+): string => {
+  const id = `link-gradient-${fromColor}-${toColor}`.replace(/#/g, "")
+
+  if (addedGradients[id]) {
+    return id
+  }
+
+  const duration = getRandomInt(1, 3)
+  const colorScale = chroma.scale([fromColor, toColor])
+
+  const text = `
+<linearGradient id="${id}">
+  <stop offset="0%" stop-color="${fromColor}" />
+  <stop offset="50%" stop-color="${colorScale(0.5)}">
+    <animate attributeName="offset"
+      values="${[5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2, 3, 4]
+        .map((n) => `.${n}`)
+        .join(";")}"
+      dur="${duration}s"
+      repeatCount="indefinite" />
+  </stop>
+  <stop offset="100%" stop-color="${toColor}" />
+</linearGradient>
+`.trim()
+
+  svg.append("defs").html(text)
+
+  addedGradients[id] = true
+
+  return id
 }
 
 const main = async () => {
+  hotkeys("control", () => {})
+
   const data = await fetchData()
 
   renderChart({
     data,
+    onNodeClick: (node) => {
+      if (!hotkeys.isPressed("control")) {
+        return false
+      }
+
+      window.open(
+        `https://www.google.com/search?${qs.stringify({
+          ie: "UTF-8",
+          q: `Energy ${node.name}`,
+        })}`
+      )
+
+      return true
+    },
     rootElId: "chart",
   })
 }

@@ -1,4 +1,5 @@
 import {
+  Selection,
   axisBottom,
   brushX,
   csv,
@@ -556,7 +557,7 @@ class Timeline {
 
 const filterBlackOpacity = (
   id: string,
-  svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
   deviation: number,
   slope: number
 ) => {

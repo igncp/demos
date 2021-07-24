@@ -1,4 +1,16 @@
-import { json, scaleLinear, range, select, geoMercator, geoPath } from "d3"
+import {
+  BaseType,
+  GeoPath,
+  GeoPermissibleObjects,
+  GeoProjection,
+  Selection,
+  geoMercator,
+  geoPath,
+  json,
+  range,
+  scaleLinear,
+  select,
+} from "d3"
 import { feature } from "topojson-client"
 import { GeoJsonProperties } from "geojson"
 import { Topology, Objects } from "topojson-specification"
@@ -14,14 +26,14 @@ const margin = {
 }
 const strokeWidth = 0.4
 
-type SVG = d3.Selection<d3.BaseType, unknown, HTMLElement, unknown>
+type SVG = Selection<BaseType, unknown, HTMLElement, unknown>
 
 type DataShape = {
   index: number
   properties: {
     NAME_2: string
   }
-} & d3.GeoPermissibleObjects
+} & GeoPermissibleObjects
 
 type Data = Topology<Objects<GeoJsonProperties>>
 
@@ -105,13 +117,13 @@ const renderChart = async ({
       .scale(2650)
       .translate([widthPeninsula / 2, height / 2])
 
-  const generatePath = function (projection: d3.GeoProjection) {
+  const generatePath = function (projection: GeoProjection) {
     return geoPath().projection(projection)
   }
 
   const generateAreas = function (
     svgComp: SVG,
-    path: d3.GeoPath<SVGPathElement, d3.GeoPermissibleObjects>,
+    path: GeoPath<SVGPathElement, GeoPermissibleObjects>,
     filterId: number
   ) {
     svgComp

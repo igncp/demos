@@ -1,4 +1,15 @@
-import * as d3 from "d3"
+import {
+  GeoProjection,
+  ScaleOrdinal,
+  Selection,
+  geoOrthographic,
+  polygonArea,
+  polygonHull,
+  scaleOrdinal,
+  schemePastel2,
+  select,
+  timer,
+} from "d3"
 
 import "./icosahedron.styl"
 
@@ -16,7 +27,7 @@ type FaceWithPolygon = Face & {
   polygon: Hull
 }
 
-type SvgSelection = d3.Selection<
+type SvgSelection = Selection<
   SVGSVGElement,
   FaceWithPolygon,
   HTMLElement,
@@ -27,7 +38,7 @@ class Icosahedron {
   private rootElId: string
 
   private config!: {
-    color: d3.ScaleOrdinal<string, string, never>
+    color: ScaleOrdinal<string, string, never>
     defaultVelocity: number[]
     height: number
     rotationFactor1: number
@@ -38,13 +49,13 @@ class Icosahedron {
   }
 
   private dom!: {
-    faces: null | d3.Selection<
+    faces: null | Selection<
       SVGPathElement,
       FaceWithPolygon,
       SVGSVGElement,
       unknown
     >
-    projection: d3.GeoProjection
+    projection: GeoProjection
     svg: SvgSelection
   }
 
@@ -96,9 +107,7 @@ class Icosahedron {
       .enter()
       .append("path")
       .each((d) => {
-        d.polygon = d3.polygonHull(
-          d.map(this.dom.projection) as Faces[0]
-        ) as Hull
+        d.polygon = polygonHull(d.map(this.dom.projection) as Faces[0]) as Hull
       })
       .style("fill", (_d: unknown, index: number) => {
         const color = this.config.color(`${index}`)
@@ -111,11 +120,11 @@ class Icosahedron {
   }
 
   public start() {
-    d3.timer(() => this.timer())
+    timer(() => this.timer())
   }
 
   private setConfig() {
-    const color = d3.scaleOrdinal(d3.schemePastel2)
+    const color = scaleOrdinal(schemePastel2)
 
     this.config = {
       color,
@@ -136,9 +145,8 @@ class Icosahedron {
 
     rootEl.classList.add("icosahedron-chart")
 
-    const projection = d3.geoOrthographic().scale(this.config.height / 2 - 10)
-    const svg = d3
-      .select(`#${this.rootElId}`)
+    const projection = geoOrthographic().scale(this.config.height / 2 - 10)
+    const svg = select(`#${this.rootElId}`)
       .append("svg")
       .attr("width", this.config.width)
       .attr("height", this.config.height) as SvgSelection
@@ -185,7 +193,7 @@ class Icosahedron {
         })
       )
       .style("display", (d) => {
-        const area = d3.polygonArea(d.polygon)
+        const area = polygonArea(d.polygon)
 
         if (area > 0) {
           return null

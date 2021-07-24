@@ -1,4 +1,6 @@
 import {
+  BaseType,
+  Selection,
   arc as arcD3,
   chord,
   csv,
@@ -102,7 +104,7 @@ const fetchData = async () => {
 }
 
 const addDropShadowFilter = function <A>(
-  charts: d3.Selection<d3.BaseType, A, d3.BaseType, unknown>,
+  charts: Selection<BaseType, A, BaseType, unknown>,
   name: string,
   deviation: number,
   slope: number
@@ -187,7 +189,7 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
   const rightChart = charts.filter((_d, i) => i === 1)
 
   const setLabel = function (
-    chart: d3.Selection<d3.BaseType, Debits, d3.BaseType, unknown>,
+    chart: Selection<BaseType, Debits, BaseType, unknown>,
     label: string
   ) {
     return chart

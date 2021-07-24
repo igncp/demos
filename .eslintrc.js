@@ -13,14 +13,19 @@ module.exports = {
   globals: {
     $: false,
     ROOT_PATH: false,
-    d3: false,
-    nv: false,
   },
   overrides: [
+    {
+      files: ["research/**/*.js"],
+      rules: {
+        "no-console": 0,
+      },
+    },
     {
       files: ["*.js"],
       rules: {
         "@typescript-eslint/explicit-member-accessibility": 0,
+        "@typescript-eslint/no-unused-vars": 0,
       },
     },
     {

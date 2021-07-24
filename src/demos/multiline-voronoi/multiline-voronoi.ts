@@ -1,4 +1,5 @@
 import {
+  Selection,
   axisBottom,
   axisLeft,
   extent,
@@ -119,12 +120,7 @@ const renderChart: RenderChart = ({ rootElId, cities, months }) => {
 
   const state: {
     clickToggle: boolean
-    voronoiGroup: null | d3.Selection<
-      SVGGElement,
-      unknown,
-      HTMLElement,
-      unknown
-    >
+    voronoiGroup: null | Selection<SVGGElement, unknown, HTMLElement, unknown>
   } = {
     clickToggle: false,
     voronoiGroup: null,
@@ -300,7 +296,7 @@ const renderChart: RenderChart = ({ rootElId, cities, months }) => {
 }
 
 const addFilter = (
-  svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
 ) => {
   const defs = svg.append("defs")
   const filter = defs.append("filter").attr("id", "drop-shadow")

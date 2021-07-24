@@ -1,6 +1,7 @@
 import {
   DefaultArcObject,
   PieArcDatum,
+  Selection,
   arc as arcD3,
   easeBack,
   interpolate,
@@ -68,8 +69,8 @@ type PieChartOpts = {
   rootElId: string
 }
 
-type ChartPaths = d3.Selection<SVGPathElement, SliceArc, SVGGElement, unknown>
-type ChartLabels = d3.Selection<SVGTextElement, SliceArc, SVGGElement, unknown>
+type ChartPaths = Selection<SVGPathElement, SliceArc, SVGGElement, unknown>
+type ChartLabels = Selection<SVGTextElement, SliceArc, SVGGElement, unknown>
 
 class PieChart {
   private rootElId: string

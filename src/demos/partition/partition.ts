@@ -277,7 +277,7 @@ const main = async () => {
 }
 
 const addFilter = (
-  svg: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
 ) => {
   const defs = svg.append("defs")
   const filter = defs.append("filter")
