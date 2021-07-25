@@ -13,7 +13,7 @@ import {
 } from "d3"
 import { feature } from "topojson-client"
 import { GeoJsonProperties } from "geojson"
-import { Topology, Objects } from "topojson-specification"
+import { Objects, Topology } from "topojson-specification"
 
 const fetchData = (): Promise<Data | undefined> =>
   json(`${ROOT_PATH}data/d3js/spain-map/data.json`)

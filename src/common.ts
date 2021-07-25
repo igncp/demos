@@ -18,6 +18,7 @@ export type DemoBase = {
 export type DemoInfo = DemoBase & {
   category: string
   files: {
+    cssModule: string
     demo: {
       content: string
       type: string

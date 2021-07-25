@@ -149,6 +149,12 @@ module.exports = {
     "react/prop-types": 0,
     "react/self-closing-comp": 2,
 
+    "sort-imports": [
+      "error",
+      {
+        ignoreDeclarationSort: true,
+      },
+    ],
     "sort-keys": 2,
   },
   settings: {

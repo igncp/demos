@@ -58,6 +58,7 @@ const getDemoInfo = (slugs: string[]) => {
     ...demoBase,
     category,
     files: {
+      cssModule: readIfExists(`src/demos/${demoName}/${demoName}.module.css`),
       demo,
       page,
       styl: readIfExists(`src/demos/${demoName}/${demoName}.styl`),

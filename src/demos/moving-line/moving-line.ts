@@ -1,4 +1,4 @@
-import { RaphaelPaper, RaphaelPath, RaphaelElement } from "raphael"
+import { RaphaelElement, RaphaelPaper, RaphaelPath } from "raphael"
 
 import Raphael from "@/demos/_utils/browserRaphael"
 

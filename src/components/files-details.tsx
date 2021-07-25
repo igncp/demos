@@ -3,9 +3,11 @@ import React from "react"
 // @ts-ignore
 import Prism from "prismjs"
 
+// https://prismjs.com/#supported-languages
 import "prismjs/components/prism-jsx"
 import "prismjs/components/prism-typescript"
 import "prismjs/components/prism-stylus"
+import "prismjs/components/prism-scss"
 
 import "prismjs/themes/prism-coy.css"
 
@@ -194,6 +196,26 @@ const FilesDetails = ({ demoInfo }: Props) => {
                     __html: Prism.highlight(
                       demoInfo.files.styl,
                       Prism.languages.stylus
+                    ),
+                  }}
+                />
+              </pre>
+            </li>
+          )}
+          {demoInfo.files.cssModule && (
+            <li>
+              <p>
+                {`${demoInfo.key}.module.css`}{" "}
+                <CodeInGH
+                  filePath={`demos/${demoInfo.key}/${demoInfo.key}.module.css`}
+                />
+              </p>
+              <pre>
+                <code
+                  dangerouslySetInnerHTML={{
+                    __html: Prism.highlight(
+                      demoInfo.files.cssModule,
+                      Prism.languages.scss
                     ),
                   }}
                 />
