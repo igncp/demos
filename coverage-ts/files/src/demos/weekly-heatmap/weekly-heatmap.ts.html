@@ -11,9 +11,9 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/weekly-heatmap/weekly-heatmap.ts</td><td class="">97.59%</td><td class="">90%</td><td class="">291</td><td class="">284</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { max as maxD3, scaleQuantile, select, tsv } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/weekly-heatmap/weekly-heatmap.ts</td><td class="">97.76%</td><td class="">90%</td><td class="">312</td><td class="">305</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { max as maxD3, scaleQuantile, select, tsv } from &quot;d3&quot;
 
-import &quot;./weekly-heatmap.styl&quot;
+import * as styles from &quot;./weekly-heatmap.module.css&quot;
 
 type TimeItem = {
   day: number
@@ -84,7 +84,7 @@ const renderChart = async ({
 }) =&gt; {
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add(&quot;weekly-heatmap-chart&quot;)
+  rootEl.classList.add(styles.weeklyHeatmapChart)
 
   const width =
     rootEl.getBoundingClientRect().width - margin.left - margin.right
@@ -116,11 +116,13 @@ const renderChart = async ({
     .append(&quot;text&quot;)
     .text((day) =&gt; day)
     .attr(&quot;class&quot;, (_d, dayIndex) =&gt; {
+      const classes = `dayLabel ${styles.mono} axis`
+
       if (dayIndex &gt;= workingDayMin &amp;&amp; dayIndex &lt;= workingDayMax) {
-        return &quot;dayLabel mono axis axis-workweek&quot;
+        return `${classes} ${styles.axisWorkweek}`
       }
 
-      return &quot;dayLabel mono axis&quot;
+      return classes
     })
     .attr(&quot;transform&quot;, `translate(${axisOffset},${cellSize / 1.5})`)
     .attr(&quot;x&quot;, 0)
@@ -134,11 +136,13 @@ const renderChart = async ({
     .append(&quot;text&quot;)
     .text((hourStr) =&gt; hourStr)
     .attr(&quot;class&quot;, (_d, hourIndex) =&gt; {
+      const classes = `timeLabel ${styles.mono} axis`
+
       if (hourIndex &gt;= workingHourMin &amp;&amp; hourIndex &lt;= workingHourMax) {
-        return &quot;timeLabel mono axis axis-worktime&quot;
+        return `${classes} ${styles.axisWorkweek}`
       }
 
-      return &quot;timeLabel mono axis&quot;
+      return classes
     })
     .attr(&quot;transform&quot;, `translate(${cellSize / 2}, ${axisOffset})`)
     .attr(&quot;x&quot;, (_d, hourIndex) =&gt; hourIndex * cellSize)
@@ -150,7 +154,7 @@ const renderChart = async ({
     .data(data)
     .enter()
     .append(&quot;rect&quot;)
-    .attr(&quot;class&quot;, &quot;hour bordered&quot;)
+    .attr(&quot;class&quot;, `hour ${styles.bordered}`)
     .attr(&quot;height&quot;, cellSize)
     .attr(&quot;rx&quot;, rectRadiusSize)
     .attr(&quot;ry&quot;, rectRadiusSize)
@@ -185,7 +189,7 @@ const renderChart = async ({
 
   legend
     .append(&quot;text&quot;)
-    .attr(&quot;class&quot;, &quot;mono&quot;)
+    .attr(&quot;class&quot;, styles.mono)
     .text(texts.legendText)
     .style(&quot;text-anchor&quot;, &quot;middle&quot;)
     .attr(
@@ -203,8 +207,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:9,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:14,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:158,&quot;character&quot;:52,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:165,&quot;character&quot;:16,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:169,&quot;character&quot;:20,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:179,&quot;character&quot;:7,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 24 Jul 2021 14:34:37 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:9,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:33,&quot;character&quot;:14,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:162,&quot;character&quot;:52,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:169,&quot;character&quot;:16,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:20,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap.ts&quot;,&quot;line&quot;:183,&quot;character&quot;:7,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 12:08:28 GMT</p>
     </body>
   </html>
   

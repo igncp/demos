@@ -4420,28 +4420,28 @@
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 158,
+      "line": 162,
       "character": 52,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 165,
+      "line": 169,
       "character": 16,
       "text": "_value",
       "kind": 1
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 169,
+      "line": 173,
       "character": 20,
       "text": "_value",
       "kind": 1
     },
     {
       "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 179,
+      "line": 183,
       "character": 7,
       "text": "_value",
       "kind": 1
@@ -4510,8 +4510,8 @@
       "kind": 1
     }
   ],
-  "percentage": 94.46069155341476,
-  "total": 11626,
-  "covered": 10982,
+  "percentage": 94.51634877384195,
+  "total": 11744,
+  "covered": 11100,
   "uncovered": 644
 }

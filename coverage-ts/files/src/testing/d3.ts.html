@@ -11,19 +11,33 @@
 <link href="../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/testing/d3.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">298</td><td class="">298</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/testing/d3.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">289</td><td class="">289</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Selection,
+  arc as arcD3,
+  extent,
+  geoOrthographic,
+  interpolate,
+  interpolateNumber,
+  max,
+  pie as pieD3,
+  range,
+  scaleLinear,
+  scaleOrdinal,
+  scaleQuantile,
+  schemePastel2,
+  select,
+} from &quot;d3&quot;
 import QUnitType from &quot;qunit&quot;
 
 const d3Tests = (QUnit: QUnitType) =&gt; {
   QUnit.test(&quot;d3.arc&quot;, (assert) =&gt; {
-    const arc = d3.arc().outerRadius(10).innerRadius(0)
+    const arc = arcD3().outerRadius(10).innerRadius(0)
 
     assert.deepEqual(typeof arc({} as any), &quot;string&quot;)
   })
 
   QUnit.test(&quot;d3.arc#centroid&quot;, (assert) =&gt; {
-    const arc = d3
-      .arc()
+    const arc = arcD3()
       .outerRadius(50)
       .innerRadius(0)
       .startAngle(0)
@@ -34,13 +48,13 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
   })
 
   QUnit.test(&quot;d3.extent returns expected values&quot;, (assert) =&gt; {
-    assert.deepEqual(d3.extent([0, -10, 5, 100, -50, 7]), [-50, 100])
-    assert.deepEqual(d3.extent([]), [undefined, undefined])
-    assert.deepEqual(d3.extent([1, 1]), [1, 1])
+    assert.deepEqual(extent([0, -10, 5, 100, -50, 7]), [-50, 100])
+    assert.deepEqual(extent([]), [undefined, undefined])
+    assert.deepEqual(extent([1, 1]), [1, 1])
   })
 
   QUnit.test(&quot;d3.interpolateNumber simple&quot;, (assert) =&gt; {
-    const interpolator = d3.interpolateNumber(10, 30)
+    const interpolator = interpolateNumber(10, 30)
 
     assert.deepEqual(interpolator(0), 10)
     assert.deepEqual(interpolator(0.5), 20)
@@ -48,7 +62,7 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
   })
 
   QUnit.test(&quot;d3.interpolate hex colors&quot;, (assert) =&gt; {
-    const interpolator = d3.interpolate(&quot;#ccc&quot;, &quot;#fff&quot;)
+    const interpolator = interpolate(&quot;#ccc&quot;, &quot;#fff&quot;)
 
     assert.deepEqual(interpolator(0), &quot;rgb(204, 204, 204)&quot;)
     assert.deepEqual(interpolator(0.5), &quot;rgb(230, 230, 230)&quot;)
@@ -56,7 +70,7 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
   })
 
   QUnit.test(&quot;d3.interpolate nested&quot;, (assert) =&gt; {
-    const interpolator = d3.interpolate(
+    const interpolator = interpolate(
       {
         bar: &quot;white&quot;,
         foo: 1,
@@ -82,8 +96,8 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
   })
 
   QUnit.test(&quot;d3.geoOrthographic&quot;, (assert) =&gt; {
-    const projection100 = d3.geoOrthographic().scale(100)
-    const projection1 = d3.geoOrthographic().scale(1)
+    const projection100 = geoOrthographic().scale(100)
+    const projection1 = geoOrthographic().scale(1)
 
     assert.deepEqual(projection100([0, 0]), [480, 250])
     assert.deepEqual(projection1([0, 0]), [480, 250])
@@ -91,7 +105,7 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
 
   QUnit.test(&quot;d3.max&quot;, (assert) =&gt; {
     assert.deepEqual(
-      d3.max([{ foo: 1 }, { foo: 2 }, { foo: -1 }], (d) =&gt; d.foo),
+      max([{ foo: 1 }, { foo: 2 }, { foo: -1 }], (d) =&gt; d.foo),
       2
     )
   })
@@ -99,8 +113,7 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
   QUnit.test(&quot;d3.pie generates the expected data&quot;, (assert) =&gt; {
     type Data = { val: number }
 
-    const pie = d3
-      .pie&lt;Data&gt;()
+    const pie = pieD3&lt;Data&gt;()
       .sort(null)
       .value((d) =&gt; d.val)
 
@@ -129,14 +142,14 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
   })
 
   QUnit.test(&quot;d3.range returns expected values&quot;, (assert) =&gt; {
-    assert.deepEqual(d3.range(0, 10, 1), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-    assert.deepEqual(d3.range(0, 10, 5), [0, 5])
-    assert.deepEqual(d3.range(0, 10, 6), [0, 6])
-    assert.deepEqual(d3.range(0, 10, 11), [0])
+    assert.deepEqual(range(0, 10, 1), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    assert.deepEqual(range(0, 10, 5), [0, 5])
+    assert.deepEqual(range(0, 10, 6), [0, 6])
+    assert.deepEqual(range(0, 10, 11), [0])
   })
 
   QUnit.test(&quot;d3.scaleLinear simple&quot;, (assert) =&gt; {
-    const scale = d3.scaleLinear().domain([0, 10]).range([1, 2])
+    const scale = scaleLinear().domain([0, 10]).range([1, 2])
 
     assert.deepEqual(scale(0), 1)
     assert.deepEqual(scale(10), 2)
@@ -144,7 +157,7 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
   })
 
   QUnit.test(&quot;d3.scaleLinear simple 2&quot;, (assert) =&gt; {
-    const scale = d3.scaleLinear().domain([0, 1]).range([0, 100])
+    const scale = scaleLinear().domain([0, 1]).range([0, 100])
 
     assert.deepEqual(scale(0), 0)
     assert.deepEqual(scale(0.1), 10)
@@ -152,7 +165,7 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
   })
 
   QUnit.test(&quot;d3.scaleOrdinal with color&quot;, (assert) =&gt; {
-    const scale = d3.scaleOrdinal(d3.schemePastel2)
+    const scale = scaleOrdinal(schemePastel2)
 
     assert.deepEqual(scale(&quot;0&quot;), &quot;#b3e2cd&quot;)
   })
@@ -160,7 +173,7 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
   // https://observablehq.com/@d3/quantile-quantize-and-threshold-scales
   QUnit.test(&quot;d3.scaleQuantile&quot;, (assert) =&gt; {
     const colors = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;]
-    const colorScale = d3.scaleQuantile&lt;string&gt;().domain([0, 100]).range(colors)
+    const colorScale = scaleQuantile&lt;string&gt;().domain([0, 100]).range(colors)
 
     assert.deepEqual(colorScale(0), &quot;A&quot;)
     assert.deepEqual(colorScale(19), &quot;A&quot;)
@@ -170,11 +183,11 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
 
   QUnit.test(&quot;d3.select&quot;, (assert) =&gt; {
     const div = document.createElement(&quot;div&quot;)
-    const svg: d3.Selection&lt;SVGSVGElement, unknown, null, unknown&gt; = d3
-      .select(div)
-      .append(&quot;svg&quot;)
+    const svg: Selection&lt;SVGSVGElement, unknown, null, unknown&gt; = select(
+      div
+    ).append(&quot;svg&quot;)
     // note that here the parent is still null in the types
-    const g: d3.Selection&lt;SVGPathElement, number, null, unknown&gt; = svg
+    const g: Selection&lt;SVGPathElement, number, null, unknown&gt; = svg
       .append(&quot;path&quot;)
       .data([1])
 
@@ -188,7 +201,7 @@ const d3Tests = (QUnit: QUnitType) =&gt; {
 
 export default d3Tests
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 24 Jul 2021 14:34:37 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 12:08:28 GMT</p>
     </body>
   </html>
   

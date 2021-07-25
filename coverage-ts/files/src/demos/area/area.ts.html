@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/area/area.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">388</td><td class="">388</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/area/area.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">414</td><td class="">414</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Selection,
   area as areaD3,
   axisBottom,
@@ -26,7 +26,7 @@
 } from &quot;d3&quot;
 import { Delaunay } from &quot;d3-delaunay&quot;
 
-import &quot;./area.styl&quot;
+import * as styles from &quot;./area.module.css&quot;
 
 type Point = {
   index?: number
@@ -74,11 +74,11 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
     .attr(&quot;width&quot;, width + margin.left + margin.right)
     .append(&quot;g&quot;)
     .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
-    .attr(&quot;class&quot;, &quot;area-chart&quot;)
+    .attr(&quot;class&quot;, styles.areaChart)
 
   svg
     .append(&quot;text&quot;)
-    .attr(&quot;class&quot;, &quot;chart-title&quot;)
+    .attr(&quot;class&quot;, styles.chartTitle)
     .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
     .attr(&quot;transform&quot;, `translate(${width / 2},${titleYOffset})`)
     .text(texts.title)
@@ -106,7 +106,7 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
 
   svg
     .append(&quot;g&quot;)
-    .attr(&quot;class&quot;, &quot;x axis&quot;)
+    .attr(&quot;class&quot;, `${styles.x} ${styles.axis}`)
     .attr(&quot;transform&quot;, `translate(0,${height})`)
     .call(xAxis)
     .selectAll(&quot;text&quot;)
@@ -114,7 +114,7 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
 
   svg
     .append(&quot;g&quot;)
-    .attr(&quot;class&quot;, &quot;y axis&quot;)
+    .attr(&quot;class&quot;, `${styles.y} ${styles.axis}`)
     .call(yAxis)
     .selectAll(&quot;text&quot;)
     .attr(&quot;dx&quot;, &quot;-.25em&quot;)
@@ -131,7 +131,7 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   svg
     .append(&quot;path&quot;)
     .datum(data)
-    .attr(&quot;class&quot;, &quot;line&quot;)
+    .attr(&quot;class&quot;, styles.line)
     .attr(&quot;d&quot;, line)
     .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
 
@@ -145,7 +145,7 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   svg
     .append(&quot;path&quot;)
     .datum(data)
-    .attr(&quot;class&quot;, &quot;area&quot;)
+    .attr(&quot;class&quot;, styles.area)
     .attr(&quot;d&quot;, area)
     .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
 
@@ -181,11 +181,12 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
     .attr(&quot;r&quot;, &quot;5px&quot;)
     .attr(
       &quot;class&quot;,
-      (_point: Point, pointIndex: number) =&gt; `point point-${pointIndex}`
+      (_point: Point, pointIndex: number) =&gt;
+        `${styles.point} point-${pointIndex}`
     )
     .style(&quot;filter&quot;, &quot;url(#drop-shadow-points)&quot;)
 
-  const voronoiGroup = svg.append(&quot;g&quot;).attr(&quot;class&quot;, &quot;voronoi&quot;)
+  const voronoiGroup = svg.append(&quot;g&quot;).attr(&quot;class&quot;, styles.voronoi)
 
   voronoiGroup
     .selectAll(&quot;path&quot;)
@@ -205,10 +206,11 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   return {
     toggleVoronoi: () =&gt; {
       const currentClass = voronoiGroup.attr(&quot;class&quot;)
+      const { showVoronoi } = styles
 
-      const newClass = currentClass.includes(&quot;show-voronoi&quot;)
-        ? currentClass.replace(&quot;show-voronoi&quot;, &quot;&quot;).trim()
-        : `${currentClass} show-voronoi`
+      const newClass = currentClass.includes(showVoronoi)
+        ? currentClass.replace(showVoronoi, &quot;&quot;).trim()
+        : `${currentClass} ${showVoronoi}`
 
       voronoiGroup.attr(&quot;class&quot;, newClass)
     },
@@ -270,7 +272,7 @@ const main = async () =&gt; {
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 24 Jul 2021 14:34:37 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 12:08:28 GMT</p>
     </body>
   </html>
   
