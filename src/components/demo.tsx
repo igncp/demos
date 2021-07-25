@@ -13,7 +13,7 @@ const parsePath = (str: string) =>
 type Props = {
   children: React.ReactNode
   links?: string[]
-  main: (() => void) | (() => Promise<void>)
+  main: () => Promise<void>
   pageContext: DemoPageProps["pageContext"]
   scripts?: string[]
 }
@@ -26,14 +26,17 @@ const Demo = ({
   pageContext,
 }: Props) => {
   const { demoInfo, meta } = pageContext
-  const { name, sources, isCompleted } = demoInfo
+  const { isCompleted, name, sources } = demoInfo
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return
     }
 
-    main()
+    main().catch((e) => {
+      // eslint-disable-next-line no-console
+      console.error("error:", e)
+    })
   }, [])
 
   return (

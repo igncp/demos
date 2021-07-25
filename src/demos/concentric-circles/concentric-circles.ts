@@ -56,9 +56,9 @@ const addFilter = (svg: SVG) => {
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-type AddDescription = (o: { svg: SVG; height: number; width: number }) => void
+type AddDescription = (o: { height: number; svg: SVG; width: number }) => void
 
-const addDescription: AddDescription = ({ svg, height, width }) => {
+const addDescription: AddDescription = ({ height, svg, width }) => {
   svg
     .append("text")
     .text(

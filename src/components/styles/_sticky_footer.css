@@ -1,0 +1,27 @@
+$footerHeight: 60px;
+
+html,
+body {
+  height: 100%;
+}
+
+#container {
+  margin-bottom: $footerHeight * (-1);
+  min-height: 100%;
+}
+
+#container::after {
+  content: "";
+  display: block;
+}
+
+footer,
+#container::after {
+  height: $footerHeight;
+}
+
+footer p {
+  margin-top: 20px;
+  text-align: center;
+  text-shadow: 1px 1px 1px #ccc;
+}

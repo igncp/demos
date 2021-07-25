@@ -1,0 +1,79 @@
+.timelineChart {
+  text {
+    text-shadow: 0.5px 0.5px 0.5px #ccc;
+  }
+
+  .axis {
+    fill: #808080;
+    font-family: sans-serif;
+    font-size: 10px;
+  }
+
+  .axis line {
+    shape-rendering: crispEdges;
+    stroke: grey;
+    stroke-width: 1;
+  }
+
+  .axis path {
+    shape-rendering: crispEdges;
+    stroke: grey;
+    stroke-width: 1;
+  }
+
+  .band {
+    fill: #fff;
+  }
+
+  .bandLabel {
+    fill: #f0f0f0;
+    font: 10px sans-serif;
+    font-weight: bold;
+  }
+
+  .bandMinMaxLabel {
+    fill: #11aa6a;
+    font: 10px sans-serif;
+    font-weight: bold;
+  }
+
+  .bandMidLabel {
+    cursor: default;
+    fill: #bc79c5;
+    font: 10px sans-serif;
+    font-style: italic;
+    font-weight: bold;
+  }
+
+  .chart {
+    fill: #eee;
+  }
+
+  .interval {
+    cursor: default;
+    fill: #ecf7f7;
+    pointer-events: true;
+
+    rect {
+      stroke: black;
+      stroke-width: 0.5px;
+    }
+  }
+
+  .instant {
+    cursor: default;
+    fill: #afcae7;
+  }
+
+  .instantLabel {
+    fill: #7e7e7e;
+    font: 10px sans-serif;
+    shape-rendering: crispEdges;
+  }
+
+  .intervalLabel {
+    fill: black;
+    font: 10px sans-serif;
+    shape-rendering: crispEdges;
+  }
+}

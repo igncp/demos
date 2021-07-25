@@ -28,12 +28,12 @@ const strokeWidth = 0.4
 
 type SVG = Selection<BaseType, unknown, HTMLElement, unknown>
 
-type DataShape = {
+type DataShape = GeoPermissibleObjects & {
   index: number
   properties: {
     NAME_2: string
   }
-} & GeoPermissibleObjects
+}
 
 type Data = Topology<Objects<GeoJsonProperties>>
 
@@ -65,21 +65,17 @@ const addDropShadowFilter = function (
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-const renderChart = async ({
-  data,
-  rootElId,
-}: {
-  data: Data
-  rootElId: string
-}) => {
-  const widthChart = (document.getElementById(
+const renderChart = ({ data, rootElId }: { data: Data; rootElId: string }) => {
+  const { width: widthChart } = (document.getElementById(
     rootElId
-  ) as HTMLElement).getBoundingClientRect().width
+  ) as HTMLElement).getBoundingClientRect()
   const widthCanarias = widthChart / 3.5
   const widthPeninsula = widthChart - widthCanarias - 10
 
-  const dataRoot = data.objects.data1
-  const dataGeo = (feature(data, dataRoot) as any).features
+  const {
+    objects: { data1: dataRoot },
+  } = data
+  const { features: dataGeo } = feature(data, dataRoot) as any
 
   dataGeo.forEach((d: DataShape, i: number) => {
     d.index = i
@@ -123,7 +119,7 @@ const renderChart = async ({
 
   const generateAreas = function (
     svgComp: SVG,
-    path: GeoPath<SVGPathElement, GeoPermissibleObjects>,
+    path: GeoPath<SVGPathElement>,
     filterId: number
   ) {
     svgComp
@@ -170,13 +166,15 @@ const main = async () => {
   const data = await fetchData()
 
   if (!data) {
-    return
+    return Promise.resolve()
   }
 
   renderChart({
     data,
     rootElId: "chart",
   })
+
+  return Promise.resolve()
 }
 
 export default main

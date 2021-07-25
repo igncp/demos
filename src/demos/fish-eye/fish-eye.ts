@@ -18,7 +18,7 @@ import {
 
 import d3Fisheye, { FishEyeScale } from "@/demos/_utils/fish-eye"
 
-import "./fish-eye.styl"
+import * as styles from "./fish-eye.module.css"
 
 type DataItem = {
   income: number
@@ -35,7 +35,6 @@ const fetchData = async (): Promise<Data | undefined> =>
 const humanizeNumber = (initialN: number): string => {
   let n = initialN.toString()
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const n2 = n.replace(/(\d)(\d{3})($|,|\.)/g, "$1,$2$3")
 
@@ -58,31 +57,33 @@ const margin = {
 const height = 700 - margin.top - margin.bottom
 
 type FishEyeChartOpts = {
-  rootElId: string
   data: Data
+  rootElId: string
 }
 
 class FishEyeChart {
-  private rootElId: string
-  private data: Data
+  private readonly rootElId: string
+  private readonly data: Data
 
   private width!: number
+
   private dom!: {
-    svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
     dot?: Selection<SVGCircleElement, DataItem, SVGGElement, unknown>
     pointer?: Selection<SVGTextElement, unknown, HTMLElement, unknown>
+    svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
     xAxis?: Axis<DataItem["income"]>
     yAxis?: Axis<DataItem["lifeExpectancy"]>
   }
+
   private vars!: {
-    colorScale: ScaleOrdinal<string, string, never>
+    colorScale: ScaleOrdinal<string, string>
     focused: boolean
-    radiusScale: ScalePower<number, number, never>
+    radiusScale: ScalePower<number, number>
     xScale: FishEyeScale
     yScale: FishEyeScale
   }
 
-  public constructor({ rootElId, data }: FishEyeChartOpts) {
+  public constructor({ data, rootElId }: FishEyeChartOpts) {
     this.rootElId = rootElId
     this.data = data
 
@@ -107,7 +108,7 @@ class FishEyeChart {
   private setupRootEl() {
     const rootEl = document.getElementById(this.rootElId) as HTMLElement
 
-    rootEl.classList.add("fish-eye-chart")
+    rootEl.classList.add(styles.fishEyeChart)
 
     this.width =
       rootEl.getBoundingClientRect().width - margin.left - margin.right
@@ -127,7 +128,7 @@ class FishEyeChart {
   private setChartTitle() {
     this.dom.svg
       .append("text")
-      .attr("class", "chart-title")
+      .attr("class", styles.chartTitle)
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${this.width / 2},-40)`)
       .text(
@@ -177,16 +178,19 @@ class FishEyeChart {
     )
     this.dom.svg
       .append("g")
-      .attr("class", "x axis")
+      .attr("class", `x ${styles.axis}`)
       .attr("transform", `translate(0,${height})`)
       .call(this.dom.xAxis)
-    this.dom.svg.append("g").attr("class", "y axis").call(this.dom.yAxis)
+    this.dom.svg
+      .append("g")
+      .attr("class", `y ${styles.axis}`)
+      .call(this.dom.yAxis)
   }
 
   private setBackground() {
     return this.dom.svg
       .append("rect")
-      .attr("class", "background")
+      .attr("class", styles.background)
       .attr("width", this.width)
       .attr("height", height)
   }
@@ -290,15 +294,15 @@ class FishEyeChart {
     this.vars.yScale.distortion(2.5).focus(mouse[1])
     this.position()
 
-    this.dom.svg.select<SVGGElement>(".x.axis").call(this.dom.xAxis!)
-    this.dom.svg.select<SVGGElement>(".y.axis").call(this.dom.yAxis!)
+    this.dom.svg.select<SVGGElement>(`.x.${styles.axis}`).call(this.dom.xAxis!)
+    this.dom.svg.select<SVGGElement>(`.y.${styles.axis}`).call(this.dom.yAxis!)
   }
 
   private setPointer() {
     this.dom.pointer = this.dom.svg
       .append("text")
       .text("+")
-      .attr("class", "pointer")
+      .attr("class", styles.pointer)
   }
 
   private bindMousemove() {

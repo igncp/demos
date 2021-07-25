@@ -1,0 +1,50 @@
+.vectorsChart {
+  svg {
+    background-color: #fff;
+    cursor: default;
+    user-select: none;
+  }
+
+  svg:not(.active):not(.ctrl) {
+    cursor: crosshair;
+  }
+
+  path.link {
+    cursor: default;
+    fill: none;
+    stroke: #888;
+    stroke-width: 3px;
+  }
+
+  svg:not(.active):not(.ctrl) path.link {
+    cursor: pointer;
+  }
+
+  path.link.selected {
+    stroke-dasharray: 10, 2;
+  }
+
+  path.link.dragline {
+    pointer-events: none;
+  }
+
+  path.link.hidden {
+    stroke-width: 0;
+  }
+
+  circle.node {
+    cursor: pointer;
+    fill: none;
+    stroke-width: 0;
+  }
+
+  text {
+    font: 14px sans-serif;
+    pointer-events: none;
+  }
+
+  text.id {
+    font-weight: bold;
+    text-anchor: middle;
+  }
+}

@@ -19,7 +19,7 @@ const colors = [
   "#253494",
   "#081d58",
 ]
-const buckets = colors.length
+const { length: buckets } = colors
 
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
 const hours = Array.from({ length: 24 }).map((_, index: number) => {
@@ -62,7 +62,7 @@ const texts = {
   legendText: (value: number) => `≥ ${value.toFixed(2)}`,
 }
 
-const renderChart = async ({
+const renderChart = ({
   data,
   rootElId,
 }: {

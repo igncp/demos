@@ -1,14 +1,14 @@
 declare const styles: {
-  readonly areaChart: string
-  readonly line: string
   readonly area: string
+  readonly areaChart: string
   readonly axis: string
   readonly chartTitle: string
-  readonly x: string
+  readonly line: string
   readonly minor: string
-  readonly y: string
-  readonly voronoi: string
-  readonly showVoronoi: string
   readonly point: string
+  readonly showVoronoi: string
+  readonly voronoi: string
+  readonly x: string
+  readonly y: string
 }
 export = styles

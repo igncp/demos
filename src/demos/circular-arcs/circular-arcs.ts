@@ -2,7 +2,7 @@ import { RaphaelPaper, RaphaelPath } from "raphael"
 
 import Raphael from "@/demos/_utils/browserRaphael"
 
-import "./circular-arcs.styl"
+import * as styles from "./circular-arcs.module.css"
 
 const strokeWidth = 3
 
@@ -40,7 +40,7 @@ type CircularArcOpts = {
 
 function circularArc(
   this: ExtendedRaphael,
-  { centerX, centerY, radius, startAngle, endAngle }: CircularArcOpts
+  { centerX, centerY, endAngle, radius, startAngle }: CircularArcOpts
 ) {
   const startX = centerX + radius * Math.cos((startAngle * Math.PI) / 180)
   const startY = centerY + radius * Math.sin((startAngle * Math.PI) / 180)
@@ -95,7 +95,7 @@ type CreateArcOpts = {
   stroke: string
 }
 
-const createArc = ({ stroke, fill, arcI, paper }: CreateArcOpts) => {
+const createArc = ({ arcI, fill, paper, stroke }: CreateArcOpts) => {
   const center = paper.width / (4 + arcI) + (strokeWidth - 1)
 
   const arc = paper.circularArc({
@@ -119,7 +119,7 @@ const main = () => {
   const rootElId = "chart"
   const chartWrapper = document.getElementById(rootElId) as HTMLElement
 
-  chartWrapper.classList.add("circular-arcs-chart")
+  chartWrapper.classList.add(styles.circularArcsChart)
 
   const { width } = chartWrapper.getBoundingClientRect()
   const height = 500
@@ -137,6 +137,8 @@ const main = () => {
       stroke: "#558857",
     })
   }
+
+  return Promise.resolve()
 }
 
 export default main

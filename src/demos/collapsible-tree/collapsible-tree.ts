@@ -9,17 +9,17 @@ import {
   tree as treeD3,
 } from "d3"
 
-import "./collapsible-tree.styl"
+import * as styles from "./collapsible-tree.module.css"
 
 type DataNode = {
   _children: TreeNode[] | undefined
   children: DataNode[]
   id: number
   name: string
-  x0: number
   x: number
-  y0: number
+  x0: number
   y: number
+  y0: number
 }
 type HierarchyDataNode = HierarchyNode<DataNode>
 type TreeNode = HierarchyPointNode<DataNode>
@@ -46,14 +46,14 @@ const margin = {
 const duration = 750
 const height = 800 - margin.top - margin.bottom
 
-type RenderChart = (o: { rootElId: string; rootData: DataNode }) => void
+type RenderChart = (o: { rootData: DataNode; rootElId: string }) => void
 
-const renderChart: RenderChart = ({ rootElId, rootData }) => {
+const renderChart: RenderChart = ({ rootData, rootElId }) => {
   const root = hierarchy<DataNode>(rootData)
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add("collapsible-tree-chart")
+  rootEl.classList.add(styles.collapsibleTreeChart)
 
   const width =
     rootEl.getBoundingClientRect().width - margin.right - margin.left
@@ -118,7 +118,10 @@ const renderChart: RenderChart = ({ rootElId, rootData }) => {
     const transition = svg
       .transition()
       .duration(duration)
-      .tween("resize", window.ResizeObserver ? null : ((() => toggleFn) as any))
+      .tween(
+        "resize",
+        (window.ResizeObserver as unknown) ? null : ((() => toggleFn) as any)
+      )
 
     const node = gNode
       .selectAll<SVGElement, TreeNode>("g")

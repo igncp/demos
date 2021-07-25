@@ -1,0 +1,7 @@
+.circularArcsChart {
+  color: #fff;
+
+  svg {
+    margin-left: 30px;
+  }
+}

@@ -9,24 +9,24 @@ import {
 } from "d3"
 import { feature } from "topojson-client"
 
-type Data = {
+type Data = GeoPermissibleObjects & {
   id: number
-} & GeoPermissibleObjects
+}
 
 const fetchData = () => json(`${ROOT_PATH}data/d3js/world-map/world.json`)
 
 const transitionDuration = 1500
 
-type RenderChart = (o: { world: any; rootElId: string }) => void
+type RenderChart = (o: { rootElId: string; world: any }) => void
 
-const renderChart: RenderChart = ({ world, rootElId }) => {
+const renderChart: RenderChart = ({ rootElId, world }) => {
   const state: {
-    lastZoomId: null | number
+    lastZoomId: number | null
   } = {
     lastZoomId: null,
   }
 
-  const data = (feature(world, world.objects.countries) as any).features
+  const { features: data } = feature(world, world.objects.countries) as any
 
   const colorScale = scaleLinear()
     .domain([0, data.length - 1])
@@ -40,7 +40,7 @@ const renderChart: RenderChart = ({ world, rootElId }) => {
   const height = 500
 
   const setZoom = (_e: unknown, d: Data) => {
-    if (!d || state.lastZoomId === d.id) {
+    if (!(d as unknown) || state.lastZoomId === d.id) {
       state.lastZoomId = null
 
       countries

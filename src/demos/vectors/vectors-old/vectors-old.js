@@ -435,8 +435,6 @@ const renderChart = ({ rootElId }) => {
         }
 
         restart()
-
-        return
     }
   }
 

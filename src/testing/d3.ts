@@ -11,6 +11,7 @@ import {
   scaleLinear,
   scaleOrdinal,
   scaleQuantile,
+  scaleQuantize,
   schemePastel2,
   select,
 } from "d3"
@@ -166,6 +167,20 @@ const d3Tests = (QUnit: QUnitType) => {
     assert.deepEqual(colorScale(19), "A")
     assert.deepEqual(colorScale(20), "B")
     assert.deepEqual(colorScale(100), "E")
+  })
+
+  QUnit.test("d3.scaleQuantize", (assert) => {
+    const scale = scaleQuantize()
+      .domain([0, 100])
+      .range(Array.from({ length: 11 }).map((_, i) => i))
+
+    assert.deepEqual(scale(0), 0)
+    assert.deepEqual(scale(19), 2)
+    assert.deepEqual(scale(25), 2)
+    assert.deepEqual(scale(26), 2)
+    assert.deepEqual(scale(30), 3)
+    assert.deepEqual(scale(60), 6)
+    assert.deepEqual(scale(100), 10)
   })
 
   QUnit.test("d3.select", (assert) => {

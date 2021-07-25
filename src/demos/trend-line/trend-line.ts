@@ -16,7 +16,7 @@ import {
   tsv,
 } from "d3"
 
-import "./trend-line.styl"
+import * as styles from "./trend-line.module.css"
 
 type InitialDataItem = {
   occurred: string
@@ -67,8 +67,8 @@ const getInterpolation = (data: DataItem[], line: Line<DataItem>) => {
 }
 
 const linearRegression = (data: DataItem[]) => {
-  const lr: { slope?: number; intercept?: number; r2?: number } = {}
-  const n = data.length
+  const lr: { intercept?: number; r2?: number; slope?: number } = {}
+  const { length: n } = data
 
   let sumX = 0
   let sumY = 0
@@ -105,7 +105,7 @@ const renderGraph = ({
 }) => {
   const el = document.getElementById(rootElId) as HTMLElement
 
-  el.classList.add("trend-line-chart")
+  el.classList.add(styles.trendLineChart)
 
   const width = el.getBoundingClientRect().width - margin.left - margin.right
 
@@ -135,10 +135,10 @@ const renderGraph = ({
 
     svg
       .append("g")
-      .attr("class", "x axis")
+      .attr("class", `x ${styles.axis}`)
       .attr("transform", `translate(0,${height})`)
       .call(xAxis)
-    svg.append("g").attr("class", "y axis").call(yAxis)
+    svg.append("g").attr("class", `y ${styles.axis}`).call(yAxis)
 
     svg
       .append("path")
@@ -146,7 +146,7 @@ const renderGraph = ({
       .transition()
       .duration(animationTime)
       .attrTween("d", () => getInterpolation(data, line))
-      .attr("class", "line")
+      .attr("class", styles.line)
 
     const lr = linearRegression(data)
 
@@ -165,7 +165,7 @@ const renderGraph = ({
       .delay(animationTime)
       .duration(animationTime)
       .attrTween("d", () => getInterpolation(data, regressionLine))
-      .attr("class", "rline")
+      .attr("class", styles.rline)
 
     svg
       .append("text")

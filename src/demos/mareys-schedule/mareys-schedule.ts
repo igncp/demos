@@ -14,13 +14,15 @@ import {
 import each from "lodash/each"
 import last from "lodash/last"
 
-import "./mareys-schedule.styl"
+import * as styles from "./mareys-schedule.module.css"
+
+type TrainType = "B" | "L" | "N"
 
 type RawDataItem = {
+  [stop: string]: string
   direction: string
   number: string
-  type: string
-  [stop: string]: string
+  type: TrainType
 }
 
 type Station = {
@@ -41,7 +43,7 @@ type Train = {
   index: number
   number: string
   stops: Stop[]
-  type: string
+  type: TrainType
 }
 
 type Data = {
@@ -53,6 +55,12 @@ type Limits = [number, number]
 type LimitsStr = [string, string]
 
 type Redraw = (range: LimitsStr) => void
+
+const trainTypeToStyle: { [key in TrainType]: string } = {
+  B: styles.tB,
+  L: styles.tL,
+  N: styles.tN,
+}
 
 const fetchData = async (): Promise<Data> => {
   const data = ((await tsv(
@@ -194,11 +202,11 @@ const margin = {
 
 const height = 600 - margin.top - margin.bottom
 
-const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) => {
+const renderChart = ({ data, rootElId }: { data: Data; rootElId: string }) => {
   const { stations, trains } = data
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add("mareys-schedule-chart")
+  rootEl.classList.add(styles.mareysScheduleChart)
 
   const width =
     rootEl.getBoundingClientRect().width - margin.left - margin.right
@@ -226,10 +234,10 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) => {
 
     svg
       .append("text")
-      .attr("class", "chart-title")
+      .attr("class", styles.chartTitle)
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${width / 2},-40)`)
-      .text("E.J. Marey’s graphical train schedule " + " (4:30AM - 1:30AM)")
+      .text("E.J. Marey’s graphical train schedule (4:30AM - 1:30AM)")
       .style("font-weight", "bold")
 
     filterBlackOpacity("trains", svg, 2, 0.2)
@@ -247,7 +255,7 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) => {
 
     const station = svg
       .append("g")
-      .attr("class", "station")
+      .attr("class", styles.station)
       .selectAll("g")
       .data(stations)
       .enter()
@@ -260,10 +268,10 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) => {
       .attr("dy", ".35em")
       .text((d) => d.name)
     station.append("line").attr("x2", width)
-    svg.append("g").attr("class", "x top axis").call(xAxisTop)
+    svg.append("g").attr("class", `x top ${styles.axis}`).call(xAxisTop)
     svg
       .append("g")
-      .attr("class", "x bottom axis")
+      .attr("class", `x bottom ${styles.axis}`)
       .attr("transform", `translate(0,${height})`)
       .call(xAxisBottom)
 
@@ -277,13 +285,13 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) => {
 
     const train = svg
       .append("g")
-      .attr("class", "train")
+      .attr("class", styles.train)
       .attr("clip-path", "url(#clip)")
       .selectAll("g")
       .data(trains.filter((d) => /[NLB]/.test(d.type)))
       .enter()
       .append("g")
-      .attr("class", (d) => `${d.type} train-${d.index}`)
+      .attr("class", (d) => `${trainTypeToStyle[d.type]} train-${d.index}`)
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave)
 

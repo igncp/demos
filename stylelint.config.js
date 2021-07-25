@@ -11,6 +11,10 @@ module.exports = {
   extends: "stylelint-config-standard",
   plugins: ["stylelint-order", "stylelint-scss"],
   rules: {
+    "block-closing-brace-newline-after": "always",
+    "block-closing-brace-newline-before": "always",
+    "block-opening-brace-newline-after": "always",
+
     "order/order": [
       "custom-properties",
       "dollar-variables",

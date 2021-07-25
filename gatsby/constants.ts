@@ -1,1 +1,1 @@
-export const ROOT_PATH = process.env.ROOT_PATH || "/"
+export const ROOT_PATH = process.env.ROOT_PATH ?? "/"

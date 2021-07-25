@@ -41,9 +41,9 @@ const getPage = (demoName: string, category: string) => ({
 
 const getDemoInfo = (slugs: string[]) => {
   const [category, demoName] = slugs
-  const categoryData = categoryToData[category as Category]
+  const { [category as Category]: categoryData } = categoryToData
 
-  if (!categoryData || !demoName) {
+  if (!(categoryData as unknown) || !demoName) {
     return null
   }
 
@@ -61,7 +61,6 @@ const getDemoInfo = (slugs: string[]) => {
       cssModule: readIfExists(`src/demos/${demoName}/${demoName}.module.css`),
       demo,
       page,
-      styl: readIfExists(`src/demos/${demoName}/${demoName}.styl`),
     },
     key: demoName,
   }
@@ -100,7 +99,7 @@ const demosSummaries = d3jsDemosSummaries
     return a.name < b.name ? -1 : 1
   })
 
-const onCreatePage: GatsbyNode["onCreatePage"] = ({ page, actions }) => {
+const onCreatePage: GatsbyNode["onCreatePage"] = ({ actions, page }) => {
   const slugs = page.path.split("/").filter(Boolean)
   const demoInfo = getDemoInfo(slugs)
 
@@ -128,7 +127,7 @@ const onCreatePage: GatsbyNode["onCreatePage"] = ({ page, actions }) => {
   } else if (demoInfo) {
     deletePage(page)
 
-    const categoryMetas = metas[demoInfo.category as Category]
+    const { [demoInfo.category as Category]: categoryMetas } = metas
 
     const context: DemoPageProps["pageContext"] = {
       demoInfo,

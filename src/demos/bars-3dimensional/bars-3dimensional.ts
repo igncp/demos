@@ -14,12 +14,12 @@ const fetchData = async () => {
 }
 
 type Data = {
+  [key: string]: number[]
+} & {
   keys: string[]
   keysLength: number
   seriesDisplayed: number
   seriesLength: number
-} & {
-  [key: string]: number[]
 }
 
 type Config = {
@@ -43,7 +43,7 @@ type ChartOpts = {
 }
 
 class Chart {
-  private rootElId: string
+  private readonly rootElId: string
   private cg!: Config
   private dom!: Dom
   private data!: Data
@@ -144,8 +144,12 @@ class Chart {
   }
 
   private drawAxis() {
-    const { paper } = this.dom
-    const { deep } = this.cg
+    const {
+      dom: { paper },
+    } = this
+    const {
+      cg: { deep },
+    } = this
 
     for (let i = 0, _i = 0; _i <= 3; i = ++_i) {
       const path = `M5,${25 * i} ${this.cg.width},${
@@ -195,7 +199,9 @@ class Chart {
 
   private createCountries(i: number) {
     const { data } = this
-    const { paper } = this.dom
+    const {
+      dom: { paper },
+    } = this
 
     return data.keys.forEach((item, index) => {
       this.dom.els[item].inner = paper.path(this.calcInnerPath(item, i))

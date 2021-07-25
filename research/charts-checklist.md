@@ -9,6 +9,8 @@ For new charts using data, they should cover most of these points
     - Use title, legends and modals for explaining content and interactions
 - Add visual cues for all interactions: animations or change in properties
 - Format raw numbers (e.g. add commas, remove extra decimals, etc.)
+- They should update on window resize (at least complete rerender, losing state)
+- They should look good on mobile device by using responsive units or rendering less data
 
 ## Code requirements for new charts
 

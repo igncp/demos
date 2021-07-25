@@ -3,7 +3,7 @@ import * as React from "react"
 import PageTitle from "./page-title"
 import Footer from "./footer"
 
-import "./styles/styles.styl"
+import "./styles/styles.css"
 
 type Props = {
   children: React.ReactNode
@@ -11,7 +11,7 @@ type Props = {
 
 const Layout = ({ children }: Props) => (
   <>
-    <div className="row" id="container">
+    <div className="row">
       <div className="col-lg-offset-1 col-lg-10">
         <PageTitle />
         {children}

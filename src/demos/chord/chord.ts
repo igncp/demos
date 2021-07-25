@@ -24,8 +24,8 @@ type CSVDataItem = {
 }
 
 type Country = {
-  name: string
   id: number
+  name: string
 }
 
 type Creditor = Country
@@ -38,13 +38,13 @@ type CSVParsedItem = {
   risk: string
 }
 
-type Debits = (CSVParsedItem | null)[][]
-type Credits = (CSVParsedItem | null)[][]
+type Debits = Array<Array<CSVParsedItem | null>>
+type Credits = Array<Array<CSVParsedItem | null>>
 
 type Data = {
-  fullList: Country[]
-  debits: Debits
   credits: Credits
+  debits: Debits
+  fullList: Country[]
 }
 
 const fetchData = async () => {
@@ -60,7 +60,7 @@ const fetchData = async () => {
   let id = 0
 
   const country = function (countryName: string): Country {
-    if (!countries[countryName]) {
+    if (!(countryName in countries)) {
       countries[countryName] = {
         id: id++,
         name: countryName,
@@ -153,9 +153,9 @@ const margin = {
 }
 const height = 500
 
-type RenderChart = (o: { rootElId: string; data: Data }) => void
+type RenderChart = (o: { data: Data; rootElId: string }) => void
 
-const renderChart: RenderChart = ({ rootElId, data }) => {
+const renderChart: RenderChart = ({ data, rootElId }) => {
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
   rootEl.classList.add(styles.chordChart)
@@ -169,7 +169,7 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
   const arc = arcD3().innerRadius(r0).outerRadius(r1)
   const svg = select(`#${rootElId}`)
 
-  const { debits, credits, fullList } = data
+  const { credits, debits, fullList } = data
 
   const charts = svg
     .selectAll("div")
@@ -249,8 +249,8 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
       .attr("d", ribbonLayout as any)
       .append("svg:title")
       .text((d) => {
-        const sourceData = fullList[d.source.index]
-        const targetData = fullList[d.target.index]
+        const { [d.source.index]: sourceData } = fullList
+        const { [d.target.index]: targetData } = fullList
 
         return `${sourceData.name} owes ${targetData.name} $${formatCurrency(
           d.source.value

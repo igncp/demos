@@ -1,6 +1,15 @@
-import * as d3 from "d3"
+import {
+  Selection,
+  SimulationNodeDatum,
+  drag,
+  forceCenter,
+  forceLink,
+  forceManyBody,
+  forceSimulation,
+  select,
+} from "d3"
 
-import "./vectors.styl"
+import * as styles from "./vectors.module.css"
 
 // missing:
 // - connect nodes
@@ -8,10 +17,10 @@ import "./vectors.styl"
 // - keys handling
 // old one is in ./vectors-old/vectors-old.js, remove when completed
 
-type Node = {
+type Node = SimulationNodeDatum & {
   id: string
   reflexive: boolean
-} & d3.SimulationNodeDatum
+}
 
 type Link = {
   left: boolean
@@ -62,7 +71,7 @@ const getInitialData = (): Data => {
 }
 
 const setupSVG = (
-  svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, unknown>
+  svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
 ) => {
   svg
     .append("svg:defs")
@@ -102,14 +111,14 @@ const settings = {
 
 const height = 600
 
-type RenderGraph = (o: { rootElId: string; data: Data }) => void
+type RenderGraph = (o: { data: Data; rootElId: string }) => void
 
-const renderGraph: RenderGraph = ({ rootElId, data }) => {
-  const { nodes, links } = data
+const renderGraph: RenderGraph = ({ data, rootElId }) => {
+  const { links, nodes } = data
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add("vectors-chart")
+  rootEl.classList.add(styles.vectorsChart)
 
   const { width } = rootEl.getBoundingClientRect()
 
@@ -131,15 +140,13 @@ const renderGraph: RenderGraph = ({ rootElId, data }) => {
     mousedownLink = null
   }
 
-  const simulation = d3
-    .forceSimulation(nodes)
-    .force("charge", d3.forceManyBody().strength(-50))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("link", d3.forceLink().links(links).distance(100))
+  const simulation = forceSimulation(nodes)
+    .force("charge", forceManyBody().strength(-50))
+    .force("center", forceCenter(width / 2, height / 2))
+    .force("link", forceLink().links(links).distance(100))
     .on("tick", ticked)
 
-  const svg = d3
-    .select(`#${rootElId}`)
+  const svg = select(`#${rootElId}`)
     .append("svg")
     .attr("width", width)
     .attr("height", height)
@@ -147,17 +154,17 @@ const renderGraph: RenderGraph = ({ rootElId, data }) => {
   setupSVG(svg)
 
   svg
-    .selectAll(".link")
+    .selectAll(`.${styles.link}`)
     .data(links)
     .enter()
     .append("svg:path")
-    .attr("class", "link")
+    .attr("class", styles.link)
     .attr("marker-end", "url(#end)")
     .attr("id", (_d, i) => `link-${i}`)
 
   const updateLinks = () => {
     const linksEls = svg
-      .selectAll<SVGPathElement, Data["links"]>(".link")
+      .selectAll<SVGPathElement, Data["links"]>(`.${styles.link}`)
       .data(links)
 
     linksEls
@@ -179,7 +186,7 @@ const renderGraph: RenderGraph = ({ rootElId, data }) => {
 
         return `M${sourceX},${sourceY}L${targetX},${targetY}`
       })
-      .attr("class", "link dragline")
+      .attr("class", `${styles.link} ${styles.dragline}`)
 
     linksEls.exit().remove()
   }
@@ -201,20 +208,19 @@ const renderGraph: RenderGraph = ({ rootElId, data }) => {
       .attr("r", () => settings.circleRadius)
       .attr("fill", "#fff")
       .each(function () {
-        d3.select<SVGCircleElement, Data["nodes"][0]>(this)
+        select<SVGCircleElement, Data["nodes"][0]>(this)
           .on("mouseover", (_ev, d) => {
-            d3.select(`#node-text-${d.index}`).style("opacity", 1)
+            select(`#node-text-${d.index}`).style("opacity", 1)
           })
           .on("mouseleave", (_ev, d) => {
-            d3.select(`#node-text-${d.index}`).style(
+            select(`#node-text-${d.index}`).style(
               "opacity",
               settings.defaultTextOpacity
             )
           })
       })
       .call(
-        d3
-          .drag<SVGCircleElement, Data["nodes"][0]>()
+        drag<SVGCircleElement, Data["nodes"][0]>()
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended)
@@ -227,7 +233,7 @@ const renderGraph: RenderGraph = ({ rootElId, data }) => {
       .text((d) => d.id)
       .attr("x", (d) => d.x!)
       .attr("y", (d) => d.y!)
-      .attr("class", "id")
+      .attr("class", styles.id)
 
     nodesEls.exit().remove()
     textsEls.exit().remove()
@@ -259,13 +265,13 @@ const renderGraph: RenderGraph = ({ rootElId, data }) => {
   }
 
   const mousedownSVG = (evt: any) => {
-    svg.classed("active", true)
+    svg.classed(styles.active, true)
 
     if (evt.ctrlKey || mousedownNode || mousedownLink) {
       return
     }
 
-    const e = evt.target
+    const { target: e } = evt
 
     const dim = e.getBoundingClientRect()
     const x = evt.clientX - dim.left
@@ -305,13 +311,15 @@ const renderGraph: RenderGraph = ({ rootElId, data }) => {
   window.addEventListener("keydown", keydown)
 }
 
-const main = async () => {
+const main = () => {
   const data = getInitialData()
 
   renderGraph({
     data,
     rootElId: "chart",
   })
+
+  return Promise.resolve()
 }
 
 export default main

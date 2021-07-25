@@ -1,3 +1,64 @@
+const isFindRules = process.env.FIND_RULES === "true"
+
+const disabledRules = {
+  "@typescript-eslint/ban-ts-comment": 0,
+  "@typescript-eslint/explicit-module-boundary-types": 0,
+  "@typescript-eslint/no-empty-function": 0,
+  "@typescript-eslint/no-explicit-any": 0, // too many at the moment to have this
+  "@typescript-eslint/no-non-null-assertion": 0,
+  "@typescript-eslint/no-unnecessary-type-assertion": 0,
+  "@typescript-eslint/no-unsafe-assignment": 0,
+  "@typescript-eslint/no-unsafe-call": 0,
+  "@typescript-eslint/no-unsafe-member-access": 0,
+  "@typescript-eslint/no-unsafe-return": 0,
+  "@typescript-eslint/restrict-plus-operands": 0,
+  "@typescript-eslint/restrict-template-expressions": 0,
+  "@typescript-eslint/unbound-method": 0,
+
+  "react/no-unescaped-entities": 0,
+  "react/prop-types": 0,
+}
+
+const tsRules = {
+  "@typescript-eslint/array-type": [2, { default: "array-simple" }],
+  "@typescript-eslint/explicit-member-accessibility": 2,
+  "@typescript-eslint/lines-between-class-members": [
+    2,
+    "always",
+    { exceptAfterSingleLine: true },
+  ],
+  "@typescript-eslint/member-ordering": 2,
+  "@typescript-eslint/method-signature-style": 2,
+  "@typescript-eslint/no-duplicate-imports": 2,
+  "@typescript-eslint/no-redeclare": 2,
+  "@typescript-eslint/no-shadow": 2,
+  "@typescript-eslint/no-unnecessary-boolean-literal-compare": 2,
+  "@typescript-eslint/no-unnecessary-condition": [
+    2,
+    { allowConstantLoopConditions: true },
+  ],
+  "@typescript-eslint/no-unnecessary-qualifier": 2,
+  "@typescript-eslint/no-unnecessary-type-arguments": 2,
+  "@typescript-eslint/no-unnecessary-type-constraint": 2,
+  "@typescript-eslint/no-unused-expressions": 2,
+  "@typescript-eslint/no-unused-vars": 2,
+  "@typescript-eslint/prefer-nullish-coalescing": 2,
+  "@typescript-eslint/prefer-optional-chain": 2,
+  "@typescript-eslint/prefer-readonly": 2,
+  "@typescript-eslint/sort-type-union-intersection-members": 2,
+}
+
+const commonExtends = [
+  "eslint:recommended",
+  "plugin:eslint-comments/recommended",
+  "plugin:react/recommended",
+]
+
+const tsExtends = commonExtends.concat([
+  "plugin:@typescript-eslint/recommended",
+  "plugin:@typescript-eslint/recommended-requiring-type-checking",
+])
+
 module.exports = {
   env: {
     browser: true,
@@ -5,11 +66,7 @@ module.exports = {
     jest: true,
     node: true,
   },
-  extends: [
-    "eslint:recommended",
-    "plugin:eslint-comments/recommended",
-    "plugin:react/recommended",
-  ],
+  extends: isFindRules ? tsExtends : commonExtends,
   globals: {
     $: false,
     ROOT_PATH: false,
@@ -31,8 +88,21 @@ module.exports = {
     {
       files: ["*.d.ts"],
       rules: {
+        "@typescript-eslint/init-declarations": 2,
         "init-declarations": 0,
         "no-var": 0,
+      },
+    },
+    {
+      extends: tsExtends,
+      files: ["*.ts", "*.tsx"],
+      parserOptions: {
+        project: ["./tsconfig.json"],
+        tsconfigRootDir: __dirname,
+      },
+      rules: {
+        ...disabledRules,
+        ...tsRules,
       },
     },
   ],
@@ -41,29 +111,40 @@ module.exports = {
     ecmaVersion: 9,
     sourceType: "module",
   },
-  plugins: ["prettier", "@typescript-eslint"],
+  plugins: [
+    "prettier",
+    "sort-destructure-keys",
+    "typescript-sort-keys",
+    "@typescript-eslint",
+  ],
   rules: {
-    "@typescript-eslint/explicit-member-accessibility": 2,
-    "@typescript-eslint/no-explicit-any": 0, // too many at the moment to have this
-    "@typescript-eslint/no-shadow": 2,
-    "@typescript-eslint/no-unused-vars": 2,
+    ...disabledRules,
+    ...(isFindRules ? tsRules : {}),
 
     "arrow-body-style": [2, "as-needed"],
     "block-scoped-var": 2,
     camelcase: [2, { properties: "never" }],
     "class-methods-use-this": 2,
     "consistent-return": 2,
+    eqeqeq: 2,
     "eslint-comments/no-unused-disable": 2,
     "init-declarations": [2, "always"],
     "newline-before-return": 2,
     "no-console": 2,
+    "no-constant-condition": [2, { checkLoops: false }],
     "no-else-return": 2,
     "no-func-assign": 2,
     "no-multi-assign": 2,
+    "no-nested-ternary": 2,
     "no-restricted-globals": [2, "global"],
     "no-return-assign": [2, "always"],
     "no-shadow": 0, // using ts plugin one
+    "no-unreachable-loop": 2,
+    "no-useless-call": 2,
     "no-useless-computed-key": 2,
+    "no-useless-concat": 2,
+    "no-useless-rename": 2,
+    "no-useless-return": 2,
     "no-var": 2,
     "object-shorthand": [2, "always"],
     "one-var": [2, "never"],
@@ -135,19 +216,27 @@ module.exports = {
     "prefer-destructuring": [
       2,
       {
-        array: false,
-        object: true,
+        AssignmentExpression: {
+          array: false,
+          object: false,
+        },
+        VariableDeclarator: {
+          array: false,
+          object: true,
+        },
       },
+      { enforceForRenamedProperties: true },
     ],
+    "prefer-rest-params": 2,
     "prefer-template": 2,
 
     "prettier/prettier": "error",
 
     "react/jsx-handler-names": 2,
     "react/jsx-sort-props": 2,
-    "react/no-unescaped-entities": 0,
-    "react/prop-types": 0,
     "react/self-closing-comp": 2,
+
+    "sort-destructure-keys/sort-destructure-keys": 2,
 
     "sort-imports": [
       "error",
@@ -156,6 +245,9 @@ module.exports = {
       },
     ],
     "sort-keys": 2,
+
+    "typescript-sort-keys/interface": "error",
+    "typescript-sort-keys/string-enum": "error",
   },
   settings: {
     react: {

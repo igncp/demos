@@ -7,7 +7,7 @@ import Layout from "@/components/layout"
 import DemosList from "@/components/demos-list"
 
 const IndexPage = ({
-  pageContext: { groupedDemos, numberPerGroup, meta },
+  pageContext: { groupedDemos, meta, numberPerGroup },
 }: IndexPageProps) => (
   <Layout>
     <Helmet

@@ -11,7 +11,7 @@ import {
   tsv,
 } from "d3"
 
-import "./map-distorsions.styl"
+import * as styles from "./map-distorsions.module.css"
 
 type ProjectionItem = {
   "Acc. 40º 150%": string
@@ -46,9 +46,9 @@ type RenderChart = (o: { data: ProjectionItem[]; rootElId: string }) => void
 
 enum DimensionName {
   Acc40 = "Acc. 40º 150%",
-  Scale = "Scale",
-  Areal = "Areal",
   Angular = "Angular",
+  Areal = "Areal",
+  Scale = "Scale",
 }
 
 const tooltipText = function (projectionItem: ProjectionItem) {
@@ -57,7 +57,7 @@ const tooltipText = function (projectionItem: ProjectionItem) {
     DimensionName.Scale,
     DimensionName.Areal,
     DimensionName.Angular,
-  ] as (keyof ProjectionItem)[]
+  ] as Array<keyof ProjectionItem>
   const valuesWithDimension = dimensionsNames.map(
     (dimensionName) =>
       `${Number(projectionItem[dimensionName]).toFixed(2)} (${dimensionName})`
@@ -69,13 +69,13 @@ const tooltipText = function (projectionItem: ProjectionItem) {
 type Dimension = {
   name: DimensionName | "name"
   scale: any
-  type: Function
+  type: any
 }
 
 const renderChart: RenderChart = ({ data, rootElId }) => {
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add("map-distorsions-chart")
+  rootEl.classList.add(styles.mapDistorsionsChart)
 
   const width =
     rootEl.getBoundingClientRect().width - margin.left - margin.right
@@ -165,7 +165,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   )
 
   const draw = (projectionItem: ProjectionItem) => {
-    const allPoints: [number, number][] = dimensions.map((dimItem) => [
+    const allPoints: Array<[number, number]> = dimensions.map((dimItem) => [
       x(dimItem.name) as number,
       dimItem.scale(projectionItem[dimItem.name as keyof ProjectionItem]),
     ])
@@ -175,7 +175,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
 
   svg
     .append("g")
-    .attr("class", "background")
+    .attr("class", styles.background)
     .selectAll("path")
     .data<ProjectionItem>(sortedData)
     .enter()
@@ -185,7 +185,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
 
   svg
     .append("g")
-    .attr("class", "foreground")
+    .attr("class", styles.foreground)
     .selectAll("path")
     .data(sortedData)
     .enter()
@@ -195,22 +195,22 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
 
   dimension
     .append("g")
-    .attr("class", "axis")
+    .attr("class", styles.axis)
     .each(function (dimensionItem: Dimension) {
       const yAxis = axisLeft(dimensionItem.scale)
 
       return select(this).call(yAxis)
     })
     .append("text")
-    .attr("class", "title")
+    .attr("class", styles.title)
     .attr("text-anchor", "middle")
     .attr("y", axisYOffset)
     .text((dimensionItem) => dimensionItem.name)
 
   svg
-    .select(".axis")
-    .selectAll<SVGElement, ProjectionItem>("text:not(.title)")
-    .attr("class", "label")
+    .select(`.${styles.axis}`)
+    .selectAll<SVGElement, ProjectionItem>(`text:not(.${styles.title})`)
+    .attr("class", styles.label)
     .data(sortedData, (projectionItem: ProjectionItem) => projectionItem.name)
     .style("fill", (_d, projectionIndex) => colorFn(projectionIndex))
 
@@ -221,10 +221,10 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   }
 
   const mouseover = (_e: unknown, overProjection: ProjectionItem) => {
-    svg.selectAll(".foreground path").style("filter", "none")
-    svg.classed("active", true)
+    svg.selectAll(`.${styles.foreground} path`).style("filter", "none")
+    svg.classed(styles.active, true)
     projection.classed(
-      "inactive",
+      styles.inactive,
       (otherProjection: ProjectionItem) =>
         otherProjection.name !== overProjection.name
     )
@@ -238,24 +238,26 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   }
 
   const mouseout = () => {
-    svg.selectAll(".foreground path").style("filter", "url(#drop-shadow-lines)")
-    svg.classed("active", false)
-    projection.classed("inactive", false)
+    svg
+      .selectAll(`.${styles.foreground} path`)
+      .style("filter", "url(#drop-shadow-lines)")
+    svg.classed(styles.active, false)
+    projection.classed(styles.inactive, false)
   }
 
   svg
-    .selectAll(".foreground path")
+    .selectAll(`.${styles.foreground} path`)
     .style("filter", "url(#drop-shadow-lines)")
     .style("stroke", (_d, projectionItemIndex) => colorFn(projectionItemIndex))
 
   const projection = svg
     .selectAll<SVGElement, ProjectionItem>(
-      ".axis text,.background path,.foreground path"
+      `.${styles.axis} text,.${styles.background} path,.${styles.foreground} path`
     )
     .on("mouseover", mouseover)
     .on("mouseout", mouseout)
 
-  $(".background path, .foreground path").tooltip({
+  $(`.${styles.background} path, .${styles.foreground} path`).tooltip({
     track: true,
   })
 }

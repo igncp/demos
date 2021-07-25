@@ -30,7 +30,7 @@ const fetchData = async (): Promise<Data> => {
 
 const height = 300
 
-type RenderChartOpts = { rootElId: string; graphData: Data }
+type RenderChartOpts = { graphData: Data; rootElId: string }
 
 const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
   const initLineGraph = function () {
@@ -73,7 +73,7 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
 
     while (i < length) {
       const xPos = graphData.xOffset + i * graphData.xDelta
-      const yPos = graphData.yOffset
+      const { yOffset: yPos } = graphData
 
       const circle = graphData.paper.circle(xPos, yPos, radius)
 
@@ -85,7 +85,9 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
   }
 
   const animateChart = function () {
-    const newData = graphData.charts[graphData.current]
+    const {
+      charts: { [graphData.current]: newData },
+    } = graphData
     let newPath = ""
 
     const upperLimit = parseInt(newData.upper) || 1
@@ -138,7 +140,11 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
   }
 
   const createPathString = function () {
-    const { points } = graphData.charts[graphData.current]
+    const {
+      charts: {
+        [graphData.current]: { points },
+      },
+    } = graphData
 
     let path = `M ${graphData.xOffset} ${graphData.yOffset - points[0].value}`
     let i = 0

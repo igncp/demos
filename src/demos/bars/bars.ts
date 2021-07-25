@@ -41,8 +41,8 @@ type Chart = Selection<SVGGElement, unknown, HTMLElement, unknown>
 type ColorFn = (c: Data[number]) => string
 
 class BarsChart {
-  private data: Data
-  private rootElId: string
+  private readonly data: Data
+  private readonly rootElId: string
   private interval: Interval | null
   private chart: Chart | null
   private color: ColorFn | null
@@ -144,7 +144,7 @@ class BarsChart {
   }
 
   private drawRectangles() {
-    const { data, chart, color } = this
+    const { chart, color, data } = this
 
     ;(chart as Chart)
       .selectAll("rect")
@@ -177,7 +177,7 @@ class BarsChart {
   }
 
   private redraw() {
-    const { data, chart, color } = this
+    const { chart, color, data } = this
 
     if (!chart) {
       return

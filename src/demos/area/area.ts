@@ -9,6 +9,7 @@ import {
   max,
   min,
   scaleLinear,
+  scaleQuantize,
   select,
 } from "d3"
 import { Delaunay } from "d3-delaunay"
@@ -26,34 +27,35 @@ const fetchData = (): Promise<Point[]> =>
 
 const texts = {
   pointTitle: (point: Point) =>
-    `Year: ${point.year}, ` + `Percent: ${point.percent}%`,
+    `Year: ${point.year}, Percent: ${point.percent}%`,
   title: "Share of top decile [aka top 10%] in national income",
 }
-
-const margin = {
-  bottom: 50,
-  left: 70,
-  right: 50,
-  top: 50,
-}
-
-const height = 400 - margin.top - margin.bottom
-const titleYOffset = -15
-const axisTickSize = 10
 
 type RenderChart = (o: {
   data: Point[]
   rootElId: string
 }) => {
-  toggleVoronoi(): void
+  toggleVoronoi: () => void
 }
 
 const renderChart: RenderChart = ({ data, rootElId }) => {
-  const width =
-    (document.getElementById(rootElId) as HTMLElement).getBoundingClientRect()
-      .width -
-    margin.left -
-    margin.right
+  const { width: elWidth } = (document.getElementById(
+    rootElId
+  ) as HTMLElement).getBoundingClientRect()
+  const isSmallDevice = elWidth < 500
+
+  const margin = {
+    bottom: 50,
+    left: isSmallDevice ? 50 : 70,
+    right: isSmallDevice ? 10 : 50,
+    top: 50,
+  }
+
+  const height = 400 - margin.top - margin.bottom
+  const titleYOffset = -15
+  const axisTickSize = 10
+
+  const width = elWidth - margin.left - margin.right
 
   const svg = select(`#${rootElId}`)
     .append("svg")
@@ -84,9 +86,14 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .domain([yMax + 0.05, yMin - 0.05])
     .range([0, height])
 
-  const xAxis = axisBottom(xScale)
-    .tickFormat(format(".0f"))
-    .tickSize(axisTickSize)
+  const getSmallDeviceTicksScale = () =>
+    scaleQuantize()
+      .domain([0, 500])
+      .range(Array.from({ length: 6 }).map((_, i) => i))
+
+  const ticks = isSmallDevice ? getSmallDeviceTicksScale()(elWidth) : null
+
+  const xAxis = axisBottom(xScale).tickFormat(format(".0f")).ticks(ticks)
   const yAxis = axisLeft(yScale)
     .tickFormat(format(".0%"))
     .tickSize(axisTickSize)

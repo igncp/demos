@@ -1,0 +1,24 @@
+.forceChart {
+  .linkCurved {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.5px;
+  }
+
+  circle {
+    fill: #9c9;
+    stroke: #fff;
+    stroke-width: 1.5px;
+  }
+
+  text {
+    fill: #999;
+    font: 20px sans-serif;
+    pointer-events: none;
+  }
+
+  .node text {
+    fill: #000;
+    font-size: 12px;
+  }
+}

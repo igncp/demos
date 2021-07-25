@@ -1,6 +1,6 @@
 import * as d3 from "d3"
 
-import "./force.styl"
+import * as styles from "./force.module.css"
 
 type Node = {
   fx: number | null
@@ -44,14 +44,14 @@ const settings = {
 
 const height = 600
 
-type RenderGraph = (o: { rootElId: string; data: Data }) => void
+type RenderGraph = (o: { data: Data; rootElId: string }) => void
 
-const renderGraph: RenderGraph = ({ rootElId, data }) => {
-  const { nodes, links } = data
+const renderGraph: RenderGraph = ({ data, rootElId }) => {
+  const { links, nodes } = data
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add("force-chart")
+  rootEl.classList.add(styles.forceChart)
 
   const { width } = rootEl.getBoundingClientRect()
 
@@ -74,17 +74,17 @@ const renderGraph: RenderGraph = ({ rootElId, data }) => {
     .attr("height", height)
 
   svg
-    .selectAll(".link-curved")
+    .selectAll(`.${styles.linkCurved}`)
     .data(links)
     .enter()
     .append("svg:path")
-    .attr("class", "link-curved")
+    .attr("class", styles.linkCurved)
     .attr("marker-end", "url(#end)")
     .attr("id", (_d, i) => `link-${i}`)
 
   const updateLinks = () => {
     const linksEls = svg
-      .selectAll<SVGPathElement, Data["links"]>(".link-curved")
+      .selectAll<SVGPathElement, Data["links"]>(`.${styles.linkCurved}`)
       .data(links)
 
     linksEls
@@ -98,7 +98,7 @@ const renderGraph: RenderGraph = ({ rootElId, data }) => {
 
         return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`
       })
-      .attr("class", "link-curved")
+      .attr("class", styles.linkCurved)
 
     linksEls.exit().remove()
   }

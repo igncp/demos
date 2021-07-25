@@ -1,0 +1,25 @@
+.trendLineChart {
+  .axis {
+    font: 10px sans-serif;
+  }
+
+  .axis path,
+  line {
+    fill: none;
+    shape-rendering: crispEdges;
+    stroke: #000;
+  }
+
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  .rline {
+    fill: none;
+    stroke: red;
+    stroke-dasharray: 5, 5;
+    stroke-width: 1.5px;
+  }
+}

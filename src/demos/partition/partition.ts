@@ -22,7 +22,9 @@ type HierarchyRectNode = HierarchyRectangularNode<DataNode>
 type PartitionType = "count" | "size"
 
 const fetchData = () =>
-  (json(`${ROOT_PATH}data/d3js/partition/flare.json`) as unknown) as DataNode
+  (json(
+    `${ROOT_PATH}data/d3js/partition/flare.json`
+  ) as unknown) as Promise<DataNode>
 
 const height = 700
 const overColor = "#de7c03"
@@ -46,11 +48,11 @@ const getNodeText = (node: HierarchyRectNode) => {
 }
 
 type RenderChart = (o: {
+  partitionType: PartitionType
   rootData: DataNode
   rootElId: string
-  partitionType: PartitionType
 }) => {
-  updatePartition(partitionType: PartitionType): void
+  updatePartition: (partitionType: PartitionType) => void
 }
 
 const getDataHierarchy = (
@@ -59,7 +61,7 @@ const getDataHierarchy = (
   radius: number
 ) => {
   const dataHierarchySize = hierarchy(rootData).sum(
-    (d: DataNode) => d.size || 0
+    (d: DataNode) => d.size ?? 0
   )
   const dataHierarchyCount = hierarchy(rootData).sum(() => 1)
   const partition = partitionD3<DataNode>().size([2 * Math.PI, radius])
@@ -83,7 +85,7 @@ const getInterpolatorFn = (
   initialData: HierarchyRectNode[],
   fn: (n: HierarchyRectNode) => string | null
 ) => (finalNode: HierarchyRectNode, nodeIndex: number) => {
-  const initialNode = initialData[nodeIndex]
+  const { [nodeIndex]: initialNode } = initialData
 
   const interpolateFn = interpolate(
     extractTweenObj(initialNode),
@@ -97,7 +99,7 @@ const getInterpolatorFn = (
   }
 }
 
-const renderChart: RenderChart = ({ rootData, rootElId, partitionType }) => {
+const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
   const { width } = (document.getElementById(
     "chart"
   ) as HTMLElement).getBoundingClientRect()
@@ -147,7 +149,7 @@ const renderChart: RenderChart = ({ rootData, rootElId, partitionType }) => {
   }
 
   const renderDescendants = (
-    usedDescendants: HierarchyRectangularNode<DataNode>[]
+    usedDescendants: Array<HierarchyRectangularNode<DataNode>>
   ) => {
     const pathSel = svg.selectAll<SVGPathElement, HierarchyRectNode>("path")
     const pathInitialData = pathSel.data()

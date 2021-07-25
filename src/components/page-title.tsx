@@ -3,12 +3,15 @@ import React from "react"
 const PageTitle = () => (
   <div className="page-header">
     <h1 className="row">
-      <span className="col-sm-8 col-xs-12">
+      <span className="col-sm-8 col-xs-8">
         <a href={ROOT_PATH}>Demos</a>{" "}
-        <small>interactive data visualization examples</small>
+        <small className="hide-mobile">
+          interactive data visualization examples
+        </small>
       </span>
-      <span className="col-sm-4 col-xs-12" id="gh-buttons">
+      <span className="col-xs-4" id="gh-buttons">
         <iframe
+          className="hide-mobile"
           frameBorder="0"
           height="20"
           scrolling="0"
@@ -16,6 +19,7 @@ const PageTitle = () => (
           width="119"
         />
         <iframe
+          className="hide-mobile"
           frameBorder="0"
           height="20"
           scrolling="0"

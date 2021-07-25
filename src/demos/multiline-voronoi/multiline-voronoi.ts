@@ -17,16 +17,16 @@ import {
 } from "d3"
 import { Delaunay } from "d3-delaunay"
 
-import "./multiline-voronoi.styl"
+import * as styles from "./multiline-voronoi.module.css"
 
 type InitialDataItem = {
-  name: string
   [monthKey: string]: string
+  name: string
 }
 
 type City = {
-  name: string
   metrics: CityMetric[]
+  name: string
 }
 
 type CityMetric = {
@@ -69,7 +69,7 @@ const fetchData = async () => {
     return {
       metrics: months.map((date: Date) => {
         const itemKey = monthFormat(date) as string
-        const itemValue = initialCity[itemKey as keyof InitialDataItem]
+        const { [itemKey as keyof InitialDataItem]: itemValue } = initialCity
         const value: number = Number(itemValue) / 100
 
         return {
@@ -108,19 +108,19 @@ const margin = {
 }
 
 type RenderChart = (o: {
-  rootElId: string
   cities: City[]
   months: Date[]
+  rootElId: string
 }) => {
   setVoronoi: (v: boolean) => void
 }
 
-const renderChart: RenderChart = ({ rootElId, cities, months }) => {
+const renderChart: RenderChart = ({ cities, months, rootElId }) => {
   const color = scaleOrdinal(schemePastel2)
 
   const state: {
     clickToggle: boolean
-    voronoiGroup: null | Selection<SVGGElement, unknown, HTMLElement, unknown>
+    voronoiGroup: Selection<SVGGElement, unknown, HTMLElement, unknown> | null
   } = {
     clickToggle: false,
     voronoiGroup: null,
@@ -128,7 +128,7 @@ const renderChart: RenderChart = ({ rootElId, cities, months }) => {
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add("multiline-voronoi-chart")
+  rootEl.classList.add(styles.multilineVoronoiChart)
 
   const width =
     rootEl.getBoundingClientRect().width - margin.left - margin.right
@@ -162,13 +162,13 @@ const renderChart: RenderChart = ({ rootElId, cities, months }) => {
 
   svg
     .append("g")
-    .attr("class", "axis axis--x")
+    .attr("class", `${styles.axis} axis--x`)
     .attr("transform", `translate(0,${height})`)
     .call(axisBottom(xScale))
 
   svg
     .append("g")
-    .attr("class", "axis axis--y")
+    .attr("class", `${styles.axis} axis--y`)
     .call(axisLeft(yScale).ticks(10, "%"))
     .append("text")
     .attr("x", 20)
@@ -182,9 +182,9 @@ const renderChart: RenderChart = ({ rootElId, cities, months }) => {
 
   const generateVoronoi = (usedCities: City[]) => {
     const mouseover = (_e: unknown, cityMetric: CityMetric) => {
-      const linePath = cityNameToLine[cityMetric.cityName]
+      const { [cityMetric.cityName]: linePath } = cityNameToLine
 
-      select(linePath).classed("city--hover", true)
+      select(linePath).classed(styles.cityHover, true)
       ;(linePath.parentNode as SVGGElement).appendChild(linePath)
 
       focus.attr(
@@ -199,9 +199,9 @@ const renderChart: RenderChart = ({ rootElId, cities, months }) => {
     }
 
     const mouseout = (_e: unknown, d: CityMetric) => {
-      const linePath = cityNameToLine[d.cityName]
+      const { [d.cityName]: linePath } = cityNameToLine
 
-      select(linePath).classed("city--hover", false)
+      select(linePath).classed(styles.cityHover, false)
 
       return focus.attr("transform", "translate(-100,-100)")
     }
@@ -229,7 +229,7 @@ const renderChart: RenderChart = ({ rootElId, cities, months }) => {
     const focus = svg
       .append("g")
       .attr("transform", "translate(-100,-100)")
-      .attr("class", "focus")
+      .attr("class", styles.focus)
 
     focus.append("circle").attr("r", 3.5)
     focus.append("text").attr("class", "text1").attr("y", -30)
@@ -254,7 +254,7 @@ const renderChart: RenderChart = ({ rootElId, cities, months }) => {
       height + margin.bottom,
     ])
 
-    state.voronoiGroup = svg.append("g").attr("class", "voronoi")
+    state.voronoiGroup = svg.append("g").attr("class", styles.voronoi)
 
     state.voronoiGroup
       .selectAll("path")
@@ -270,7 +270,7 @@ const renderChart: RenderChart = ({ rootElId, cities, months }) => {
   const generateLines = (usedCities: City[]) => {
     svg
       .append("g")
-      .attr("class", "cities")
+      .attr("class", styles.cities)
       .selectAll("path")
       .data(usedCities)
       .enter()
@@ -290,7 +290,7 @@ const renderChart: RenderChart = ({ rootElId, cities, months }) => {
 
   return {
     setVoronoi: (checked: boolean) => {
-      state.voronoiGroup!.classed("voronoi--show", checked)
+      state.voronoiGroup!.classed(styles.voronoiShow, checked)
     },
   }
 }
@@ -329,6 +329,11 @@ const main = async () => {
     months,
     rootElId,
   })
+
+  const form = document.getElementById("form") as HTMLElement
+  const chart = document.getElementById(rootElId) as HTMLElement
+
+  chart.appendChild(form)
 
   select("#show-voronoi")
     .property("disabled", false)

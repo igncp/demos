@@ -1,7 +1,7 @@
 declare const styles: {
-  readonly chordChart: string
-  readonly chord: string
   readonly chartTitle: string
+  readonly chord: string
+  readonly chordChart: string
   readonly group: string
   readonly headingTitle: string
 }

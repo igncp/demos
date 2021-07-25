@@ -57,6 +57,7 @@ export type D3JS = {
   icosahedron: DemoBase
   "map-distorsions": DemoBase
   "mareys-schedule": DemoBase
+  "meteorites-map": DemoBase
   "multiline-voronoi": DemoBase
   partition: DemoBase
   pie: DemoBase
@@ -158,7 +159,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "energy-sankey": {
-    data: [],
+    data: ["data.json"],
     docs: [
       ...d3SankeyItems,
       mixBlendModeCSS,
@@ -249,6 +250,18 @@ const d3js: D3JS = {
       "Add range input",
     ],
     sources: ["http://bl.ocks.org/mbostock/5544008"],
+    summary: [],
+  },
+  "meteorites-map": {
+    data: ["meteorites.json", "world_countries.json"],
+    docs: [...animeItems] as DemoBase["docs"],
+    isCompleted: false,
+    name: "Meteorites Map",
+    notes: ["Created this chart with the data and added the interactions"],
+    sources: [
+      "http://bl.ocks.org/micahstubbs/8e15870eb432a21f0bc4d3d527b2d14f",
+      "https://github.com/jdorfman/awesome-json-datasets#nasa",
+    ],
     summary: [],
   },
   "multiline-voronoi": {

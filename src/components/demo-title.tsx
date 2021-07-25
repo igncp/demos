@@ -6,7 +6,7 @@ type Props = {
   name: string
 }
 
-const DemoTitle = ({ name, mainSource, isCompleted }: Props) => (
+const DemoTitle = ({ isCompleted, mainSource, name }: Props) => (
   <h2 className="row" id="demo-title">
     <span className="col-xs-10">
       {name} Chart{" "}
@@ -19,7 +19,7 @@ const DemoTitle = ({ name, mainSource, isCompleted }: Props) => (
         </small>
       )}
     </span>
-    <span className="col-xs-2 back-home">
+    <span className="col-sm-2 col-xs-12 back-home">
       <a className="btn btn-default" href={ROOT_PATH}>
         <span className="glyphicon glyphicon-home" /> Home
       </a>

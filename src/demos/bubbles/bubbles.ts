@@ -1,4 +1,4 @@
-import "./bubbles.styl"
+import * as styles from "./bubbles.module.css"
 
 const fetchScript = (src: string) =>
   new Promise((resolve) => {
@@ -77,14 +77,14 @@ const fetchData = async () => {
   return jsonData
 }
 
-type RenderChart = (o: { rootElId: string; jsonData: JsonData }) => void
+type RenderChart = (o: { jsonData: JsonData; rootElId: string }) => void
 
-const renderChart: RenderChart = ({ rootElId, jsonData }) => {
+const renderChart: RenderChart = ({ jsonData, rootElId }) => {
   const { d3, nv } = window as any
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add("bubbles-chart")
+  rootEl.classList.add(styles.bubblesChart)
 
   const { width } = rootEl.getBoundingClientRect()
 

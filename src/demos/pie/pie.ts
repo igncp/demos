@@ -35,7 +35,7 @@ const stashArcs = (d: SliceArc) => {
 
 const arc = arcD3<SliceArc>().outerRadius(outerRadius).innerRadius(0)
 
-type ArcDatum = Omit<DefaultArcObject & SliceArc, "outerRadius" | "innerRadius">
+type ArcDatum = Omit<DefaultArcObject & SliceArc, "innerRadius" | "outerRadius">
 
 const textTransform = (d: ArcDatum): string => {
   const centroidD = {
@@ -56,7 +56,9 @@ const easeFn = easeBack
 const transitionDuration = 3000
 
 const arcTween = (finalSlice: SliceArc) => {
-  const initialSlice = finalSlice.data.ea0
+  const {
+    data: { ea0: initialSlice },
+  } = finalSlice
   const interpolateFn = interpolate(initialSlice, finalSlice)
 
   finalSlice.data.ea0 = interpolateFn(0)
@@ -73,8 +75,8 @@ type ChartPaths = Selection<SVGPathElement, SliceArc, SVGGElement, unknown>
 type ChartLabels = Selection<SVGTextElement, SliceArc, SVGGElement, unknown>
 
 class PieChart {
-  private rootElId: string
-  private data: Slice[]
+  private readonly rootElId: string
+  private readonly data: Slice[]
   private paths: ChartPaths | null
   private labels: ChartLabels | null
 
@@ -89,7 +91,7 @@ class PieChart {
   }
 
   public update(val: number) {
-    const { data, paths, labels } = this
+    const { data, labels, paths } = this
     const index = Math.floor(Math.random() * data.length)
 
     data[index].val = val
@@ -106,14 +108,12 @@ class PieChart {
       .ease(easeFn)
       .attr("transform", textTransform)
       .each(function (d: { data: Slice }) {
-        const el: SVGTextElement = this
-
-        select(el).text(d.data.val)
+        select(this).text(d.data.val)
       })
   }
 
   private render() {
-    const { rootElId, data } = this
+    const { data, rootElId } = this
     const { width } = (document.getElementById(
       rootElId
     ) as HTMLElement).getBoundingClientRect()

@@ -1,0 +1,28 @@
+.fishEyeChart {
+  text {
+    font: 10px sans-serif;
+    text-shadow: 1px 1px 1px #ccc;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    shape-rendering: crispEdges;
+    stroke: #eee;
+  }
+
+  .background {
+    fill: none;
+    pointer-events: all;
+  }
+
+  .chartTitle {
+    font-size: 14px;
+  }
+
+  .pointer {
+    fill: #7aae61;
+    font-size: 15px;
+    opacity: 0;
+  }
+}

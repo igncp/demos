@@ -11,7 +11,7 @@ import {
   timer,
 } from "d3"
 
-import "./icosahedron.styl"
+import * as styles from "./icosahedron.module.css"
 
 type IcosahedronOpts = {
   rootElId: string
@@ -35,10 +35,10 @@ type SvgSelection = Selection<
 >
 
 class Icosahedron {
-  private rootElId: string
+  private readonly rootElId: string
 
   private config!: {
-    color: ScaleOrdinal<string, string, never>
+    color: ScaleOrdinal<string, string>
     defaultVelocity: number[]
     height: number
     rotationFactor1: number
@@ -49,18 +49,42 @@ class Icosahedron {
   }
 
   private dom!: {
-    faces: null | Selection<
+    faces: Selection<
       SVGPathElement,
       FaceWithPolygon,
       SVGSVGElement,
       unknown
-    >
+    > | null
     projection: GeoProjection
     svg: SvgSelection
   }
 
   private vars!: {
     velocity: number[] | null
+  }
+
+  public constructor(opts: IcosahedronOpts) {
+    this.rootElId = opts.rootElId
+    this.setConfig()
+    this.setDom()
+    this.setVars()
+
+    const faces = this.dom.svg
+      .selectAll("path")
+      .data(Icosahedron.getIcosahedronFaces() as FaceWithPolygon[])
+      .enter()
+      .append("path")
+      .each((d) => {
+        d.polygon = polygonHull(d.map(this.dom.projection) as Faces[0]) as Hull
+      })
+      .style("fill", (_d: unknown, index: number) => {
+        const color = this.config.color(`${index}`)
+
+        return color
+      })
+
+    this.dom.faces = faces
+    this.vars.velocity = this.config.defaultVelocity
   }
 
   private static getIcosahedronFaces(): Faces {
@@ -95,30 +119,6 @@ class Icosahedron {
     return faces
   }
 
-  public constructor(opts: IcosahedronOpts) {
-    this.rootElId = opts.rootElId
-    this.setConfig()
-    this.setDom()
-    this.setVars()
-
-    const faces = this.dom.svg
-      .selectAll("path")
-      .data(Icosahedron.getIcosahedronFaces() as FaceWithPolygon[])
-      .enter()
-      .append("path")
-      .each((d) => {
-        d.polygon = polygonHull(d.map(this.dom.projection) as Faces[0]) as Hull
-      })
-      .style("fill", (_d: unknown, index: number) => {
-        const color = this.config.color(`${index}`)
-
-        return color
-      })
-
-    this.dom.faces = faces
-    this.vars.velocity = this.config.defaultVelocity
-  }
-
   public start() {
     timer(() => this.timer())
   }
@@ -143,7 +143,7 @@ class Icosahedron {
   private setDom() {
     const rootEl = document.getElementById(this.rootElId) as HTMLElement
 
-    rootEl.classList.add("icosahedron-chart")
+    rootEl.classList.add(styles.icosahedronChart)
 
     const projection = geoOrthographic().scale(this.config.height / 2 - 10)
     const svg = select(`#${this.rootElId}`)
@@ -165,7 +165,9 @@ class Icosahedron {
   }
 
   private calcNewPosition(time: number, position: Position): Position {
-    const { velocity } = this.vars
+    const {
+      vars: { velocity },
+    } = this
 
     return [
       velocity![0] *
@@ -218,10 +220,14 @@ class Icosahedron {
   }
 }
 
-export default () => {
+const main = () => {
   const chart = new Icosahedron({
     rootElId: "chart",
   })
 
   chart.start()
+
+  return Promise.resolve()
 }
+
+export default main

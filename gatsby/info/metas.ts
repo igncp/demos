@@ -58,6 +58,9 @@ const metas: Metas = {
       description:
         "Trains schedule example using D3.js, with San Francisco as example, and with the addition of a translucent tooltip and a 3D style.",
     },
+    "meteorites-map": {
+      description: "",
+    },
     "multiline-voronoi": {
       description:
         "Multiline chart example using D3.js, with Voronoi functionality and the ability to show a single line after it is clicked. The label and style are also changed.",
@@ -97,7 +100,7 @@ const metas: Metas = {
   },
   home: {
     description:
-      "HTML data visualization demos for the web, rewritten and extended. Using TypeScript with libraries like d3js, Raphael, jQuery UI or Stylus, rendering SVG or Canvas elements.",
+      "HTML data visualization demos for the web, rewritten and extended. Using TypeScript with libraries like d3js, Raphael, animejs or jQuery UI, rendering SVG or Canvas elements.",
   },
   raphael: {
     "bars-3dimensional": {

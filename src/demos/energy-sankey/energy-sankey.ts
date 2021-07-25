@@ -109,7 +109,7 @@ const renderChart = ({
       [width - 1, sankeyHeight - 5],
     ])
 
-  const { nodes, links } = sankeyVal({
+  const { links, nodes } = sankeyVal({
     links: data.links.map((d: EnergyDataLink) => Object.assign({}, d)),
     nodes: data.nodes.map((d: EnergyDataNode) => Object.assign({}, d)),
   })
@@ -338,7 +338,7 @@ const createGradients = (
 ): string => {
   const id = `link-gradient-${fromColor}-${toColor}`.replace(/#/g, "")
 
-  if (addedGradients[id]) {
+  if (id in addedGradients) {
     return id
   }
 

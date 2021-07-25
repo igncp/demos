@@ -1,33 +1,43 @@
-.multiline-voronoi-chart
+.multilineVoronoiChart {
+  position: relative;
+
   .axis path,
-  .axis line
+  .axis line {
     fill: none;
     shape-rendering: crispEdges;
     stroke: #000;
+  }
 
-  .cities
+  .cities {
     fill: none;
+    stroke: #aaa;
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 1.5px;
-    stroke: #aaa;
+  }
 
-  .city--hover
+  .cityHover {
     stroke: #000;
+  }
 
-  .focus text
+  .focus text {
     text-anchor: middle;
     text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+  }
 
-  .voronoi path
+  .voronoi path {
     fill: none;
     pointer-events: all;
+  }
 
-  .voronoi--show path
-    stroke-opacity: .2;
+  .voronoiShow path {
     stroke: red;
+    stroke-opacity: 0.2;
+  }
+}
 
-  #form
-    position: absolute;
-    right: 30px;
-    top: 20px;
+:global #form {
+  position: absolute;
+  right: 30px;
+  top: 20px;
+}

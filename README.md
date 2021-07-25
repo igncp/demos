@@ -6,15 +6,15 @@
 
 Showcase of some client-side demos.
 
-- Backend: It uses Gatsby to generate static pages, with Stylus and PostCSS as CSS compilers
-- Frontend: The main libraries used are D3 and Raphäel
+- Backend: It uses [Gatsby](https://www.gatsbyjs.com/) to generate static pages
+- Frontend: The main library used is [D3](https://d3js.org/), using TypeScript and PostCSS
 - New version: https://igncp.github.io/demos/
 - [TypeScript coverage report](https://igncp.github.io/demos/coverage-ts)
 - Testing page:
     - Some unit tests for external dependencies like D3 for learning their usage better
     - https://igncp.github.io/demos/testing
-    - [src/pages/testing.js](./src/pages/testing.js)
-- Version from 2016 using CoffeeScript and Sail.js: 
+    - [src/pages/testing.js](./src/pages/testing.tsx)
+- Version from 2016 using [CoffeeScript](https://coffeescript.org/) and [Sail.js](https://sailsjs.com/): 
     - http://igncp-demos.herokuapp.com/
     - [Github Branch](https://github.com/igncp/demos/tree/2016-version)
 
@@ -33,8 +33,6 @@ I've updated this repository after it was inactive for several years. The remain
 1. [ ] Style the 404 page
 1. [ ] Remove or change dependencies
     - [ ] Remove Angular and Bootstrap but keep same look and feel
-1. [ ] Port Stylus files to CSS files using PostCSS
-    - Use `npm run print-styl`
 1. [ ] Add disclaimer for old charts
 1. [ ] Resolve TypeScript cases with `any`
 1. [ ] Resolve TypeScript cases with `@ts-ignore`

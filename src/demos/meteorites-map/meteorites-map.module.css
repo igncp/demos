@@ -1,0 +1,20 @@
+.meteorite {
+  fill: orange;
+}
+
+.meteorite.active {
+  fill: red;
+}
+
+.meteorite.moved {
+  fill: green;
+}
+
+.modal {
+  background: #fff;
+  border: 1px solid black;
+  border-radius: 5px;
+  left: 100px;
+  padding: 15px;
+  position: absolute;
+}

@@ -11,7 +11,7 @@ import {
   timeParse,
 } from "d3"
 
-import "./timeline.styl"
+import * as styles from "./timeline.module.css"
 
 type DataItem = {
   end: Date
@@ -22,7 +22,9 @@ type DataItem = {
 }
 
 const fetchData = () =>
-  (csv(`${ROOT_PATH}data/d3js/timeline/data.csv`) as unknown) as DataItem[]
+  (csv(`${ROOT_PATH}data/d3js/timeline/data.csv`) as unknown) as Promise<
+    DataItem[]
+  >
 
 const margin = {
   bottom: 0,
@@ -72,20 +74,20 @@ const toYear = (date: Date) => {
 }
 
 class Timeline {
-  private chart: any
+  private readonly chart: any
   private bandY: number
   private bandNum: number
   private dataContent: any
-  private components: Array<any>
+  private readonly components: any[]
   private bands: any
-  private width: number
+  private readonly width: number
 
   public constructor({ rootElId }: { rootElId: string }) {
     const rootEl = document.getElementById(rootElId) as HTMLElement
 
-    rootEl.classList.add("timeline-chart")
+    rootEl.classList.add(styles.timelineChart)
 
-    const outerWidth = rootEl.getBoundingClientRect().width
+    const { width: outerWidth } = rootEl.getBoundingClientRect()
 
     this.width = outerWidth - margin.left - margin.right
 
@@ -122,12 +124,15 @@ class Timeline {
       .attr("height", height)
 
     svg.on("mouseup", () =>
-      selectAll(".interval rect").style("filter", "url(#drop-shadow-intervals)")
+      selectAll(`.${styles.interval} rect`).style(
+        "filter",
+        "url(#drop-shadow-intervals)"
+      )
     )
 
     this.chart = svg
       .append("g")
-      .attr("class", "chart")
+      .attr("class", styles.chart)
       .attr("clip-path", "url(#chart-area)")
   }
 
@@ -198,7 +203,7 @@ class Timeline {
           let track = 0
 
           for (
-            let i = 0, _i = 0, _ref = tracks.length;
+            let i = 0, _i = 0, { length: _ref } = tracks;
             0 <= _ref ? _i < _ref : _i > _ref;
             i = 0 <= _ref ? ++_i : --_i
           ) {
@@ -219,7 +224,7 @@ class Timeline {
           let track = 0
 
           for (
-            let i = 0, _i = 0, _ref = tracks.length;
+            let i = 0, _i = 0, { length: _ref } = tracks;
             0 <= _ref ? _i < _ref : _i > _ref;
             i = 0 <= _ref ? ++_i : --_i
           ) {
@@ -278,7 +283,9 @@ class Timeline {
   }
 
   public xAxis(bandName: string) {
-    const band = this.bands[bandName]
+    const {
+      bands: { [bandName]: band },
+    } = this
 
     const axis = axisBottom(band.xScale)
       .tickSize(6)
@@ -286,7 +293,7 @@ class Timeline {
 
     const xAxis = this.chart
       .append("g")
-      .attr("class", "axis")
+      .attr("class", styles.axis)
       .attr("transform", `translate(0,${band.y + band.h})`)
 
     xAxis.redraw = function () {
@@ -300,7 +307,7 @@ class Timeline {
   }
 
   public createTooltip() {
-    $(".part.instant, .part.interval").tooltip({
+    $(`.part.${styles.instant}, .part.${styles.interval}`).tooltip({
       track: true,
     })
 
@@ -338,7 +345,7 @@ class Timeline {
       .attr("transform", `translate(0,${band.y})`)
     band.g
       .append("rect")
-      .attr("class", "band")
+      .attr("class", styles.band)
       .attr("width", band.w)
       .attr("height", band.h)
 
@@ -358,13 +365,15 @@ class Timeline {
       })
       .attr("class", (d: DataItem) => {
         if (d.instant) {
-          return "part instant"
+          return `part ${styles.instant}`
         }
 
-        return "part interval"
+        return `part ${styles.interval}`
       })
 
-    const intervals = select(`#band${this.bandNum}`).selectAll(".interval")
+    const intervals = select(`#band${this.bandNum}`).selectAll(
+      `.${styles.interval}`
+    )
 
     intervals
       .append("rect")
@@ -376,11 +385,13 @@ class Timeline {
 
     intervals
       .append("text")
-      .attr("class", "intervalLabel")
+      .attr("class", styles.intervalLabel)
       .attr("x", 3)
       .attr("y", 9.5)
 
-    const instants = select(`#band${this.bandNum}`).selectAll(".instant")
+    const instants = select(`#band${this.bandNum}`).selectAll(
+      `.${styles.instant}`
+    )
 
     instants
       .append("circle")
@@ -389,7 +400,7 @@ class Timeline {
       .attr("r", 5)
     instants
       .append("text")
-      .attr("class", "instantLabel")
+      .attr("class", styles.instantLabel)
       .attr("x", 15)
       .attr("y", 10)
 
@@ -425,7 +436,9 @@ class Timeline {
   }
 
   public labels(bandName: any) {
-    const band = this.bands[bandName]
+    const {
+      bands: { [bandName]: band },
+    } = this
     const labelWidth = 46
     const labelHeight = 20
     const labelTop = band.y + band.h - 10
@@ -433,7 +446,7 @@ class Timeline {
     const labelDefs = [
       [
         "start",
-        "bandMinMaxLabel",
+        styles.bandMinMaxLabel,
         0,
         4,
         function (min: any) {
@@ -445,7 +458,7 @@ class Timeline {
       ],
       [
         "end",
-        "bandMinMaxLabel",
+        styles.bandMinMaxLabel,
         band.w - labelWidth,
         band.w - 4,
         function (_min: any, max: any) {
@@ -457,7 +470,7 @@ class Timeline {
       ],
       [
         "middle",
-        "bandMidLabel",
+        styles.bandMidLabel,
         (band.w - labelWidth) / 2,
         band.w / 2,
         function (min: any, max: any) {
@@ -481,7 +494,7 @@ class Timeline {
 
     bandLabels
       .append("rect")
-      .attr("class", "bandLabel")
+      .attr("class", styles.bandLabel)
       .attr("x", (d: any) => d[2])
       .attr("width", labelWidth)
       .attr("height", labelHeight)
@@ -509,7 +522,9 @@ class Timeline {
   }
 
   public brush(bandName: any, targetNames: any) {
-    const band = this.bands[bandName]
+    const {
+      bands: { [bandName]: band },
+    } = this
     const brush = brushX()
 
     const selectionScale = scaleTime()
@@ -529,7 +544,7 @@ class Timeline {
         ]
       }
 
-      selectAll(".interval rect").style("filter", "none")
+      selectAll(`.${styles.interval} rect`).style("filter", "none")
 
       targetNames.forEach((d: any) => {
         this.bands[d].xScale.domain(newDomain)
@@ -538,7 +553,7 @@ class Timeline {
       })
     })
 
-    const xBrush = band.g.append("svg").attr("class", "x brush").call(brush)
+    const xBrush = band.g.append("svg").attr("class", `x`).call(brush)
 
     xBrush
       .selectAll("rect")

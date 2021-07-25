@@ -7,7 +7,7 @@ export type Meta = {
 
 export type DemoBase = {
   data: string[]
-  docs: [DocName, DocLink][]
+  docs: Array<[DocName, DocLink]>
   isCompleted: boolean
   name: string
   notes: string[]
@@ -27,15 +27,14 @@ export type DemoInfo = DemoBase & {
       content: string
       type: string
     }
-    styl: string
   }
   key: string
 }
 
 export type DemoSummary = {
-  name: DemoBase["name"]
   category: string
   key: string
+  name: DemoBase["name"]
   route: string
 }
 

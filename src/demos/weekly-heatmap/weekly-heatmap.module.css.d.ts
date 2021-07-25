@@ -1,8 +1,8 @@
 declare const styles: {
-  readonly weeklyHeatmapChart: string
+  readonly axisWorktime: string
+  readonly axisWorkweek: string
   readonly bordered: string
   readonly mono: string
-  readonly axisWorkweek: string
-  readonly axisWorktime: string
+  readonly weeklyHeatmapChart: string
 }
 export = styles
