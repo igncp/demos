@@ -14,5 +14,6 @@ module.exports = {
       },
       resolve: `gatsby-plugin-alias-imports`,
     },
+    `gatsby-plugin-postcss`,
   ],
 }

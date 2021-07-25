@@ -1,16 +1,30 @@
-import * as d3 from "d3"
+import {
+  Selection,
+  arc as arcD3,
+  extent,
+  geoOrthographic,
+  interpolate,
+  interpolateNumber,
+  max,
+  pie as pieD3,
+  range,
+  scaleLinear,
+  scaleOrdinal,
+  scaleQuantile,
+  schemePastel2,
+  select,
+} from "d3"
 import QUnitType from "qunit"
 
 const d3Tests = (QUnit: QUnitType) => {
   QUnit.test("d3.arc", (assert) => {
-    const arc = d3.arc().outerRadius(10).innerRadius(0)
+    const arc = arcD3().outerRadius(10).innerRadius(0)
 
     assert.deepEqual(typeof arc({} as any), "string")
   })
 
   QUnit.test("d3.arc#centroid", (assert) => {
-    const arc = d3
-      .arc()
+    const arc = arcD3()
       .outerRadius(50)
       .innerRadius(0)
       .startAngle(0)
@@ -21,13 +35,13 @@ const d3Tests = (QUnit: QUnitType) => {
   })
 
   QUnit.test("d3.extent returns expected values", (assert) => {
-    assert.deepEqual(d3.extent([0, -10, 5, 100, -50, 7]), [-50, 100])
-    assert.deepEqual(d3.extent([]), [undefined, undefined])
-    assert.deepEqual(d3.extent([1, 1]), [1, 1])
+    assert.deepEqual(extent([0, -10, 5, 100, -50, 7]), [-50, 100])
+    assert.deepEqual(extent([]), [undefined, undefined])
+    assert.deepEqual(extent([1, 1]), [1, 1])
   })
 
   QUnit.test("d3.interpolateNumber simple", (assert) => {
-    const interpolator = d3.interpolateNumber(10, 30)
+    const interpolator = interpolateNumber(10, 30)
 
     assert.deepEqual(interpolator(0), 10)
     assert.deepEqual(interpolator(0.5), 20)
@@ -35,7 +49,7 @@ const d3Tests = (QUnit: QUnitType) => {
   })
 
   QUnit.test("d3.interpolate hex colors", (assert) => {
-    const interpolator = d3.interpolate("#ccc", "#fff")
+    const interpolator = interpolate("#ccc", "#fff")
 
     assert.deepEqual(interpolator(0), "rgb(204, 204, 204)")
     assert.deepEqual(interpolator(0.5), "rgb(230, 230, 230)")
@@ -43,7 +57,7 @@ const d3Tests = (QUnit: QUnitType) => {
   })
 
   QUnit.test("d3.interpolate nested", (assert) => {
-    const interpolator = d3.interpolate(
+    const interpolator = interpolate(
       {
         bar: "white",
         foo: 1,
@@ -69,8 +83,8 @@ const d3Tests = (QUnit: QUnitType) => {
   })
 
   QUnit.test("d3.geoOrthographic", (assert) => {
-    const projection100 = d3.geoOrthographic().scale(100)
-    const projection1 = d3.geoOrthographic().scale(1)
+    const projection100 = geoOrthographic().scale(100)
+    const projection1 = geoOrthographic().scale(1)
 
     assert.deepEqual(projection100([0, 0]), [480, 250])
     assert.deepEqual(projection1([0, 0]), [480, 250])
@@ -78,7 +92,7 @@ const d3Tests = (QUnit: QUnitType) => {
 
   QUnit.test("d3.max", (assert) => {
     assert.deepEqual(
-      d3.max([{ foo: 1 }, { foo: 2 }, { foo: -1 }], (d) => d.foo),
+      max([{ foo: 1 }, { foo: 2 }, { foo: -1 }], (d) => d.foo),
       2
     )
   })
@@ -86,8 +100,7 @@ const d3Tests = (QUnit: QUnitType) => {
   QUnit.test("d3.pie generates the expected data", (assert) => {
     type Data = { val: number }
 
-    const pie = d3
-      .pie<Data>()
+    const pie = pieD3<Data>()
       .sort(null)
       .value((d) => d.val)
 
@@ -116,14 +129,14 @@ const d3Tests = (QUnit: QUnitType) => {
   })
 
   QUnit.test("d3.range returns expected values", (assert) => {
-    assert.deepEqual(d3.range(0, 10, 1), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-    assert.deepEqual(d3.range(0, 10, 5), [0, 5])
-    assert.deepEqual(d3.range(0, 10, 6), [0, 6])
-    assert.deepEqual(d3.range(0, 10, 11), [0])
+    assert.deepEqual(range(0, 10, 1), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    assert.deepEqual(range(0, 10, 5), [0, 5])
+    assert.deepEqual(range(0, 10, 6), [0, 6])
+    assert.deepEqual(range(0, 10, 11), [0])
   })
 
   QUnit.test("d3.scaleLinear simple", (assert) => {
-    const scale = d3.scaleLinear().domain([0, 10]).range([1, 2])
+    const scale = scaleLinear().domain([0, 10]).range([1, 2])
 
     assert.deepEqual(scale(0), 1)
     assert.deepEqual(scale(10), 2)
@@ -131,7 +144,7 @@ const d3Tests = (QUnit: QUnitType) => {
   })
 
   QUnit.test("d3.scaleLinear simple 2", (assert) => {
-    const scale = d3.scaleLinear().domain([0, 1]).range([0, 100])
+    const scale = scaleLinear().domain([0, 1]).range([0, 100])
 
     assert.deepEqual(scale(0), 0)
     assert.deepEqual(scale(0.1), 10)
@@ -139,7 +152,7 @@ const d3Tests = (QUnit: QUnitType) => {
   })
 
   QUnit.test("d3.scaleOrdinal with color", (assert) => {
-    const scale = d3.scaleOrdinal(d3.schemePastel2)
+    const scale = scaleOrdinal(schemePastel2)
 
     assert.deepEqual(scale("0"), "#b3e2cd")
   })
@@ -147,7 +160,7 @@ const d3Tests = (QUnit: QUnitType) => {
   // https://observablehq.com/@d3/quantile-quantize-and-threshold-scales
   QUnit.test("d3.scaleQuantile", (assert) => {
     const colors = ["A", "B", "C", "D", "E"]
-    const colorScale = d3.scaleQuantile<string>().domain([0, 100]).range(colors)
+    const colorScale = scaleQuantile<string>().domain([0, 100]).range(colors)
 
     assert.deepEqual(colorScale(0), "A")
     assert.deepEqual(colorScale(19), "A")
@@ -157,11 +170,11 @@ const d3Tests = (QUnit: QUnitType) => {
 
   QUnit.test("d3.select", (assert) => {
     const div = document.createElement("div")
-    const svg: d3.Selection<SVGSVGElement, unknown, null, unknown> = d3
-      .select(div)
-      .append("svg")
+    const svg: Selection<SVGSVGElement, unknown, null, unknown> = select(
+      div
+    ).append("svg")
     // note that here the parent is still null in the types
-    const g: d3.Selection<SVGPathElement, number, null, unknown> = svg
+    const g: Selection<SVGPathElement, number, null, unknown> = svg
       .append("path")
       .data([1])
 

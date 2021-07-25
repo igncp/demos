@@ -2,7 +2,7 @@ import { RaphaelPaper } from "raphael"
 
 import Raphael from "@/demos/_utils/browserRaphael"
 
-import "./bars-3dimensional.styl"
+import * as styles from "./bars-3dimensional.module.css"
 
 const fetchData = async () => {
   const response = await fetch(
@@ -98,7 +98,7 @@ class Chart {
       paper: Raphael(this.rootElId, this.cg.width, 245),
     }
     ;(document.getElementById(this.rootElId) as HTMLElement).classList.add(
-      "bars-3dimensional-chart"
+      styles.bars3DimensionalChart
     )
   }
 

@@ -1,6 +1,6 @@
 import { max as maxD3, scaleQuantile, select, tsv } from "d3"
 
-import "./weekly-heatmap.styl"
+import * as styles from "./weekly-heatmap.module.css"
 
 type TimeItem = {
   day: number
@@ -71,7 +71,7 @@ const renderChart = async ({
 }) => {
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add("weekly-heatmap-chart")
+  rootEl.classList.add(styles.weeklyHeatmapChart)
 
   const width =
     rootEl.getBoundingClientRect().width - margin.left - margin.right
@@ -103,11 +103,13 @@ const renderChart = async ({
     .append("text")
     .text((day) => day)
     .attr("class", (_d, dayIndex) => {
+      const classes = `dayLabel ${styles.mono} axis`
+
       if (dayIndex >= workingDayMin && dayIndex <= workingDayMax) {
-        return "dayLabel mono axis axis-workweek"
+        return `${classes} ${styles.axisWorkweek}`
       }
 
-      return "dayLabel mono axis"
+      return classes
     })
     .attr("transform", `translate(${axisOffset},${cellSize / 1.5})`)
     .attr("x", 0)
@@ -121,11 +123,13 @@ const renderChart = async ({
     .append("text")
     .text((hourStr) => hourStr)
     .attr("class", (_d, hourIndex) => {
+      const classes = `timeLabel ${styles.mono} axis`
+
       if (hourIndex >= workingHourMin && hourIndex <= workingHourMax) {
-        return "timeLabel mono axis axis-worktime"
+        return `${classes} ${styles.axisWorkweek}`
       }
 
-      return "timeLabel mono axis"
+      return classes
     })
     .attr("transform", `translate(${cellSize / 2}, ${axisOffset})`)
     .attr("x", (_d, hourIndex) => hourIndex * cellSize)
@@ -137,7 +141,7 @@ const renderChart = async ({
     .data(data)
     .enter()
     .append("rect")
-    .attr("class", "hour bordered")
+    .attr("class", `hour ${styles.bordered}`)
     .attr("height", cellSize)
     .attr("rx", rectRadiusSize)
     .attr("ry", rectRadiusSize)
@@ -172,7 +176,7 @@ const renderChart = async ({
 
   legend
     .append("text")
-    .attr("class", "mono")
+    .attr("class", styles.mono)
     .text(texts.legendText)
     .style("text-anchor", "middle")
     .attr(

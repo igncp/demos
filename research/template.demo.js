@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-/* global d3, anime, topojson */
+/* global d3, anime, topojson, chroma, qs */
 /* eslint-enable no-unused-vars */
 
 const main = async () => {

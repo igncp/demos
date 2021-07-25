@@ -9,7 +9,7 @@ import {
   select,
 } from "d3"
 
-import "./bars.styl"
+import * as styles from "./bars.module.css"
 
 type Data = number[]
 
@@ -75,7 +75,10 @@ class BarsChart {
 
     const svg = select(`#${rootElId}`).append("svg")
 
-    svg.attr("height", height).attr("width", width).attr("class", "bars-chart")
+    svg
+      .attr("height", height)
+      .attr("width", width)
+      .attr("class", styles.barsChart)
 
     const chart = svg.append("g")
 
@@ -96,14 +99,14 @@ class BarsChart {
     const xAxisG = chart.append("g")
 
     xAxisG
-      .attr("class", "x-axis axis")
+      .attr("class", `xAxis ${styles.axis}`)
       .attr("transform", `translate(0,${floor})`)
       .call(axisBottom(x))
 
     xAxisG
       .append("text")
       .attr("transform", `translate(${(barWidth * data.length) / 2} ,0)`)
-      .attr("class", "x-axis-label")
+      .attr("class", "xAxisLabel")
       .attr("y", 40)
       .attr("font-size", "1.3em")
       .attr("fill", "black")
@@ -113,7 +116,7 @@ class BarsChart {
     const yAxisG = chart.append("g")
 
     yAxisG
-      .attr("class", "x-axis axis")
+      .attr("class", `yAxis ${styles.axis}`)
       .attr("transform", `translate(0,${floor})`)
       .call(axisLeft(y))
 
@@ -186,14 +189,10 @@ class BarsChart {
 
     const newAxis = axisBottom(newX)
 
-    chart
-      .select<SVGGElement>(".x-axis")
-      .transition()
-      .duration(500)
-      .call(newAxis)
+    chart.select<SVGGElement>(".xAxis").transition().duration(500).call(newAxis)
 
     chart
-      .select(".x-axis-label")
+      .select(".xAxisLabel")
       .transition()
       .duration(500)
       .attr("transform", `translate(${(barWidth * data.length) / 2} ,0)`)

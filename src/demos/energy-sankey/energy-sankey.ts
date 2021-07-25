@@ -18,7 +18,7 @@ import chroma from "chroma-js"
 import anime from "animejs"
 import hotkeys from "hotkeys-js"
 
-import "./energy-sankey.styl"
+import * as styles from "./energy-sankey.module.css"
 
 type EnergyDataLink = {
   source: string
@@ -122,7 +122,7 @@ const renderChart = ({
     .selectAll("rect")
     .data<EnergySankeyNode>(nodes)
     .join("rect")
-    .attr("class", "energy-node")
+    .attr("class", styles.energyNode)
     .attr("x", (d: EnergySankeyNode) => d.x0!)
     .attr("y", (d: EnergySankeyNode) => d.y0!)
     .attr("height", (d: EnergySankeyNode) => d.y1! - d.y0!)
@@ -183,7 +183,7 @@ const renderChart = ({
     .selectAll("g")
     .data<EnergySankeyLink>(links)
     .join("g")
-    .attr("class", "energy-link-g")
+    .attr("class", styles.energyLinkG)
 
   const linkPathGenerator = sankeyLinkHorizontal()
   const addedGradients: AddedGradients = {}
@@ -213,7 +213,7 @@ const renderChart = ({
 
       return `url(#${id})`
     })
-    .attr("class", "energy-link")
+    .attr("class", styles.energyLink)
     .attr("stroke-width", (d) => Math.max(1, d.width!))
     .on("click", function () {
       if (state.isInTransition) return

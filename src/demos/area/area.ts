@@ -13,7 +13,7 @@ import {
 } from "d3"
 import { Delaunay } from "d3-delaunay"
 
-import "./area.styl"
+import * as styles from "./area.module.css"
 
 type Point = {
   index?: number
@@ -61,11 +61,11 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .attr("width", width + margin.left + margin.right)
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`)
-    .attr("class", "area-chart")
+    .attr("class", styles.areaChart)
 
   svg
     .append("text")
-    .attr("class", "chart-title")
+    .attr("class", styles.chartTitle)
     .attr("text-anchor", "middle")
     .attr("transform", `translate(${width / 2},${titleYOffset})`)
     .text(texts.title)
@@ -93,7 +93,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
 
   svg
     .append("g")
-    .attr("class", "x axis")
+    .attr("class", `${styles.x} ${styles.axis}`)
     .attr("transform", `translate(0,${height})`)
     .call(xAxis)
     .selectAll("text")
@@ -101,7 +101,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
 
   svg
     .append("g")
-    .attr("class", "y axis")
+    .attr("class", `${styles.y} ${styles.axis}`)
     .call(yAxis)
     .selectAll("text")
     .attr("dx", "-.25em")
@@ -118,7 +118,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   svg
     .append("path")
     .datum(data)
-    .attr("class", "line")
+    .attr("class", styles.line)
     .attr("d", line)
     .attr("clip-path", "url(#clip)")
 
@@ -132,7 +132,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   svg
     .append("path")
     .datum(data)
-    .attr("class", "area")
+    .attr("class", styles.area)
     .attr("d", area)
     .attr("clip-path", "url(#clip)")
 
@@ -168,11 +168,12 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .attr("r", "5px")
     .attr(
       "class",
-      (_point: Point, pointIndex: number) => `point point-${pointIndex}`
+      (_point: Point, pointIndex: number) =>
+        `${styles.point} point-${pointIndex}`
     )
     .style("filter", "url(#drop-shadow-points)")
 
-  const voronoiGroup = svg.append("g").attr("class", "voronoi")
+  const voronoiGroup = svg.append("g").attr("class", styles.voronoi)
 
   voronoiGroup
     .selectAll("path")
@@ -192,10 +193,11 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   return {
     toggleVoronoi: () => {
       const currentClass = voronoiGroup.attr("class")
+      const { showVoronoi } = styles
 
-      const newClass = currentClass.includes("show-voronoi")
-        ? currentClass.replace("show-voronoi", "").trim()
-        : `${currentClass} show-voronoi`
+      const newClass = currentClass.includes(showVoronoi)
+        ? currentClass.replace(showVoronoi, "").trim()
+        : `${currentClass} ${showVoronoi}`
 
       voronoiGroup.attr("class", newClass)
     },

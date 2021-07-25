@@ -11,10 +11,29 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css" media="screen" title="no title" charset="utf-8">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/query-string/7.0.1/index.js" integrity="sha512-MX/WOWvTqLDLuzUxBX6PAK9SD0gb2CZi74FfPVJDgL68a7WJAXWvQFeM4G5yc9AXs7GKMqH0OAuPRUl6BIbTmw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.1/qs.min.js" integrity="sha512-aTKlYRb1QfU1jlF3k+aS4AqTpnTXci4R79mkdie/bp6Xm51O5O3ESAYhvg6zoicj/PD6VYY0XrYwsWLcvGiKZQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   </head>
   <body>
     <div id="chart"></div>
     <script src="./demo.js" charset="utf-8"></script>
+    <style type="text/css" media="screen">
+.asteroid {
+  fill: orange;
+}
+.asteroid.active {
+  fill: red;
+}
+.asteroid.moved {
+  fill: green;
+}
+.modal {
+  background: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid black;
+  position: absolute;
+  top: -200px;
+}
+    </style>
   </body>
 </html>

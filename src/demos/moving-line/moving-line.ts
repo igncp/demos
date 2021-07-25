@@ -2,7 +2,7 @@ import { RaphaelPaper, RaphaelPath, RaphaelElement } from "raphael"
 
 import Raphael from "@/demos/_utils/browserRaphael"
 
-import "./moving-line.styl"
+import * as styles from "./moving-line.module.css"
 
 type Data = {
   charts: Array<{
@@ -36,7 +36,7 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
   const initLineGraph = function () {
     const rootEl = document.getElementById(rootElId) as HTMLElement
 
-    rootEl.classList.add("moving-line-chart")
+    rootEl.classList.add(styles.movingLineChart)
 
     const { width } = rootEl.getBoundingClientRect()
     const paper = Raphael(rootElId, width, height)
@@ -77,7 +77,7 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
 
       const circle = graphData.paper.circle(xPos, yPos, radius)
 
-      circle.node.className.baseVal = "point"
+      circle.node.className.baseVal = styles.point
       circle.attr("title", `Value: ${0}`)
       points[i].point = circle
       i++

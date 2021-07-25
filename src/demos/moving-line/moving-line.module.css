@@ -1,0 +1,10 @@
+.movingLineChart {
+  path {
+    fill: none;
+    stroke: black;
+  }
+
+  .point {
+    fill: #87b189;
+  }
+}

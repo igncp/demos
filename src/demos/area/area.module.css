@@ -1,0 +1,58 @@
+.areaChart {
+  path.line {
+    fill: none;
+    stroke: #25a6fc;
+    stroke-width: 3.5px;
+  }
+
+  path.area {
+    fill: #6e6ea7;
+    opacity: 0.5;
+  }
+
+  .axis {
+    fill: #333;
+    shape-rendering: crispEdges;
+  }
+
+  .chartTitle {
+    font-weight: bold;
+  }
+
+  .x.axis .minor {
+    fill: #000;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    shape-rendering: crispEdges;
+    stroke: #ccc;
+  }
+
+  .y.axis line,
+  .y.axis path,
+  .x.axis line,
+  .x.axis path {
+    fill: none;
+    stroke: #ccc;
+  }
+
+  .voronoi {
+    fill: black;
+    opacity: 0;
+    stroke: black;
+    stroke-width: 0.1;
+  }
+
+  .voronoi.showVoronoi {
+    fill: rgba(0, 0, 0, 0);
+    opacity: 1;
+    stroke-width: 1;
+  }
+
+  .point {
+    display: none;
+    fill: #69d895;
+  }
+}

@@ -14,7 +14,7 @@ import {
   select,
 } from "d3"
 
-import "./chord.styl"
+import * as styles from "./chord.module.css"
 
 type CSVDataItem = {
   amount: string
@@ -158,7 +158,7 @@ type RenderChart = (o: { rootElId: string; data: Data }) => void
 const renderChart: RenderChart = ({ rootElId, data }) => {
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add("chord-chart")
+  rootEl.classList.add(styles.chordChart)
 
   const width = rootEl.getBoundingClientRect().width / 2 - 20
 
@@ -196,7 +196,7 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
       .append("text")
       .text(label)
       .attr("transform", `translate(0,${(-1 * height) / 2 - 10})`)
-      .attr("class", "chart-title")
+      .attr("class", styles.chartTitle)
       .attr("text-anchor", "middle")
   }
 
@@ -232,11 +232,11 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
     const ribbonLayout = ribbon().radius(r0)
 
     svgComp
-      .selectAll("path.chord")
+      .selectAll(`path.${styles.chord}`)
       .data(chordData)
       .enter()
       .append("svg:path")
-      .attr("class", "chord")
+      .attr("class", styles.chord)
       .style("fill", (d) => fill(d.target.index))
       .style("filter", "url(#drop-shadow-chords)")
       .style("stroke", (d) => {
@@ -258,11 +258,11 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
       })
 
     const g = svgComp
-      .selectAll("g.group")
+      .selectAll(`g.${styles.group}`)
       .data(chordData.groups)
       .enter()
       .append("svg:g")
-      .attr("class", "group")
+      .attr("class", styles.group)
 
     g.append("svg:path")
       .style("fill", (d) => fill(d.index))
@@ -284,7 +284,7 @@ const renderChart: RenderChart = ({ rootElId, data }) => {
       .append("svg:textPath")
       .attr("xlink:href", (d) => `#group${d.index}-${chartIndex}`)
       .text((d) => fullList[d.index].name)
-      .attr("class", "heading-title")
+      .attr("class", styles.headingTitle)
   })
 }
 

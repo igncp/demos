@@ -1,0 +1,19 @@
+.barsChart {
+  $axisColor: #777;
+
+  rect {
+    stroke: white;
+  }
+
+  .axis {
+    path {
+      fill: none;
+      stroke: $axisColor;
+      stroke-width: 1px;
+    }
+
+    :global .tick line {
+      stroke: $axisColor;
+    }
+  }
+}

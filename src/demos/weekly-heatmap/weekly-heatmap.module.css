@@ -1,0 +1,22 @@
+.weeklyHeatmapChart {
+  $highlightAxisColor: #ccc;
+
+  rect.bordered {
+    stroke: #e6e6e6;
+    stroke-width: 2px;
+  }
+
+  text.mono {
+    fill: #aaa;
+    font-family: Consolas, courier, sans-serif;
+    font-size: 9pt;
+  }
+
+  text.axisWorkweek {
+    fill: $highlightAxisColor;
+  }
+
+  text.axisWorktime {
+    fill: $highlightAxisColor;
+  }
+}
