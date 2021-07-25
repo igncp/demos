@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye.ts</td><td class="">99.03%</td><td class="">90%</td><td class="">518</td><td class="">513</td><td class="">5</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye.ts</td><td class="">99.07%</td><td class="">90%</td><td class="">535</td><td class="">530</td><td class="">5</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Axis,
   ScaleOrdinal,
   ScalePower,
@@ -31,7 +31,7 @@
 
 import d3Fisheye, { FishEyeScale } from &quot;@/demos/_utils/fish-eye&quot;
 
-import &quot;./fish-eye.styl&quot;
+import * as styles from &quot;./fish-eye.module.css&quot;
 
 type DataItem = {
   income: number
@@ -48,7 +48,6 @@ const fetchData = async (): Promise&lt;Data | undefined&gt; =&gt;
 const humanizeNumber = (initialN: number): string =&gt; {
   let n = initialN.toString()
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const n2 = n.replace(/(\d)(\d{3})($|,|\.)/g, &quot;$1,$2$3&quot;)
 
@@ -71,31 +70,33 @@ const margin = {
 const height = 700 - margin.top - margin.bottom
 
 type FishEyeChartOpts = {
-  rootElId: string
   data: Data
+  rootElId: string
 }
 
 class FishEyeChart {
-  private rootElId: string
-  private data: Data
+  private readonly rootElId: string
+  private readonly data: Data
 
   private width!: number
+
   private dom!: {
-    svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
     dot?: Selection&lt;SVGCircleElement, DataItem, SVGGElement, unknown&gt;
     pointer?: Selection&lt;SVGTextElement, unknown, HTMLElement, unknown&gt;
+    svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
     xAxis?: Axis&lt;DataItem[&quot;income&quot;]&gt;
     yAxis?: Axis&lt;DataItem[&quot;lifeExpectancy&quot;]&gt;
   }
+
   private vars!: {
-    colorScale: ScaleOrdinal&lt;string, string, never&gt;
+    colorScale: ScaleOrdinal&lt;string, string&gt;
     focused: boolean
-    radiusScale: ScalePower&lt;number, number, never&gt;
+    radiusScale: ScalePower&lt;number, number&gt;
     xScale: FishEyeScale
     yScale: FishEyeScale
   }
 
-  public constructor({ rootElId, data }: FishEyeChartOpts) {
+  public constructor({ data, rootElId }: FishEyeChartOpts) {
     this.rootElId = rootElId
     this.data = data
 
@@ -120,7 +121,7 @@ class FishEyeChart {
   private setupRootEl() {
     const rootEl = document.getElementById(this.rootElId) as HTMLElement
 
-    rootEl.classList.add(&quot;fish-eye-chart&quot;)
+    rootEl.classList.add(styles.fishEyeChart)
 
     this.width =
       rootEl.getBoundingClientRect().width - margin.left - margin.right
@@ -140,7 +141,7 @@ class FishEyeChart {
   private setChartTitle() {
     this.dom.svg
       .append(&quot;text&quot;)
-      .attr(&quot;class&quot;, &quot;chart-title&quot;)
+      .attr(&quot;class&quot;, styles.chartTitle)
       .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
       .attr(&quot;transform&quot;, `translate(${this.width / 2},-40)`)
       .text(
@@ -190,16 +191,19 @@ class FishEyeChart {
     )
     this.dom.svg
       .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, &quot;x axis&quot;)
+      .attr(&quot;class&quot;, `x ${styles.axis}`)
       .attr(&quot;transform&quot;, `translate(0,${height})`)
       .call(this.dom.xAxis)
-    this.dom.svg.append(&quot;g&quot;).attr(&quot;class&quot;, &quot;y axis&quot;).call(this.dom.yAxis)
+    this.dom.svg
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, `y ${styles.axis}`)
+      .call(this.dom.yAxis)
   }
 
   private setBackground() {
     return this.dom.svg
       .append(&quot;rect&quot;)
-      .attr(&quot;class&quot;, &quot;background&quot;)
+      .attr(&quot;class&quot;, styles.background)
       .attr(&quot;width&quot;, this.width)
       .attr(&quot;height&quot;, height)
   }
@@ -303,15 +307,15 @@ class FishEyeChart {
     this.vars.yScale.distortion(2.5).focus(mouse[1])
     this.position()
 
-    this.dom.svg.select&lt;SVGGElement&gt;(&quot;.x.axis&quot;).call(this.dom.xAxis!)
-    this.dom.svg.select&lt;SVGGElement&gt;(&quot;.y.axis&quot;).call(this.dom.yAxis!)
+    this.dom.svg.select&lt;SVGGElement&gt;(`.x.${styles.axis}`).call(this.dom.xAxis!)
+    this.dom.svg.select&lt;SVGGElement&gt;(`.y.${styles.axis}`).call(this.dom.yAxis!)
   }
 
   private setPointer() {
     this.dom.pointer = this.dom.svg
       .append(&quot;text&quot;)
       .text(&quot;+&quot;)
-      .attr(&quot;class&quot;, &quot;pointer&quot;)
+      .attr(&quot;class&quot;, styles.pointer)
   }
 
   private bindMousemove() {
@@ -356,8 +360,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:10,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:10,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:159,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:304,&quot;character&quot;:41,&quot;text&quot;:&quot;ev&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 12:25:55 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:10,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:157,&quot;character&quot;:10,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:160,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:308,&quot;character&quot;:41,&quot;text&quot;:&quot;ev&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 22:42:09 GMT</p>
     </body>
   </html>
   

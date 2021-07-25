@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/mareys-schedule.ts</td><td class="">98.74%</td><td class="">90%</td><td class="">557</td><td class="">550</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/mareys-schedule.ts</td><td class="">98.81%</td><td class="">90%</td><td class="">586</td><td class="">579</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Selection,
   axisBottom,
   axisTop,
@@ -27,13 +27,15 @@
 import each from &quot;lodash/each&quot;
 import last from &quot;lodash/last&quot;
 
-import &quot;./mareys-schedule.styl&quot;
+import * as styles from &quot;./mareys-schedule.module.css&quot;
+
+type TrainType = &quot;B&quot; | &quot;L&quot; | &quot;N&quot;
 
 type RawDataItem = {
+  [stop: string]: string
   direction: string
   number: string
-  type: string
-  [stop: string]: string
+  type: TrainType
 }
 
 type Station = {
@@ -54,7 +56,7 @@ type Train = {
   index: number
   number: string
   stops: Stop[]
-  type: string
+  type: TrainType
 }
 
 type Data = {
@@ -66,6 +68,12 @@ type Limits = [number, number]
 type LimitsStr = [string, string]
 
 type Redraw = (range: LimitsStr) =&gt; void
+
+const trainTypeToStyle: { [key in TrainType]: string } = {
+  B: styles.tB,
+  L: styles.tL,
+  N: styles.tN,
+}
 
 const fetchData = async (): Promise&lt;Data&gt; =&gt; {
   const data = ((await tsv(
@@ -207,11 +215,11 @@ const margin = {
 
 const height = 600 - margin.top - margin.bottom
 
-const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt; {
+const renderChart = ({ data, rootElId }: { data: Data; rootElId: string }) =&gt; {
   const { stations, trains } = data
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add(&quot;mareys-schedule-chart&quot;)
+  rootEl.classList.add(styles.mareysScheduleChart)
 
   const width =
     rootEl.getBoundingClientRect().width - margin.left - margin.right
@@ -239,10 +247,10 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt;
 
     svg
       .append(&quot;text&quot;)
-      .attr(&quot;class&quot;, &quot;chart-title&quot;)
+      .attr(&quot;class&quot;, styles.chartTitle)
       .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
       .attr(&quot;transform&quot;, `translate(${width / 2},-40)`)
-      .text(&quot;E.J. Marey’s graphical train schedule &quot; + &quot; (4:30AM - 1:30AM)&quot;)
+      .text(&quot;E.J. Marey’s graphical train schedule (4:30AM - 1:30AM)&quot;)
       .style(&quot;font-weight&quot;, &quot;bold&quot;)
 
     filterBlackOpacity(&quot;trains&quot;, svg, 2, 0.2)
@@ -260,7 +268,7 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt;
 
     const station = svg
       .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, &quot;station&quot;)
+      .attr(&quot;class&quot;, styles.station)
       .selectAll(&quot;g&quot;)
       .data(stations)
       .enter()
@@ -273,10 +281,10 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt;
       .attr(&quot;dy&quot;, &quot;.35em&quot;)
       .text((d) =&gt; d.name)
     station.append(&quot;line&quot;).attr(&quot;x2&quot;, width)
-    svg.append(&quot;g&quot;).attr(&quot;class&quot;, &quot;x top axis&quot;).call(xAxisTop)
+    svg.append(&quot;g&quot;).attr(&quot;class&quot;, `x top ${styles.axis}`).call(xAxisTop)
     svg
       .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, &quot;x bottom axis&quot;)
+      .attr(&quot;class&quot;, `x bottom ${styles.axis}`)
       .attr(&quot;transform&quot;, `translate(0,${height})`)
       .call(xAxisBottom)
 
@@ -290,13 +298,13 @@ const renderChart = ({ rootElId, data }: { rootElId: string; data: Data }) =&gt;
 
     const train = svg
       .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, &quot;train&quot;)
+      .attr(&quot;class&quot;, styles.train)
       .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
       .selectAll(&quot;g&quot;)
       .data(trains.filter((d) =&gt; /[NLB]/.test(d.type)))
       .enter()
       .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, (d) =&gt; `${d.type} train-${d.index}`)
+      .attr(&quot;class&quot;, (d) =&gt; `${trainTypeToStyle[d.type]} train-${d.index}`)
       .on(&quot;mouseover&quot;, mouseover)
       .on(&quot;mouseleave&quot;, mouseleave)
 
@@ -399,8 +407,8 @@ const filterBlackOpacity = (
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:339,&quot;character&quot;:8,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:341,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:341,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:343,&quot;character&quot;:29,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:343,&quot;character&quot;:36,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:350,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:350,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 12:25:55 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:347,&quot;character&quot;:8,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:349,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:349,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:351,&quot;character&quot;:29,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:351,&quot;character&quot;:36,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:358,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:358,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 22:42:09 GMT</p>
     </body>
   </html>
   

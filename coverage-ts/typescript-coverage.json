@@ -9,6 +9,20 @@
       "kind": 1
     },
     {
+      "file": "src/components/demo.tsx",
+      "line": 35,
+      "character": 18,
+      "text": "e",
+      "kind": 1
+    },
+    {
+      "file": "src/components/demo.tsx",
+      "line": 37,
+      "character": 30,
+      "text": "e",
+      "kind": 1
+    },
+    {
       "file": "src/testing/raphael.ts",
       "line": 2,
       "character": 6,
@@ -444,84 +458,77 @@
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 200,
+      "line": 206,
       "character": 25,
       "text": "inner",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 201,
+      "line": 207,
       "character": 25,
       "text": "outer",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 204,
+      "line": 210,
       "character": 25,
       "text": "el",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 204,
+      "line": 210,
       "character": 28,
       "text": "push",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 205,
+      "line": 211,
       "character": 27,
       "text": "inner",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 206,
+      "line": 212,
       "character": 27,
       "text": "outer",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 208,
+      "line": 214,
       "character": 25,
       "text": "el",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 208,
+      "line": 214,
       "character": 28,
       "text": "transform",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 213,
+      "line": 219,
       "character": 32,
       "text": "el",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 214,
+      "line": 220,
       "character": 9,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 215,
-      "character": 9,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 216,
+      "line": 221,
       "character": 9,
       "text": "attr",
       "kind": 1
@@ -529,6 +536,13 @@
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
       "line": 222,
+      "character": 9,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
+      "line": 228,
       "character": 8,
       "text": "data",
       "kind": 1
@@ -934,42 +948,42 @@
     },
     {
       "file": "src/demos/collapsible-tree/collapsible-tree.ts",
-      "line": 132,
+      "line": 135,
       "character": 20,
       "text": "_event",
       "kind": 1
     },
     {
       "file": "src/demos/fish-eye/fish-eye.ts",
-      "line": 152,
+      "line": 153,
       "character": 10,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/fish-eye/fish-eye.ts",
-      "line": 155,
+      "line": 156,
       "character": 7,
       "text": "range",
       "kind": 1
     },
     {
       "file": "src/demos/fish-eye/fish-eye.ts",
-      "line": 156,
+      "line": 157,
       "character": 10,
       "text": "yScale",
       "kind": 1
     },
     {
       "file": "src/demos/fish-eye/fish-eye.ts",
-      "line": 159,
+      "line": 160,
       "character": 7,
       "text": "range",
       "kind": 1
     },
     {
       "file": "src/demos/fish-eye/fish-eye.ts",
-      "line": 304,
+      "line": 308,
       "character": 41,
       "text": "ev",
       "kind": 1
@@ -997,6 +1011,13 @@
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
+      "line": 71,
+      "character": 2,
+      "text": "type",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/map-distorsions/map-distorsions.ts",
       "line": 154,
       "character": 12,
       "text": "scale",
@@ -1007,6 +1028,13 @@
       "line": 154,
       "character": 18,
       "text": "domain",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/map-distorsions/map-distorsions.ts",
+      "line": 155,
+      "character": 14,
+      "text": "type",
       "kind": 1
     },
     {
@@ -1025,51 +1053,1038 @@
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 339,
+      "line": 347,
       "character": 8,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 341,
+      "line": 349,
       "character": 2,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 341,
+      "line": 349,
       "character": 9,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 343,
+      "line": 351,
       "character": 29,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 343,
+      "line": 351,
       "character": 36,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 350,
+      "line": 358,
       "character": 2,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 350,
+      "line": 358,
       "character": 9,
       "text": "slider",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 29,
+      "character": 5,
+      "text": "Countries",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 44,
+      "character": 21,
+      "text": "countries",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 44,
+      "character": 32,
+      "text": "Countries",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 60,
+      "character": 2,
+      "text": "modal",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 64,
+      "character": 2,
+      "text": "modal",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 86,
+      "character": 6,
+      "text": "modal",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 86,
+      "character": 12,
+      "text": "text",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 94,
+      "character": 2,
+      "text": "allMeteorites",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 95,
+      "character": 2,
+      "text": "projectionFn",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 96,
+      "character": 2,
+      "text": "targetMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 98,
+      "character": 8,
+      "text": "targetProj",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 98,
+      "character": 21,
+      "text": "projectionFn",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 98,
+      "character": 34,
+      "text": "targetMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 98,
+      "character": 50,
+      "text": "geometry",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 98,
+      "character": 59,
+      "text": "coordinates",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 100,
+      "character": 8,
+      "text": "nearMeteorites",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 100,
+      "character": 25,
+      "text": "allMeteorites",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 101,
+      "character": 5,
+      "text": "slice",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 102,
+      "character": 5,
+      "text": "filter",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 102,
+      "character": 13,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 102,
+      "character": 39,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 102,
+      "character": 54,
+      "text": "geometry",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 103,
+      "character": 5,
+      "text": "map",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 103,
+      "character": 10,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 105,
+      "character": 33,
+      "text": "otherMeteoriteCoordinates",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 107,
+      "character": 12,
+      "text": "proj",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 107,
+      "character": 19,
+      "text": "projectionFn",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 107,
+      "character": 32,
+      "text": "otherMeteoriteCoordinates",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 108,
+      "character": 22,
+      "text": "proj",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 108,
+      "character": 32,
+      "text": "targetProj",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 108,
+      "character": 47,
+      "text": "proj",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 108,
+      "character": 57,
+      "text": "targetProj",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 114,
+      "character": 11,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 119,
+      "character": 5,
+      "text": "filter",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 120,
+      "character": 7,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 121,
+      "character": 8,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 121,
+      "character": 23,
+      "text": "vectorLength",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 121,
+      "character": 44,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 121,
+      "character": 59,
+      "text": "vectorLength",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 123,
+      "character": 5,
+      "text": "map",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 123,
+      "character": 10,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 124,
+      "character": 9,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 126,
+      "character": 8,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 126,
+      "character": 23,
+      "text": "vector",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 126,
+      "character": 35,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 126,
+      "character": 50,
+      "text": "vectorLength",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 127,
+      "character": 8,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 127,
+      "character": 23,
+      "text": "vector",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 127,
+      "character": 35,
+      "text": "otherMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 127,
+      "character": 50,
+      "text": "vectorLength",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 131,
+      "character": 36,
+      "text": "nearMeteorites",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 131,
+      "character": 51,
+      "text": "map",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 131,
+      "character": 56,
+      "text": "a",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 131,
+      "character": 67,
+      "text": "a",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 131,
+      "character": 69,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 133,
+      "character": 8,
+      "text": "vectorsMap",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 133,
+      "character": 21,
+      "text": "nearMeteorites",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 133,
+      "character": 36,
+      "text": "reduce",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 133,
+      "character": 44,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 133,
+      "character": 54,
+      "text": "nearMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 134,
+      "character": 4,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 134,
+      "character": 8,
+      "text": "nearMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 134,
+      "character": 22,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 134,
+      "character": 28,
+      "text": "nearMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 134,
+      "character": 42,
+      "text": "vectorNormalized",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 136,
+      "character": 11,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 140,
+      "character": 4,
+      "text": "nearMeteorites",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 142,
+      "character": 4,
+      "text": "vectorsMap",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 151,
+      "character": 2,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 152,
+      "character": 2,
+      "text": "meteoritesEls",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 153,
+      "character": 2,
+      "text": "meteoritesParsed",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 154,
+      "character": 2,
+      "text": "modal",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 155,
+      "character": 2,
+      "text": "projectionFn",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 156,
+      "character": 2,
+      "text": "rootElId",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 157,
+      "character": 2,
+      "text": "state",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 159,
+      "character": 6,
+      "text": "state",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 159,
+      "character": 12,
+      "text": "isDuringAnimation",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 163,
+      "character": 6,
+      "text": "state",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 163,
+      "character": 12,
+      "text": "selectedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 163,
+      "character": 34,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 163,
+      "character": 51,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 166,
+      "character": 6,
+      "text": "modal",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 173,
+      "character": 2,
+      "text": "state",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 173,
+      "character": 8,
+      "text": "selectedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 173,
+      "character": 28,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 173,
+      "character": 45,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 175,
+      "character": 41,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 175,
+      "character": 58,
+      "text": "year",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 176,
+      "character": 46,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 176,
+      "character": 63,
+      "text": "mass",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 178,
+      "character": 2,
+      "text": "modal",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 178,
+      "character": 8,
+      "text": "html",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 180,
+      "character": 6,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 180,
+      "character": 23,
+      "text": "name",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 181,
+      "character": 27,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 181,
+      "character": 44,
+      "text": "recclass",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 182,
+      "character": 44,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 182,
+      "character": 61,
+      "text": "nametype",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 184,
+      "character": 12,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 184,
+      "character": 29,
+      "text": "name",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 189,
+      "character": 29,
+      "text": "vectorsMap",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 190,
+      "character": 4,
+      "text": "allMeteorites",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 190,
+      "character": 19,
+      "text": "meteoritesParsed",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 191,
+      "character": 4,
+      "text": "projectionFn",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 192,
+      "character": 4,
+      "text": "targetMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 192,
+      "character": 21,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 195,
+      "character": 25,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 196,
+      "character": 19,
+      "text": "animatedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 196,
+      "character": 13,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 199,
+      "character": 6,
+      "text": "animatedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 199,
+      "character": 24,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 199,
+      "character": 31,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 199,
+      "character": 48,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 200,
+      "character": 29,
+      "text": "animatedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 200,
+      "character": 47,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 204,
+      "character": 2,
+      "text": "meteoritesEls",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 204,
+      "character": 16,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 204,
+      "character": 31,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 205,
+      "character": 30,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 205,
+      "character": 32,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 209,
+      "character": 11,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 209,
+      "character": 13,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 209,
+      "character": 20,
+      "text": "clickedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 209,
+      "character": 37,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 214,
+      "character": 26,
+      "text": "coordIdx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 214,
+      "character": 59,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 215,
+      "character": 22,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 219,
+      "character": 19,
+      "text": "animatedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 219,
+      "character": 13,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 220,
+      "character": 36,
+      "text": "vectorNormalized",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 220,
+      "character": 13,
+      "text": "animatedMeteorite",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 220,
+      "character": 31,
+      "text": "id",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 222,
+      "character": 11,
+      "text": "vectorNormalized",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 222,
+      "character": 28,
+      "text": "coordIdx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 293,
+      "character": 2,
+      "text": "countries",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 293,
+      "character": 13,
+      "text": "Countries",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 298,
+      "character": 36,
+      "text": "countries",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 370,
+      "character": 10,
+      "text": "countries",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 370,
+      "character": 20,
+      "text": "features",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 404,
+      "character": 10,
+      "text": "countries",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 407,
+      "character": 4,
+      "text": "countries",
       "kind": 1
     },
     {
@@ -1158,1584 +2173,1563 @@
     },
     {
       "file": "src/demos/spain-map/spain-map.ts",
-      "line": 81,
-      "character": 8,
+      "line": 77,
+      "character": 20,
       "text": "dataGeo",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map.ts",
-      "line": 81,
-      "character": 51,
-      "text": "features",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/spain-map/spain-map.ts",
-      "line": 83,
+      "line": 79,
       "character": 2,
       "text": "dataGeo",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map.ts",
-      "line": 83,
+      "line": 79,
       "character": 10,
       "text": "forEach",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map.ts",
-      "line": 88,
+      "line": 84,
       "character": 34,
       "text": "geometries",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map.ts",
-      "line": 88,
+      "line": 84,
       "character": 45,
       "text": "length",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 74,
-      "character": 10,
+      "line": 76,
+      "character": 19,
       "text": "chart",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 77,
-      "character": 10,
-      "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
       "line": 79,
       "character": 10,
-      "text": "bands",
+      "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 94,
-      "character": 9,
-      "text": "dataContent",
+      "line": 81,
+      "character": 10,
+      "text": "bands",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
       "line": 96,
       "character": 9,
+      "text": "dataContent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 98,
+      "character": 9,
       "text": "bands",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 127,
+      "line": 132,
       "character": 9,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 141,
+      "line": 146,
       "character": 9,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 141,
+      "line": 146,
       "character": 21,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 143,
+      "line": 148,
       "character": 39,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 143,
+      "line": 148,
       "character": 51,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 144,
+      "line": 149,
       "character": 19,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 144,
+      "line": 149,
       "character": 25,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 144,
+      "line": 149,
       "character": 33,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 144,
+      "line": 149,
       "character": 39,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 154,
+      "line": 159,
       "character": 15,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 154,
+      "line": 159,
       "character": 21,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 154,
+      "line": 159,
       "character": 27,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 154,
+      "line": 159,
       "character": 33,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 167,
+      "line": 172,
       "character": 40,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 167,
+      "line": 172,
       "character": 52,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 168,
+      "line": 173,
       "character": 19,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 168,
+      "line": 173,
       "character": 25,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 168,
+      "line": 173,
       "character": 33,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 168,
+      "line": 173,
       "character": 39,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 178,
+      "line": 183,
       "character": 15,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 178,
+      "line": 183,
       "character": 21,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 178,
+      "line": 183,
       "character": 27,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 178,
+      "line": 183,
       "character": 33,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 191,
+      "line": 196,
       "character": 29,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 191,
+      "line": 196,
       "character": 41,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 191,
+      "line": 196,
       "character": 57,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 192,
+      "line": 197,
       "character": 6,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 192,
+      "line": 197,
       "character": 18,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 193,
+      "line": 198,
       "character": 6,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 193,
+      "line": 198,
       "character": 18,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 196,
+      "line": 201,
       "character": 8,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 196,
+      "line": 201,
       "character": 14,
       "text": "forEach",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 196,
+      "line": 201,
       "character": 23,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 204,
+      "line": 209,
       "character": 16,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 204,
+      "line": 209,
       "character": 21,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 211,
+      "line": 216,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 211,
+      "line": 216,
       "character": 15,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 213,
+      "line": 218,
       "character": 26,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 213,
+      "line": 218,
       "character": 31,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 217,
+      "line": 222,
       "character": 15,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 217,
+      "line": 222,
       "character": 21,
       "text": "forEach",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 217,
+      "line": 222,
       "character": 30,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 225,
+      "line": 230,
       "character": 16,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 225,
+      "line": 230,
       "character": 21,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 232,
+      "line": 237,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 232,
+      "line": 237,
       "character": 15,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 234,
+      "line": 239,
       "character": 26,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 234,
+      "line": 239,
       "character": 31,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 238,
+      "line": 243,
       "character": 10,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 239,
+      "line": 244,
       "character": 13,
       "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 239,
-      "character": 25,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 239,
-      "character": 31,
-      "text": "sort",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 241,
-      "character": 13,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 241,
-      "character": 25,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 241,
-      "character": 31,
-      "text": "sort",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
       "line": 244,
+      "character": 25,
+      "text": "items",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 244,
+      "character": 31,
+      "text": "sort",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 246,
+      "character": 13,
+      "text": "dataContent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 246,
+      "character": 25,
+      "text": "items",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 246,
+      "character": 31,
+      "text": "sort",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 249,
       "character": 10,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 251,
+      "line": 256,
       "character": 9,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 251,
+      "line": 256,
       "character": 21,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 251,
+      "line": 256,
       "character": 27,
       "text": "forEach",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 251,
+      "line": 256,
       "character": 36,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 252,
+      "line": 257,
       "character": 6,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 252,
+      "line": 257,
       "character": 11,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 252,
+      "line": 257,
       "character": 29,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 252,
+      "line": 257,
       "character": 34,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 254,
+      "line": 259,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 254,
+      "line": 259,
       "character": 15,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 255,
+      "line": 260,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 255,
+      "line": 260,
       "character": 13,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 255,
+      "line": 260,
       "character": 28,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 255,
+      "line": 260,
       "character": 33,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 255,
+      "line": 260,
       "character": 39,
       "text": "getTime",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 256,
+      "line": 261,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 256,
+      "line": 261,
       "character": 13,
       "text": "instant",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 258,
+      "line": 263,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 258,
+      "line": 263,
       "character": 13,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 258,
+      "line": 263,
       "character": 29,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 258,
+      "line": 263,
       "character": 34,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 259,
+      "line": 264,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 259,
+      "line": 264,
       "character": 13,
       "text": "instant",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 262,
+      "line": 267,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 262,
+      "line": 267,
       "character": 15,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 263,
+      "line": 268,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 263,
+      "line": 268,
       "character": 13,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 267,
+      "line": 272,
       "character": 25,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 267,
+      "line": 272,
       "character": 37,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 269,
+      "line": 274,
       "character": 9,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 269,
+      "line": 274,
       "character": 21,
       "text": "nTracks",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 270,
+      "line": 275,
       "character": 9,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 270,
+      "line": 275,
       "character": 21,
       "text": "minDate",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 271,
+      "line": 276,
       "character": 11,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 271,
+      "line": 276,
       "character": 23,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 272,
+      "line": 277,
       "character": 7,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 272,
+      "line": 277,
       "character": 18,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 272,
+      "line": 277,
       "character": 20,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 274,
+      "line": 279,
       "character": 9,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 274,
+      "line": 279,
       "character": 21,
       "text": "maxDate",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 274,
+      "line": 279,
       "character": 42,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 274,
+      "line": 279,
       "character": 54,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 274,
+      "line": 279,
       "character": 62,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 274,
+      "line": 279,
       "character": 73,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 274,
+      "line": 279,
       "character": 75,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 280,
-      "character": 10,
+      "line": 286,
+      "character": 27,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 280,
-      "character": 22,
-      "text": "bands",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 282,
+      "line": 289,
       "character": 28,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 282,
+      "line": 289,
       "character": 33,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 284,
+      "line": 291,
       "character": 19,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 286,
+      "line": 293,
       "character": 10,
       "text": "xAxis",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 286,
+      "line": 293,
       "character": 23,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 287,
+      "line": 294,
       "character": 7,
       "text": "append",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 288,
+      "line": 295,
       "character": 7,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 289,
+      "line": 296,
       "character": 7,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 289,
+      "line": 296,
       "character": 40,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 289,
+      "line": 296,
       "character": 45,
       "text": "y",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 289,
+      "line": 296,
       "character": 49,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 289,
+      "line": 296,
       "character": 54,
       "text": "h",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
+      "line": 298,
       "character": 4,
       "text": "xAxis",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
+      "line": 298,
       "character": 10,
       "text": "redraw",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 292,
+      "line": 299,
       "character": 13,
       "text": "xAxis",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 292,
+      "line": 299,
       "character": 19,
       "text": "call",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 295,
+      "line": 302,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 295,
+      "line": 302,
       "character": 9,
       "text": "parts",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 295,
+      "line": 302,
       "character": 15,
       "text": "push",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 295,
+      "line": 302,
       "character": 20,
       "text": "xAxis",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 296,
+      "line": 303,
       "character": 25,
       "text": "xAxis",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 309,
+      "line": 316,
       "character": 32,
       "text": "sizeFactor",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 310,
+      "line": 317,
       "character": 10,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 312,
+      "line": 319,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 312,
+      "line": 319,
       "character": 9,
       "text": "id",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 313,
+      "line": 320,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 313,
+      "line": 320,
       "character": 9,
       "text": "x",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 314,
+      "line": 321,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 314,
+      "line": 321,
       "character": 9,
       "text": "y",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 315,
+      "line": 322,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 315,
+      "line": 322,
       "character": 9,
       "text": "w",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 316,
+      "line": 323,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 316,
+      "line": 323,
       "character": 9,
       "text": "h",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 316,
+      "line": 323,
       "character": 23,
       "text": "sizeFactor",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 317,
+      "line": 324,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 317,
+      "line": 324,
       "character": 9,
       "text": "trackOffset",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 318,
+      "line": 325,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 318,
+      "line": 325,
       "character": 9,
       "text": "trackHeight",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 319,
+      "line": 326,
       "character": 7,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 319,
+      "line": 326,
       "character": 12,
       "text": "h",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 319,
+      "line": 326,
       "character": 16,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 319,
+      "line": 326,
       "character": 21,
       "text": "trackOffset",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 319,
+      "line": 326,
       "character": 41,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 319,
+      "line": 326,
       "character": 53,
       "text": "nTracks",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 322,
+      "line": 329,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 322,
+      "line": 329,
       "character": 9,
       "text": "itemHeight",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 322,
+      "line": 329,
       "character": 22,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 322,
+      "line": 329,
       "character": 27,
       "text": "trackHeight",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 323,
+      "line": 330,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 323,
+      "line": 330,
       "character": 9,
       "text": "parts",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 324,
+      "line": 331,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 324,
+      "line": 331,
       "character": 9,
       "text": "instantWidth",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 325,
+      "line": 332,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 325,
+      "line": 332,
       "character": 9,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
+      "line": 333,
       "character": 20,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
+      "line": 333,
       "character": 32,
       "text": "minDate",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
+      "line": 333,
       "character": 46,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
+      "line": 333,
       "character": 58,
       "text": "maxDate",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 327,
+      "line": 334,
       "character": 17,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 327,
+      "line": 334,
       "character": 22,
       "text": "w",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
+      "line": 336,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
+      "line": 336,
       "character": 9,
       "text": "yScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
+      "line": 336,
       "character": 19,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
+      "line": 336,
       "character": 34,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
+      "line": 336,
       "character": 39,
       "text": "trackOffset",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
+      "line": 336,
       "character": 53,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
+      "line": 336,
       "character": 61,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
+      "line": 336,
       "character": 66,
       "text": "trackHeight",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 331,
+      "line": 338,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 331,
+      "line": 338,
       "character": 9,
       "text": "yearsScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 332,
+      "line": 339,
       "character": 11,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 332,
+      "line": 339,
       "character": 23,
       "text": "maxDate",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 332,
+      "line": 339,
       "character": 31,
       "text": "getUTCFullYear",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 333,
+      "line": 340,
       "character": 11,
       "text": "dataContent",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 333,
+      "line": 340,
       "character": 23,
       "text": "minDate",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 333,
+      "line": 340,
       "character": 31,
       "text": "getUTCFullYear",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 334,
+      "line": 341,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 334,
+      "line": 341,
       "character": 9,
       "text": "g",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 334,
+      "line": 341,
       "character": 18,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 335,
+      "line": 342,
       "character": 7,
       "text": "append",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
+      "line": 343,
       "character": 7,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
+      "line": 343,
       "character": 18,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
+      "line": 343,
       "character": 23,
       "text": "id",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 337,
+      "line": 344,
       "character": 7,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 337,
+      "line": 344,
       "character": 40,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 337,
+      "line": 344,
       "character": 45,
       "text": "y",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 338,
+      "line": 345,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 338,
+      "line": 345,
       "character": 9,
       "text": "g",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 339,
+      "line": 346,
       "character": 7,
       "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 340,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 341,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 341,
-      "character": 21,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 341,
-      "character": 26,
-      "text": "w",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 342,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 342,
-      "character": 22,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 342,
-      "character": 27,
-      "text": "h",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 344,
-      "character": 10,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 344,
-      "character": 18,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 344,
-      "character": 23,
-      "text": "g",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 345,
-      "character": 7,
-      "text": "selectAll",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 346,
-      "character": 7,
-      "text": "data",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 346,
-      "character": 17,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 346,
-      "character": 29,
-      "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
       "line": 347,
       "character": 7,
-      "text": "enter",
+      "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
       "line": 348,
       "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 349,
-      "character": 7,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 349,
-      "character": 34,
+      "line": 348,
+      "character": 21,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 349,
-      "character": 39,
-      "text": "yScale",
+      "line": 348,
+      "character": 26,
+      "text": "w",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 350,
+      "line": 349,
       "character": 7,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 350,
+      "line": 349,
       "character": 22,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 350,
+      "line": 349,
       "character": 27,
-      "text": "itemHeight",
+      "text": "h",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
       "line": 351,
+      "character": 10,
+      "text": "items",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 351,
+      "character": 18,
+      "text": "band",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 351,
+      "character": 23,
+      "text": "g",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 352,
+      "character": 7,
+      "text": "selectAll",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 353,
+      "character": 7,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 353,
+      "character": 17,
+      "text": "dataContent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 353,
+      "character": 29,
+      "text": "items",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 354,
+      "character": 7,
+      "text": "enter",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 355,
+      "character": 7,
+      "text": "append",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 356,
       "character": 7,
       "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 356,
+      "character": 34,
+      "text": "band",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 356,
+      "character": 39,
+      "text": "yScale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 357,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 357,
+      "character": 22,
+      "text": "band",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 357,
+      "character": 27,
+      "text": "itemHeight",
       "kind": 1
     },
     {
@@ -2747,847 +3741,714 @@
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 386,
+      "line": 365,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 397,
       "character": 18,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 386,
+      "line": 397,
       "character": 23,
       "text": "itemHeight",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 387,
+      "line": 398,
       "character": 18,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 387,
+      "line": 398,
       "character": 23,
       "text": "itemHeight",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 395,
+      "line": 406,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 395,
+      "line": 406,
       "character": 9,
       "text": "addActions",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 395,
+      "line": 406,
       "character": 32,
       "text": "actions",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 396,
+      "line": 407,
       "character": 13,
       "text": "actions",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 396,
+      "line": 407,
       "character": 21,
       "text": "forEach",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 396,
+      "line": 407,
       "character": 30,
       "text": "action",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 396,
+      "line": 407,
       "character": 46,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 396,
+      "line": 407,
       "character": 52,
       "text": "on",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 396,
+      "line": 407,
       "character": 55,
       "text": "action",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 396,
+      "line": 407,
       "character": 66,
       "text": "action",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 399,
+      "line": 410,
       "character": 4,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 399,
+      "line": 410,
       "character": 9,
       "text": "redraw",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 400,
+      "line": 411,
       "character": 6,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 401,
+      "line": 412,
       "character": 9,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 401,
+      "line": 412,
       "character": 20,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 401,
+      "line": 412,
       "character": 31,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 401,
+      "line": 412,
       "character": 36,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 401,
+      "line": 412,
       "character": 43,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 401,
+      "line": 412,
       "character": 45,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
+      "line": 413,
       "character": 9,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
+      "line": 413,
       "character": 24,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
+      "line": 413,
       "character": 35,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
+      "line": 413,
       "character": 40,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
+      "line": 413,
       "character": 47,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
+      "line": 413,
       "character": 49,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
+      "line": 413,
       "character": 56,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
+      "line": 413,
       "character": 61,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
+      "line": 413,
       "character": 68,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
+      "line": 413,
       "character": 70,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 403,
+      "line": 414,
       "character": 9,
       "text": "select",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 404,
+      "line": 415,
       "character": 9,
       "text": "text",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 404,
+      "line": 415,
       "character": 15,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 405,
+      "line": 416,
       "character": 24,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 405,
+      "line": 416,
       "character": 29,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 405,
+      "line": 416,
       "character": 36,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 405,
+      "line": 416,
       "character": 38,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 405,
+      "line": 416,
       "character": 45,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 405,
+      "line": 416,
       "character": 50,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 405,
+      "line": 416,
       "character": 57,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 405,
+      "line": 416,
       "character": 59,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 408,
+      "line": 419,
       "character": 14,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 408,
+      "line": 419,
       "character": 16,
       "text": "label",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 408,
+      "line": 419,
       "character": 22,
       "text": "length",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 409,
+      "line": 420,
       "character": 22,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 409,
+      "line": 420,
       "character": 24,
       "text": "label",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 409,
+      "line": 420,
       "character": 30,
       "text": "substr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 412,
+      "line": 423,
       "character": 17,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 412,
+      "line": 423,
       "character": 19,
       "text": "label",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 415,
+      "line": 426,
       "character": 13,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 415,
+      "line": 426,
       "character": 18,
       "text": "parts",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 415,
+      "line": 426,
       "character": 24,
       "text": "forEach",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 415,
+      "line": 426,
       "character": 33,
       "text": "part",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 415,
+      "line": 426,
       "character": 47,
       "text": "part",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 415,
+      "line": 426,
       "character": 52,
       "text": "redraw",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 418,
+      "line": 429,
       "character": 9,
       "text": "bands",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 418,
+      "line": 429,
       "character": 27,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 419,
+      "line": 430,
       "character": 25,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 420,
+      "line": 431,
       "character": 18,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 420,
+      "line": 431,
       "character": 23,
       "text": "h",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 426,
+      "line": 437,
       "character": 16,
       "text": "bandName",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 427,
-      "character": 10,
+      "line": 439,
+      "character": 27,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 427,
-      "character": 22,
-      "text": "bands",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 427,
-      "character": 28,
+      "line": 439,
+      "character": 16,
       "text": "bandName",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 430,
+      "line": 443,
       "character": 21,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 430,
+      "line": 443,
       "character": 26,
       "text": "y",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 430,
+      "line": 443,
       "character": 30,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 430,
+      "line": 443,
       "character": 35,
       "text": "h",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 438,
+      "line": 451,
       "character": 18,
       "text": "min",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 442,
+      "line": 455,
       "character": 8,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 442,
+      "line": 455,
       "character": 13,
       "text": "x",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 448,
+      "line": 461,
       "character": 8,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 448,
+      "line": 461,
       "character": 13,
       "text": "w",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 449,
+      "line": 462,
       "character": 8,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 449,
+      "line": 462,
       "character": 13,
       "text": "w",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 450,
+      "line": 463,
       "character": 18,
       "text": "_min",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 450,
+      "line": 463,
       "character": 29,
       "text": "max",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 454,
+      "line": 467,
       "character": 8,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 454,
+      "line": 467,
       "character": 13,
       "text": "x",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 454,
+      "line": 467,
       "character": 17,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 454,
+      "line": 467,
       "character": 22,
       "text": "w",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 460,
+      "line": 473,
       "character": 9,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 460,
+      "line": 473,
       "character": 14,
       "text": "w",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 461,
+      "line": 474,
       "character": 8,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 461,
+      "line": 474,
       "character": 13,
       "text": "w",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 462,
+      "line": 475,
       "character": 18,
       "text": "min",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 462,
+      "line": 475,
       "character": 28,
       "text": "max",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 463,
+      "line": 476,
       "character": 25,
       "text": "max",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 463,
+      "line": 476,
       "character": 29,
       "text": "getUTCFullYear",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 463,
+      "line": 476,
       "character": 48,
       "text": "min",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 463,
+      "line": 476,
       "character": 52,
       "text": "getUTCFullYear",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 468,
+      "line": 481,
       "character": 8,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 468,
+      "line": 481,
       "character": 13,
       "text": "x",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 468,
+      "line": 481,
       "character": 17,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 468,
+      "line": 481,
       "character": 22,
       "text": "w",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 472,
+      "line": 485,
       "character": 10,
       "text": "bandLabels",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 472,
+      "line": 485,
       "character": 28,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 473,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 474,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 474,
-      "character": 21,
-      "text": "bandName",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 475,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 475,
-      "character": 40,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 475,
-      "character": 45,
-      "text": "y",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 475,
-      "character": 49,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 475,
-      "character": 54,
-      "text": "h",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 476,
-      "character": 7,
-      "text": "selectAll",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 476,
-      "character": 21,
-      "text": "bandName",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 477,
-      "character": 7,
-      "text": "data",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 478,
-      "character": 7,
-      "text": "enter",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 479,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 481,
-      "character": 4,
-      "text": "bandLabels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 482,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 483,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 484,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 484,
-      "character": 18,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 484,
-      "character": 29,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 485,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
       "line": 486,
+      "character": 7,
+      "text": "append",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 487,
       "character": 7,
       "text": "attr",
       "kind": 1
@@ -3595,804 +4456,916 @@
     {
       "file": "src/demos/timeline/timeline.ts",
       "line": 487,
-      "character": 7,
-      "text": "style",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 489,
-      "character": 10,
-      "text": "labels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 489,
-      "character": 24,
-      "text": "bandLabels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 490,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 491,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 491,
-      "character": 22,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 491,
-      "character": 33,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 492,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 492,
-      "character": 19,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 492,
-      "character": 30,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 493,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 493,
-      "character": 18,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 493,
-      "character": 29,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 494,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 495,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 495,
-      "character": 28,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 495,
-      "character": 39,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 497,
-      "character": 4,
-      "text": "labels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 497,
-      "character": 11,
-      "text": "redraw",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 498,
-      "character": 12,
-      "text": "min",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 498,
-      "character": 18,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 498,
-      "character": 23,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 498,
-      "character": 30,
-      "text": "domain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 499,
-      "character": 12,
-      "text": "max",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 499,
-      "character": 18,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 499,
-      "character": 23,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 499,
-      "character": 30,
-      "text": "domain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 501,
-      "character": 13,
-      "text": "labels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 501,
-      "character": 20,
-      "text": "text",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 501,
-      "character": 26,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 501,
-      "character": 37,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 501,
-      "character": 42,
-      "text": "min",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 501,
-      "character": 47,
-      "text": "max",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 504,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 504,
-      "character": 9,
-      "text": "parts",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 504,
-      "character": 15,
-      "text": "push",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 504,
-      "character": 20,
-      "text": "labels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 505,
-      "character": 25,
-      "text": "labels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 510,
-      "character": 15,
+      "character": 21,
       "text": "bandName",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 510,
-      "character": 30,
-      "text": "targetNames",
+      "line": 488,
+      "character": 7,
+      "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 511,
-      "character": 10,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 511,
-      "character": 22,
-      "text": "bands",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 511,
-      "character": 28,
-      "text": "bandName",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 517,
-      "character": 13,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 517,
-      "character": 25,
-      "text": "minDate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 517,
-      "character": 33,
-      "text": "getTime",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 518,
-      "character": 13,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 518,
-      "character": 25,
-      "text": "maxDate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 518,
-      "character": 33,
-      "text": "getTime",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 521,
-      "character": 23,
-      "text": "e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 522,
-      "character": 10,
-      "text": "newDomain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 522,
-      "character": 22,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 522,
-      "character": 27,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 522,
-      "character": 34,
-      "text": "domain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 524,
-      "character": 10,
-      "text": "e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 524,
-      "character": 12,
-      "text": "selection",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 525,
-      "character": 8,
-      "text": "newDomain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 526,
-      "character": 25,
-      "text": "e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 526,
-      "character": 27,
-      "text": "selection",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 527,
-      "character": 25,
-      "text": "e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 527,
-      "character": 27,
-      "text": "selection",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 533,
-      "character": 6,
-      "text": "targetNames",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 533,
-      "character": 18,
-      "text": "forEach",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 533,
-      "character": 27,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 534,
-      "character": 13,
-      "text": "bands",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 534,
-      "character": 19,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 534,
-      "character": 22,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 534,
-      "character": 29,
-      "text": "domain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 534,
-      "character": 36,
-      "text": "newDomain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 536,
-      "character": 13,
-      "text": "bands",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 536,
-      "character": 19,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 536,
-      "character": 22,
-      "text": "redraw",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 540,
-      "character": 10,
-      "text": "xBrush",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 540,
-      "character": 19,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 540,
-      "character": 24,
-      "text": "g",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 540,
-      "character": 26,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 540,
+      "line": 488,
       "character": 40,
-      "text": "attr",
+      "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 540,
-      "character": 65,
-      "text": "call",
+      "line": 488,
+      "character": 45,
+      "text": "y",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 542,
-      "character": 4,
-      "text": "xBrush",
+      "line": 488,
+      "character": 49,
+      "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 543,
+      "line": 488,
+      "character": 54,
+      "text": "h",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 489,
       "character": 7,
       "text": "selectAll",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 544,
+      "line": 489,
+      "character": 21,
+      "text": "bandName",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 490,
+      "character": 7,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 491,
+      "character": 7,
+      "text": "enter",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 492,
+      "character": 7,
+      "text": "append",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 494,
+      "character": 4,
+      "text": "bandLabels",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 495,
+      "character": 7,
+      "text": "append",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 496,
       "character": 7,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 545,
+      "line": 497,
       "character": 7,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 545,
+      "line": 497,
+      "character": 18,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 497,
+      "character": 29,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 498,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 499,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 500,
+      "character": 7,
+      "text": "style",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 502,
+      "character": 10,
+      "text": "labels",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 502,
+      "character": 24,
+      "text": "bandLabels",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 503,
+      "character": 7,
+      "text": "append",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 504,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 504,
+      "character": 22,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 504,
+      "character": 33,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 505,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 505,
+      "character": 19,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 505,
+      "character": 30,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 506,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 506,
+      "character": 18,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 506,
+      "character": 29,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 507,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 508,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 508,
+      "character": 28,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 508,
+      "character": 39,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 510,
+      "character": 4,
+      "text": "labels",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 510,
+      "character": 11,
+      "text": "redraw",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 511,
+      "character": 12,
+      "text": "min",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 511,
+      "character": 18,
+      "text": "band",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 511,
+      "character": 23,
+      "text": "xScale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 511,
+      "character": 30,
+      "text": "domain",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 512,
+      "character": 12,
+      "text": "max",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 512,
+      "character": 18,
+      "text": "band",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 512,
+      "character": 23,
+      "text": "xScale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 512,
+      "character": 30,
+      "text": "domain",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 514,
+      "character": 13,
+      "text": "labels",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 514,
+      "character": 20,
+      "text": "text",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 514,
+      "character": 26,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 514,
+      "character": 37,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 514,
+      "character": 42,
+      "text": "min",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 514,
+      "character": 47,
+      "text": "max",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 517,
+      "character": 4,
+      "text": "band",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 517,
+      "character": 9,
+      "text": "parts",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 517,
+      "character": 15,
+      "text": "push",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 517,
+      "character": 20,
+      "text": "labels",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 518,
+      "character": 25,
+      "text": "labels",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 523,
+      "character": 15,
+      "text": "bandName",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 523,
+      "character": 30,
+      "text": "targetNames",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 525,
+      "character": 27,
+      "text": "band",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 525,
+      "character": 16,
+      "text": "bandName",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 532,
+      "character": 13,
+      "text": "dataContent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 532,
+      "character": 25,
+      "text": "minDate",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 532,
+      "character": 33,
+      "text": "getTime",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 533,
+      "character": 13,
+      "text": "dataContent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 533,
+      "character": 25,
+      "text": "maxDate",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 533,
+      "character": 33,
+      "text": "getTime",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 536,
+      "character": 23,
+      "text": "e",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 537,
+      "character": 10,
+      "text": "newDomain",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 537,
       "character": 22,
       "text": "band",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 545,
+      "line": 537,
+      "character": 27,
+      "text": "xScale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 537,
+      "character": 34,
+      "text": "domain",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 539,
+      "character": 10,
+      "text": "e",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 539,
+      "character": 12,
+      "text": "selection",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 540,
+      "character": 8,
+      "text": "newDomain",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 541,
+      "character": 25,
+      "text": "e",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 541,
+      "character": 27,
+      "text": "selection",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 542,
+      "character": 25,
+      "text": "e",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 542,
+      "character": 27,
+      "text": "selection",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 548,
+      "character": 6,
+      "text": "targetNames",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 548,
+      "character": 18,
+      "text": "forEach",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 548,
+      "character": 27,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 549,
+      "character": 13,
+      "text": "bands",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 549,
+      "character": 19,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 549,
+      "character": 22,
+      "text": "xScale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 549,
+      "character": 29,
+      "text": "domain",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 549,
+      "character": 36,
+      "text": "newDomain",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 551,
+      "character": 13,
+      "text": "bands",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 551,
+      "character": 19,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 551,
+      "character": 22,
+      "text": "redraw",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 555,
+      "character": 10,
+      "text": "xBrush",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 555,
+      "character": 19,
+      "text": "band",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 555,
+      "character": 24,
+      "text": "g",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 555,
+      "character": 26,
+      "text": "append",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 555,
+      "character": 40,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 555,
+      "character": 59,
+      "text": "call",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 557,
+      "character": 4,
+      "text": "xBrush",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 558,
+      "character": 7,
+      "text": "selectAll",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 559,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 560,
+      "character": 7,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 560,
+      "character": 22,
+      "text": "band",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/timeline/timeline.ts",
+      "line": 560,
       "character": 27,
       "text": "h",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 551,
+      "line": 566,
       "character": 29,
       "text": "component",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 551,
+      "line": 566,
       "character": 48,
       "text": "component",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 551,
+      "line": 566,
       "character": 58,
       "text": "redraw",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 123,
+      "line": 132,
       "character": 6,
       "text": "mousedownLink",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 124,
+      "line": 133,
       "character": 6,
       "text": "mousedownNode",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 125,
+      "line": 134,
       "character": 6,
       "text": "mouseupNode",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 128,
+      "line": 137,
       "character": 4,
       "text": "mousedownNode",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 129,
+      "line": 138,
       "character": 4,
       "text": "mouseupNode",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 130,
+      "line": 139,
       "character": 4,
       "text": "mousedownLink",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 204,
+      "line": 211,
       "character": 28,
       "text": "_ev",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 207,
+      "line": 214,
       "character": 29,
       "text": "_ev",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 260,
+      "line": 266,
       "character": 24,
       "text": "evt",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 263,
+      "line": 269,
       "character": 8,
       "text": "evt",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 263,
+      "line": 269,
       "character": 12,
       "text": "ctrlKey",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 263,
+      "line": 269,
       "character": 23,
       "text": "mousedownNode",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 263,
+      "line": 269,
       "character": 40,
       "text": "mousedownLink",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 267,
-      "character": 10,
+      "line": 273,
+      "character": 20,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 267,
-      "character": 14,
-      "text": "evt",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 267,
-      "character": 18,
-      "text": "target",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 269,
+      "line": 275,
       "character": 10,
       "text": "dim",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 269,
+      "line": 275,
       "character": 16,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 269,
+      "line": 275,
       "character": 18,
       "text": "getBoundingClientRect",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 270,
+      "line": 276,
       "character": 14,
       "text": "evt",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 270,
+      "line": 276,
       "character": 18,
       "text": "clientX",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 270,
+      "line": 276,
       "character": 28,
       "text": "dim",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 270,
+      "line": 276,
       "character": 32,
       "text": "left",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 271,
+      "line": 277,
       "character": 14,
       "text": "evt",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 271,
+      "line": 277,
       "character": 18,
       "text": "clientY",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 271,
+      "line": 277,
       "character": 28,
       "text": "dim",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 271,
+      "line": 277,
       "character": 32,
       "text": "top",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 294,
+      "line": 300,
       "character": 30,
       "text": "mouseupNode",
       "kind": 1
@@ -4449,50 +5422,43 @@
     {
       "file": "src/demos/world-map/world-map.ts",
       "line": 19,
-      "character": 25,
+      "character": 43,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
       "line": 21,
-      "character": 36,
+      "character": 46,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
       "line": 28,
-      "character": 8,
+      "character": 20,
       "text": "data",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
       "line": 28,
-      "character": 31,
+      "character": 44,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
       "line": 28,
-      "character": 37,
+      "character": 50,
       "text": "objects",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
       "line": 28,
-      "character": 45,
+      "character": 58,
       "text": "countries",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/world-map/world-map.ts",
-      "line": 28,
-      "character": 64,
-      "text": "features",
       "kind": 1
     },
     {
@@ -4510,8 +5476,8 @@
       "kind": 1
     }
   ],
-  "percentage": 94.53171435849538,
-  "total": 11777,
-  "covered": 11133,
-  "uncovered": 644
+  "percentage": 93.83523847063461,
+  "total": 12685,
+  "covered": 11903,
+  "uncovered": 782
 }

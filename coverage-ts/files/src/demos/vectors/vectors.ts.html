@@ -11,9 +11,18 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/vectors/vectors.ts</td><td class="">93.86%</td><td class="">90%</td><td class="">456</td><td class="">428</td><td class="">28</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/vectors/vectors.ts</td><td class="">94.48%</td><td class="">90%</td><td class="">471</td><td class="">445</td><td class="">26</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Selection,
+  SimulationNodeDatum,
+  drag,
+  forceCenter,
+  forceLink,
+  forceManyBody,
+  forceSimulation,
+  select,
+} from &quot;d3&quot;
 
-import &quot;./vectors.styl&quot;
+import * as styles from &quot;./vectors.module.css&quot;
 
 // missing:
 // - connect nodes
@@ -21,10 +30,10 @@ import &quot;./vectors.styl&quot;
 // - keys handling
 // old one is in ./vectors-old/vectors-old.js, remove when completed
 
-type Node = {
+type Node = SimulationNodeDatum &amp; {
   id: string
   reflexive: boolean
-} &amp; d3.SimulationNodeDatum
+}
 
 type Link = {
   left: boolean
@@ -75,7 +84,7 @@ const getInitialData = (): Data =&gt; {
 }
 
 const setupSVG = (
-  svg: d3.Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
 ) =&gt; {
   svg
     .append(&quot;svg:defs&quot;)
@@ -115,14 +124,14 @@ const settings = {
 
 const height = 600
 
-type RenderGraph = (o: { rootElId: string; data: Data }) =&gt; void
+type RenderGraph = (o: { data: Data; rootElId: string }) =&gt; void
 
-const renderGraph: RenderGraph = ({ rootElId, data }) =&gt; {
-  const { nodes, links } = data
+const renderGraph: RenderGraph = ({ data, rootElId }) =&gt; {
+  const { links, nodes } = data
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
-  rootEl.classList.add(&quot;vectors-chart&quot;)
+  rootEl.classList.add(styles.vectorsChart)
 
   const { width } = rootEl.getBoundingClientRect()
 
@@ -144,15 +153,13 @@ const renderGraph: RenderGraph = ({ rootElId, data }) =&gt; {
     mousedownLink = null
   }
 
-  const simulation = d3
-    .forceSimulation(nodes)
-    .force(&quot;charge&quot;, d3.forceManyBody().strength(-50))
-    .force(&quot;center&quot;, d3.forceCenter(width / 2, height / 2))
-    .force(&quot;link&quot;, d3.forceLink().links(links).distance(100))
+  const simulation = forceSimulation(nodes)
+    .force(&quot;charge&quot;, forceManyBody().strength(-50))
+    .force(&quot;center&quot;, forceCenter(width / 2, height / 2))
+    .force(&quot;link&quot;, forceLink().links(links).distance(100))
     .on(&quot;tick&quot;, ticked)
 
-  const svg = d3
-    .select(`#${rootElId}`)
+  const svg = select(`#${rootElId}`)
     .append(&quot;svg&quot;)
     .attr(&quot;width&quot;, width)
     .attr(&quot;height&quot;, height)
@@ -160,17 +167,17 @@ const renderGraph: RenderGraph = ({ rootElId, data }) =&gt; {
   setupSVG(svg)
 
   svg
-    .selectAll(&quot;.link&quot;)
+    .selectAll(`.${styles.link}`)
     .data(links)
     .enter()
     .append(&quot;svg:path&quot;)
-    .attr(&quot;class&quot;, &quot;link&quot;)
+    .attr(&quot;class&quot;, styles.link)
     .attr(&quot;marker-end&quot;, &quot;url(#end)&quot;)
     .attr(&quot;id&quot;, (_d, i) =&gt; `link-${i}`)
 
   const updateLinks = () =&gt; {
     const linksEls = svg
-      .selectAll&lt;SVGPathElement, Data[&quot;links&quot;]&gt;(&quot;.link&quot;)
+      .selectAll&lt;SVGPathElement, Data[&quot;links&quot;]&gt;(`.${styles.link}`)
       .data(links)
 
     linksEls
@@ -192,7 +199,7 @@ const renderGraph: RenderGraph = ({ rootElId, data }) =&gt; {
 
         return `M${sourceX},${sourceY}L${targetX},${targetY}`
       })
-      .attr(&quot;class&quot;, &quot;link dragline&quot;)
+      .attr(&quot;class&quot;, `${styles.link} ${styles.dragline}`)
 
     linksEls.exit().remove()
   }
@@ -214,20 +221,19 @@ const renderGraph: RenderGraph = ({ rootElId, data }) =&gt; {
       .attr(&quot;r&quot;, () =&gt; settings.circleRadius)
       .attr(&quot;fill&quot;, &quot;#fff&quot;)
       .each(function () {
-        d3.select&lt;SVGCircleElement, Data[&quot;nodes&quot;][0]&gt;(this)
+        select&lt;SVGCircleElement, Data[&quot;nodes&quot;][0]&gt;(this)
           .on(&quot;mouseover&quot;, (_ev, d) =&gt; {
-            d3.select(`#node-text-${d.index}`).style(&quot;opacity&quot;, 1)
+            select(`#node-text-${d.index}`).style(&quot;opacity&quot;, 1)
           })
           .on(&quot;mouseleave&quot;, (_ev, d) =&gt; {
-            d3.select(`#node-text-${d.index}`).style(
+            select(`#node-text-${d.index}`).style(
               &quot;opacity&quot;,
               settings.defaultTextOpacity
             )
           })
       })
       .call(
-        d3
-          .drag&lt;SVGCircleElement, Data[&quot;nodes&quot;][0]&gt;()
+        drag&lt;SVGCircleElement, Data[&quot;nodes&quot;][0]&gt;()
           .on(&quot;start&quot;, dragstarted)
           .on(&quot;drag&quot;, dragged)
           .on(&quot;end&quot;, dragended)
@@ -240,7 +246,7 @@ const renderGraph: RenderGraph = ({ rootElId, data }) =&gt; {
       .text((d) =&gt; d.id)
       .attr(&quot;x&quot;, (d) =&gt; d.x!)
       .attr(&quot;y&quot;, (d) =&gt; d.y!)
-      .attr(&quot;class&quot;, &quot;id&quot;)
+      .attr(&quot;class&quot;, styles.id)
 
     nodesEls.exit().remove()
     textsEls.exit().remove()
@@ -272,13 +278,13 @@ const renderGraph: RenderGraph = ({ rootElId, data }) =&gt; {
   }
 
   const mousedownSVG = (evt: any) =&gt; {
-    svg.classed(&quot;active&quot;, true)
+    svg.classed(styles.active, true)
 
     if (evt.ctrlKey || mousedownNode || mousedownLink) {
       return
     }
 
-    const e = evt.target
+    const { target: e } = evt
 
     const dim = e.getBoundingClientRect()
     const x = evt.clientX - dim.left
@@ -318,18 +324,20 @@ const renderGraph: RenderGraph = ({ rootElId, data }) =&gt; {
   window.addEventListener(&quot;keydown&quot;, keydown)
 }
 
-const main = async () =&gt; {
+const main = () =&gt; {
   const data = getInitialData()
 
   renderGraph({
     data,
     rootElId: &quot;chart&quot;,
   })
+
+  return Promise.resolve()
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:123,&quot;character&quot;:6,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:6,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:125,&quot;character&quot;:6,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:128,&quot;character&quot;:4,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:129,&quot;character&quot;:4,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:130,&quot;character&quot;:4,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:204,&quot;character&quot;:28,&quot;text&quot;:&quot;_ev&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:207,&quot;character&quot;:29,&quot;text&quot;:&quot;_ev&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:260,&quot;character&quot;:24,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:263,&quot;character&quot;:8,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:263,&quot;character&quot;:12,&quot;text&quot;:&quot;ctrlKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:263,&quot;character&quot;:23,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:263,&quot;character&quot;:40,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:267,&quot;character&quot;:10,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:267,&quot;character&quot;:14,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:267,&quot;character&quot;:18,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:10,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:16,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:18,&quot;text&quot;:&quot;getBoundingClientRect&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:270,&quot;character&quot;:14,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:270,&quot;character&quot;:18,&quot;text&quot;:&quot;clientX&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:270,&quot;character&quot;:28,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:270,&quot;character&quot;:32,&quot;text&quot;:&quot;left&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:271,&quot;character&quot;:14,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:271,&quot;character&quot;:18,&quot;text&quot;:&quot;clientY&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:271,&quot;character&quot;:28,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:271,&quot;character&quot;:32,&quot;text&quot;:&quot;top&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:294,&quot;character&quot;:30,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 12:25:55 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:132,&quot;character&quot;:6,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:6,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:6,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:4,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:138,&quot;character&quot;:4,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:139,&quot;character&quot;:4,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:211,&quot;character&quot;:28,&quot;text&quot;:&quot;_ev&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:214,&quot;character&quot;:29,&quot;text&quot;:&quot;_ev&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:266,&quot;character&quot;:24,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:8,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:12,&quot;text&quot;:&quot;ctrlKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:23,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:40,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:273,&quot;character&quot;:20,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:10,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:16,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:18,&quot;text&quot;:&quot;getBoundingClientRect&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:14,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:18,&quot;text&quot;:&quot;clientX&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:28,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:32,&quot;text&quot;:&quot;left&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:14,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:18,&quot;text&quot;:&quot;clientY&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:28,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:32,&quot;text&quot;:&quot;top&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:300,&quot;character&quot;:30,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 22:42:09 GMT</p>
     </body>
   </html>
   

@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/icosahedron/icosahedron.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">308</td><td class="">308</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/icosahedron/icosahedron.ts</td><td class="">100.00%</td><td class="">90%</td><td class="">315</td><td class="">315</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   GeoProjection,
   ScaleOrdinal,
   Selection,
@@ -24,7 +24,7 @@
   timer,
 } from &quot;d3&quot;
 
-import &quot;./icosahedron.styl&quot;
+import * as styles from &quot;./icosahedron.module.css&quot;
 
 type IcosahedronOpts = {
   rootElId: string
@@ -48,10 +48,10 @@ type SvgSelection = Selection&lt;
 &gt;
 
 class Icosahedron {
-  private rootElId: string
+  private readonly rootElId: string
 
   private config!: {
-    color: ScaleOrdinal&lt;string, string, never&gt;
+    color: ScaleOrdinal&lt;string, string&gt;
     defaultVelocity: number[]
     height: number
     rotationFactor1: number
@@ -62,18 +62,42 @@ class Icosahedron {
   }
 
   private dom!: {
-    faces: null | Selection&lt;
+    faces: Selection&lt;
       SVGPathElement,
       FaceWithPolygon,
       SVGSVGElement,
       unknown
-    &gt;
+    &gt; | null
     projection: GeoProjection
     svg: SvgSelection
   }
 
   private vars!: {
     velocity: number[] | null
+  }
+
+  public constructor(opts: IcosahedronOpts) {
+    this.rootElId = opts.rootElId
+    this.setConfig()
+    this.setDom()
+    this.setVars()
+
+    const faces = this.dom.svg
+      .selectAll(&quot;path&quot;)
+      .data(Icosahedron.getIcosahedronFaces() as FaceWithPolygon[])
+      .enter()
+      .append(&quot;path&quot;)
+      .each((d) =&gt; {
+        d.polygon = polygonHull(d.map(this.dom.projection) as Faces[0]) as Hull
+      })
+      .style(&quot;fill&quot;, (_d: unknown, index: number) =&gt; {
+        const color = this.config.color(`${index}`)
+
+        return color
+      })
+
+    this.dom.faces = faces
+    this.vars.velocity = this.config.defaultVelocity
   }
 
   private static getIcosahedronFaces(): Faces {
@@ -108,30 +132,6 @@ class Icosahedron {
     return faces
   }
 
-  public constructor(opts: IcosahedronOpts) {
-    this.rootElId = opts.rootElId
-    this.setConfig()
-    this.setDom()
-    this.setVars()
-
-    const faces = this.dom.svg
-      .selectAll(&quot;path&quot;)
-      .data(Icosahedron.getIcosahedronFaces() as FaceWithPolygon[])
-      .enter()
-      .append(&quot;path&quot;)
-      .each((d) =&gt; {
-        d.polygon = polygonHull(d.map(this.dom.projection) as Faces[0]) as Hull
-      })
-      .style(&quot;fill&quot;, (_d: unknown, index: number) =&gt; {
-        const color = this.config.color(`${index}`)
-
-        return color
-      })
-
-    this.dom.faces = faces
-    this.vars.velocity = this.config.defaultVelocity
-  }
-
   public start() {
     timer(() =&gt; this.timer())
   }
@@ -156,7 +156,7 @@ class Icosahedron {
   private setDom() {
     const rootEl = document.getElementById(this.rootElId) as HTMLElement
 
-    rootEl.classList.add(&quot;icosahedron-chart&quot;)
+    rootEl.classList.add(styles.icosahedronChart)
 
     const projection = geoOrthographic().scale(this.config.height / 2 - 10)
     const svg = select(`#${this.rootElId}`)
@@ -178,7 +178,9 @@ class Icosahedron {
   }
 
   private calcNewPosition(time: number, position: Position): Position {
-    const { velocity } = this.vars
+    const {
+      vars: { velocity },
+    } = this
 
     return [
       velocity![0] *
@@ -231,15 +233,19 @@ class Icosahedron {
   }
 }
 
-export default () =&gt; {
+const main = () =&gt; {
   const chart = new Icosahedron({
     rootElId: &quot;chart&quot;,
   })
 
   chart.start()
+
+  return Promise.resolve()
 }
+
+export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 12:25:55 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 22:42:09 GMT</p>
     </body>
   </html>
   
