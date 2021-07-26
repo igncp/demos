@@ -13,7 +13,7 @@ Showcase of some client-side demos.
 - Testing page:
     - Some unit tests for external dependencies like D3 for learning their usage better
     - https://igncp.github.io/demos/testing
-    - [src/pages/testing.js](./src/pages/testing.tsx)
+    - [src/pages/testing.tsx](./src/pages/testing.tsx)
 - Version from 2016 using [CoffeeScript](https://coffeescript.org/) and [Sail.js](https://sailsjs.com/): 
     - http://igncp-demos.herokuapp.com/
     - [Github Branch](https://github.com/igncp/demos/tree/2016-version)

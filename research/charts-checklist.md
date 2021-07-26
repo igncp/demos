@@ -32,4 +32,6 @@ For new charts using data, they should cover most of these points
     - Any interaction with extra page elements should be in the main function
     - Remove page's unnecessary classes: when used by style, add them by code
     - Separate data fetching from the chart rendering
+    - Be able to tear down and cleanup its content and other generated components
+    - Avoid creating simple classes inside the charts, add uuids
 - Move as many styles as possible to the `.styl` sheet inside classes

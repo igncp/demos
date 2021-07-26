@@ -26,16 +26,19 @@ const d3EaseItems = [
     "https://bl.ocks.org/d3noob/1ea51d03775b9650e8dfd03474e202fe",
   ],
 ]
-const d3TransitionItems = getCommonItems("d3-transition")
+
+const d3AxisItems = getCommonItems("d3-axis")
+const d3FetchItems = getCommonItems("d3-fetch")
 const d3HierarchyItems = getCommonItems("d3-hierarchy")
 const d3InterpolateItems = getCommonItems("d3-interpolate")
-const d3ScaleChromaticItems = getCommonItems("d3-scale-chromatic")
-const d3ShapeItems = getCommonItems("d3-shape")
-const d3FetchItems = getCommonItems("d3-fetch")
-const d3SelectionItems = getCommonItems("d3-selection")
-const d3AxisItems = getCommonItems("d3-axis")
-const d3ScaleItems = getCommonItems("d3-scale")
 const d3SankeyItems = getCommonItems("d3-sankey")
+const d3ScaleChromaticItems = getCommonItems("d3-scale-chromatic")
+const d3ScaleItems = getCommonItems("d3-scale")
+const d3SelectionItems = getCommonItems("d3-selection")
+const d3ShapeItems = getCommonItems("d3-shape")
+const d3TransitionItems = getCommonItems("d3-transition")
+const d3ZoomItems = getCommonItems("d3-zoom")
+
 const d3DelaunayItems = [
   ...getCommonItems("d3-delaunay"),
   [
@@ -254,10 +257,13 @@ const d3js: D3JS = {
   },
   "meteorites-map": {
     data: ["meteorites.json", "world_countries.json"],
-    docs: [...animeItems] as DemoBase["docs"],
+    docs: [...animeItems, ...d3ZoomItems] as DemoBase["docs"],
     isCompleted: false,
     name: "Meteorites Map",
-    notes: ["Created this chart with the data and added the interactions"],
+    notes: [
+      "Created this chart with the data and added the interactions",
+      "Use the mouse wheel to zoom in / out, and use the mouse to pan",
+    ],
     sources: [
       "http://bl.ocks.org/micahstubbs/8e15870eb432a21f0bc4d3d527b2d14f",
       "https://github.com/jdorfman/awesome-json-datasets#nasa",

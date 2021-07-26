@@ -59,7 +59,8 @@ const metas: Metas = {
         "Trains schedule example using D3.js, with San Francisco as example, and with the addition of a translucent tooltip and a 3D style.",
     },
     "meteorites-map": {
-      description: "",
+      description:
+        "World map chart with information about meteorite landings. It uses D3, animejs and other libraries, and it is highly interactive. It also informs about each meteorite properties like the name or classification.",
     },
     "multiline-voronoi": {
       description:

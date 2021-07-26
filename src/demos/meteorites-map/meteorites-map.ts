@@ -1,14 +1,20 @@
-import { Selection, geoMercator, geoPath, json, select, timeFormat } from "d3"
+import {
+  GeoProjection,
+  Selection,
+  geoMercator,
+  geoPath,
+  json,
+  select,
+  timeFormat,
+  zoom,
+} from "d3"
 import anime from "animejs"
 import qs from "query-string"
+import { v1 as uuidv1 } from "uuid"
 
 import * as styles from "./meteorites-map.module.css"
 
 // @TODO:
-// - complete static types
-// - fill more explanations in the dialog
-// - exclude bottom part of the map
-// - rename 'parsed' to something else
 // - review the checklist for the rest of refactors
 
 type Meteorite = {
@@ -23,11 +29,19 @@ type Meteorite = {
   reclong: string
   year: string
 }
-type MeteoriteParsed = Meteorite & {
+type MeteoriteGeo = Meteorite & {
   geometry: Meteorite["geolocation"]
   type: "Feature"
 }
-type Countries = any
+type Countries = {
+  features: Array<{
+    geometry: any
+    id: string
+    properties: { name: string }
+    type: "Feature"
+  }>
+  type: "FeatureCollection"
+}
 type State = {
   isDuringAnimation: boolean
   selectedMeteorite: string | null
@@ -54,15 +68,16 @@ const margin = {
 
 const svgCutBottom = 250 // to remove the south pole which doesn't have any in the data
 const height = 1000 - margin.top - margin.bottom
-const modalHiddenTop = 200
+const modalHiddenTop = 250
+const clickedMeteoriteDistortion = 20
 
 const removeSelection = ({
   meteoritesEls,
   modal,
   state,
 }: {
-  meteoritesEls: Selection<SVGPathElement, MeteoriteParsed, SVGGElement, any>
-  modal: any
+  meteoritesEls: Selection<SVGPathElement, MeteoriteGeo, SVGGElement, unknown>
+  modal: Selection<HTMLDivElement, unknown, HTMLElement, unknown>
   state: State
 }) => {
   if (state.isDuringAnimation) {
@@ -95,17 +110,24 @@ const getNearMeteoritessWithVectors = ({
   allMeteorites,
   projectionFn,
   targetMeteorite,
-}: any) => {
-  const targetProj = projectionFn(targetMeteorite.geometry.coordinates)
+}: {
+  allMeteorites: MeteoriteGeo[]
+  projectionFn: GeoProjection
+  targetMeteorite: MeteoriteGeo
+}) => {
+  const targetProj = projectionFn(targetMeteorite.geometry.coordinates) as [
+    number,
+    number
+  ]
 
   const nearMeteorites = allMeteorites
     .slice(0)
-    .filter((otherMeteorite: any) => !!otherMeteorite.geometry)
-    .map((otherMeteorite: any) => {
+    .filter((otherMeteorite) => !!(otherMeteorite.geometry as unknown))
+    .map((otherMeteorite) => {
       const {
         geometry: { coordinates: otherMeteoriteCoordinates },
       } = otherMeteorite
-      const proj = projectionFn(otherMeteoriteCoordinates)
+      const proj = projectionFn(otherMeteoriteCoordinates) as [number, number]
       const vector = [proj[0] - targetProj[0], proj[1] - targetProj[1]]
       const vectorLength = Math.sqrt(
         Math.pow(vector[0], 2) + Math.pow(vector[1], 2)
@@ -118,24 +140,24 @@ const getNearMeteoritessWithVectors = ({
       }
     })
     .filter(
-      (otherMeteorite: any) =>
+      (otherMeteorite) =>
         otherMeteorite.vectorLength < 20 && otherMeteorite.vectorLength !== 0
     )
-    .map((otherMeteorite: any) => ({
+    .map((otherMeteorite) => ({
       ...otherMeteorite,
       vectorNormalized: [
         otherMeteorite.vector[0] / otherMeteorite.vectorLength,
         otherMeteorite.vector[1] / otherMeteorite.vectorLength,
-      ],
+      ] as [number, number],
     }))
 
-  const nearMeteoritesSet = new Set(nearMeteorites.map((a: any) => a.id))
+  const nearMeteoritesSet = new Set(nearMeteorites.map((a) => a.id))
 
-  const vectorsMap = nearMeteorites.reduce((acc: any, nearMeteorite: any) => {
+  const vectorsMap = nearMeteorites.reduce((acc, nearMeteorite) => {
     acc[nearMeteorite.id] = nearMeteorite.vectorNormalized
 
     return acc
-  }, {})
+  }, {} as Record<string, [number, number]>)
 
   return {
     nearMeteorites,
@@ -151,12 +173,20 @@ const texts = {
 const meteoriteClickHandler = ({
   clickedMeteorite,
   meteoritesEls,
-  meteoritesParsed,
+  meteoritesGeo,
   modal,
   projectionFn,
   rootElId,
   state,
-}: any) => {
+}: {
+  clickedMeteorite: MeteoriteGeo
+  meteoritesEls: Selection<SVGPathElement, MeteoriteGeo, SVGGElement, unknown>
+  meteoritesGeo: MeteoriteGeo[]
+  modal: Selection<HTMLDivElement, unknown, HTMLElement, unknown>
+  projectionFn: GeoProjection
+  rootElId: string
+  state: State
+}) => {
   if (state.isDuringAnimation) {
     return
   }
@@ -174,12 +204,14 @@ const meteoriteClickHandler = ({
   state.selectedMeteorite = clickedMeteorite.id
 
   const year = timeFormat("%Y")(new Date(clickedMeteorite.year))
-  const mass = new Intl.NumberFormat().format(clickedMeteorite.mass)
+  const mass = new Intl.NumberFormat().format(+clickedMeteorite.mass)
 
   modal.html(
     `
 <h1>${clickedMeteorite.name}</h1>
-<p>Year: ${year}, Class: ${clickedMeteorite.recclass}</p>
+<p>Year: ${year}, Class: <a href="https://www.google.com/search?${qs.stringify({
+      q: `${clickedMeteorite.recclass} Meteorite Class`,
+    })}" target="_blank">${clickedMeteorite.recclass}</a></p>
 <p>${mass ? `Mass: ${mass}g, ` : ""}Name: ${clickedMeteorite.nametype}</p>
 <p><a href="https://www.google.com/search?${qs.stringify({
       q: `${clickedMeteorite.name} Meteorite ${year}`,
@@ -188,13 +220,13 @@ const meteoriteClickHandler = ({
   )
 
   const { nearMeteoritesSet, vectorsMap } = getNearMeteoritessWithVectors({
-    allMeteorites: meteoritesParsed,
+    allMeteorites: meteoritesGeo,
     projectionFn,
     targetMeteorite: clickedMeteorite,
   })
 
-  const getShouldSet0 = (idx: any) => {
-    const { [idx]: animatedMeteorite } = meteoritesParsed
+  const getShouldSet0 = (idx: number) => {
+    const { [idx]: animatedMeteorite } = meteoritesGeo
 
     return (
       animatedMeteorite.id === clickedMeteorite.id ||
@@ -202,25 +234,25 @@ const meteoriteClickHandler = ({
     )
   }
 
-  meteoritesEls.attr("class", (d: any) => {
-    if (nearMeteoritesSet.has(d.id)) {
+  meteoritesEls.attr("class", (meteorite) => {
+    if (nearMeteoritesSet.has(meteorite.id)) {
       return `${styles.moved} ${styles.meteorite}`
     }
 
-    return d.id === clickedMeteorite.id
+    return meteorite.id === clickedMeteorite.id
       ? `${styles.active} ${styles.meteorite}`
       : styles.meteorite
   })
 
-  const getTranslateFn = (coordIdx: any) => (_el: unknown, idx: any) => {
+  const getTranslateFn = (coordIdx: number) => (_el: unknown, idx: number) => {
     if (getShouldSet0(idx)) {
       return 0
     }
 
-    const { [idx]: animatedMeteorite } = meteoritesParsed
+    const { [idx]: animatedMeteorite } = meteoritesGeo
     const { [animatedMeteorite.id]: vectorNormalized } = vectorsMap
 
-    return vectorNormalized[coordIdx] * 20
+    return vectorNormalized[coordIdx] * clickedMeteoriteDistortion
   }
 
   anime({
@@ -242,9 +274,11 @@ const addInfo = ({
   svg,
   width,
 }: {
-  svg: Selection<SVGSVGElement, unknown, HTMLElement, any>
+  svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
   width: number
 }) => {
+  const dialogId = `dialog-${uuidv1().slice(0, 6)}`
+
   const group = svg
     .append("g")
     .attr("transform", `translate(${width - 50},50)`)
@@ -259,13 +293,14 @@ const addInfo = ({
 </filter>
     `)
 
-  select(document.body).append("div").attr("id", "info-dialog").html(
+  const dialog = select(document.body).append("div").attr("id", dialogId).html(
     `
-<p>The green circles refer to meteorites which were moved in the map to allow seeing the selected meteorite (red).</p>
+<p>The green circles refer to meteorites which were moved in the map to allow seeing the selected meteorite, which is in red.</p>
+<p>You can find the <a href="http://www.meteoritemarket.com/type.htm">meteorites classification here</a></p>
 `.trim()
   )
 
-  $("#info-dialog").dialog({
+  $(`#${dialogId}`).dialog({
     autoOpen: false,
     modal: true,
     resizable: false,
@@ -286,8 +321,18 @@ const addInfo = ({
     .attr("transform", `translate(0,5)`)
 
   group.on("click", () => {
-    $("#info-dialog").dialog("open")
+    $(`#${dialogId}`).dialog("open")
   })
+
+  return {
+    remove: () => {
+      dialog.remove()
+    },
+  }
+}
+
+const zoomed = function (this: SVGSVGElement, e: any) {
+  select(this).transition().duration(500).attr("transform", e.transform)
 }
 
 type RenderChart = (o: {
@@ -318,13 +363,13 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
 
   const meteoritessClickHandlerFn = (
     clickEvent: MouseEvent,
-    clickedMeteorite: MeteoriteParsed
+    clickedMeteorite: MeteoriteGeo
   ) => {
     clickEvent.stopPropagation()
     meteoriteClickHandler({
       clickedMeteorite,
       meteoritesEls,
-      meteoritesParsed,
+      meteoritesGeo,
       modal,
       projectionFn,
       rootElId,
@@ -332,7 +377,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     })
   }
 
-  const meteoritesParsed: MeteoriteParsed[] = meteorites.map((a) => ({
+  const meteoritesGeo: MeteoriteGeo[] = meteorites.map((a) => ({
     ...a,
     geometry: a.geolocation,
     type: "Feature",
@@ -347,9 +392,19 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     .append("svg")
     .attr("width", width)
     .attr("height", height - svgCutBottom)
+    .style("cursor", "pointer")
     .on("click", removeSelectionFn)
+    .style("transform-origin", "top left")
+    .call(
+      zoom<SVGSVGElement, any>()
+        .extent([
+          [0, 0],
+          [width, height],
+        ])
+        .on("end", zoomed)
+    )
 
-  const svgMap = svg.append("g").attr("class", "map")
+  const svgMap = svg.append("g")
 
   svg
     .append("text")
@@ -364,9 +419,11 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     width,
   })
 
+  const countryClass = `country-${uuidv1().slice(0, 6)}`
+
   svgMap
     .append("g")
-    .attr("class", "countries")
+    .attr("class", countryClass)
     .selectAll("path")
     .data(countries.features)
     .enter()
@@ -379,12 +436,13 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     .style("stroke", "white")
     .style("stroke-width", 0.3)
     .on("click", removeSelectionFn)
+    .attr("title", (country) => country.properties.name)
 
   const meteoritessWrapper = svgMap.append("g").on("click", removeSelectionFn)
 
   const meteoritesEls = meteoritessWrapper
     .selectAll("path")
-    .data(meteoritesParsed)
+    .data(meteoritesGeo)
     .enter()
     .append("path")
     .attr("d", path as any)
@@ -397,6 +455,11 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     .on("click", meteoritessClickHandlerFn)
 
   $(`.${styles.meteorite}`).tooltip({
+    track: true,
+  })
+
+  $(`.${countryClass}`).tooltip({
+    tooltipClass: styles.countryTooltip,
     track: true,
   })
 }
