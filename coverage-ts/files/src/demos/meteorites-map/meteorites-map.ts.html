@@ -11,17 +11,23 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">src/demos/meteorites-map/meteorites-map.ts</td><td class="">72.99%</td><td class="">90%</td><td class="">522</td><td class="">381</td><td class="">141</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Selection, geoMercator, geoPath, json, select, timeFormat } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/meteorites-map/meteorites-map.ts</td><td class="">99.35%</td><td class="">90%</td><td class="">615</td><td class="">611</td><td class="">4</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  GeoProjection,
+  Selection,
+  geoMercator,
+  geoPath,
+  json,
+  select,
+  timeFormat,
+  zoom,
+} from &quot;d3&quot;
 import anime from &quot;animejs&quot;
 import qs from &quot;query-string&quot;
+import { v1 as uuidv1 } from &quot;uuid&quot;
 
 import * as styles from &quot;./meteorites-map.module.css&quot;
 
 // @TODO:
-// - complete static types
-// - fill more explanations in the dialog
-// - exclude bottom part of the map
-// - rename &#x27;parsed&#x27; to something else
 // - review the checklist for the rest of refactors
 
 type Meteorite = {
@@ -36,11 +42,19 @@ type Meteorite = {
   reclong: string
   year: string
 }
-type MeteoriteParsed = Meteorite &amp; {
+type MeteoriteGeo = Meteorite &amp; {
   geometry: Meteorite[&quot;geolocation&quot;]
   type: &quot;Feature&quot;
 }
-type Countries = any
+type Countries = {
+  features: Array&lt;{
+    geometry: any
+    id: string
+    properties: { name: string }
+    type: &quot;Feature&quot;
+  }&gt;
+  type: &quot;FeatureCollection&quot;
+}
 type State = {
   isDuringAnimation: boolean
   selectedMeteorite: string | null
@@ -67,15 +81,16 @@ const margin = {
 
 const svgCutBottom = 250 // to remove the south pole which doesn&#x27;t have any in the data
 const height = 1000 - margin.top - margin.bottom
-const modalHiddenTop = 200
+const modalHiddenTop = 250
+const clickedMeteoriteDistortion = 20
 
 const removeSelection = ({
   meteoritesEls,
   modal,
   state,
 }: {
-  meteoritesEls: Selection&lt;SVGPathElement, MeteoriteParsed, SVGGElement, any&gt;
-  modal: any
+  meteoritesEls: Selection&lt;SVGPathElement, MeteoriteGeo, SVGGElement, unknown&gt;
+  modal: Selection&lt;HTMLDivElement, unknown, HTMLElement, unknown&gt;
   state: State
 }) =&gt; {
   if (state.isDuringAnimation) {
@@ -108,17 +123,24 @@ const getNearMeteoritessWithVectors = ({
   allMeteorites,
   projectionFn,
   targetMeteorite,
-}: any) =&gt; {
-  const targetProj = projectionFn(targetMeteorite.geometry.coordinates)
+}: {
+  allMeteorites: MeteoriteGeo[]
+  projectionFn: GeoProjection
+  targetMeteorite: MeteoriteGeo
+}) =&gt; {
+  const targetProj = projectionFn(targetMeteorite.geometry.coordinates) as [
+    number,
+    number
+  ]
 
   const nearMeteorites = allMeteorites
     .slice(0)
-    .filter((otherMeteorite: any) =&gt; !!otherMeteorite.geometry)
-    .map((otherMeteorite: any) =&gt; {
+    .filter((otherMeteorite) =&gt; !!(otherMeteorite.geometry as unknown))
+    .map((otherMeteorite) =&gt; {
       const {
         geometry: { coordinates: otherMeteoriteCoordinates },
       } = otherMeteorite
-      const proj = projectionFn(otherMeteoriteCoordinates)
+      const proj = projectionFn(otherMeteoriteCoordinates) as [number, number]
       const vector = [proj[0] - targetProj[0], proj[1] - targetProj[1]]
       const vectorLength = Math.sqrt(
         Math.pow(vector[0], 2) + Math.pow(vector[1], 2)
@@ -131,24 +153,24 @@ const getNearMeteoritessWithVectors = ({
       }
     })
     .filter(
-      (otherMeteorite: any) =&gt;
+      (otherMeteorite) =&gt;
         otherMeteorite.vectorLength &lt; 20 &amp;&amp; otherMeteorite.vectorLength !== 0
     )
-    .map((otherMeteorite: any) =&gt; ({
+    .map((otherMeteorite) =&gt; ({
       ...otherMeteorite,
       vectorNormalized: [
         otherMeteorite.vector[0] / otherMeteorite.vectorLength,
         otherMeteorite.vector[1] / otherMeteorite.vectorLength,
-      ],
+      ] as [number, number],
     }))
 
-  const nearMeteoritesSet = new Set(nearMeteorites.map((a: any) =&gt; a.id))
+  const nearMeteoritesSet = new Set(nearMeteorites.map((a) =&gt; a.id))
 
-  const vectorsMap = nearMeteorites.reduce((acc: any, nearMeteorite: any) =&gt; {
+  const vectorsMap = nearMeteorites.reduce((acc, nearMeteorite) =&gt; {
     acc[nearMeteorite.id] = nearMeteorite.vectorNormalized
 
     return acc
-  }, {})
+  }, {} as Record&lt;string, [number, number]&gt;)
 
   return {
     nearMeteorites,
@@ -164,12 +186,20 @@ const texts = {
 const meteoriteClickHandler = ({
   clickedMeteorite,
   meteoritesEls,
-  meteoritesParsed,
+  meteoritesGeo,
   modal,
   projectionFn,
   rootElId,
   state,
-}: any) =&gt; {
+}: {
+  clickedMeteorite: MeteoriteGeo
+  meteoritesEls: Selection&lt;SVGPathElement, MeteoriteGeo, SVGGElement, unknown&gt;
+  meteoritesGeo: MeteoriteGeo[]
+  modal: Selection&lt;HTMLDivElement, unknown, HTMLElement, unknown&gt;
+  projectionFn: GeoProjection
+  rootElId: string
+  state: State
+}) =&gt; {
   if (state.isDuringAnimation) {
     return
   }
@@ -187,12 +217,14 @@ const meteoriteClickHandler = ({
   state.selectedMeteorite = clickedMeteorite.id
 
   const year = timeFormat(&quot;%Y&quot;)(new Date(clickedMeteorite.year))
-  const mass = new Intl.NumberFormat().format(clickedMeteorite.mass)
+  const mass = new Intl.NumberFormat().format(+clickedMeteorite.mass)
 
   modal.html(
     `
 &lt;h1&gt;${clickedMeteorite.name}&lt;/h1&gt;
-&lt;p&gt;Year: ${year}, Class: ${clickedMeteorite.recclass}&lt;/p&gt;
+&lt;p&gt;Year: ${year}, Class: &lt;a href=&quot;https://www.google.com/search?${qs.stringify({
+      q: `${clickedMeteorite.recclass} Meteorite Class`,
+    })}&quot; target=&quot;_blank&quot;&gt;${clickedMeteorite.recclass}&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;${mass ? `Mass: ${mass}g, ` : &quot;&quot;}Name: ${clickedMeteorite.nametype}&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;https://www.google.com/search?${qs.stringify({
       q: `${clickedMeteorite.name} Meteorite ${year}`,
@@ -201,13 +233,13 @@ const meteoriteClickHandler = ({
   )
 
   const { nearMeteoritesSet, vectorsMap } = getNearMeteoritessWithVectors({
-    allMeteorites: meteoritesParsed,
+    allMeteorites: meteoritesGeo,
     projectionFn,
     targetMeteorite: clickedMeteorite,
   })
 
-  const getShouldSet0 = (idx: any) =&gt; {
-    const { [idx]: animatedMeteorite } = meteoritesParsed
+  const getShouldSet0 = (idx: number) =&gt; {
+    const { [idx]: animatedMeteorite } = meteoritesGeo
 
     return (
       animatedMeteorite.id === clickedMeteorite.id ||
@@ -215,25 +247,25 @@ const meteoriteClickHandler = ({
     )
   }
 
-  meteoritesEls.attr(&quot;class&quot;, (d: any) =&gt; {
-    if (nearMeteoritesSet.has(d.id)) {
+  meteoritesEls.attr(&quot;class&quot;, (meteorite) =&gt; {
+    if (nearMeteoritesSet.has(meteorite.id)) {
       return `${styles.moved} ${styles.meteorite}`
     }
 
-    return d.id === clickedMeteorite.id
+    return meteorite.id === clickedMeteorite.id
       ? `${styles.active} ${styles.meteorite}`
       : styles.meteorite
   })
 
-  const getTranslateFn = (coordIdx: any) =&gt; (_el: unknown, idx: any) =&gt; {
+  const getTranslateFn = (coordIdx: number) =&gt; (_el: unknown, idx: number) =&gt; {
     if (getShouldSet0(idx)) {
       return 0
     }
 
-    const { [idx]: animatedMeteorite } = meteoritesParsed
+    const { [idx]: animatedMeteorite } = meteoritesGeo
     const { [animatedMeteorite.id]: vectorNormalized } = vectorsMap
 
-    return vectorNormalized[coordIdx] * 20
+    return vectorNormalized[coordIdx] * clickedMeteoriteDistortion
   }
 
   anime({
@@ -255,9 +287,11 @@ const addInfo = ({
   svg,
   width,
 }: {
-  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, any&gt;
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
   width: number
 }) =&gt; {
+  const dialogId = `dialog-${uuidv1().slice(0, 6)}`
+
   const group = svg
     .append(&quot;g&quot;)
     .attr(&quot;transform&quot;, `translate(${width - 50},50)`)
@@ -272,13 +306,14 @@ const addInfo = ({
 &lt;/filter&gt;
     `)
 
-  select(document.body).append(&quot;div&quot;).attr(&quot;id&quot;, &quot;info-dialog&quot;).html(
+  const dialog = select(document.body).append(&quot;div&quot;).attr(&quot;id&quot;, dialogId).html(
     `
-&lt;p&gt;The green circles refer to meteorites which were moved in the map to allow seeing the selected meteorite (red).&lt;/p&gt;
+&lt;p&gt;The green circles refer to meteorites which were moved in the map to allow seeing the selected meteorite, which is in red.&lt;/p&gt;
+&lt;p&gt;You can find the &lt;a href=&quot;http://www.meteoritemarket.com/type.htm&quot;&gt;meteorites classification here&lt;/a&gt;&lt;/p&gt;
 `.trim()
   )
 
-  $(&quot;#info-dialog&quot;).dialog({
+  $(`#${dialogId}`).dialog({
     autoOpen: false,
     modal: true,
     resizable: false,
@@ -299,8 +334,18 @@ const addInfo = ({
     .attr(&quot;transform&quot;, `translate(0,5)`)
 
   group.on(&quot;click&quot;, () =&gt; {
-    $(&quot;#info-dialog&quot;).dialog(&quot;open&quot;)
+    $(`#${dialogId}`).dialog(&quot;open&quot;)
   })
+
+  return {
+    remove: () =&gt; {
+      dialog.remove()
+    },
+  }
+}
+
+const zoomed = function (this: SVGSVGElement, e: any) {
+  select(this).transition().duration(500).attr(&quot;transform&quot;, e.transform)
 }
 
 type RenderChart = (o: {
@@ -331,13 +376,13 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
 
   const meteoritessClickHandlerFn = (
     clickEvent: MouseEvent,
-    clickedMeteorite: MeteoriteParsed
+    clickedMeteorite: MeteoriteGeo
   ) =&gt; {
     clickEvent.stopPropagation()
     meteoriteClickHandler({
       clickedMeteorite,
       meteoritesEls,
-      meteoritesParsed,
+      meteoritesGeo,
       modal,
       projectionFn,
       rootElId,
@@ -345,7 +390,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
     })
   }
 
-  const meteoritesParsed: MeteoriteParsed[] = meteorites.map((a) =&gt; ({
+  const meteoritesGeo: MeteoriteGeo[] = meteorites.map((a) =&gt; ({
     ...a,
     geometry: a.geolocation,
     type: &quot;Feature&quot;,
@@ -360,9 +405,19 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
     .append(&quot;svg&quot;)
     .attr(&quot;width&quot;, width)
     .attr(&quot;height&quot;, height - svgCutBottom)
+    .style(&quot;cursor&quot;, &quot;pointer&quot;)
     .on(&quot;click&quot;, removeSelectionFn)
+    .style(&quot;transform-origin&quot;, &quot;top left&quot;)
+    .call(
+      zoom&lt;SVGSVGElement, any&gt;()
+        .extent([
+          [0, 0],
+          [width, height],
+        ])
+        .on(&quot;end&quot;, zoomed)
+    )
 
-  const svgMap = svg.append(&quot;g&quot;).attr(&quot;class&quot;, &quot;map&quot;)
+  const svgMap = svg.append(&quot;g&quot;)
 
   svg
     .append(&quot;text&quot;)
@@ -377,9 +432,11 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
     width,
   })
 
+  const countryClass = `country-${uuidv1().slice(0, 6)}`
+
   svgMap
     .append(&quot;g&quot;)
-    .attr(&quot;class&quot;, &quot;countries&quot;)
+    .attr(&quot;class&quot;, countryClass)
     .selectAll(&quot;path&quot;)
     .data(countries.features)
     .enter()
@@ -392,12 +449,13 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
     .style(&quot;stroke&quot;, &quot;white&quot;)
     .style(&quot;stroke-width&quot;, 0.3)
     .on(&quot;click&quot;, removeSelectionFn)
+    .attr(&quot;title&quot;, (country) =&gt; country.properties.name)
 
   const meteoritessWrapper = svgMap.append(&quot;g&quot;).on(&quot;click&quot;, removeSelectionFn)
 
   const meteoritesEls = meteoritessWrapper
     .selectAll(&quot;path&quot;)
-    .data(meteoritesParsed)
+    .data(meteoritesGeo)
     .enter()
     .append(&quot;path&quot;)
     .attr(&quot;d&quot;, path as any)
@@ -410,6 +468,11 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
     .on(&quot;click&quot;, meteoritessClickHandlerFn)
 
   $(`.${styles.meteorite}`).tooltip({
+    track: true,
+  })
+
+  $(`.${countryClass}`).tooltip({
+    tooltipClass: styles.countryTooltip,
     track: true,
   })
 }
@@ -425,8 +488,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:5,&quot;text&quot;:&quot;Countries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:21,&quot;text&quot;:&quot;countries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:44,&quot;character&quot;:32,&quot;text&quot;:&quot;Countries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:60,&quot;character&quot;:2,&quot;text&quot;:&quot;modal&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:2,&quot;text&quot;:&quot;modal&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:6,&quot;text&quot;:&quot;modal&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:12,&quot;text&quot;:&quot;text&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:94,&quot;character&quot;:2,&quot;text&quot;:&quot;allMeteorites&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:95,&quot;character&quot;:2,&quot;text&quot;:&quot;projectionFn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:96,&quot;character&quot;:2,&quot;text&quot;:&quot;targetMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:98,&quot;character&quot;:8,&quot;text&quot;:&quot;targetProj&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:98,&quot;character&quot;:21,&quot;text&quot;:&quot;projectionFn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:98,&quot;character&quot;:34,&quot;text&quot;:&quot;targetMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:98,&quot;character&quot;:50,&quot;text&quot;:&quot;geometry&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:98,&quot;character&quot;:59,&quot;text&quot;:&quot;coordinates&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:8,&quot;text&quot;:&quot;nearMeteorites&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:25,&quot;text&quot;:&quot;allMeteorites&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:101,&quot;character&quot;:5,&quot;text&quot;:&quot;slice&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:5,&quot;text&quot;:&quot;filter&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:13,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:39,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:102,&quot;character&quot;:54,&quot;text&quot;:&quot;geometry&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:103,&quot;character&quot;:5,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:103,&quot;character&quot;:10,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:105,&quot;character&quot;:33,&quot;text&quot;:&quot;otherMeteoriteCoordinates&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:12,&quot;text&quot;:&quot;proj&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:19,&quot;text&quot;:&quot;projectionFn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:32,&quot;text&quot;:&quot;otherMeteoriteCoordinates&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:108,&quot;character&quot;:22,&quot;text&quot;:&quot;proj&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:108,&quot;character&quot;:32,&quot;text&quot;:&quot;targetProj&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:108,&quot;character&quot;:47,&quot;text&quot;:&quot;proj&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:108,&quot;character&quot;:57,&quot;text&quot;:&quot;targetProj&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:11,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:5,&quot;text&quot;:&quot;filter&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:120,&quot;character&quot;:7,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:8,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:23,&quot;text&quot;:&quot;vectorLength&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:44,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:59,&quot;text&quot;:&quot;vectorLength&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:123,&quot;character&quot;:5,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:123,&quot;character&quot;:10,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:9,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:8,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:23,&quot;text&quot;:&quot;vector&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:35,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:50,&quot;text&quot;:&quot;vectorLength&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:8,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:23,&quot;text&quot;:&quot;vector&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:35,&quot;text&quot;:&quot;otherMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:50,&quot;text&quot;:&quot;vectorLength&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:36,&quot;text&quot;:&quot;nearMeteorites&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:51,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:56,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:67,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:131,&quot;character&quot;:69,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:8,&quot;text&quot;:&quot;vectorsMap&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:21,&quot;text&quot;:&quot;nearMeteorites&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:36,&quot;text&quot;:&quot;reduce&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:44,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:54,&quot;text&quot;:&quot;nearMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:4,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:8,&quot;text&quot;:&quot;nearMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:22,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:28,&quot;text&quot;:&quot;nearMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:42,&quot;text&quot;:&quot;vectorNormalized&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:11,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:140,&quot;character&quot;:4,&quot;text&quot;:&quot;nearMeteorites&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:142,&quot;character&quot;:4,&quot;text&quot;:&quot;vectorsMap&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:151,&quot;character&quot;:2,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:2,&quot;text&quot;:&quot;meteoritesEls&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:2,&quot;text&quot;:&quot;meteoritesParsed&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:154,&quot;character&quot;:2,&quot;text&quot;:&quot;modal&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:2,&quot;text&quot;:&quot;projectionFn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:2,&quot;text&quot;:&quot;rootElId&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:157,&quot;character&quot;:2,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:159,&quot;character&quot;:6,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:159,&quot;character&quot;:12,&quot;text&quot;:&quot;isDuringAnimation&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:163,&quot;character&quot;:6,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:163,&quot;character&quot;:12,&quot;text&quot;:&quot;selectedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:163,&quot;character&quot;:34,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:163,&quot;character&quot;:51,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:166,&quot;character&quot;:6,&quot;text&quot;:&quot;modal&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:2,&quot;text&quot;:&quot;state&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:8,&quot;text&quot;:&quot;selectedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:28,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:173,&quot;character&quot;:45,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:175,&quot;character&quot;:41,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:175,&quot;character&quot;:58,&quot;text&quot;:&quot;year&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:176,&quot;character&quot;:46,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:176,&quot;character&quot;:63,&quot;text&quot;:&quot;mass&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:178,&quot;character&quot;:2,&quot;text&quot;:&quot;modal&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:178,&quot;character&quot;:8,&quot;text&quot;:&quot;html&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:180,&quot;character&quot;:6,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:180,&quot;character&quot;:23,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:27,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:44,&quot;text&quot;:&quot;recclass&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:182,&quot;character&quot;:44,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:182,&quot;character&quot;:61,&quot;text&quot;:&quot;nametype&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:184,&quot;character&quot;:12,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:184,&quot;character&quot;:29,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:189,&quot;character&quot;:29,&quot;text&quot;:&quot;vectorsMap&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:190,&quot;character&quot;:4,&quot;text&quot;:&quot;allMeteorites&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:190,&quot;character&quot;:19,&quot;text&quot;:&quot;meteoritesParsed&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:191,&quot;character&quot;:4,&quot;text&quot;:&quot;projectionFn&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:192,&quot;character&quot;:4,&quot;text&quot;:&quot;targetMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:192,&quot;character&quot;:21,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:195,&quot;character&quot;:25,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:196,&quot;character&quot;:19,&quot;text&quot;:&quot;animatedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:196,&quot;character&quot;:13,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:6,&quot;text&quot;:&quot;animatedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:24,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:31,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:199,&quot;character&quot;:48,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:200,&quot;character&quot;:29,&quot;text&quot;:&quot;animatedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:200,&quot;character&quot;:47,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:204,&quot;character&quot;:2,&quot;text&quot;:&quot;meteoritesEls&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:204,&quot;character&quot;:16,&quot;text&quot;:&quot;attr&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:204,&quot;character&quot;:31,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:205,&quot;character&quot;:30,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:205,&quot;character&quot;:32,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:11,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:13,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:20,&quot;text&quot;:&quot;clickedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:37,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:214,&quot;character&quot;:26,&quot;text&quot;:&quot;coordIdx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:214,&quot;character&quot;:59,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:215,&quot;character&quot;:22,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:19,&quot;text&quot;:&quot;animatedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:13,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:220,&quot;character&quot;:36,&quot;text&quot;:&quot;vectorNormalized&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:220,&quot;character&quot;:13,&quot;text&quot;:&quot;animatedMeteorite&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:220,&quot;character&quot;:31,&quot;text&quot;:&quot;id&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:222,&quot;character&quot;:11,&quot;text&quot;:&quot;vectorNormalized&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:222,&quot;character&quot;:28,&quot;text&quot;:&quot;coordIdx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:293,&quot;character&quot;:2,&quot;text&quot;:&quot;countries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:293,&quot;character&quot;:13,&quot;text&quot;:&quot;Countries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:298,&quot;character&quot;:36,&quot;text&quot;:&quot;countries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:370,&quot;character&quot;:10,&quot;text&quot;:&quot;countries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:370,&quot;character&quot;:20,&quot;text&quot;:&quot;features&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:404,&quot;character&quot;:10,&quot;text&quot;:&quot;countries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:407,&quot;character&quot;:4,&quot;text&quot;:&quot;countries&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 25 Jul 2021 22:42:09 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:4,&quot;text&quot;:&quot;geometry&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:333,&quot;character&quot;:46,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:334,&quot;character&quot;:60,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:334,&quot;character&quot;:62,&quot;text&quot;:&quot;transform&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 26 Jul 2021 23:00:45 GMT</p>
     </body>
   </html>
   
