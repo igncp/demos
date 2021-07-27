@@ -1102,28 +1102,21 @@
     },
     {
       "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 37,
-      "character": 4,
-      "text": "geometry",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 333,
+      "line": 325,
       "character": 46,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 334,
+      "line": 326,
       "character": 60,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 334,
+      "line": 326,
       "character": 62,
       "text": "transform",
       "kind": 1
@@ -4517,8 +4510,8 @@
       "kind": 1
     }
   ],
-  "percentage": 94.9538413393835,
-  "total": 12782,
-  "covered": 12137,
-  "uncovered": 645
+  "percentage": 94.9628470864294,
+  "total": 12785,
+  "covered": 12141,
+  "uncovered": 644
 }
