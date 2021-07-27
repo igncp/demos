@@ -17,9 +17,11 @@ import * as styles from "./meteorites-map.module.css"
 // @TODO:
 // - review the checklist for the rest of refactors
 
+type Point = [number, number]
+
 type Meteorite = {
   fall: string
-  geolocation: { coordinates: [number, number]; type: "Point" }
+  geolocation: { coordinates: Point; type: "Point" }
   id: string
   mass: string
   name: string
@@ -35,7 +37,7 @@ type MeteoriteGeo = Meteorite & {
 }
 type Countries = {
   features: Array<{
-    geometry: any
+    geometry: { coordinates: Point[]; type: "Polygon" }
     id: string
     properties: { name: string }
     type: "Feature"
@@ -282,7 +284,7 @@ const addInfo = ({
   const group = svg
     .append("g")
     .attr("transform", `translate(${width - 50},50)`)
-    .attr("cursor", "pointer")
+    .attr("class", styles.infoTrigger)
 
   svg.append("g").html(`
 <filter id="pulse" x="0" y="0" width="100%" height="100%">
@@ -306,19 +308,9 @@ const addInfo = ({
     resizable: false,
   })
 
-  group
-    .append("circle")
-    .attr("fill", "#fff")
-    .attr("stroke", "#ccc")
-    .attr("r", "20")
-    .attr("filter", "url(#pulse)")
+  group.append("circle").attr("r", "20").attr("filter", "url(#pulse)")
 
-  group
-    .append("text")
-    .text("?")
-    .attr("text-anchor", "middle")
-    .style("font-size", 20)
-    .attr("transform", `translate(0,5)`)
+  group.append("text").text("?")
 
   group.on("click", () => {
     $(`#${dialogId}`).dialog("open")
@@ -396,7 +388,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     .on("click", removeSelectionFn)
     .style("transform-origin", "top left")
     .call(
-      zoom<SVGSVGElement, any>()
+      zoom<SVGSVGElement, unknown>()
         .extent([
           [0, 0],
           [width, height],
