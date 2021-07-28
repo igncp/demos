@@ -1,6 +1,5 @@
 import React from "react"
 
-// @ts-ignore
 import Prism from "prismjs"
 
 // https://prismjs.com/#supported-languages
@@ -194,7 +193,8 @@ const FilesDetails = ({ demoInfo }: Props) => {
                   dangerouslySetInnerHTML={{
                     __html: Prism.highlight(
                       demoInfo.files.cssModule,
-                      Prism.languages.scss
+                      Prism.languages.scss,
+                      "scss"
                     ),
                   }}
                 />

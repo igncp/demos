@@ -35,7 +35,6 @@ I've updated this repository after it was inactive for several years. The remain
     - [ ] Remove Angular and Bootstrap but keep same look and feel
 1. [ ] Add disclaimer for old charts
 1. [ ] Resolve TypeScript cases with `any`
-1. [ ] Resolve TypeScript cases with `@ts-ignore`
 1. [ ] Set the TypeScript threshold to 95%
 
 ## License
