@@ -1242,2984 +1242,863 @@
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 76,
-      "character": 19,
-      "text": "chart",
+      "line": 53,
+      "character": 2,
+      "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 79,
-      "character": 10,
-      "text": "dataContent",
+      "line": 55,
+      "character": 2,
+      "text": "yScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 81,
-      "character": 10,
-      "text": "bands",
+      "line": 56,
+      "character": 2,
+      "text": "yearsScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 96,
-      "character": 9,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 98,
-      "character": 9,
-      "text": "bands",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 132,
-      "character": 9,
-      "text": "chart",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 146,
-      "character": 9,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 146,
-      "character": 21,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 148,
+      "line": 179,
       "character": 39,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 148,
+      "line": 179,
       "character": 51,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 149,
+      "line": 180,
       "character": 19,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 149,
+      "line": 180,
       "character": 25,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 149,
+      "line": 180,
       "character": 33,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 149,
+      "line": 180,
       "character": 39,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 159,
+      "line": 190,
       "character": 15,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 159,
+      "line": 190,
       "character": 21,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 159,
+      "line": 190,
       "character": 27,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 159,
+      "line": 190,
       "character": 33,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 172,
+      "line": 203,
       "character": 40,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 172,
+      "line": 203,
       "character": 52,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 173,
+      "line": 204,
       "character": 19,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 173,
+      "line": 204,
       "character": 25,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 173,
+      "line": 204,
       "character": 33,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 173,
+      "line": 204,
       "character": 39,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 183,
+      "line": 214,
       "character": 15,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 183,
+      "line": 214,
       "character": 21,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 183,
+      "line": 214,
       "character": 27,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 183,
+      "line": 214,
       "character": 33,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 196,
+      "line": 227,
       "character": 29,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 196,
+      "line": 227,
       "character": 41,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 196,
+      "line": 227,
       "character": 57,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 197,
+      "line": 228,
       "character": 6,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 197,
+      "line": 228,
       "character": 18,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 198,
+      "line": 229,
       "character": 6,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 198,
+      "line": 229,
       "character": 18,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 201,
+      "line": 232,
       "character": 8,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 201,
+      "line": 232,
       "character": 14,
       "text": "forEach",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 201,
+      "line": 232,
       "character": 23,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 209,
+      "line": 240,
       "character": 16,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 209,
+      "line": 240,
       "character": 21,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 216,
+      "line": 247,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 216,
+      "line": 247,
       "character": 15,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 218,
+      "line": 249,
       "character": 26,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 218,
+      "line": 249,
       "character": 31,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 222,
+      "line": 253,
       "character": 15,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 222,
+      "line": 253,
       "character": 21,
       "text": "forEach",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 222,
+      "line": 253,
       "character": 30,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 230,
+      "line": 261,
       "character": 16,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 230,
+      "line": 261,
       "character": 21,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 237,
+      "line": 268,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 237,
+      "line": 268,
       "character": 15,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 239,
+      "line": 270,
       "character": 26,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 239,
+      "line": 270,
       "character": 31,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 243,
+      "line": 274,
       "character": 10,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 244,
-      "character": 13,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 244,
-      "character": 25,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 244,
-      "character": 31,
-      "text": "sort",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 246,
-      "character": 13,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 246,
-      "character": 25,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 246,
-      "character": 31,
-      "text": "sort",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 249,
+      "line": 280,
       "character": 10,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 256,
-      "character": 9,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 256,
-      "character": 21,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 256,
-      "character": 27,
-      "text": "forEach",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 256,
+      "line": 287,
       "character": 36,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 257,
+      "line": 288,
       "character": 6,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 257,
+      "line": 288,
       "character": 11,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 257,
+      "line": 288,
       "character": 29,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 257,
+      "line": 288,
       "character": 34,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 259,
+      "line": 290,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 259,
+      "line": 290,
       "character": 15,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 260,
+      "line": 291,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 260,
+      "line": 291,
       "character": 13,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 260,
+      "line": 291,
       "character": 28,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 260,
+      "line": 291,
       "character": 33,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 260,
+      "line": 291,
       "character": 39,
       "text": "getTime",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 261,
+      "line": 292,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 261,
+      "line": 292,
       "character": 13,
       "text": "instant",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 263,
+      "line": 294,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 263,
+      "line": 294,
       "character": 13,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 263,
+      "line": 294,
       "character": 29,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 263,
+      "line": 294,
       "character": 34,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 264,
+      "line": 295,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 264,
+      "line": 295,
       "character": 13,
       "text": "instant",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 267,
+      "line": 298,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 267,
+      "line": 298,
       "character": 15,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 268,
+      "line": 299,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 268,
+      "line": 299,
       "character": 13,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 272,
-      "character": 25,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 272,
-      "character": 37,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 274,
-      "character": 9,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 274,
-      "character": 21,
-      "text": "nTracks",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 275,
-      "character": 9,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 275,
-      "character": 21,
-      "text": "minDate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 276,
-      "character": 11,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 276,
-      "character": 23,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 277,
-      "character": 7,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 277,
-      "character": 18,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 277,
-      "character": 20,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 279,
-      "character": 9,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 279,
-      "character": 21,
-      "text": "maxDate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 279,
-      "character": 42,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 279,
-      "character": 54,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 279,
-      "character": 62,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 279,
-      "character": 73,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 279,
-      "character": 75,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 286,
-      "character": 27,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 289,
-      "character": 28,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 289,
-      "character": 33,
+      "line": 320,
+      "character": 39,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
-      "character": 19,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 293,
-      "character": 10,
-      "text": "xAxis",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 293,
-      "character": 23,
-      "text": "chart",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 294,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 295,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 296,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 296,
-      "character": 40,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 296,
-      "character": 45,
-      "text": "y",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 296,
-      "character": 49,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 296,
-      "character": 54,
-      "text": "h",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 298,
-      "character": 4,
-      "text": "xAxis",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 298,
-      "character": 10,
-      "text": "redraw",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 299,
-      "character": 13,
-      "text": "xAxis",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 299,
-      "character": 19,
-      "text": "call",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 302,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 302,
-      "character": 9,
-      "text": "parts",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 302,
-      "character": 15,
-      "text": "push",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 302,
-      "character": 20,
-      "text": "xAxis",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 303,
-      "character": 25,
-      "text": "xAxis",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 316,
-      "character": 32,
-      "text": "sizeFactor",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 317,
-      "character": 10,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 319,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 319,
-      "character": 9,
-      "text": "id",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 320,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 320,
-      "character": 9,
-      "text": "x",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 321,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 321,
-      "character": 9,
-      "text": "y",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 322,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 322,
-      "character": 9,
-      "text": "w",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 323,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 323,
-      "character": 9,
-      "text": "h",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 323,
-      "character": 23,
-      "text": "sizeFactor",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 324,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 324,
-      "character": 9,
-      "text": "trackOffset",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 325,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 325,
-      "character": 9,
-      "text": "trackHeight",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
-      "character": 7,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
-      "character": 12,
-      "text": "h",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
-      "character": 16,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
-      "character": 21,
-      "text": "trackOffset",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
-      "character": 41,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
-      "character": 53,
-      "text": "nTracks",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
-      "character": 9,
-      "text": "itemHeight",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
-      "character": 22,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
-      "character": 27,
-      "text": "trackHeight",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 330,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 330,
-      "character": 9,
-      "text": "parts",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 331,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 331,
-      "character": 9,
-      "text": "instantWidth",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 332,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 332,
+      "line": 364,
       "character": 9,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 333,
-      "character": 20,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 333,
-      "character": 32,
-      "text": "minDate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 333,
-      "character": 46,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 333,
-      "character": 58,
-      "text": "maxDate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 334,
-      "character": 17,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 334,
-      "character": 22,
-      "text": "w",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
+      "line": 368,
       "character": 9,
       "text": "yScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
+      "line": 368,
       "character": 19,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
-      "character": 34,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
-      "character": 39,
-      "text": "trackOffset",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
-      "character": 53,
+      "line": 368,
+      "character": 54,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
-      "character": 61,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
-      "character": 66,
-      "text": "trackHeight",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 338,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 338,
+      "line": 370,
       "character": 9,
       "text": "yearsScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 339,
-      "character": 11,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 339,
-      "character": 23,
-      "text": "maxDate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 339,
-      "character": 31,
-      "text": "getUTCFullYear",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 340,
-      "character": 11,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 340,
-      "character": 23,
-      "text": "minDate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 340,
-      "character": 31,
-      "text": "getUTCFullYear",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 341,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 341,
-      "character": 9,
-      "text": "g",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 341,
-      "character": 18,
-      "text": "chart",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 342,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 343,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 343,
-      "character": 18,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 343,
-      "character": 23,
-      "text": "id",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 344,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 344,
-      "character": 40,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 344,
-      "character": 45,
-      "text": "y",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 345,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 345,
-      "character": 9,
-      "text": "g",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 346,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 347,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 348,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 348,
-      "character": 21,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 348,
-      "character": 26,
-      "text": "w",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 349,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 349,
-      "character": 22,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 349,
-      "character": 27,
-      "text": "h",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 351,
-      "character": 10,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 351,
-      "character": 18,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 351,
-      "character": 23,
-      "text": "g",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 352,
-      "character": 7,
-      "text": "selectAll",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 353,
-      "character": 7,
-      "text": "data",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 353,
-      "character": 17,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 353,
-      "character": 29,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 354,
-      "character": 7,
-      "text": "enter",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 355,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 356,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 356,
-      "character": 34,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 356,
+      "line": 388,
       "character": 39,
       "text": "yScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 357,
-      "character": 7,
-      "text": "attr",
+      "line": 444,
+      "character": 41,
+      "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 357,
-      "character": 22,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 357,
-      "character": 27,
-      "text": "itemHeight",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 358,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 365,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 397,
-      "character": 18,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 397,
-      "character": 23,
-      "text": "itemHeight",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 398,
-      "character": 18,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 398,
-      "character": 23,
-      "text": "itemHeight",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 406,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 406,
-      "character": 9,
-      "text": "addActions",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 406,
+      "line": 447,
       "character": 32,
-      "text": "actions",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 407,
-      "character": 13,
-      "text": "actions",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 407,
-      "character": 21,
-      "text": "forEach",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 407,
-      "character": 30,
-      "text": "action",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 407,
-      "character": 46,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 407,
-      "character": 52,
-      "text": "on",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 407,
-      "character": 55,
-      "text": "action",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 407,
-      "character": 66,
-      "text": "action",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 410,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 410,
-      "character": 9,
-      "text": "redraw",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 411,
-      "character": 6,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 412,
-      "character": 9,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 412,
-      "character": 20,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 412,
-      "character": 31,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 412,
-      "character": 36,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 412,
-      "character": 43,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 412,
-      "character": 45,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 413,
-      "character": 9,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 413,
-      "character": 24,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 413,
-      "character": 35,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 413,
-      "character": 40,
+      "line": 447,
+      "character": 53,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 413,
-      "character": 47,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 413,
-      "character": 49,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 413,
-      "character": 56,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 413,
-      "character": 61,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 413,
-      "character": 68,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 413,
-      "character": 70,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 414,
-      "character": 9,
-      "text": "select",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 415,
-      "character": 9,
-      "text": "text",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 415,
-      "character": 15,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 416,
-      "character": 24,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 416,
+      "line": 451,
       "character": 29,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 416,
-      "character": 36,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 416,
-      "character": 38,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 416,
-      "character": 45,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 416,
+      "line": 451,
       "character": 50,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 416,
-      "character": 57,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 416,
-      "character": 59,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 419,
-      "character": 14,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 419,
-      "character": 16,
-      "text": "label",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 419,
-      "character": 22,
-      "text": "length",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 420,
-      "character": 22,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 420,
-      "character": 24,
-      "text": "label",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 420,
-      "character": 30,
-      "text": "substr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 423,
-      "character": 17,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 423,
-      "character": 19,
-      "text": "label",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 426,
-      "character": 13,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 426,
-      "character": 18,
-      "text": "parts",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 426,
-      "character": 24,
-      "text": "forEach",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 426,
-      "character": 33,
-      "text": "part",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 426,
-      "character": 47,
-      "text": "part",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 426,
-      "character": 52,
-      "text": "redraw",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 429,
-      "character": 9,
-      "text": "bands",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 429,
-      "character": 27,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 430,
-      "character": 25,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 431,
-      "character": 18,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 431,
-      "character": 23,
-      "text": "h",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 437,
-      "character": 16,
-      "text": "bandName",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 439,
-      "character": 27,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 439,
-      "character": 16,
-      "text": "bandName",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 443,
-      "character": 21,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 443,
-      "character": 26,
-      "text": "y",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 443,
-      "character": 30,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 443,
-      "character": 35,
-      "text": "h",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 451,
-      "character": 18,
-      "text": "min",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 455,
-      "character": 8,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 455,
-      "character": 13,
-      "text": "x",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 461,
-      "character": 8,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 461,
-      "character": 13,
-      "text": "w",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 462,
-      "character": 8,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 462,
-      "character": 13,
-      "text": "w",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 463,
-      "character": 18,
-      "text": "_min",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 463,
-      "character": 29,
-      "text": "max",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 467,
-      "character": 8,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 467,
-      "character": 13,
-      "text": "x",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 467,
-      "character": 17,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 467,
-      "character": 22,
-      "text": "w",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 473,
-      "character": 9,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 473,
-      "character": 14,
-      "text": "w",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 474,
-      "character": 8,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 474,
-      "character": 13,
-      "text": "w",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 475,
-      "character": 18,
-      "text": "min",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 475,
-      "character": 28,
-      "text": "max",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 476,
-      "character": 25,
-      "text": "max",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 476,
-      "character": 29,
-      "text": "getUTCFullYear",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 476,
-      "character": 48,
-      "text": "min",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 476,
-      "character": 52,
-      "text": "getUTCFullYear",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 481,
-      "character": 8,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 481,
-      "character": 13,
-      "text": "x",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 481,
-      "character": 17,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 481,
-      "character": 22,
-      "text": "w",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 485,
-      "character": 10,
-      "text": "bandLabels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 485,
-      "character": 28,
-      "text": "chart",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 486,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 487,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 487,
-      "character": 21,
-      "text": "bandName",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 488,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 488,
-      "character": 40,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 488,
-      "character": 45,
-      "text": "y",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 488,
-      "character": 49,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 488,
-      "character": 54,
-      "text": "h",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 489,
-      "character": 7,
-      "text": "selectAll",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 489,
-      "character": 21,
-      "text": "bandName",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 490,
-      "character": 7,
-      "text": "data",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 491,
-      "character": 7,
-      "text": "enter",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 492,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 494,
-      "character": 4,
-      "text": "bandLabels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 495,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 496,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 497,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 497,
+      "line": 532,
       "character": 18,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 497,
+      "line": 532,
       "character": 29,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 498,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 499,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 500,
-      "character": 7,
-      "text": "style",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 502,
-      "character": 10,
-      "text": "labels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 502,
-      "character": 24,
-      "text": "bandLabels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 503,
-      "character": 7,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 504,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 504,
+      "line": 540,
       "character": 22,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 504,
+      "line": 540,
       "character": 33,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 505,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 505,
+      "line": 541,
       "character": 19,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 505,
+      "line": 541,
       "character": 30,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 506,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 506,
+      "line": 542,
       "character": 18,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 506,
+      "line": 542,
       "character": 29,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 507,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 508,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 508,
+      "line": 544,
       "character": 28,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 508,
+      "line": 544,
       "character": 39,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 510,
-      "character": 4,
-      "text": "labels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 510,
-      "character": 11,
-      "text": "redraw",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 511,
+      "line": 547,
       "character": 12,
       "text": "min",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 511,
-      "character": 18,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 511,
+      "line": 547,
       "character": 23,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 511,
+      "line": 547,
       "character": 30,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 512,
+      "line": 548,
       "character": 12,
       "text": "max",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 512,
-      "character": 18,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 512,
+      "line": 548,
       "character": 23,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 512,
+      "line": 548,
       "character": 30,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 514,
-      "character": 13,
-      "text": "labels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 514,
-      "character": 20,
-      "text": "text",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 514,
+      "line": 550,
       "character": 26,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 514,
+      "line": 550,
       "character": 37,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 514,
+      "line": 550,
       "character": 42,
       "text": "min",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 514,
+      "line": 550,
       "character": 47,
       "text": "max",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 517,
-      "character": 4,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 517,
-      "character": 9,
-      "text": "parts",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 517,
-      "character": 15,
-      "text": "push",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 517,
-      "character": 20,
-      "text": "labels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 518,
-      "character": 25,
-      "text": "labels",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 523,
-      "character": 15,
-      "text": "bandName",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 523,
-      "character": 30,
-      "text": "targetNames",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 525,
-      "character": 27,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 525,
-      "character": 16,
-      "text": "bandName",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 532,
-      "character": 13,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 532,
-      "character": 25,
-      "text": "minDate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 532,
-      "character": 33,
-      "text": "getTime",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 533,
-      "character": 13,
-      "text": "dataContent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 533,
-      "character": 25,
-      "text": "maxDate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 533,
-      "character": 33,
-      "text": "getTime",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 536,
+      "line": 572,
       "character": 23,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 537,
+      "line": 573,
       "character": 10,
       "text": "newDomain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 537,
-      "character": 22,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 537,
+      "line": 573,
       "character": 27,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 537,
+      "line": 573,
       "character": 34,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 539,
+      "line": 575,
       "character": 10,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 539,
+      "line": 575,
       "character": 12,
       "text": "selection",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 540,
+      "line": 576,
       "character": 8,
       "text": "newDomain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 541,
+      "line": 577,
       "character": 25,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 541,
+      "line": 577,
       "character": 27,
       "text": "selection",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 542,
+      "line": 578,
       "character": 25,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 542,
+      "line": 578,
       "character": 27,
       "text": "selection",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 548,
-      "character": 6,
-      "text": "targetNames",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 548,
-      "character": 18,
-      "text": "forEach",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 548,
+      "line": 584,
       "character": 27,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 549,
-      "character": 13,
-      "text": "bands",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 549,
+      "line": 585,
       "character": 19,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 549,
+      "line": 585,
       "character": 22,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 549,
+      "line": 585,
       "character": 29,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 549,
+      "line": 585,
       "character": 36,
       "text": "newDomain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 551,
-      "character": 13,
-      "text": "bands",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 551,
+      "line": 587,
       "character": 19,
       "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 551,
-      "character": 22,
-      "text": "redraw",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 555,
-      "character": 10,
-      "text": "xBrush",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 555,
-      "character": 19,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 555,
-      "character": 24,
-      "text": "g",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 555,
-      "character": 26,
-      "text": "append",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 555,
-      "character": 40,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 555,
-      "character": 59,
-      "text": "call",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 557,
-      "character": 4,
-      "text": "xBrush",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 558,
-      "character": 7,
-      "text": "selectAll",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 559,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 560,
-      "character": 7,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 560,
-      "character": 22,
-      "text": "band",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 560,
-      "character": 27,
-      "text": "h",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 566,
-      "character": 29,
-      "text": "component",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 566,
-      "character": 48,
-      "text": "component",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 566,
-      "character": 58,
-      "text": "redraw",
       "kind": 1
     },
     {
@@ -4510,8 +2389,8 @@
       "kind": 1
     }
   ],
-  "percentage": 94.9628470864294,
-  "total": 12785,
-  "covered": 12141,
-  "uncovered": 644
+  "percentage": 97.34630350194553,
+  "total": 12850,
+  "covered": 12509,
+  "uncovered": 341
 }
