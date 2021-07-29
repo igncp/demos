@@ -59,10 +59,10 @@ const getInterpolation = (data: DataItem[], line: Line<DataItem>) => {
     .domain([0, 1])
     .range(range(1, data.length + 1))
 
-  return (t: number): any => {
+  return (t: number): string => {
     const interpolatedLine = data.slice(0, interpolate(t))
 
-    return line(interpolatedLine)
+    return line(interpolatedLine)!
   }
 }
 

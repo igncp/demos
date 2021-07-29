@@ -30,9 +30,8 @@ You need to have Node.js installed
 
 I've updated this repository after it was inactive for several years. The remaining steps for existing charts are:
 
-1. [ ] Style the 404 page
 1. [ ] Remove or change dependencies
-    - [ ] Remove Angular and Bootstrap but keep same look and feel
+    - [ ] Remove Bootstrap but keep same look and feel
 1. [ ] Add disclaimer for old charts
 1. [ ] Resolve TypeScript cases with `any`
 1. [ ] Set the TypeScript threshold to 95%

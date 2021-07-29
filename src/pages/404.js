@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import Page404 from "@/components/Page404"
+import Page404 from "@/components/Page404/Page404"
 
 const NotFoundPage = () => <Page404 />
 

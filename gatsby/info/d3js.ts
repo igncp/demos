@@ -258,7 +258,7 @@ const d3js: D3JS = {
   "meteorites-map": {
     data: ["meteorites.json", "world_countries.json"],
     docs: [...animeItems, ...d3ZoomItems] as DemoBase["docs"],
-    isCompleted: false,
+    isCompleted: true,
     name: "Meteorites Map",
     notes: [
       "Created this chart with the data and added the interactions",

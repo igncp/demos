@@ -6,14 +6,6 @@ const Head = () => (
       src={`${ROOT_PATH}vendors/jquery/dist/jquery.min.js`}
       type="text/javascript"
     />
-    <script
-      src={`${ROOT_PATH}vendors/bootstrap/dist/js/bootstrap.min.js`}
-      type="text/javascript"
-    />
-    <script
-      src={`${ROOT_PATH}vendors/angular/angular.min.js`}
-      type="text/javascript"
-    />
     <link
       href={`${ROOT_PATH}vendors/bootstrap/dist/css/bootstrap.min.css`}
       rel="stylesheet"
