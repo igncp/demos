@@ -5,15 +5,6 @@
 const width = 932
 const height = width
 
-// const data = (await FileAttachment("flare.csv").csv())
-// .filter(({ value }) => value !== "")
-// .map(({ id, value }) => ({
-// name: id.split(".").pop(),
-// title: id.replace(/\./g, "/"),
-// group: id.split(".")[1],
-// value: +value,
-// }))
-
 const renderChart = (data) => {
   const form = d3.select("#chart").append("form").html(`
 <p><input type="radio" id="total" value="total" name="type"/><label for="total">Total</label></p>
@@ -21,8 +12,28 @@ const renderChart = (data) => {
 <p><input type="radio" id="females" value="females" name="type"/><label for="females">Females</label></p>
 `)
 
+  const state = {
+    prop: "total",
+    valueIdx: 0,
+  }
+
+  d3.select("#chart").append("div").attr("class", "slider")
+
+  const max = data[0].values.total.length - 1
+
+  $(".slider").slider({
+    change: (_a, b) => {
+      state.valueIdx = b.value
+      transitionChart()
+    },
+    max,
+    min: 0,
+    value: state.valueIdx,
+  })
+
   form.on("change", (e) => {
-    transitionChart(e.target.value)
+    state.prop = e.target.value
+    transitionChart()
   })
 
   const color = d3.scaleOrdinal(
@@ -38,41 +49,89 @@ const renderChart = (data) => {
     .attr("font-family", "sans-serif")
     .attr("text-anchor", "middle")
 
-  const transitionChart = (prop) => {
+  const header = svg
+    .append("text")
+    .text("")
+    .attr("transform", "translate(500, 50)")
+    .attr("font-size", "30px")
+    .style("text-anchor", "right")
+
+  const transitionChart = () => {
     const structure = d3.hierarchy({ children: data }).sum((d) => {
-      if (!d.value) {
+      if (!d.values) {
         return 1
       }
 
-      return d.value[prop]
+      const {
+        values: {
+          [state.prop]: { [state.valueIdx]: dataItem },
+        },
+      } = d
+
+      return dataItem ? dataItem.count : 0
     })
     const root = d3
       .pack()
-      .size(prop === "total" ? [width, height] : [width / 2, height / 2])
+      .size(state.prop === "total" ? [width, height] : [width / 2, height / 2])
       .padding(3)(structure)
 
-    const leaf = svg.selectAll(".leaf").data(root.leaves())
+    const leaves = root.leaves()
+
+    const {
+      data: {
+        values: {
+          [state.prop]: {
+            [state.valueIdx]: { date },
+          },
+        },
+      },
+    } = leaves[0]
+
+    const year = new Date(date).getFullYear()
+    const { length: totalNum } = leaves.filter(
+      (l) => l.data.values[state.prop].length >= state.valueIdx + 1
+    )
+
+    header.text(`Population in Malaga: ${year} - ${totalNum} towns`)
+
+    const leaf = svg.selectAll(".leaf").data(leaves)
 
     leaf.exit().remove()
+
+    const getTitle = (d) => {
+      const {
+        data: {
+          values: {
+            [state.prop]: { [state.valueIdx]: dataItem },
+          },
+        },
+      } = d
+
+      if (!dataItem) {
+        return ""
+      }
+
+      return `${d.data.name} - ${dataItem.count} - ${dataItem.date}`
+    }
 
     leaf
       .transition()
       .duration(1000)
       .ease(d3.easeCircleInOut)
       .attr("transform", (d) => {
-        if (prop !== "total") {
+        if (state.prop !== "total") {
           return `translate(${d.x + width / 4},${d.y + height / 4})`
         }
 
         return `translate(${d.x + 1},${d.y + 1})`
       })
-      .attr("title", (d) => `${d.data.name} - ${d.data.value[prop]}`)
+      .attr("title", getTitle)
 
     const enter = leaf
       .enter()
       .append("g")
       .attr("class", "leaf")
-      .attr("title", (d) => `${d.data.name} - ${d.data.value[prop]}`)
+      .attr("title", getTitle)
       .attr("transform", (d) => `translate(${d.x + 1},${d.y + 1})`)
 
     enter
@@ -95,7 +154,7 @@ const renderChart = (data) => {
     })
   }
 
-  transitionChart("total")
+  transitionChart()
 }
 
 const main = async () => {
@@ -104,7 +163,10 @@ const main = async () => {
   const parsedData = data
     .map((item) => ({
       name: item.Nombre,
-      value: item.Data[0].Valor,
+      values: item.Data.map((d) => ({
+        count: d.Valor,
+        date: d.Fecha,
+      })),
     }))
     .reduce((acc, item) => {
       const [location, type] = item.name.split(".").map((i) => i.trim())
@@ -112,14 +174,14 @@ const main = async () => {
       if (type === "Total") {
         acc.push({
           name: location,
-          value: {
-            total: item.value,
+          values: {
+            total: item.values,
           },
         })
       } else {
         const { [acc.length - 1]: last } = acc
 
-        last.value[type === "Hombres" ? "males" : "females"] = item.value
+        last.values[type === "Hombres" ? "males" : "females"] = item.values
       }
 
       return acc
