@@ -334,8 +334,8 @@ const d3js: D3JS = {
     name: "Population Circles",
     notes: [
       "It has transitions for nested elements: by using enter/exist/transition approach plus (new) `.data(d => d)`",
-      "Click while pressing the Control key to open a search",
-      "TODO: Finish @TODOs",
+      "Click a circle while pressing the Control key to open a search window for a municipality",
+      "The population JSON data has been parsed and saved in the file to rename properties and remove unused",
       "TODO: Finish porting and cleaning chart",
       "TODO: Review checklist",
     ],

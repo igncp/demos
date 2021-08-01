@@ -12,6 +12,25 @@ import anime from "animejs"
 import hotkeys from "hotkeys-js"
 import qs from "query-string"
 
+type PopulationRecord = {
+  count: number
+  date: string
+}
+
+type Municipality = {
+  name: string
+  values: {
+    females: PopulationRecord[]
+    males: PopulationRecord[]
+    total: PopulationRecord[]
+  }
+}
+
+const fetchData = () =>
+  (json(
+    `${ROOT_PATH}data/d3js/population-circles/data.json`
+  ) as unknown) as Promise<Municipality[]>
+
 const margin = {
   bottom: 0,
   left: 0,
@@ -19,54 +38,39 @@ const margin = {
   top: 70,
 }
 
-const renderChart = (data: any) => {
+const formatPopulation = (val: number) =>
+  Number(val.toFixed(0)).toLocaleString(undefined, {
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+  })
+
+type RenderChart = (o: {
+  municipalities: Municipality[]
+  rootElId: string
+}) => {
+  onPopulationPercentilesChange: (vals: [number, number]) => void
+  onTimeSeriesChange: (val: number) => void
+  onTypeChange: (type: string) => void
+}
+
+const renderChart: RenderChart = ({ municipalities, rootElId }) => {
   const { width } = (document.getElementById(
-    "chart"
+    rootElId
   ) as any).getBoundingClientRect()
   const height = 400
 
-  const form = select("form")
-
   const state = {
-    populationRange: [0, 100],
+    populationRange: [0, 1],
     prop: "total",
     valueIdx: 0,
   }
 
-  const max = data[0].values.total.length - 1
-
-  $(".time-slider").slider({
-    change: (_a, b) => {
-      const s: any = state
-
-      s.valueIdx = b.value
-      transitionChart()
-    },
-    max,
-    min: 0,
-    value: state.valueIdx,
-  })
-
-  $(".population-slider").slider({
-    change: (_a, b: any) => {
-      state.populationRange = b.values.map((v: any) => v / 100)
-      transitionChart()
-    },
-    range: true,
-    values: [state.populationRange[0], state.populationRange[1]],
-  })
-
-  form.on("change", (e) => {
-    state.prop = e.target.value
-    transitionChart()
-  })
-
   const color = scaleOrdinal(
-    data.map((_d: any, idx: any) => idx),
+    municipalities.map((_d: any, idx: any) => idx),
     schemeCategory10
   )
 
-  const svg = select("#chart")
+  const svg = select(`#${rootElId}`)
     .append("svg")
     .attr("viewBox", [0, 0, width, height + margin.top] as any)
     .attr("font-size", 10)
@@ -85,21 +89,21 @@ const renderChart = (data: any) => {
     .attr("transform", `translate(${margin.left}, ${margin.top})`)
 
   const transitionChart = () => {
-    const itemsWithCount = data.filter((town: any) => {
+    const itemsWithCount = municipalities.filter((municipality: any) => {
       const {
         values: {
           [state.prop]: { [state.valueIdx]: dataItem },
         },
-      } = town
+      } = municipality
 
       return !!dataItem
     })
-    const dataValues = itemsWithCount.map((town: any) => {
+    const dataValues = itemsWithCount.map((municipality: any) => {
       const {
         values: {
           [state.prop]: { [state.valueIdx]: dataItem },
         },
-      } = town
+      } = municipality
 
       return dataItem ? dataItem.count : null
     })
@@ -129,15 +133,17 @@ const renderChart = (data: any) => {
       []
     )
 
-    const filteredData = itemsWithCount.filter((_town: any, idx: any) => {
-      const { [idx]: percentile } = percentiles
+    const filteredData = itemsWithCount.filter(
+      (_municipality: any, idx: any) => {
+        const { [idx]: percentile } = percentiles
 
-      return (
-        typeof percentile === "number" &&
-        percentile >= state.populationRange[0] &&
-        percentile <= state.populationRange[1]
-      )
-    })
+        return (
+          typeof percentile === "number" &&
+          percentile >= state.populationRange[0] &&
+          percentile <= state.populationRange[1]
+        )
+      }
+    )
 
     const structure = hierarchy({ children: filteredData }).sum((d: any) => {
       if (!d.values) {
@@ -176,8 +182,17 @@ const renderChart = (data: any) => {
       (l: any) => l.data.values[state.prop].length >= state.valueIdx + 1
     )
 
-    // @TODO: add percentiles info
-    header.text(`Population in Malaga: ${year} - ${totalNum} towns`)
+    header.text(
+      `Population in Malaga: ${year}${
+        state.populationRange[0] === 0 && state.populationRange[1] === 1
+          ? ""
+          : ` - From ${(state.populationRange[0] * 100).toFixed(
+              0
+            )} percentile to ${(state.populationRange[1] * 100).toFixed(
+              0
+            )} percentile`
+      } - ${totalNum} municipalities`
+    )
 
     const leaf = svgContent.selectAll(".leaf").data(leaves)
 
@@ -196,12 +211,19 @@ const renderChart = (data: any) => {
         return ""
       }
 
-      return `${d.data.name} - ${dataItem.count} population - ${getYear(
-        dataItem.date
-      )}`
+      const { [state.prop]: itemsName } = {
+        females: "females",
+        males: "males",
+        total: "people",
+      } as Record<string, string>
+
+      return `${d.data.name} - ${formatPopulation(
+        dataItem.count
+      )} ${itemsName} - ${getYear(dataItem.date)}`
     }
 
     leaf
+      .attr("title", getTitle)
       .transition()
       .duration(1000)
       .ease(easeCircleInOut)
@@ -212,7 +234,6 @@ const renderChart = (data: any) => {
 
         return `translate(${d.x + 1},${d.y + 1})`
       })
-      .attr("title", getTitle)
 
     const enter = leaf
       .enter()
@@ -293,46 +314,61 @@ const renderChart = (data: any) => {
   }
 
   transitionChart()
+
+  return {
+    onPopulationPercentilesChange: (newValues: [number, number]) => {
+      state.populationRange = newValues
+      transitionChart()
+    },
+    onTimeSeriesChange: (newIndex: number) => {
+      state.valueIdx = newIndex
+      transitionChart()
+    },
+    onTypeChange: (newType: string) => {
+      state.prop = newType
+      transitionChart()
+    },
+  }
 }
 
 const main = async () => {
   hotkeys("control", () => {})
 
-  // @TODO: optimize content to reduce size
-  const data: any = await json(
-    `${ROOT_PATH}data/d3js/population-circles/data.json`
-  )
-  const parsedData = data
-    .map((item: any) => ({
-      name: item.Nombre,
-      values: item.Data.map((d: any) => ({
-        count: d.Valor,
-        date: d.Fecha,
-      })),
-    }))
-    .reduce((acc: any, item: any) => {
-      const [location, type] = item.name.split(".").map((i: any) => i.trim())
+  const municipalities = await fetchData()
 
-      if (type === "Total") {
-        acc.push({
-          name: location,
-          values: {
-            total: item.values,
-          },
-        })
-      } else {
-        const { [acc.length - 1]: last } = acc
+  const {
+    onPopulationPercentilesChange,
+    onTimeSeriesChange,
+    onTypeChange,
+  } = renderChart({
+    municipalities,
+    rootElId: "chart",
+  })
 
-        last.values[type === "Hombres" ? "males" : "females"] = item.values
-      }
+  select("form").on("change", (e) => {
+    onTypeChange(e.target.value)
+  })
 
-      return acc
-    }, [])
+  $(".population-slider").slider({
+    change: (_a, b: any) => {
+      const newValues = b.values.map((v: any) => v / 100)
 
-  // remove the first one which is the sum of all
-  parsedData.shift()
+      onPopulationPercentilesChange(newValues)
+    },
+    range: true,
+    values: [0, 100],
+  })
 
-  renderChart(parsedData)
+  const max = municipalities[0].values.total.length - 1
+
+  $(".time-slider").slider({
+    change: (_a, b) => {
+      onTimeSeriesChange(b.value as number)
+    },
+    max,
+    min: 0,
+    value: 0,
+  })
 }
 
 export default main

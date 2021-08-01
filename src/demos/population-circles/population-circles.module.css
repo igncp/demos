@@ -1,5 +1,9 @@
 .radio {
   display: inline-block;
+
+  input {
+    margin-right: 5px;
+  }
 }
 
 .slider {

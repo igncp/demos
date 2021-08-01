@@ -7,7 +7,7 @@ import Demo from "@/components/demo"
 import main from "@/demos/population-circles/population-circles"
 import * as styles from "@/demos/population-circles/population-circles.module.css"
 
-const Pie = ({ pageContext }: DemoPageProps) => (
+const PopulationCircles = ({ pageContext }: DemoPageProps) => (
   <Demo
     links={["/vendors/jquery-ui/themes/base/jquery-ui.min.css"]}
     main={main}
@@ -44,4 +44,4 @@ const Pie = ({ pageContext }: DemoPageProps) => (
   </Demo>
 )
 
-export default Pie
+export default PopulationCircles
