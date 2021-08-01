@@ -38,3 +38,4 @@ export const hotkeysItems = [
 export const mixBlendModeCSS = getCommonCSS("mix-blend-mode")
 
 export const gradientUnitsSVGAttribute = getCommonSVGAttribute("gradientUnits")
+export const viewBoxSVGAttribute = getCommonSVGAttribute("viewBox")

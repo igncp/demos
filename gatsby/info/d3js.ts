@@ -64,6 +64,7 @@ export type D3JS = {
   "multiline-voronoi": DemoBase
   partition: DemoBase
   pie: DemoBase
+  "population-circles": DemoBase
   "spain-map": DemoBase
   timeline: DemoBase
   "trend-line": DemoBase
@@ -324,6 +325,24 @@ const d3js: D3JS = {
       "Added the animation (transition) by changing a random slice data by a random integer between range",
     ],
     sources: ["http://codepen.io/nishidh41/pen/Frzhq"],
+    summary: [],
+  },
+  "population-circles": {
+    data: [],
+    docs: [],
+    isCompleted: false,
+    name: "Population Circles",
+    notes: [
+      "It has transitions for nested elements: by using enter/exist/transition approach plus (new) `.data(d => d)`",
+      "Click while pressing the Control key to open a search",
+      "TODO: Finish @TODOs",
+      "TODO: Finish porting and cleaning chart",
+      "TODO: Review checklist",
+    ],
+    sources: [
+      "https://observablehq.com/@d3/bubble-chart?collection=@d3/d3-hierarchy",
+      "https://datos.gob.es/en/catalogo/ea0010587-malaga-poblacion-por-municipios-y-sexo-anual-cifras-oficiales-de-poblacion-de-los-municipios-espanoles-revision-del-padron-municipal-identificador-api-2882",
+    ],
     summary: [],
   },
   "spain-map": {

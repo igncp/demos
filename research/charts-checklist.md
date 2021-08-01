@@ -11,6 +11,7 @@ For new charts using data, they should cover most of these points
 - Format raw numbers (e.g. add commas, remove extra decimals, etc.)
 - They should update on window resize (at least complete rerender, losing state)
 - They should look good on mobile device by using responsive units or rendering less data
+- It should look professional
 
 ## Code requirements for new charts
 
@@ -35,3 +36,4 @@ For new charts using data, they should cover most of these points
     - Be able to tear down and cleanup its content and other generated components
     - Avoid creating simple classes inside the charts, add uuids
 - Move as many styles as possible to the `.styl` sheet inside classes
+- Use new styling features, and document them, like filters, animations, svg, etc
