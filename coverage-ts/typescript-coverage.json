@@ -1206,6 +1206,1469 @@
       "kind": 1
     },
     {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 21,
+      "character": 21,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 22,
+      "character": 10,
+      "text": "width",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 24,
+      "character": 12,
+      "text": "getBoundingClientRect",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 35,
+      "character": 14,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 35,
+      "character": 22,
+      "text": "values",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 35,
+      "character": 29,
+      "text": "total",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 35,
+      "character": 35,
+      "text": "length",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 39,
+      "character": 12,
+      "text": "s",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 41,
+      "character": 6,
+      "text": "s",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 41,
+      "character": 8,
+      "text": "valueIdx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 50,
+      "character": 17,
+      "text": "b",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 51,
+      "character": 30,
+      "text": "b",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 51,
+      "character": 32,
+      "text": "values",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 51,
+      "character": 39,
+      "text": "map",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 51,
+      "character": 44,
+      "text": "v",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 51,
+      "character": 55,
+      "text": "v",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 58,
+      "character": 21,
+      "text": "e",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 59,
+      "character": 17,
+      "text": "e",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 59,
+      "character": 19,
+      "text": "target",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 59,
+      "character": 26,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 64,
+      "character": 4,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 64,
+      "character": 9,
+      "text": "map",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 64,
+      "character": 14,
+      "text": "_d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 64,
+      "character": 23,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 64,
+      "character": 36,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 70,
+      "character": 28,
+      "text": "width",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 78,
+      "character": 36,
+      "text": "width",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 87,
+      "character": 10,
+      "text": "itemsWithCount",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 87,
+      "character": 27,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 87,
+      "character": 32,
+      "text": "filter",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 87,
+      "character": 40,
+      "text": "town",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 90,
+      "character": 44,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 94,
+      "character": 15,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 96,
+      "character": 10,
+      "text": "dataValues",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 96,
+      "character": 23,
+      "text": "itemsWithCount",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 96,
+      "character": 38,
+      "text": "map",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 96,
+      "character": 43,
+      "text": "town",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 99,
+      "character": 44,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 103,
+      "character": 13,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 103,
+      "character": 24,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 103,
+      "character": 33,
+      "text": "count",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 105,
+      "character": 10,
+      "text": "valueToIdx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 105,
+      "character": 23,
+      "text": "dataValues",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 105,
+      "character": 34,
+      "text": "reduce",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 105,
+      "character": 42,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 105,
+      "character": 52,
+      "text": "val",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 105,
+      "character": 62,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 106,
+      "character": 10,
+      "text": "val",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 107,
+      "character": 15,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 110,
+      "character": 6,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 110,
+      "character": 10,
+      "text": "val",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 110,
+      "character": 17,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 110,
+      "character": 21,
+      "text": "val",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 111,
+      "character": 6,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 111,
+      "character": 10,
+      "text": "val",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 111,
+      "character": 15,
+      "text": "push",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 111,
+      "character": 20,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 113,
+      "character": 13,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 115,
+      "character": 10,
+      "text": "sortedDataValues",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 115,
+      "character": 29,
+      "text": "dataValues",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 115,
+      "character": 40,
+      "text": "sort",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 115,
+      "character": 46,
+      "text": "a",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 115,
+      "character": 54,
+      "text": "b",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 115,
+      "character": 65,
+      "text": "a",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 115,
+      "character": 69,
+      "text": "b",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 117,
+      "character": 10,
+      "text": "percentiles",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 117,
+      "character": 24,
+      "text": "sortedDataValues",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 117,
+      "character": 41,
+      "text": "reduce",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 118,
+      "character": 7,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 118,
+      "character": 17,
+      "text": "val",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 118,
+      "character": 27,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 119,
+      "character": 27,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 119,
+      "character": 33,
+      "text": "sortedDataValues",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 119,
+      "character": 50,
+      "text": "length",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 120,
+      "character": 23,
+      "text": "unsortedIndexes",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 120,
+      "character": 17,
+      "text": "val",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 122,
+      "character": 8,
+      "text": "unsortedIndexes",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 122,
+      "character": 24,
+      "text": "forEach",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 122,
+      "character": 33,
+      "text": "idx2",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 123,
+      "character": 10,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 123,
+      "character": 14,
+      "text": "idx2",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 126,
+      "character": 15,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 131,
+      "character": 10,
+      "text": "filteredData",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 131,
+      "character": 25,
+      "text": "itemsWithCount",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 131,
+      "character": 40,
+      "text": "filter",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 131,
+      "character": 48,
+      "text": "_town",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 131,
+      "character": 60,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 132,
+      "character": 21,
+      "text": "percentile",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 132,
+      "character": 15,
+      "text": "idx",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 135,
+      "character": 15,
+      "text": "percentile",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 141,
+      "character": 34,
+      "text": "children",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 141,
+      "character": 44,
+      "text": "filteredData",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 141,
+      "character": 65,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 142,
+      "character": 11,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 142,
+      "character": 13,
+      "text": "values",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 148,
+      "character": 44,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 152,
+      "character": 13,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 152,
+      "character": 24,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 152,
+      "character": 33,
+      "text": "count",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 155,
+      "character": 56,
+      "text": "width",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 160,
+      "character": 21,
+      "text": "dateStr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 166,
+      "character": 32,
+      "text": "date",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 172,
+      "character": 25,
+      "text": "date",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 175,
+      "character": 7,
+      "text": "l",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 175,
+      "character": 18,
+      "text": "l",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 175,
+      "character": 20,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 175,
+      "character": 25,
+      "text": "values",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 175,
+      "character": 44,
+      "text": "length",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 185,
+      "character": 22,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 189,
+      "character": 46,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 194,
+      "character": 11,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 198,
+      "character": 16,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 198,
+      "character": 18,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 198,
+      "character": 23,
+      "text": "name",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 198,
+      "character": 33,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 198,
+      "character": 42,
+      "text": "count",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 199,
+      "character": 8,
+      "text": "dataItem",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 199,
+      "character": 17,
+      "text": "date",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 209,
+      "character": 36,
+      "text": "width",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 222,
+      "character": 34,
+      "text": "_e",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 222,
+      "character": 38,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 227,
+      "character": 12,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 227,
+      "character": 14,
+      "text": "anim",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 233,
+      "character": 8,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 233,
+      "character": 10,
+      "text": "anim",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 235,
+      "character": 34,
+      "text": "_e",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 235,
+      "character": 38,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 238,
+      "character": 12,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 238,
+      "character": 14,
+      "text": "anim",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 239,
+      "character": 10,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 239,
+      "character": 12,
+      "text": "anim",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 239,
+      "character": 17,
+      "text": "seek",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 240,
+      "character": 10,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 240,
+      "character": 12,
+      "text": "anim",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 240,
+      "character": 17,
+      "text": "remove",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 241,
+      "character": 10,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 241,
+      "character": 12,
+      "text": "anim",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 249,
+      "character": 20,
+      "text": "_e",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 249,
+      "character": 24,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 256,
+      "character": 25,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 256,
+      "character": 27,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 256,
+      "character": 32,
+      "text": "name",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 270,
+      "character": 25,
+      "text": "l",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 271,
+      "character": 6,
+      "text": "l",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 271,
+      "character": 8,
+      "text": "text",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 271,
+      "character": 14,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 271,
+      "character": 25,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 271,
+      "character": 27,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 271,
+      "character": 32,
+      "text": "name",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 272,
+      "character": 9,
+      "text": "style",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 272,
+      "character": 29,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 272,
+      "character": 43,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 272,
+      "character": 45,
+      "text": "r",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 272,
+      "character": 47,
+      "text": "toFixed",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 273,
+      "character": 9,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 273,
+      "character": 21,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 273,
+      "character": 32,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 273,
+      "character": 34,
+      "text": "r",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 301,
+      "character": 8,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 304,
+      "character": 8,
+      "text": "parsedData",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 304,
+      "character": 21,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 305,
+      "character": 5,
+      "text": "map",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 305,
+      "character": 10,
+      "text": "item",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 306,
+      "character": 6,
+      "text": "name",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 306,
+      "character": 12,
+      "text": "item",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 306,
+      "character": 17,
+      "text": "Nombre",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 307,
+      "character": 6,
+      "text": "values",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 307,
+      "character": 14,
+      "text": "item",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 307,
+      "character": 19,
+      "text": "Data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 307,
+      "character": 24,
+      "text": "map",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 307,
+      "character": 29,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 308,
+      "character": 8,
+      "text": "count",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 308,
+      "character": 15,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 308,
+      "character": 17,
+      "text": "Valor",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 309,
+      "character": 8,
+      "text": "date",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 309,
+      "character": 14,
+      "text": "d",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 309,
+      "character": 16,
+      "text": "Fecha",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 312,
+      "character": 5,
+      "text": "reduce",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 312,
+      "character": 13,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 312,
+      "character": 23,
+      "text": "item",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 313,
+      "character": 13,
+      "text": "location",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 313,
+      "character": 23,
+      "text": "type",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 313,
+      "character": 31,
+      "text": "item",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 313,
+      "character": 36,
+      "text": "name",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 313,
+      "character": 41,
+      "text": "split",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 313,
+      "character": 52,
+      "text": "map",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 313,
+      "character": 57,
+      "text": "i",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 313,
+      "character": 68,
+      "text": "i",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 313,
+      "character": 70,
+      "text": "trim",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 315,
+      "character": 10,
+      "text": "type",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 316,
+      "character": 8,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 316,
+      "character": 12,
+      "text": "push",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 317,
+      "character": 10,
+      "text": "name",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 317,
+      "character": 16,
+      "text": "location",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 319,
+      "character": 12,
+      "text": "total",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 319,
+      "character": 19,
+      "text": "item",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 319,
+      "character": 24,
+      "text": "values",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 323,
+      "character": 34,
+      "text": "last",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 323,
+      "character": 17,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 323,
+      "character": 21,
+      "text": "length",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 325,
+      "character": 8,
+      "text": "last",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 325,
+      "character": 13,
+      "text": "values",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 325,
+      "character": 20,
+      "text": "type",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 325,
+      "character": 64,
+      "text": "item",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 325,
+      "character": 69,
+      "text": "values",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 328,
+      "character": 13,
+      "text": "acc",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 332,
+      "character": 2,
+      "text": "parsedData",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 332,
+      "character": 13,
+      "text": "shift",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/population-circles/population-circles.ts",
+      "line": 334,
+      "character": 14,
+      "text": "parsedData",
+      "kind": 1
+    },
+    {
       "file": "src/demos/spain-map/spain-map.ts",
       "line": 77,
       "character": 20,
@@ -2389,8 +3852,8 @@
       "kind": 1
     }
   ],
-  "percentage": 97.34857320581604,
-  "total": 12861,
-  "covered": 12520,
-  "uncovered": 341
+  "percentage": 95.9119964322878,
+  "total": 13454,
+  "covered": 12904,
+  "uncovered": 550
 }
