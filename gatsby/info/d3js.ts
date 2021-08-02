@@ -329,14 +329,23 @@ const d3js: D3JS = {
   },
   "population-circles": {
     data: [],
-    docs: [],
+    docs: [
+      ...d3ScaleItems,
+      ...d3HierarchyItems,
+      ...d3SelectionItems,
+      ...d3ScaleChromaticItems,
+      ...d3TransitionItems,
+      ...d3ZoomItems,
+      ...animeItems,
+    ] as DemoBase["docs"],
     isCompleted: false,
     name: "Population Circles",
     notes: [
       "It has transitions for nested elements: by using enter/exist/transition approach plus (new) `.data(d => d)`",
       "Click a circle while pressing the Control key to open a search window for a municipality",
       "The population JSON data has been parsed and saved in the file to rename properties and remove unused",
-      "TODO: Finish porting and cleaning chart",
+      "You can use the mouse to zoom",
+      "TODO: Fix zooming function",
       "TODO: Review checklist",
     ],
     sources: [

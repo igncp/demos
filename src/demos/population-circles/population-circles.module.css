@@ -1,11 +1,26 @@
 .radio {
+  cursor: pointer;
   display: inline-block;
 
   input {
     margin-right: 5px;
   }
+
+  input,
+  label {
+    cursor: pointer;
+  }
 }
 
 .slider {
   margin-bottom: 20px;
+}
+
+.circle {
+  fill-opacity: 0.8;
+  stroke-width: 0;
+}
+
+.header {
+  font-size: 20px;
 }
