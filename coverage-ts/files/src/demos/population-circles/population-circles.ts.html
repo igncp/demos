@@ -11,19 +11,28 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">src/demos/population-circles/population-circles.ts</td><td class="">75.33%</td><td class="">90%</td><td class="">523</td><td class="">394</td><td class="">129</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/population-circles/population-circles.ts</td><td class="">99.06%</td><td class="">90%</td><td class="">742</td><td class="">735</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  BaseType,
+  D3ZoomEvent,
+  HierarchyCircularNode,
+  Selection,
+  Transition,
   easeCircleInOut,
   easeSinInOut,
   hierarchy,
   json,
   pack,
   scaleOrdinal,
-  schemeCategory10,
+  schemeSet3,
   select,
+  zoom,
 } from &quot;d3&quot;
 import anime from &quot;animejs&quot;
 import hotkeys from &quot;hotkeys-js&quot;
 import qs from &quot;query-string&quot;
+import chroma from &quot;chroma-js&quot;
+
+import * as styles from &quot;./population-circles.module.css&quot;
 
 type PopulationRecord = {
   count: number
@@ -39,10 +48,33 @@ type Municipality = {
   }
 }
 
+type MunicipalityWithAnimation = Municipality &amp; {
+  hoverAnimation?: anime.AnimeInstance | null
+}
+
+type MunicipalityNode = HierarchyCircularNode&lt;MunicipalityWithAnimation&gt;
+type MunicipalityTransition = Transition&lt;
+  BaseType,
+  MunicipalityNode,
+  BaseType,
+  MunicipalityNode
+&gt;
+
+type PopulationType = keyof Municipality[&quot;values&quot;]
+
+type State = {
+  lastPosition: { k: number; x: number; y: number }
+  populationRange: [number, number]
+  populationType: PopulationType
+  timeRangeIndex: number
+}
+
 const fetchData = () =&gt;
   (json(
     `${ROOT_PATH}data/d3js/population-circles/data.json`
   ) as unknown) as Promise&lt;Municipality[]&gt;
+
+const dropShadowBaseId = &quot;dropShadowBase&quot;
 
 const margin = {
   bottom: 0,
@@ -50,15 +82,25 @@ const margin = {
   right: 0,
   top: 70,
 }
+const height = 400
 
-const formatPopulation = (val: number) =&gt;
-  Number(val.toFixed(0)).toLocaleString(undefined, {
+const formatPopulation = (populationNum: number) =&gt;
+  Number(populationNum.toFixed(0)).toLocaleString(undefined, {
     maximumFractionDigits: 0,
     minimumFractionDigits: 0,
   })
 
+const typeNouns: Record&lt;string, string&gt; = {
+  females: &quot;females&quot;,
+  males: &quot;males&quot;,
+  total: &quot;people&quot;,
+}
+
+const getYearStr = (dateStr: string) =&gt; new Date(dateStr).getFullYear()
+
 type RenderChart = (o: {
   municipalities: Municipality[]
+  onClick: (m: Municipality) =&gt; void
   rootElId: string
 }) =&gt; {
   onPopulationPercentilesChange: (vals: [number, number]) =&gt; void
@@ -66,137 +108,184 @@ type RenderChart = (o: {
   onTypeChange: (type: string) =&gt; void
 }
 
-const renderChart: RenderChart = ({ municipalities, rootElId }) =&gt; {
-  const { width } = (document.getElementById(
-    rootElId
-  ) as any).getBoundingClientRect()
-  const height = 400
+const renderChart: RenderChart = ({ municipalities, onClick, rootElId }) =&gt; {
+  const chartEl = document.getElementById(rootElId) as HTMLElement
+  const { width } = chartEl.getBoundingClientRect()
 
-  const state = {
+  const state: State = {
+    lastPosition: { k: 1, x: 0, y: 0 },
     populationRange: [0, 1],
-    prop: &quot;total&quot;,
-    valueIdx: 0,
+    populationType: &quot;total&quot;,
+    timeRangeIndex: 0,
   }
 
-  const color = scaleOrdinal(
-    municipalities.map((_d: any, idx: any) =&gt; idx),
-    schemeCategory10
-  )
+  // this zoom function is not working well in all directions
+  const zoomed = function (
+    this: SVGSVGElement,
+    zoomEvent: D3ZoomEvent&lt;SVGSVGElement, unknown&gt;
+  ) {
+    const transition = select(this).transition().duration(150)
+    const { lastPosition } = state
+    let {
+      transform: { x, y },
+    } = zoomEvent
+    const {
+      transform: { k },
+    } = zoomEvent
+
+    if (k !== state.lastPosition.k) {
+      x = lastPosition.x
+      y = lastPosition.y
+    }
+
+    transition.attr(&quot;transform&quot;, `translate(${x}, ${y}) scale(${k})`)
+
+    lastPosition.k = k
+    lastPosition.x = x
+    lastPosition.y = y
+  }
+
+  const color = scaleOrdinal&lt;string, string&gt;()
+    .domain(municipalities.map((municipality) =&gt; municipality.name))
+    .range(schemeSet3)
+
+  const zoomBehavior = zoom&lt;SVGSVGElement, unknown&gt;()
+    .extent([
+      [0, 0],
+      [width / 2, height / 2],
+    ])
+    .on(&quot;end&quot;, zoomed)
 
   const svg = select(`#${rootElId}`)
     .append(&quot;svg&quot;)
-    .attr(&quot;viewBox&quot;, [0, 0, width, height + margin.top] as any)
+    .attr(&quot;viewBox&quot;, [0, 0, width, height + margin.top].join(&quot;, &quot;))
     .attr(&quot;font-size&quot;, 10)
     .attr(&quot;font-family&quot;, &quot;sans-serif&quot;)
     .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+    .call(zoomBehavior)
+
+  addDropShadow(svg, dropShadowBaseId, 0.5, 2)
 
   const header = svg
     .append(&quot;text&quot;)
+    .attr(&quot;class&quot;, styles.header)
     .text(&quot;&quot;)
     .attr(&quot;transform&quot;, `translate(${width / 2}, 50)`)
-    .style(&quot;font-size&quot;, &quot;20px&quot;)
-    .style(&quot;text-anchor&quot;, &quot;right&quot;)
 
   const svgContent = svg
     .append(&quot;g&quot;)
     .attr(&quot;transform&quot;, `translate(${margin.left}, ${margin.top})`)
 
   const transitionChart = () =&gt; {
-    const itemsWithCount = municipalities.filter((municipality: any) =&gt; {
+    const itemsWithCount = municipalities.filter((municipality) =&gt; {
       const {
         values: {
-          [state.prop]: { [state.valueIdx]: dataItem },
+          [state.populationType]: { [state.timeRangeIndex]: dataItem },
         },
       } = municipality
 
-      return !!dataItem
+      return !!(dataItem as unknown)
     })
-    const dataValues = itemsWithCount.map((municipality: any) =&gt; {
+    const dataValues = itemsWithCount.map((municipality) =&gt; {
       const {
         values: {
-          [state.prop]: { [state.valueIdx]: dataItem },
+          [state.populationType]: { [state.timeRangeIndex]: dataItem },
         },
       } = municipality
 
-      return dataItem ? dataItem.count : null
+      return dataItem.count
     })
-    const valueToIdx = dataValues.reduce((acc: any, val: any, idx: any) =&gt; {
-      if (val === null) {
-        return acc
-      }
-
-      acc[val] = acc[val] || []
-      acc[val].push(idx)
+    const valueToIdx = dataValues.reduce((acc, val, idx) =&gt; {
+      acc[val] = acc[val] ?? []
+      acc[val]!.push(idx)
 
       return acc
-    }, {})
-    const sortedDataValues = dataValues.sort((a: any, b: any) =&gt; a - b)
+    }, {} as { [k: string]: number[] | undefined })
+    const sortedDataValues = dataValues.sort((a, b) =&gt; a - b)
 
-    const percentiles = sortedDataValues.reduce(
-      (acc: any, val: any, idx: any) =&gt; {
-        const percentile = idx / sortedDataValues.length
-        const { [val]: unsortedIndexes } = valueToIdx
+    const percentiles = sortedDataValues.reduce((acc, val, idx) =&gt; {
+      const percentile = idx / sortedDataValues.length
+      const { [val]: unsortedIndexes } = valueToIdx
 
-        unsortedIndexes.forEach((idx2: any) =&gt; {
-          acc[idx2] = percentile
-        })
+      unsortedIndexes!.forEach((idx2) =&gt; {
+        acc[idx2] = percentile
+      })
 
-        return acc
-      },
-      []
-    )
+      return acc
+    }, [] as number[])
 
-    const filteredData = itemsWithCount.filter(
-      (_municipality: any, idx: any) =&gt; {
-        const { [idx]: percentile } = percentiles
+    const filteredData = itemsWithCount.filter((_municipality, idx) =&gt; {
+      const { [idx]: percentile } = percentiles
 
-        return (
-          typeof percentile === &quot;number&quot; &amp;&amp;
-          percentile &gt;= state.populationRange[0] &amp;&amp;
-          percentile &lt;= state.populationRange[1]
-        )
-      }
-    )
+      return (
+        typeof percentile === &quot;number&quot; &amp;&amp;
+        percentile &gt;= state.populationRange[0] &amp;&amp;
+        percentile &lt;= state.populationRange[1]
+      )
+    })
 
-    const structure = hierarchy({ children: filteredData }).sum((d: any) =&gt; {
-      if (!d.values) {
+    const structure = hierarchy({
+      children: filteredData,
+      name: &quot;&quot;,
+      values: {
+        females: [],
+        males: [],
+        total: [],
+      } as Municipality[&quot;values&quot;],
+    }).sum((municipality) =&gt; {
+      if (!(municipality.values as unknown)) {
         return 1
       }
 
       const {
         values: {
-          [state.prop]: { [state.valueIdx]: dataItem },
+          [state.populationType]: { [state.timeRangeIndex]: dataItem },
         },
-      } = d
+      } = municipality
 
-      return dataItem ? dataItem.count : 0
+      return !(dataItem as unknown) ? 0 : dataItem.count
     })
-    const root = pack()
-      .size(state.prop === &quot;total&quot; ? [width, height] : [width / 2, height / 2])
+    const root = pack&lt;MunicipalityWithAnimation&gt;()
+      .size(
+        state.populationType === &quot;total&quot;
+          ? [width, height]
+          : [width / 2, height / 2]
+      )
       .padding(3)(structure)
 
     const leaves = root.leaves()
 
-    const getYear = (dateStr: any) =&gt; new Date(dateStr).getFullYear()
-
     const {
       data: {
         values: {
-          [state.prop]: {
-            [state.valueIdx]: { date },
+          [state.populationType]: {
+            [state.timeRangeIndex]: { date },
           },
         },
       },
-    } = leaves[0] as any
+    } = leaves[0]
 
-    const year = getYear(date)
+    const year = getYearStr(date)
+    const populationTotal = filteredData.reduce(
+      (acc, item) =&gt;
+        acc +
+        item.values[state.populationType as PopulationType][
+          state.timeRangeIndex
+        ].count,
+      0
+    )
+    const populationText = `${formatPopulation(populationTotal)} ${
+      typeNouns[state.populationType]
+    }`
 
     const { length: totalNum } = leaves.filter(
-      (l: any) =&gt; l.data.values[state.prop].length &gt;= state.valueIdx + 1
+      (leafItem) =&gt;
+        leafItem.data.values[state.populationType].length &gt;=
+        state.timeRangeIndex + 1
     )
 
     header.text(
-      `Population in Malaga: ${year}${
+      `Population in Malaga: ${year} - ${populationText}${
         state.populationRange[0] === 0 &amp;&amp; state.populationRange[1] === 1
           ? &quot;&quot;
           : ` - From ${(state.populationRange[0] * 100).toFixed(
@@ -207,32 +296,31 @@ const renderChart: RenderChart = ({ municipalities, rootElId }) =&gt; {
       } - ${totalNum} municipalities`
     )
 
-    const leaf = svgContent.selectAll(&quot;.leaf&quot;).data(leaves)
+    const getDataKey = (municipalityNode: unknown) =&gt;
+      (municipalityNode as MunicipalityNode).data.name!
+
+    const leaf = svgContent.selectAll(&quot;.leaf&quot;).data(leaves, getDataKey)
 
     leaf.exit().remove()
 
-    const getTitle = (d: any) =&gt; {
+    const getTitle = (municipalityNode: MunicipalityNode) =&gt; {
       const {
         data: {
           values: {
-            [state.prop]: { [state.valueIdx]: dataItem },
+            [state.populationType]: { [state.timeRangeIndex]: dataItem },
           },
         },
-      } = d
+      } = municipalityNode
 
-      if (!dataItem) {
+      if (!dataItem as unknown) {
         return &quot;&quot;
       }
 
-      const { [state.prop]: itemsName } = {
-        females: &quot;females&quot;,
-        males: &quot;males&quot;,
-        total: &quot;people&quot;,
-      } as Record&lt;string, string&gt;
+      const { [state.populationType]: itemsName } = typeNouns
 
-      return `${d.data.name} - ${formatPopulation(
+      return `${municipalityNode.data.name} - ${formatPopulation(
         dataItem.count
-      )} ${itemsName} - ${getYear(dataItem.date)}`
+      )} ${itemsName} - ${getYearStr(dataItem.date)}`
     }
 
     leaf
@@ -240,12 +328,14 @@ const renderChart: RenderChart = ({ municipalities, rootElId }) =&gt; {
       .transition()
       .duration(1000)
       .ease(easeCircleInOut)
-      .attr(&quot;transform&quot;, (d) =&gt; {
-        if (state.prop !== &quot;total&quot;) {
-          return `translate(${d.x + width / 4},${d.y + height / 4})`
+      .attr(&quot;transform&quot;, (municipalityNode) =&gt; {
+        if (state.populationType !== &quot;total&quot;) {
+          return `translate(${municipalityNode.x + width / 4},${
+            municipalityNode.y + height / 4
+          })`
         }
 
-        return `translate(${d.x + 1},${d.y + 1})`
+        return `translate(${municipalityNode.x + 1},${municipalityNode.y + 1})`
       })
 
     const enter = leaf
@@ -253,27 +343,47 @@ const renderChart: RenderChart = ({ municipalities, rootElId }) =&gt; {
       .append(&quot;g&quot;)
       .attr(&quot;class&quot;, &quot;leaf&quot;)
       .attr(&quot;title&quot;, getTitle)
-      .attr(&quot;transform&quot;, (d) =&gt; `translate(${d.x + 1},${d.y + 1})`)
-      .on(&quot;mouseenter&quot;, function (_e, d: any) {
-        const selection = select(this).select(&quot;.circle&quot;)
+      .attr(
+        &quot;transform&quot;,
+        (municipalityNode) =&gt;
+          `translate(${municipalityNode.x + 1},${municipalityNode.y + 1})`
+      )
+      .on(&quot;mouseenter&quot;, function (_event, municipalityNode) {
+        const selection = select(this).select(`.${styles.circle}`)
 
-        const anim = anime({
+        select(this)
+          .select(&quot;.letter&quot;)
+          .attr(&quot;filter&quot;, `url(#${dropShadowBaseId})`)
+
+        const hoverAnimation = anime({
           complete: () =&gt; {
-            d.anim = null
+            municipalityNode.data.hoverAnimation = null
           },
           strokeWidth: &quot;5px&quot;,
           targets: [selection.node()],
         })
 
-        d.anim = anim
+        municipalityNode.data = {
+          ...municipalityNode.data,
+          hoverAnimation,
+        }
       })
-      .on(&quot;mouseleave&quot;, function (_e, d: any) {
-        const selection = select(this).select(&quot;.circle&quot;)
+      .on(&quot;mouseleave&quot;, function (_event, municipalityNode) {
+        const selection = select(this).select(`.${styles.circle}`)
 
-        if (d.anim) {
-          d.anim.seek(0)
-          d.anim.remove(selection.node())
-          d.anim = null
+        select(this).select(&quot;.letter&quot;).attr(&quot;filter&quot;, null)
+
+        const {
+          data: { hoverAnimation },
+        } = municipalityNode
+
+        if (hoverAnimation) {
+          hoverAnimation.seek(0)
+          anime.remove(selection.node())
+          municipalityNode.data = {
+            ...municipalityNode.data,
+            hoverAnimation: null,
+          }
         }
 
         anime({
@@ -281,43 +391,61 @@ const renderChart: RenderChart = ({ municipalities, rootElId }) =&gt; {
           targets: [selection.node()],
         })
       })
-      .on(&quot;click&quot;, (_e, d: any) =&gt; {
-        if (!hotkeys.isPressed(&quot;control&quot;)) {
-          return
-        }
-
-        window.open(
-          `https://www.google.com/search?${qs.stringify({
-            q: `Malaga ${d.data.name}`,
-          })}`
-        )
+      .on(&quot;click&quot;, (_event, municipalityNode) =&gt; {
+        onClick(municipalityNode.data)
       })
 
-    enter
-      .append(&quot;circle&quot;)
-      .attr(&quot;r&quot;, (d) =&gt; d.r)
-      .attr(&quot;class&quot;, &quot;circle&quot;)
-      .attr(&quot;fill-opacity&quot;, 0.7)
-      .attr(&quot;fill&quot;, (_d, idx) =&gt; color(idx))
-      .attr(&quot;stroke-width&quot;, &quot;0px&quot;)
-      .attr(&quot;stroke&quot;, &quot;green&quot;)
+    const generateColor = (municipalityNode: MunicipalityNode) =&gt;
+      color(municipalityNode.data.name)
 
-    const setupLetter = (l: any) =&gt; {
-      l.text((d: any) =&gt; d.data.name[0])
-        .style(&quot;font-size&quot;, (d: any) =&gt; `${d.r.toFixed(0)}px`)
-        .attr(&quot;dy&quot;, (d: any) =&gt; d.r / 3)
+    const generateDarkerColor = (municipalityNode: MunicipalityNode) =&gt; {
+      const baseColor = generateColor(municipalityNode)
+
+      return chroma(baseColor).darken(1.5).hex()
     }
+
+    const setupLetter = (
+      letter:
+        | MunicipalityTransition
+        | Selection&lt;SVGTextElement, MunicipalityNode, SVGGElement, unknown&gt;
+    ) =&gt; {
+      const el = letter.text(
+        (municipalityNode) =&gt; municipalityNode.data.name[0]!
+      ) as MunicipalityTransition
+
+      el.style(
+        &quot;font-size&quot;,
+        (municipalityNode) =&gt; `${municipalityNode.r.toFixed(0)}px`
+      )
+        .attr(&quot;dy&quot;, (municipalityNode) =&gt; municipalityNode.r / 3)
+        .attr(&quot;fill&quot;, generateDarkerColor)
+    }
+
+    const setupCircle = (
+      circle:
+        | MunicipalityTransition
+        | Selection&lt;SVGCircleElement, MunicipalityNode, SVGGElement, unknown&gt;
+    ) =&gt; {
+      const elem = circle.attr(
+        &quot;r&quot;,
+        (municipalityNode) =&gt; municipalityNode.r!
+      ) as MunicipalityTransition
+
+      elem.attr(&quot;fill&quot;, generateColor).attr(&quot;stroke&quot;, generateDarkerColor)
+    }
+
+    setupCircle(enter.append(&quot;circle&quot;).attr(&quot;class&quot;, styles.circle))
 
     setupLetter(enter.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;letter&quot;))
 
-    const circles = leaf.selectAll(&quot;.circle&quot;).data((d) =&gt; d)
-    const texts = leaf.selectAll(&quot;.letter&quot;).data((d) =&gt; d)
+    const forwardData = (municipalityNode: MunicipalityNode) =&gt; municipalityNode
 
-    circles
-      .transition()
-      .duration(1000)
-      .ease(easeSinInOut)
-      .attr(&quot;r&quot;, (d) =&gt; d.r)
+    const circles = leaf
+      .selectAll(`.${styles.circle}`)
+      .data(forwardData, getDataKey)
+    const texts = leaf.selectAll(&quot;.letter&quot;).data(forwardData, getDataKey)
+
+    setupCircle(circles.transition().duration(1000).ease(easeSinInOut))
 
     setupLetter(texts.transition().duration(1000).ease(easeSinInOut))
 
@@ -334,14 +462,35 @@ const renderChart: RenderChart = ({ municipalities, rootElId }) =&gt; {
       transitionChart()
     },
     onTimeSeriesChange: (newIndex: number) =&gt; {
-      state.valueIdx = newIndex
+      state.timeRangeIndex = newIndex
       transitionChart()
     },
     onTypeChange: (newType: string) =&gt; {
-      state.prop = newType
+      state.populationType = newType as PopulationType
       transitionChart()
     },
   }
+}
+
+const addDropShadow = (
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;,
+  name: string,
+  slope: number,
+  deviation: number
+) =&gt; {
+  svg.append(&quot;filter&quot;).html(`
+&lt;filter id=&quot;${name}&quot; height=&quot;130%&quot;&gt;
+  &lt;feGaussianBlur in=&quot;SourceAlpha&quot; stdDeviation=&quot;${deviation}&quot;/&gt;
+  &lt;feOffset dx=&quot;2&quot; dy=&quot;2&quot; result=&quot;offsetblur&quot;/&gt;
+  &lt;feComponentTransfer&gt;
+    &lt;feFuncA type=&quot;linear&quot; slope=&quot;${slope}&quot;/&gt;
+  &lt;/feComponentTransfer&gt;
+  &lt;feMerge&gt;
+    &lt;feMergeNode/&gt;
+    &lt;feMergeNode in=&quot;SourceGraphic&quot;/&gt;
+  &lt;/feMerge&gt;
+&lt;/filter&gt;
+`)
 }
 
 const main = async () =&gt; {
@@ -355,6 +504,17 @@ const main = async () =&gt; {
     onTypeChange,
   } = renderChart({
     municipalities,
+    onClick: (municipality) =&gt; {
+      if (!hotkeys.isPressed(&quot;control&quot;)) {
+        return
+      }
+
+      window.open(
+        `https://www.google.com/search?${qs.stringify({
+          q: `Malaga ${municipality.name}`,
+        })}`
+      )
+    },
     rootElId: &quot;chart&quot;,
   })
 
@@ -363,8 +523,11 @@ const main = async () =&gt; {
   })
 
   $(&quot;.population-slider&quot;).slider({
-    change: (_a, b: any) =&gt; {
-      const newValues = b.values.map((v: any) =&gt; v / 100)
+    change: (_event, { values }) =&gt; {
+      const newValues = (values as [number, number]).map((v) =&gt; v / 100) as [
+        number,
+        number
+      ]
 
       onPopulationPercentilesChange(newValues)
     },
@@ -375,8 +538,8 @@ const main = async () =&gt; {
   const max = municipalities[0].values.total.length - 1
 
   $(&quot;.time-slider&quot;).slider({
-    change: (_a, b) =&gt; {
-      onTimeSeriesChange(b.value as number)
+    change: (_event, { value }) =&gt; {
+      onTimeSeriesChange(value as number)
     },
     max,
     min: 0,
@@ -385,8 +548,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:10,&quot;text&quot;:&quot;width&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:58,&quot;character&quot;:12,&quot;text&quot;:&quot;getBoundingClientRect&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:24,&quot;text&quot;:&quot;_d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:33,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:68,&quot;character&quot;:46,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:74,&quot;character&quot;:28,&quot;text&quot;:&quot;width&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:36,&quot;text&quot;:&quot;width&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:50,&quot;text&quot;:&quot;municipality&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:94,&quot;character&quot;:44,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:98,&quot;character&quot;:15,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:43,&quot;text&quot;:&quot;municipality&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:103,&quot;character&quot;:44,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:13,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:24,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:107,&quot;character&quot;:33,&quot;text&quot;:&quot;count&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:109,&quot;character&quot;:10,&quot;text&quot;:&quot;valueToIdx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:109,&quot;character&quot;:42,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:109,&quot;character&quot;:52,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:109,&quot;character&quot;:62,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:110,&quot;character&quot;:10,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:111,&quot;character&quot;:15,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:6,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:10,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:17,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:114,&quot;character&quot;:21,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:115,&quot;character&quot;:6,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:115,&quot;character&quot;:10,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:115,&quot;character&quot;:15,&quot;text&quot;:&quot;push&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:115,&quot;character&quot;:20,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:117,&quot;character&quot;:13,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:46,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:54,&quot;text&quot;:&quot;b&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:65,&quot;text&quot;:&quot;a&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:119,&quot;character&quot;:69,&quot;text&quot;:&quot;b&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:10,&quot;text&quot;:&quot;percentiles&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:7,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:17,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:122,&quot;character&quot;:27,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:123,&quot;character&quot;:27,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:23,&quot;text&quot;:&quot;unsortedIndexes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:124,&quot;character&quot;:17,&quot;text&quot;:&quot;val&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:8,&quot;text&quot;:&quot;unsortedIndexes&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:24,&quot;text&quot;:&quot;forEach&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:126,&quot;character&quot;:33,&quot;text&quot;:&quot;idx2&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:10,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:14,&quot;text&quot;:&quot;idx2&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:130,&quot;character&quot;:15,&quot;text&quot;:&quot;acc&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:7,&quot;text&quot;:&quot;_municipality&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:27,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:23,&quot;text&quot;:&quot;percentile&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:17,&quot;text&quot;:&quot;idx&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:140,&quot;character&quot;:17,&quot;text&quot;:&quot;percentile&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:147,&quot;character&quot;:65,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:11,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:148,&quot;character&quot;:13,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:154,&quot;character&quot;:44,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:158,&quot;character&quot;:13,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:158,&quot;character&quot;:24,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:158,&quot;character&quot;:33,&quot;text&quot;:&quot;count&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:161,&quot;character&quot;:56,&quot;text&quot;:&quot;width&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:166,&quot;character&quot;:21,&quot;text&quot;:&quot;dateStr&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:172,&quot;character&quot;:32,&quot;text&quot;:&quot;date&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:178,&quot;character&quot;:25,&quot;text&quot;:&quot;date&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:7,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:18,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:20,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:25,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:44,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:200,&quot;character&quot;:22,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:204,&quot;character&quot;:46,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:11,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:16,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:18,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:23,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:220,&quot;character&quot;:8,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:220,&quot;character&quot;:17,&quot;text&quot;:&quot;count&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:221,&quot;character&quot;:34,&quot;text&quot;:&quot;dataItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:221,&quot;character&quot;:43,&quot;text&quot;:&quot;date&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:231,&quot;character&quot;:36,&quot;text&quot;:&quot;width&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:243,&quot;character&quot;:34,&quot;text&quot;:&quot;_e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:243,&quot;character&quot;:38,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:248,&quot;character&quot;:12,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:248,&quot;character&quot;:14,&quot;text&quot;:&quot;anim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:254,&quot;character&quot;:8,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:254,&quot;character&quot;:10,&quot;text&quot;:&quot;anim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:256,&quot;character&quot;:34,&quot;text&quot;:&quot;_e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:256,&quot;character&quot;:38,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:259,&quot;character&quot;:12,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:259,&quot;character&quot;:14,&quot;text&quot;:&quot;anim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:260,&quot;character&quot;:10,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:260,&quot;character&quot;:12,&quot;text&quot;:&quot;anim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:260,&quot;character&quot;:17,&quot;text&quot;:&quot;seek&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:261,&quot;character&quot;:10,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:261,&quot;character&quot;:12,&quot;text&quot;:&quot;anim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:261,&quot;character&quot;:17,&quot;text&quot;:&quot;remove&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:262,&quot;character&quot;:10,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:262,&quot;character&quot;:12,&quot;text&quot;:&quot;anim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:270,&quot;character&quot;:20,&quot;text&quot;:&quot;_e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:270,&quot;character&quot;:24,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:25,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:27,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:32,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:291,&quot;character&quot;:25,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:292,&quot;character&quot;:6,&quot;text&quot;:&quot;l&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:292,&quot;character&quot;:8,&quot;text&quot;:&quot;text&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:292,&quot;character&quot;:14,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:292,&quot;character&quot;:25,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:292,&quot;character&quot;:27,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:292,&quot;character&quot;:32,&quot;text&quot;:&quot;name&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:293,&quot;character&quot;:9,&quot;text&quot;:&quot;style&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:293,&quot;character&quot;:29,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:293,&quot;character&quot;:43,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:293,&quot;character&quot;:45,&quot;text&quot;:&quot;r&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:293,&quot;character&quot;:47,&quot;text&quot;:&quot;toFixed&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:294,&quot;character&quot;:9,&quot;text&quot;:&quot;attr&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:294,&quot;character&quot;:21,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:294,&quot;character&quot;:32,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:294,&quot;character&quot;:34,&quot;text&quot;:&quot;r&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:347,&quot;character&quot;:31,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:348,&quot;character&quot;:17,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:348,&quot;character&quot;:19,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:348,&quot;character&quot;:26,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:352,&quot;character&quot;:17,&quot;text&quot;:&quot;b&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:353,&quot;character&quot;:12,&quot;text&quot;:&quot;newValues&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:353,&quot;character&quot;:24,&quot;text&quot;:&quot;b&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:353,&quot;character&quot;:26,&quot;text&quot;:&quot;values&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:353,&quot;character&quot;:33,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:353,&quot;character&quot;:38,&quot;text&quot;:&quot;v&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:353,&quot;character&quot;:49,&quot;text&quot;:&quot;v&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 01 Aug 2021 22:24:46 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:337,&quot;character&quot;:34,&quot;text&quot;:&quot;_event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:357,&quot;character&quot;:34,&quot;text&quot;:&quot;_event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:380,&quot;character&quot;:20,&quot;text&quot;:&quot;_event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:507,&quot;character&quot;:31,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:508,&quot;character&quot;:17,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:508,&quot;character&quot;:19,&quot;text&quot;:&quot;target&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles.ts&quot;,&quot;line&quot;:508,&quot;character&quot;:26,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 02 Aug 2021 22:36:00 GMT</p>
     </body>
   </html>
   
