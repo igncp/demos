@@ -8,7 +8,6 @@
 - https://observablehq.com/@d3/circle-packing
 - https://observablehq.com/@d3/hierarchical-edge-bundling/2
 - https://observablehq.com/@mbostock/tree-of-life
-- https://observablehq.com/@d3/bubble-chart?collection=@d3/d3-hierarchy
 - https://observablehq.com/@russellgoldenberg/the-real-mvp-in-the-nba?collection=@observablehq/visualization
 - https://observablehq.com/@d3/radial-stacked-bar-chart-ii?collection=@observablehq/visualization
 - https://observablehq.com/@d3/box-plot?collection=@observablehq/visualization
