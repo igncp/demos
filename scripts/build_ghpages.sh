@@ -8,6 +8,6 @@ npm run ts-coverage
 
 mv coverage-ts public
 
-(cd storybook && storybook:build)
+(cd storybook && npm run storybook:build)
 
 mv storybook/storybook-static public/storybook
