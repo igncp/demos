@@ -1206,51 +1206,51 @@
       "kind": 1
     },
     {
-      "file": "src/demos/population-circles/population-circles.ts",
-      "line": 337,
+      "file": "src/demos/population-circles/population-circles-chart.ts",
+      "line": 171,
       "character": 34,
       "text": "_event",
       "kind": 1
     },
     {
-      "file": "src/demos/population-circles/population-circles.ts",
-      "line": 357,
+      "file": "src/demos/population-circles/population-circles-chart.ts",
+      "line": 190,
       "character": 34,
       "text": "_event",
       "kind": 1
     },
     {
-      "file": "src/demos/population-circles/population-circles.ts",
-      "line": 380,
+      "file": "src/demos/population-circles/population-circles-chart.ts",
+      "line": 209,
       "character": 20,
       "text": "_event",
       "kind": 1
     },
     {
       "file": "src/demos/population-circles/population-circles.ts",
-      "line": 507,
+      "line": 21,
       "character": 31,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/population-circles/population-circles.ts",
-      "line": 508,
-      "character": 17,
+      "line": 22,
+      "character": 27,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/population-circles/population-circles.ts",
-      "line": 508,
-      "character": 19,
+      "line": 22,
+      "character": 29,
       "text": "target",
       "kind": 1
     },
     {
       "file": "src/demos/population-circles/population-circles.ts",
-      "line": 508,
-      "character": 26,
+      "line": 22,
+      "character": 36,
       "text": "value",
       "kind": 1
     },
@@ -2333,52 +2333,52 @@
       "kind": 1
     },
     {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 31,
-      "character": 8,
-      "text": "data",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 33,
-      "character": 9,
-      "text": "data",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 33,
-      "character": 14,
-      "text": "map",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 162,
+      "file": "src/demos/weekly-heatmap/weekly-heatmap-chart.ts",
+      "line": 139,
       "character": 52,
       "text": "d",
       "kind": 1
     },
     {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 169,
+      "file": "src/demos/weekly-heatmap/weekly-heatmap-chart.ts",
+      "line": 146,
       "character": 16,
       "text": "_value",
       "kind": 1
     },
     {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 173,
+      "file": "src/demos/weekly-heatmap/weekly-heatmap-chart.ts",
+      "line": 150,
       "character": 20,
       "text": "_value",
       "kind": 1
     },
     {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap.ts",
-      "line": 183,
+      "file": "src/demos/weekly-heatmap/weekly-heatmap-chart.ts",
+      "line": 160,
       "character": 7,
       "text": "_value",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
+      "line": 24,
+      "character": 8,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
+      "line": 26,
+      "character": 9,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
+      "line": 26,
+      "character": 14,
+      "text": "map",
       "kind": 1
     },
     {
@@ -2438,8 +2438,8 @@
       "kind": 1
     }
   ],
-  "percentage": 97.45948313622426,
-  "total": 13698,
-  "covered": 13350,
+  "percentage": 97.53506162345941,
+  "total": 14118,
+  "covered": 13770,
   "uncovered": 348
 }

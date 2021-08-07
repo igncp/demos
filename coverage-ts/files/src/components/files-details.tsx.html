@@ -11,7 +11,7 @@
 <link href="../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/components/files-details.tsx</td><td class="">100.00%</td><td class="">90%</td><td class="">303</td><td class="">303</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/components/files-details.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">279</td><td class="">279</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
 
 import Prism from &quot;prismjs&quot;
 
@@ -58,7 +58,6 @@ const FilesDetails = ({ demoInfo }: Props) =&gt; {
     return null
   }
 
-  const demoFileName = `${demoInfo.key}.${demoInfo.files.demo.type}`
   const pageFilePath = `pages/${demoInfo.category}/${demoInfo.key}.${demoInfo.files.page.type}`
 
   return (
@@ -146,34 +145,34 @@ const FilesDetails = ({ demoInfo }: Props) =&gt; {
           &lt;strong&gt;Code:&lt;/strong&gt;
         &lt;/p&gt;
         &lt;ul&gt;
-          &lt;li&gt;
-            &lt;p&gt;
-              {demoFileName}{&quot; &quot;}
-              {(() =&gt; {
-                const filePath = `demos/${demoInfo.key}/${demoFileName}`
+          {demoInfo.files.demo.map(({ content, fileName }) =&gt; (
+            &lt;li key={fileName}&gt;
+              &lt;p&gt;
+                {`${fileName}.ts`}{&quot; &quot;}
+                {(() =&gt; {
+                  const filePath = `demos/${demoInfo.key}/${fileName}.ts`
 
-                return (
-                  &lt;&gt;
-                    &lt;CodeInGH filePath={filePath} /&gt;{&quot; &quot;}
-                    &lt;CoverageReport filePath={filePath} /&gt;
-                  &lt;/&gt;
-                )
-              })()}
-            &lt;/p&gt;
-            &lt;pre&gt;
-              &lt;code
-                dangerouslySetInnerHTML={{
-                  __html: Prism.highlight(
-                    demoInfo.files.demo.content,
-                    demoInfo.files.demo.type === &quot;ts&quot;
-                      ? Prism.languages.typescript
-                      : Prism.languages.jsx,
-                    demoInfo.files.demo.type === &quot;ts&quot; ? &quot;typescript&quot; : &quot;jsx&quot;
-                  ),
-                }}
-              /&gt;
-            &lt;/pre&gt;
-          &lt;/li&gt;
+                  return (
+                    &lt;&gt;
+                      &lt;CodeInGH filePath={filePath} /&gt;{&quot; &quot;}
+                      &lt;CoverageReport filePath={filePath} /&gt;
+                    &lt;/&gt;
+                  )
+                })()}
+              &lt;/p&gt;
+              &lt;pre&gt;
+                &lt;code
+                  dangerouslySetInnerHTML={{
+                    __html: Prism.highlight(
+                      content,
+                      Prism.languages.typescript,
+                      &quot;typescript&quot;
+                    ),
+                  }}
+                /&gt;
+              &lt;/pre&gt;
+            &lt;/li&gt;
+          ))}
           &lt;li&gt;
             &lt;p&gt;
               {pageFilePath} &lt;CodeInGH filePath={pageFilePath} /&gt;{&quot; &quot;}
@@ -184,10 +183,8 @@ const FilesDetails = ({ demoInfo }: Props) =&gt; {
                 dangerouslySetInnerHTML={{
                   __html: Prism.highlight(
                     demoInfo.files.page.content,
-                    demoInfo.files.page.type === &quot;tsx&quot;
-                      ? Prism.languages.typescript
-                      : Prism.languages.jsx,
-                    demoInfo.files.demo.type === &quot;tsx&quot; ? &quot;typescript&quot; : &quot;jsx&quot;
+                    Prism.languages.jsx,
+                    &quot;jsx&quot;
                   ),
                 }}
               /&gt;
@@ -222,7 +219,7 @@ const FilesDetails = ({ demoInfo }: Props) =&gt; {
 
 export default FilesDetails
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 05 Aug 2021 23:16:53 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 07 Aug 2021 11:10:58 GMT</p>
     </body>
   </html>
   

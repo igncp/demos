@@ -1,0 +1,313 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>population-circles-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/population-circles/population-circles-chart.ts</td><td class="">99.37%</td><td class="">95%</td><td class="">475</td><td class="">472</td><td class="">3</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  BaseType,
+  D3ZoomEvent,
+  HierarchyCircularNode,
+  Selection,
+  Transition,
+  easeCircleInOut,
+  easeSinInOut,
+  hierarchy,
+  pack,
+  scaleOrdinal,
+  schemeSet3,
+  select,
+  zoom,
+} from &quot;d3&quot;
+import anime from &quot;animejs&quot;
+import chroma from &quot;chroma-js&quot;
+
+import * as styles from &quot;./population-circles.module.css&quot;
+
+const dropShadowBaseId = &quot;dropShadowBase&quot;
+
+const margin = {
+  bottom: 0,
+  left: 0,
+  right: 0,
+  top: 70,
+}
+const height = 400
+
+export type ChartConfig&lt;A&gt; = {
+  colorDomain: string[]
+  getChartItems: () =&gt; A[]
+  getEmptyItem: () =&gt; A
+  getHeaderText: (o: { chartItems: A[] }) =&gt; string
+  getIsSmall: () =&gt; boolean
+  getItemId: (a: A) =&gt; string
+  getItemLabel: (a: A) =&gt; string
+  getItemMetric: (i: A) =&gt; number
+  getItemTitle: (o: { itemData: A }) =&gt; string
+  getStringForColor: (d: A) =&gt; string
+  onClick: (m: A) =&gt; void
+  rootElId: string
+}
+
+type RenderChartReturn = {
+  updateChart: () =&gt; void
+}
+
+export const renderChart = &lt;A&gt;(
+  chartConfig: ChartConfig&lt;A&gt;
+): RenderChartReturn =&gt; {
+  type ChartNode = HierarchyCircularNode&lt;A&gt;
+
+  const chartEl = document.getElementById(chartConfig.rootElId) as HTMLElement
+  const { width } = chartEl.getBoundingClientRect()
+
+  const lastPosition = { k: 1, x: 0, y: 0 }
+
+  // this zoom function is not working well in all directions
+  const zoomed = function (
+    this: SVGSVGElement,
+    zoomEvent: D3ZoomEvent&lt;SVGSVGElement, unknown&gt;
+  ) {
+    const transition = select(this).transition().duration(150)
+    let {
+      transform: { x, y },
+    } = zoomEvent
+    const {
+      transform: { k },
+    } = zoomEvent
+
+    if (k !== lastPosition.k) {
+      x = lastPosition.x
+      y = lastPosition.y
+    }
+
+    transition.attr(&quot;transform&quot;, `translate(${x}, ${y}) scale(${k})`)
+
+    lastPosition.k = k
+    lastPosition.x = x
+    lastPosition.y = y
+  }
+
+  const color = scaleOrdinal&lt;string, string&gt;()
+    .domain(chartConfig.colorDomain)
+    .range(schemeSet3)
+
+  const zoomBehavior = zoom&lt;SVGSVGElement, unknown&gt;()
+    .extent([
+      [0, 0],
+      [width / 2, height / 2],
+    ])
+    .on(&quot;end&quot;, zoomed)
+
+  const svg = select(`#${chartConfig.rootElId}`)
+    .append(&quot;svg&quot;)
+    .attr(&quot;viewBox&quot;, [0, 0, width, height + margin.top].join(&quot;, &quot;))
+    .attr(&quot;font-size&quot;, 10)
+    .attr(&quot;font-family&quot;, &quot;sans-serif&quot;)
+    .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+    .call(zoomBehavior)
+
+  addDropShadow(svg, dropShadowBaseId, 0.5, 2)
+
+  const header = svg
+    .append(&quot;text&quot;)
+    .attr(&quot;class&quot;, styles.header)
+    .text(&quot;&quot;)
+    .attr(&quot;transform&quot;, `translate(${width / 2}, 50)`)
+
+  const svgContent = svg
+    .append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, `translate(${margin.left}, ${margin.top})`)
+
+  const transitionChart = () =&gt; {
+    const filteredData = chartConfig.getChartItems()
+    const hoverAnimations: { [k: string]: anime.AnimeInstance | null } = {}
+
+    const structure = hierarchy({
+      ...chartConfig.getEmptyItem(),
+      children: filteredData,
+    }).sum(chartConfig.getItemMetric)
+
+    const isSmall = chartConfig.getIsSmall()
+
+    const root = pack&lt;A&gt;()
+      .size(isSmall ? [width / 2, height / 2] : [width, height])
+      .padding(3)(structure)
+
+    const leaves = root.leaves()
+
+    header.text(
+      chartConfig.getHeaderText({
+        chartItems: filteredData,
+      })
+    )
+
+    const getDataKey = (node: unknown) =&gt;
+      chartConfig.getItemId((node as HierarchyCircularNode&lt;A&gt;).data)
+
+    const leaf = svgContent.selectAll(&quot;.leaf&quot;).data(leaves, getDataKey)
+
+    leaf.exit().remove()
+
+    const getTitle = (node: HierarchyCircularNode&lt;A&gt;) =&gt;
+      chartConfig.getItemTitle({
+        itemData: node.data,
+      })
+
+    leaf
+      .attr(&quot;title&quot;, getTitle)
+      .transition()
+      .duration(1000)
+      .ease(easeCircleInOut)
+      .attr(&quot;transform&quot;, (chartNode) =&gt; {
+        if (isSmall) {
+          return `translate(${chartNode.x + width / 4},${
+            chartNode.y + height / 4
+          })`
+        }
+
+        return `translate(${chartNode.x + 1},${chartNode.y + 1})`
+      })
+
+    const enter = leaf
+      .enter()
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, &quot;leaf&quot;)
+      .attr(&quot;title&quot;, getTitle)
+      .attr(&quot;transform&quot;, (node) =&gt; `translate(${node.x + 1},${node.y + 1})`)
+      .on(&quot;mouseenter&quot;, function (_event, node) {
+        const selection = select(this).select(`.${styles.circle}`)
+
+        select(this)
+          .select(&quot;.letter&quot;)
+          .attr(&quot;filter&quot;, `url(#${dropShadowBaseId})`)
+
+        const id = chartConfig.getItemId(node.data)
+
+        const hoverAnimation = anime({
+          complete: () =&gt; {
+            hoverAnimations[id] = null
+          },
+          strokeWidth: &quot;5px&quot;,
+          targets: [selection.node()],
+        })
+
+        hoverAnimations[id] = hoverAnimation
+      })
+      .on(&quot;mouseleave&quot;, function (_event, node) {
+        const selection = select(this).select(`.${styles.circle}`)
+
+        select(this).select(&quot;.letter&quot;).attr(&quot;filter&quot;, null)
+
+        const id = chartConfig.getItemId(node.data)
+        const { [id]: hoverAnimation } = hoverAnimations
+
+        if (hoverAnimation) {
+          hoverAnimation.seek(0)
+          anime.remove(selection.node())
+          hoverAnimations[id] = null
+        }
+
+        anime({
+          strokeWidth: &quot;0px&quot;,
+          targets: [selection.node()],
+        })
+      })
+      .on(&quot;click&quot;, (_event, node) =&gt; {
+        chartConfig.onClick(node.data)
+      })
+
+    const generateColor = (node: HierarchyCircularNode&lt;A&gt;) =&gt;
+      color(chartConfig.getStringForColor(node.data))
+
+    const generateDarkerColor = (node: ChartNode) =&gt; {
+      const baseColor = generateColor(node)
+
+      return chroma(baseColor).darken(1.5).hex()
+    }
+
+    type ChartTransition = Transition&lt;BaseType, ChartNode, BaseType, ChartNode&gt;
+
+    const setupLetter = (
+      letter:
+        | ChartTransition
+        | Selection&lt;SVGTextElement, ChartNode, SVGGElement, unknown&gt;
+    ) =&gt; {
+      const el = letter.text((node) =&gt;
+        chartConfig.getItemLabel(node.data)
+      ) as ChartTransition
+
+      el.style(&quot;font-size&quot;, (node) =&gt; `${node.r.toFixed(0)}px`)
+        .attr(&quot;dy&quot;, (node) =&gt; node.r / 3)
+        .attr(&quot;fill&quot;, generateDarkerColor)
+    }
+
+    const setupCircle = (
+      circle:
+        | ChartTransition
+        | Selection&lt;SVGCircleElement, ChartNode, SVGGElement, unknown&gt;
+    ) =&gt; {
+      const elem = circle.attr(&quot;r&quot;, (node) =&gt; node.r!) as ChartTransition
+
+      elem.attr(&quot;fill&quot;, generateColor).attr(&quot;stroke&quot;, generateDarkerColor)
+    }
+
+    setupCircle(enter.append(&quot;circle&quot;).attr(&quot;class&quot;, styles.circle))
+
+    setupLetter(enter.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;letter&quot;))
+
+    const forwardData = (node: ChartNode) =&gt; node
+
+    const circles = leaf
+      .selectAll(`.${styles.circle}`)
+      .data(forwardData, getDataKey)
+    const texts = leaf.selectAll(&quot;.letter&quot;).data(forwardData, getDataKey)
+
+    setupCircle(circles.transition().duration(1000).ease(easeSinInOut))
+
+    setupLetter(texts.transition().duration(1000).ease(easeSinInOut))
+
+    $(&quot;.leaf&quot;).tooltip({
+      track: true,
+    })
+  }
+
+  transitionChart()
+
+  return {
+    updateChart: transitionChart,
+  }
+}
+
+const addDropShadow = (
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;,
+  name: string,
+  slope: number,
+  deviation: number
+) =&gt; {
+  svg.append(&quot;filter&quot;).html(`
+&lt;filter id=&quot;${name}&quot; height=&quot;130%&quot;&gt;
+  &lt;feGaussianBlur in=&quot;SourceAlpha&quot; stdDeviation=&quot;${deviation}&quot;/&gt;
+  &lt;feOffset dx=&quot;2&quot; dy=&quot;2&quot; result=&quot;offsetblur&quot;/&gt;
+  &lt;feComponentTransfer&gt;
+    &lt;feFuncA type=&quot;linear&quot; slope=&quot;${slope}&quot;/&gt;
+  &lt;/feComponentTransfer&gt;
+  &lt;feMerge&gt;
+    &lt;feMergeNode/&gt;
+    &lt;feMergeNode in=&quot;SourceGraphic&quot;/&gt;
+  &lt;/feMerge&gt;
+&lt;/filter&gt;
+`)
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/population-circles/population-circles-chart.ts&quot;,&quot;line&quot;:171,&quot;character&quot;:34,&quot;text&quot;:&quot;_event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles-chart.ts&quot;,&quot;line&quot;:190,&quot;character&quot;:34,&quot;text&quot;:&quot;_event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles-chart.ts&quot;,&quot;line&quot;:209,&quot;character&quot;:20,&quot;text&quot;:&quot;_event&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 07 Aug 2021 11:10:58 GMT</p>
+    </body>
+  </html>
+  

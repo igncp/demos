@@ -1,0 +1,247 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>area-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/area/area-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">407</td><td class="">407</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Selection,
+  area as areaD3,
+  axisBottom,
+  axisLeft,
+  format,
+  line as lineD3,
+  max,
+  min,
+  scaleLinear,
+  scaleQuantize,
+  select,
+} from &quot;d3&quot;
+import { Delaunay } from &quot;d3-delaunay&quot;
+
+import * as styles from &quot;./area.module.css&quot;
+
+export type ChartConfig&lt;A&gt; = {
+  getChartTitle: () =&gt; string
+  getItemId: (a: A) =&gt; number
+  getItemTitle: (a: A) =&gt; string
+  getItemXValue: (a: A) =&gt; number
+  getItemYValue: (a: A) =&gt; number
+  items: A[]
+  rootElId: string
+}
+
+type ChartReturn = {
+  toggleVoronoi: () =&gt; void
+}
+
+export const renderChart = &lt;A&gt;(chartConfig: ChartConfig&lt;A&gt;): ChartReturn =&gt; {
+  const { items, rootElId } = chartConfig
+  const { width: elWidth } = (document.getElementById(
+    rootElId
+  ) as HTMLElement).getBoundingClientRect()
+  const isSmallDevice = elWidth &lt; 500
+
+  const margin = {
+    bottom: 50,
+    left: isSmallDevice ? 50 : 70,
+    right: isSmallDevice ? 10 : 50,
+    top: 50,
+  }
+
+  const height = 400 - margin.top - margin.bottom
+  const titleYOffset = -15
+  const axisTickSize = 10
+
+  const width = elWidth - margin.left - margin.right
+
+  const svg = select(`#${rootElId}`)
+    .append(&quot;svg&quot;)
+    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+    .attr(&quot;width&quot;, width + margin.left + margin.right)
+    .append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+    .attr(&quot;class&quot;, styles.areaChart)
+
+  svg
+    .append(&quot;text&quot;)
+    .attr(&quot;class&quot;, styles.chartTitle)
+    .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+    .attr(&quot;transform&quot;, `translate(${width / 2},${titleYOffset})`)
+    .text(chartConfig.getChartTitle())
+    .style(&quot;font-weight&quot;, &quot;bold&quot;)
+
+  filterBlackOpacity(&quot;points&quot;, svg, 2, 0.5)
+
+  const xMax = max(items, chartConfig.getItemXValue) as number
+  const xMin = min(items, chartConfig.getItemXValue) as number
+
+  const yMax = max(items, chartConfig.getItemYValue) as number
+  const yMin = min(items, chartConfig.getItemYValue) as number
+
+  const xScale = scaleLinear().domain([xMin, xMax]).range([0, width])
+  const yScale = scaleLinear()
+    .domain([yMax + 0.05, yMin - 0.05])
+    .range([0, height])
+
+  const extractXScale = (d: A) =&gt; xScale(chartConfig.getItemXValue(d))
+  const extractYScale = (d: A) =&gt; yScale(chartConfig.getItemYValue(d))
+
+  const getSmallDeviceTicksScale = () =&gt;
+    scaleQuantize()
+      .domain([0, 500])
+      .range(Array.from({ length: 6 }).map((_, i) =&gt; i))
+
+  const ticks = isSmallDevice ? getSmallDeviceTicksScale()(elWidth) : null
+
+  const xAxis = axisBottom(xScale).tickFormat(format(&quot;.0f&quot;)).ticks(ticks)
+  const yAxis = axisLeft(yScale)
+    .tickFormat(format(&quot;.0%&quot;))
+    .tickSize(axisTickSize)
+
+  svg
+    .append(&quot;g&quot;)
+    .attr(&quot;class&quot;, `${styles.x} ${styles.axis}`)
+    .attr(&quot;transform&quot;, `translate(0,${height})`)
+    .call(xAxis)
+    .selectAll(&quot;text&quot;)
+    .attr(&quot;dy&quot;, &quot;1.25em&quot;)
+
+  svg
+    .append(&quot;g&quot;)
+    .attr(&quot;class&quot;, `${styles.y} ${styles.axis}`)
+    .call(yAxis)
+    .selectAll(&quot;text&quot;)
+    .attr(&quot;dx&quot;, &quot;-.25em&quot;)
+
+  const area = areaD3&lt;A&gt;().x(extractXScale).y0(height).y1(extractYScale)
+  const line = lineD3&lt;A&gt;().x(extractXScale).y(extractYScale)
+
+  svg
+    .append(&quot;path&quot;)
+    .datum(items)
+    .attr(&quot;class&quot;, styles.line)
+    .attr(&quot;d&quot;, line)
+    .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
+
+  svg
+    .append(&quot;clipPath&quot;)
+    .attr(&quot;id&quot;, &quot;clip&quot;)
+    .append(&quot;rect&quot;)
+    .attr(&quot;height&quot;, height)
+    .attr(&quot;width&quot;, width)
+
+  svg
+    .append(&quot;path&quot;)
+    .datum(items)
+    .attr(&quot;class&quot;, styles.area)
+    .attr(&quot;d&quot;, area)
+    .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
+
+  const voronoi = Delaunay.from(items, extractXScale, extractYScale).voronoi([
+    -margin.left,
+    -margin.top,
+    width + margin.right,
+    height + margin.bottom,
+  ])
+
+  const mouseover = (_e: unknown, d: A) =&gt; {
+    select(`.point-${chartConfig.getItemId(d)}`).style(&quot;display&quot;, &quot;block&quot;)
+  }
+
+  const mouseleave = (_mouseEvent: unknown, d: A) =&gt; {
+    select(`.point-${chartConfig.getItemId(d)}`).style(&quot;display&quot;, &quot;none&quot;)
+  }
+
+  svg
+    .selectAll(&quot;circle&quot;)
+    .data(items)
+    .enter()
+    .append(&quot;circle&quot;)
+    .attr(
+      &quot;transform&quot;,
+      (item: A) =&gt; `translate(${extractXScale(item)},${extractYScale(item)})`
+    )
+    .attr(&quot;r&quot;, &quot;5px&quot;)
+    .attr(
+      &quot;class&quot;,
+      (item) =&gt; `${styles.point} point-${chartConfig.getItemId(item)}`
+    )
+    .style(&quot;filter&quot;, &quot;url(#drop-shadow-points)&quot;)
+
+  const voronoiGroup = svg.append(&quot;g&quot;).attr(&quot;class&quot;, styles.voronoi)
+
+  voronoiGroup
+    .selectAll(&quot;path&quot;)
+    .data(items)
+    .enter()
+    .append(&quot;path&quot;)
+    .attr(&quot;d&quot;, (item) =&gt; voronoi.renderCell(chartConfig.getItemId(item)))
+    .on(&quot;mouseover&quot;, mouseover)
+    .on(&quot;mouseleave&quot;, mouseleave)
+    .attr(&quot;class&quot;, &quot;voronoi-group&quot;)
+    .attr(&quot;title&quot;, chartConfig.getItemTitle)
+
+  $(&quot;.voronoi-group&quot;).tooltip({
+    track: true,
+  })
+
+  return {
+    toggleVoronoi: () =&gt; {
+      const currentClass = voronoiGroup.attr(&quot;class&quot;)
+      const { showVoronoi } = styles
+
+      const newClass = currentClass.includes(showVoronoi)
+        ? currentClass.replace(showVoronoi, &quot;&quot;).trim()
+        : `${currentClass} ${showVoronoi}`
+
+      voronoiGroup.attr(&quot;class&quot;, newClass)
+    },
+  }
+}
+
+const filterBlackOpacity = (
+  id: string,
+  svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;,
+  deviation: number,
+  slope: number
+) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs
+    .append(&quot;filter&quot;)
+    .attr(&quot;height&quot;, &quot;500%&quot;)
+    .attr(&quot;id&quot;, `drop-shadow-${id}`)
+    .attr(&quot;width&quot;, &quot;500%&quot;)
+    .attr(&quot;x&quot;, &quot;-200%&quot;)
+    .attr(&quot;y&quot;, &quot;-200%&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 07 Aug 2021 11:10:58 GMT</p>
+    </body>
+  </html>
+  

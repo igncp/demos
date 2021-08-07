@@ -1,0 +1,253 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>population-circles-chart-data.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/population-circles/population-circles-chart-data.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">299</td><td class="">299</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { json } from &quot;d3&quot;
+import hotkeys from &quot;hotkeys-js&quot;
+import qs from &quot;query-string&quot;
+
+import { ChartConfig } from &quot;./population-circles-chart&quot;
+
+type PopulationRecord = {
+  count: number
+  date: string
+}
+
+export type Municipality = {
+  name: string
+  values: {
+    females: PopulationRecord[]
+    males: PopulationRecord[]
+    total: PopulationRecord[]
+  }
+}
+
+type PopulationType = keyof Municipality[&quot;values&quot;]
+
+type State = {
+  populationRange: [number, number]
+  populationType: PopulationType
+  timeRangeIndex: number
+}
+
+export const createState = (): State =&gt; ({
+  populationRange: [0, 1],
+  populationType: &quot;total&quot;,
+  timeRangeIndex: 0,
+})
+
+export const fetchData = () =&gt;
+  (json(
+    `${ROOT_PATH}data/d3js/population-circles/data.json`
+  ) as unknown) as Promise&lt;Municipality[]&gt;
+
+const formatPopulation = (populationNum: number) =&gt;
+  Number(populationNum.toFixed(0)).toLocaleString(undefined, {
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+  })
+
+const typeNouns: Record&lt;string, string&gt; = {
+  females: &quot;females&quot;,
+  males: &quot;males&quot;,
+  total: &quot;people&quot;,
+}
+
+const getYearStr = (dateStr: string) =&gt; new Date(dateStr).getFullYear()
+
+export const createChartConfig = (
+  municipalities: Municipality[],
+  state: State
+): ChartConfig&lt;Municipality&gt; =&gt; {
+  type Config = ChartConfig&lt;Municipality&gt;
+
+  const colorDomain = municipalities.map((municipality) =&gt; municipality.name)
+  const getStringForColor = (municipality: Municipality) =&gt; municipality.name
+
+  const getEmptyItem = (): Municipality =&gt; ({
+    name: &quot;&quot;,
+    values: {
+      females: [],
+      males: [],
+      total: [],
+    } as Municipality[&quot;values&quot;],
+  })
+
+  const getItemMetric: Config[&quot;getItemMetric&quot;] = (
+    municipality: Municipality
+  ) =&gt; {
+    if (!(municipality.values as unknown)) {
+      return 1
+    }
+
+    const {
+      values: {
+        [state.populationType]: { [state.timeRangeIndex]: valueItem },
+      },
+    } = municipality
+
+    return !(valueItem as unknown) ? 0 : valueItem.count
+  }
+
+  const getChartItems: Config[&quot;getChartItems&quot;] = () =&gt; {
+    const { populationRange, populationType, timeRangeIndex } = state
+    const itemsWithCount = municipalities.filter((municipality) =&gt; {
+      const {
+        values: {
+          [populationType]: { [timeRangeIndex]: valueItem },
+        },
+      } = municipality
+
+      return !!(valueItem as unknown)
+    })
+
+    const dataValues = itemsWithCount.map((municipality) =&gt; {
+      const {
+        values: {
+          [populationType]: { [timeRangeIndex]: dataItem },
+        },
+      } = municipality
+
+      return dataItem.count
+    })
+
+    const valueToIdx = dataValues.reduce((acc, val, idx) =&gt; {
+      acc[val] = acc[val] ?? []
+      acc[val]!.push(idx)
+
+      return acc
+    }, {} as { [k: string]: number[] | undefined })
+
+    const sortedDataValues = dataValues.sort((a, b) =&gt; a - b)
+
+    const percentiles = sortedDataValues.reduce((acc, val, idx) =&gt; {
+      const percentile = idx / sortedDataValues.length
+      const { [val]: unsortedIndexes } = valueToIdx
+
+      unsortedIndexes!.forEach((idx2: number) =&gt; {
+        acc[idx2] = percentile
+      })
+
+      return acc
+    }, [] as number[])
+
+    const filteredData = itemsWithCount.filter((_municipality, idx) =&gt; {
+      const { [idx]: percentile } = percentiles
+
+      return (
+        typeof percentile === &quot;number&quot; &amp;&amp;
+        percentile &gt;= populationRange[0] &amp;&amp;
+        percentile &lt;= populationRange[1]
+      )
+    })
+
+    return filteredData
+  }
+
+  const getHeaderText: Config[&quot;getHeaderText&quot;] = ({ chartItems }) =&gt; {
+    const {
+      values: {
+        [state.populationType]: {
+          [state.timeRangeIndex]: { date },
+        },
+      },
+    } = chartItems[0]
+
+    const year = getYearStr(date)
+
+    const populationTotal = chartItems.reduce(
+      (acc, item) =&gt;
+        acc +
+        item.values[state.populationType as PopulationType][
+          state.timeRangeIndex
+        ].count,
+      0
+    )
+
+    const populationText = `${formatPopulation(populationTotal)} ${
+      typeNouns[state.populationType]
+    }`
+
+    const { length: totalNum } = chartItems.filter(
+      (chartItem) =&gt;
+        chartItem.values[state.populationType].length &gt;=
+        state.timeRangeIndex + 1
+    )
+
+    return `Population in Malaga: ${year} - ${populationText}${
+      state.populationRange[0] === 0 &amp;&amp; state.populationRange[1] === 1
+        ? &quot;&quot;
+        : ` - From ${(state.populationRange[0] * 100).toFixed(
+            0
+          )} percentile to ${(state.populationRange[1] * 100).toFixed(
+            0
+          )} percentile`
+    } - ${totalNum} municipalities`
+  }
+
+  const getItemId: Config[&quot;getItemId&quot;] = (municipality) =&gt; municipality.name
+
+  const getItemTitle: Config[&quot;getItemTitle&quot;] = ({ itemData }) =&gt; {
+    const {
+      values: {
+        [state.populationType]: { [state.timeRangeIndex]: valueItem },
+      },
+    } = itemData
+
+    if (!valueItem as unknown) {
+      return &quot;&quot;
+    }
+
+    const { [state.populationType]: itemsName } = typeNouns
+
+    return `${itemData.name} - ${formatPopulation(
+      valueItem.count
+    )} ${itemsName} - ${getYearStr(valueItem.date)}`
+  }
+
+  const getItemLabel: Config[&quot;getItemLabel&quot;] = (municipality) =&gt;
+    municipality.name[0]!
+
+  const getIsSmall = () =&gt; state.populationType !== &quot;total&quot;
+
+  const onClick: Config[&quot;onClick&quot;] = (municipality) =&gt; {
+    if (!hotkeys.isPressed(&quot;control&quot;)) {
+      return
+    }
+
+    window.open(
+      `https://www.google.com/search?${qs.stringify({
+        q: `Malaga ${municipality.name}`,
+      })}`
+    )
+  }
+
+  return {
+    colorDomain,
+    getChartItems,
+    getEmptyItem,
+    getHeaderText,
+    getIsSmall,
+    getItemId,
+    getItemLabel,
+    getItemMetric,
+    getItemTitle,
+    getStringForColor,
+    onClick,
+    rootElId: &quot;chart&quot;,
+  }
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 07 Aug 2021 11:10:58 GMT</p>
+    </body>
+  </html>
+  

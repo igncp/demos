@@ -1,0 +1,183 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>weekly-heatmap-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/weekly-heatmap/weekly-heatmap-chart.ts</td><td class="">98.60%</td><td class="">95%</td><td class="">285</td><td class="">281</td><td class="">4</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { max as maxD3, scaleQuantile, select } from &quot;d3&quot;
+
+import * as styles from &quot;./weekly-heatmap.module.css&quot;
+
+const colors = [
+  &quot;#ffffd9&quot;,
+  &quot;#edf8b1&quot;,
+  &quot;#c7e9b4&quot;,
+  &quot;#7fcdbb&quot;,
+  &quot;#41b6c4&quot;,
+  &quot;#1d91c0&quot;,
+  &quot;#225ea8&quot;,
+  &quot;#253494&quot;,
+  &quot;#081d58&quot;,
+]
+const { length: buckets } = colors
+
+const margin = {
+  bottom: 100,
+  left: 50,
+  right: 50,
+  top: 50,
+}
+
+const rectRadiusSize = 100
+const extraHeight = 60
+const axisOffset = -6
+
+const legendStroke = &quot;#ccc&quot;
+
+export type ChartConfig&lt;ChartData&gt; = {
+  data: ChartData[]
+  getIsHorizontalLabelBold: (a: string, i: number) =&gt; boolean
+  getIsVerticalLabelBold: (a: string, i: number) =&gt; boolean
+  getItemHorizontalIndex: (a: ChartData) =&gt; number
+  getItemTooltip: (a: ChartData) =&gt; string
+  getItemValue: (a: ChartData) =&gt; number
+  getItemVerticalIndex: (a: ChartData) =&gt; number
+  getLegendText: (value: number) =&gt; string
+  horizontalLabels: string[]
+  rootElId: string
+  verticalLabels: string[]
+}
+
+export const renderChart = &lt;ChartData&gt;(chartConfig: ChartConfig&lt;ChartData&gt;) =&gt; {
+  const { data, rootElId } = chartConfig
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add(styles.weeklyHeatmapChart)
+
+  const { horizontalLabels, verticalLabels } = chartConfig
+
+  const width =
+    rootEl.getBoundingClientRect().width - margin.left - margin.right
+  const height =
+    Math.ceil((width * 10) / horizontalLabels.length) -
+    margin.top -
+    margin.bottom +
+    extraHeight
+  const cellSize = Math.floor(width / horizontalLabels.length)
+  const legendElementWidth = cellSize * 2
+
+  const max = maxD3(data, (item) =&gt; chartConfig.getItemValue(item))
+
+  const colorScale = scaleQuantile&lt;string&gt;()
+    .domain([0, buckets - 1, max])
+    .range(colors)
+
+  const svg = select(`#${rootElId}`)
+    .append(&quot;svg&quot;)
+    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+    .attr(&quot;width&quot;, width + margin.left + margin.right)
+    .append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+
+  svg
+    .selectAll(&quot;.verticalLabel&quot;)
+    .data(verticalLabels)
+    .enter()
+    .append(&quot;text&quot;)
+    .text((label) =&gt; label)
+    .attr(
+      &quot;class&quot;,
+      (label, labelIndex) =&gt;
+        `verticalLabel ${styles.mono} axis${
+          chartConfig.getIsVerticalLabelBold(label, labelIndex)
+            ? ` ${styles.axisBold}`
+            : &quot;&quot;
+        }`
+    )
+    .attr(&quot;transform&quot;, `translate(${axisOffset},${cellSize / 1.5})`)
+    .attr(&quot;x&quot;, 0)
+    .attr(&quot;y&quot;, (_label, labelIndex) =&gt; labelIndex * cellSize)
+    .style(&quot;text-anchor&quot;, &quot;end&quot;)
+
+  svg
+    .selectAll(&quot;.horizontalLabel&quot;)
+    .data(horizontalLabels)
+    .enter()
+    .append(&quot;text&quot;)
+    .text((label) =&gt; label)
+    .attr(
+      &quot;class&quot;,
+      (label, labelIndex) =&gt;
+        `horizontalLabel ${styles.mono} axis${
+          chartConfig.getIsHorizontalLabelBold(label, labelIndex)
+            ? ` ${styles.axisBold}`
+            : &quot;&quot;
+        }`
+    )
+    .attr(&quot;transform&quot;, `translate(${cellSize / 2}, ${axisOffset})`)
+    .attr(&quot;x&quot;, (_label, labelIndex) =&gt; labelIndex * cellSize)
+    .attr(&quot;y&quot;, 0)
+    .style(&quot;text-anchor&quot;, &quot;middle&quot;)
+
+  const heatMap = svg
+    .selectAll(&quot;.cell&quot;)
+    .data(data)
+    .enter()
+    .append(&quot;rect&quot;)
+    .attr(&quot;class&quot;, `cell ${styles.bordered}`)
+    .attr(&quot;height&quot;, cellSize)
+    .attr(&quot;rx&quot;, rectRadiusSize)
+    .attr(&quot;ry&quot;, rectRadiusSize)
+    .attr(&quot;width&quot;, cellSize)
+    .attr(&quot;x&quot;, (item) =&gt; chartConfig.getItemHorizontalIndex(item) * cellSize)
+    .attr(&quot;y&quot;, (item) =&gt; chartConfig.getItemVerticalIndex(item) * cellSize)
+    .attr(&quot;title&quot;, chartConfig.getItemTooltip)
+    .style(&quot;fill&quot;, colors[0])
+
+  heatMap
+    .transition()
+    .duration(6000)
+    .style(&quot;fill&quot;, (item) =&gt; colorScale(chartConfig.getItemValue(item)))
+
+  $(&quot;.cell&quot;).tooltip()
+
+  const legend = svg
+    .selectAll(&quot;.legend&quot;)
+    .data&lt;any&gt;([0].concat(colorScale.quantiles()), (d) =&gt; d)
+    .enter()
+    .append(&quot;g&quot;)
+    .attr(&quot;class&quot;, &quot;legend&quot;)
+
+  legend
+    .append(&quot;rect&quot;)
+    .attr(&quot;x&quot;, (_value, valueIndex) =&gt; legendElementWidth * valueIndex)
+    .attr(&quot;y&quot;, height)
+    .attr(&quot;width&quot;, legendElementWidth)
+    .attr(&quot;height&quot;, cellSize / 2)
+    .style(&quot;fill&quot;, (_value, valueIndex) =&gt; colors[valueIndex])
+    .style(&quot;stroke&quot;, legendStroke)
+
+  legend
+    .append(&quot;text&quot;)
+    .attr(&quot;class&quot;, styles.mono)
+    .text(chartConfig.getLegendText)
+    .style(&quot;text-anchor&quot;, &quot;middle&quot;)
+    .attr(
+      &quot;x&quot;,
+      (_value, valueIndex) =&gt;
+        legendElementWidth * valueIndex + legendElementWidth / 2
+    )
+    .attr(&quot;y&quot;, height + cellSize)
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-chart.ts&quot;,&quot;line&quot;:139,&quot;character&quot;:52,&quot;text&quot;:&quot;d&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-chart.ts&quot;,&quot;line&quot;:146,&quot;character&quot;:16,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-chart.ts&quot;,&quot;line&quot;:150,&quot;character&quot;:20,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-chart.ts&quot;,&quot;line&quot;:160,&quot;character&quot;:7,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 07 Aug 2021 11:10:58 GMT</p>
+    </body>
+  </html>
+  
