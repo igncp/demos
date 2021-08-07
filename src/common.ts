@@ -19,10 +19,10 @@ export type DemoInfo = DemoBase & {
   category: string
   files: {
     cssModule: string
-    demo: {
+    demo: Array<{
       content: string
-      type: string
-    }
+      fileName: string
+    }>
     page: {
       content: string
       type: string

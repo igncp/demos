@@ -45,7 +45,6 @@ const FilesDetails = ({ demoInfo }: Props) => {
     return null
   }
 
-  const demoFileName = `${demoInfo.key}.${demoInfo.files.demo.type}`
   const pageFilePath = `pages/${demoInfo.category}/${demoInfo.key}.${demoInfo.files.page.type}`
 
   return (
@@ -133,34 +132,34 @@ const FilesDetails = ({ demoInfo }: Props) => {
           <strong>Code:</strong>
         </p>
         <ul>
-          <li>
-            <p>
-              {demoFileName}{" "}
-              {(() => {
-                const filePath = `demos/${demoInfo.key}/${demoFileName}`
+          {demoInfo.files.demo.map(({ content, fileName }) => (
+            <li key={fileName}>
+              <p>
+                {`${fileName}.ts`}{" "}
+                {(() => {
+                  const filePath = `demos/${demoInfo.key}/${fileName}.ts`
 
-                return (
-                  <>
-                    <CodeInGH filePath={filePath} />{" "}
-                    <CoverageReport filePath={filePath} />
-                  </>
-                )
-              })()}
-            </p>
-            <pre>
-              <code
-                dangerouslySetInnerHTML={{
-                  __html: Prism.highlight(
-                    demoInfo.files.demo.content,
-                    demoInfo.files.demo.type === "ts"
-                      ? Prism.languages.typescript
-                      : Prism.languages.jsx,
-                    demoInfo.files.demo.type === "ts" ? "typescript" : "jsx"
-                  ),
-                }}
-              />
-            </pre>
-          </li>
+                  return (
+                    <>
+                      <CodeInGH filePath={filePath} />{" "}
+                      <CoverageReport filePath={filePath} />
+                    </>
+                  )
+                })()}
+              </p>
+              <pre>
+                <code
+                  dangerouslySetInnerHTML={{
+                    __html: Prism.highlight(
+                      content,
+                      Prism.languages.typescript,
+                      "typescript"
+                    ),
+                  }}
+                />
+              </pre>
+            </li>
+          ))}
           <li>
             <p>
               {pageFilePath} <CodeInGH filePath={pageFilePath} />{" "}
@@ -171,10 +170,8 @@ const FilesDetails = ({ demoInfo }: Props) => {
                 dangerouslySetInnerHTML={{
                   __html: Prism.highlight(
                     demoInfo.files.page.content,
-                    demoInfo.files.page.type === "tsx"
-                      ? Prism.languages.typescript
-                      : Prism.languages.jsx,
-                    demoInfo.files.demo.type === "tsx" ? "typescript" : "jsx"
+                    Prism.languages.jsx,
+                    "jsx"
                   ),
                 }}
               />

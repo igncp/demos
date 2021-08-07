@@ -6,6 +6,7 @@ import {
   gradientUnitsSVGAttribute,
   hotkeysItems,
   mixBlendModeCSS,
+  viewBoxSVGAttribute,
 } from "./commonDocs"
 
 const getCommonItems = (packageName: string): DemoBase["docs"] => [
@@ -328,7 +329,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "population-circles": {
-    data: [],
+    data: ["data.json"],
     docs: [
       ...d3ScaleItems,
       ...d3HierarchyItems,
@@ -337,8 +338,9 @@ const d3js: D3JS = {
       ...d3TransitionItems,
       ...d3ZoomItems,
       ...animeItems,
+      viewBoxSVGAttribute,
     ] as DemoBase["docs"],
-    isCompleted: false,
+    isCompleted: true,
     name: "Population Circles",
     notes: [
       "It has transitions for nested elements: by using enter/exist/transition approach plus (new) `.data(d => d)`",

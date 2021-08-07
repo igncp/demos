@@ -14,6 +14,7 @@ jobs:
       - name: Install 🚧
         run: |
           npm install
+          cd storybook && npm install
 
       - name: Lint 🔎
         run: |

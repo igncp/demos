@@ -10,8 +10,9 @@ Showcase of some client-side demos.
 - Frontend: The main library used is [D3](https://d3js.org/), using TypeScript and PostCSS
 - New version: https://igncp.github.io/demos/
 - [TypeScript coverage report](https://igncp.github.io/demos/coverage-ts)
-- Testing page:
-    - Some unit tests for external dependencies like D3 for learning their usage better
+- There are also smaller examples regarding SVG and others in a storybook:
+    - https://igncp.github.io/demos/storybook
+- Some unit tests for external dependencies like D3 for learning their usage better:
     - https://igncp.github.io/demos/testing
     - [src/pages/testing.tsx](./src/pages/testing.tsx)
 - Version from 2016 using [CoffeeScript](https://coffeescript.org/) and [Sail.js](https://sailsjs.com/): 
@@ -32,9 +33,8 @@ I've updated this repository after it was inactive for several years. The remain
 
 1. [ ] Remove or change dependencies
     - [ ] Remove Bootstrap but keep same look and feel
-1. [ ] Add disclaimer for old charts
 1. [ ] Resolve TypeScript cases with `any`
-1. [ ] Set the TypeScript threshold to 95%
+1. [ ] Support CSS modules and PostCSS in storybook
 
 ## License
 

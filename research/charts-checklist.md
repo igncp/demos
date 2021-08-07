@@ -15,12 +15,11 @@ For new charts using data, they should cover most of these points
 
 ## Code requirements for new charts
 
-- Extract texts, some dimensions and state (`let` usage) into explicit variables
-- Separate mathematics / simulation logic from UI logic
 - Improve naming of variables and functions
     - Avoid one-letter names
-    - Avoid very generic names
+    - Avoid very generic names unless intentional
         - For example: 'data', 'content', 'parsed', diminutives
+        - Inside reusable charts, the data can be generic
 - Add references to relevant documentations
 - Add some personal description of the implementation, under the `docs` array in the info
 - Use `import { foo, bar } from "baz"` instead of `import * as baz from "baz"` where possible
@@ -30,10 +29,11 @@ For new charts using data, they should cover most of these points
 - Avoid circular structures on original data
 - Use CSS modules which supports TypeScript
 - Make charts reusable components:
+    - Make the charts data-agnostic, and supply the data via config functions
+    - Favor data properties over propery functions in the interface, as long as the data is not mutated
     - Any interaction with extra page elements should be in the main function
     - Remove page's unnecessary classes: when used by style, add them by code
     - Separate data fetching from the chart rendering
     - Be able to tear down and cleanup its content and other generated components
-    - Avoid creating simple classes inside the charts, add uuids
 - Move as many styles as possible to the `.module.css` sheet inside classes
 - Use new styling features, and document them, like filters, animations, svg, etc

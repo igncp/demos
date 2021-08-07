@@ -1,3 +1,5 @@
 public
 static
-old-demos
+!storybook/.storybook
+storybook-static
+coverage-ts

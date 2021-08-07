@@ -1,0 +1,21 @@
+@keyframes flip_left {
+  0% {
+    transform: perspective(2000px) rotateY(90deg) skewY(-1deg);
+  }
+
+  60% {
+    transform: perspective(2000px) rotateY(-25deg) skewY(-0.8deg);
+  }
+
+  80% {
+    transform: perspective(2000px) rotateY(20deg) skewY(0.8deg);
+  }
+
+  90% {
+    transform: perspective(2000px) rotateY(-10deg) skewY(-0.8deg);
+  }
+
+  100% {
+    transform: perspective(2000px) rotateY(0deg);
+  }
+}

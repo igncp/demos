@@ -24,3 +24,8 @@
 - https://github.com/jdorfman/awesome-json-datasets
 - https://www.data.gov/
 - https://www.kaggle.com/datasets
+
+## Features to implement
+
+- Zoom with slider, pan with mouse, zooming with mouse can be annoying as it prevents scroll
+- Real-time charts: updating over time

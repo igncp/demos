@@ -1,6 +1,5 @@
 declare const styles: {
-  readonly axisWorktime: string
-  readonly axisWorkweek: string
+  readonly axisBold: string
   readonly bordered: string
   readonly mono: string
   readonly weeklyHeatmapChart: string

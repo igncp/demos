@@ -29,10 +29,27 @@ const readIfExists = (filePath: string) => {
   }
 }
 
-const getDemo = (demoName: string) => ({
-  content: readIfExists(`src/demos/${demoName}/${demoName}.ts`),
-  type: "ts",
-})
+const getDemoFiles = (demoName: string) => {
+  const extraFiles = fs
+    .readdirSync(`${__dirname}/../src/demos/${demoName}`)
+    .filter((file) => /\.ts$/.test(file))
+    .map((file) => file.replace(/\.ts$/, ""))
+    .filter((file) => !file.includes(".css") && file !== demoName)
+
+  return [
+    {
+      content: readIfExists(`src/demos/${demoName}/${demoName}.ts`),
+      fileName: demoName,
+    },
+  ]
+    .concat(
+      extraFiles.map((fileName) => ({
+        content: readIfExists(`src/demos/${demoName}/${fileName}.ts`),
+        fileName,
+      }))
+    )
+    .filter((d) => !!d.content)
+}
 
 const getPage = (demoName: string, category: string) => ({
   content: readIfExists(`src/pages/${category}/${demoName}.tsx`),
@@ -47,7 +64,7 @@ const getDemoInfo = (slugs: string[]) => {
     return null
   }
 
-  const demo = getDemo(demoName)
+  const demoFiles = getDemoFiles(demoName)
   const page = getPage(demoName, category)
 
   type DemoKey = keyof typeof categoryData
@@ -59,7 +76,7 @@ const getDemoInfo = (slugs: string[]) => {
     category,
     files: {
       cssModule: readIfExists(`src/demos/${demoName}/${demoName}.module.css`),
-      demo,
+      demo: demoFiles,
       page,
     },
     key: demoName,
