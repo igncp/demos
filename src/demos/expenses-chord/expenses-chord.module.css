@@ -1,0 +1,27 @@
+.chartWrapper {
+  border: solid 1px black;
+  overflow: hidden;
+}
+
+.chordGroup {
+  cursor: pointer;
+}
+
+.countriesSelect {
+  margin-right: 20px;
+}
+
+.groupText {
+  fill: black;
+  user-select: none;
+}
+
+.ribbon {
+  cursor: pointer;
+  mix-blend-mode: multiply;
+}
+
+.sliderTime {
+  background: #c4dcf9;
+  margin: 20px 0;
+}

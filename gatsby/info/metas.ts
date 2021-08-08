@@ -36,6 +36,10 @@ const metas: Metas = {
         "Concentric circles example using D3.js, with a non repeated series of data and with a new style that heavily uses the svg drop-shadow type filter.",
     },
     "energy-sankey": {
+      description:
+        "Sankey diagram with multiple interactive parts and animations. It handles the results alignments.",
+    },
+    "expenses-chord": {
       description: "",
     },
     "fish-eye": {

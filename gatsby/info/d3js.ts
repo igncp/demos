@@ -56,6 +56,7 @@ export type D3JS = {
   "collapsible-tree": DemoBase
   "concentric-circles": DemoBase
   "energy-sankey": DemoBase
+  "expenses-chord": DemoBase
   "fish-eye": DemoBase
   force: DemoBase
   icosahedron: DemoBase
@@ -173,7 +174,7 @@ const d3js: D3JS = {
       ...animeItems,
       ...hotkeysItems,
     ] as DemoBase["docs"],
-    isCompleted: false,
+    isCompleted: true,
     name: "Energy Sankey",
     notes: [
       "Added interaction on click",
@@ -183,6 +184,22 @@ const d3js: D3JS = {
       "https://observablehq.com/@d3/sankey-diagram",
       "https://www.gov.uk/guidance/2050-pathways-analysis",
       "https://designmodo.com/animate-svg-gradients/",
+    ],
+    summary: [],
+  },
+  "expenses-chord": {
+    data: ["data.json"],
+    docs: [] as DemoBase["docs"],
+    isCompleted: false,
+    name: "Expenses Chord",
+    notes: [
+      "TODO: Review checklist for remaining refactors",
+      "TODO: add textPath: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/textPath",
+      "performance is not great when displaying all elements due to the large number of elements, canvas may be a better solution",
+    ],
+    sources: [
+      "https://datos.gob.es/en/catalogo/ea0010587-distribucion-del-gasto-en-destino-de-cada-pais-de-residencia-segun-comunidad-autonoma-gdve-identificador-api-37671",
+      "https://observablehq.com/@d3/directed-chord-diagram",
     ],
     summary: [],
   },

@@ -12,7 +12,7 @@ Showcase of some client-side demos.
 - [TypeScript coverage report](https://igncp.github.io/demos/coverage-ts)
 - There are also smaller examples regarding SVG and others in a storybook:
     - https://igncp.github.io/demos/storybook
-- Some unit tests for external dependencies like D3 for learning their usage better:
+- Some in-browser unit tests using [Qunit](https://qunitjs.com/) for learning the usage of third-party dependencies better:
     - https://igncp.github.io/demos/testing
     - [src/pages/testing.tsx](./src/pages/testing.tsx)
 - Version from 2016 using [CoffeeScript](https://coffeescript.org/) and [Sail.js](https://sailsjs.com/): 
@@ -23,8 +23,8 @@ Showcase of some client-side demos.
 
 You need to have Node.js installed
 
-- Download the repo
-- Inside the demos: `npm install`
+- Clone the repo
+- Inside the repo directory, run: `npm install`
 - To start the server `npm run develop`
 
 ## Roadmap

@@ -6,7 +6,7 @@ import Demo from "@/components/demo"
 
 import main from "@/demos/energy-sankey/energy-sankey"
 
-const Pie = ({ pageContext }: DemoPageProps) => (
+const EnergySankey = ({ pageContext }: DemoPageProps) => (
   <Demo
     links={["/vendors/jquery-ui/themes/base/jquery-ui.min.css"]}
     main={main}
@@ -17,4 +17,4 @@ const Pie = ({ pageContext }: DemoPageProps) => (
   </Demo>
 )
 
-export default Pie
+export default EnergySankey
