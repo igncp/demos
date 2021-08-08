@@ -1,0 +1,193 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>spain-map-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/spain-map/spain-map-chart.ts</td><td class="">97.79%</td><td class="">95%</td><td class="">272</td><td class="">266</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  BaseType,
+  GeoPath,
+  GeoPermissibleObjects,
+  GeoProjection,
+  Selection,
+  geoMercator,
+  geoPath,
+  range,
+  scaleLinear,
+  select,
+} from &quot;d3&quot;
+import { feature } from &quot;topojson-client&quot;
+import { GeoJsonProperties } from &quot;geojson&quot;
+import { Objects, Topology } from &quot;topojson-specification&quot;
+import { v1 as uuidv1 } from &quot;uuid&quot;
+
+const colorsScheme = [&quot;#323247&quot;, &quot;#7C7CC9&quot;, &quot;#72B66C&quot;, &quot;#429742&quot;]
+const height = 500
+const margin = {
+  bottom: 20,
+  top: 50,
+}
+const strokeWidth = 0.4
+
+type SVG = Selection&lt;BaseType, unknown, HTMLElement, unknown&gt;
+
+type Data = Topology&lt;Objects&lt;GeoJsonProperties&gt;&gt;
+
+export type ChartConfig&lt;Properties&gt; = {
+  data: Data
+  getTitleText: (p: Properties) =&gt; string
+  getWidths: (chartWidth: number) =&gt; number[]
+  projectionsCenters: Array&lt;[number, number]&gt;
+  rootElId: string
+}
+
+export const renderChart = &lt;Properties&gt;(
+  chartConfig: ChartConfig&lt;Properties&gt;
+) =&gt; {
+  const { data, rootElId } = chartConfig
+
+  type DataShape = GeoPermissibleObjects &amp; {
+    index: number
+    properties: Properties
+  }
+
+  const { width: chartWidth } = (document.getElementById(
+    rootElId
+  ) as HTMLElement).getBoundingClientRect()
+
+  const {
+    objects: { data1: dataRoot },
+  } = data
+  const { features: dataGeo } = feature(data, dataRoot) as any
+
+  const dataGeoParsed = dataGeo.map((d: DataShape, i: number) =&gt; ({
+    ...d,
+    index: i,
+  }))
+
+  const colorScale = scaleLinear()
+    .domain([0, (dataRoot as any).geometries.length])
+    .range([0, 1])
+  const colorScaleConversion = scaleLinear&lt;string&gt;()
+    .domain(range(0, 1, 1.0 / colorsScheme.length))
+    .range(colorsScheme)
+
+  const colorFn = function (d: DataShape) {
+    return colorScaleConversion(colorScale(d.index))
+  }
+
+  const svg = select(`#${rootElId}`)
+
+  const generateSvg = function (width: number) {
+    return svg
+      .append(&quot;div&quot;)
+      .style(&quot;display&quot;, &quot;inline-block&quot;)
+      .style(&quot;height&quot;, `${height + margin.top + margin.bottom}px`)
+      .style(&quot;width&quot;, `${width}px`)
+      .append(&quot;svg:svg&quot;)
+      .attr(&quot;width&quot;, width)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+      .append(&quot;svg:g&quot;)
+      .attr(&quot;transform&quot;, `translate(${width / 2},${height / 2 + margin.top})`)
+  }
+
+  const generatePath = function (projection: GeoProjection) {
+    return geoPath().projection(projection)
+  }
+
+  const regionClass = `region-${uuidv1().slice(0, 6)}`
+
+  const generateAreas = (
+    svgComp: SVG,
+    path: GeoPath&lt;SVGPathElement&gt;,
+    filterId: number
+  ) =&gt; {
+    svgComp
+      .selectAll(&quot;.area&quot;)
+      .data&lt;DataShape&gt;(dataGeoParsed)
+      .enter()
+      .append(&quot;path&quot;)
+      .attr(&quot;d&quot;, path)
+      .style(&quot;fill&quot;, colorFn)
+      .style(&quot;stroke&quot;, &quot;#FFF&quot;)
+      .style(&quot;stroke-width&quot;, strokeWidth)
+      .style(&quot;filter&quot;, () =&gt; `url(#drop-shadow-${filterId})`)
+      .on(&quot;mouseover&quot;, function () {
+        return select(this)
+          .style(&quot;fill&quot;, &quot;#FFB61A&quot;)
+          .style(&quot;stroke-width&quot;, &quot;1px&quot;)
+      })
+      .on(&quot;mouseleave&quot;, function () {
+        return select&lt;SVGPathElement, DataShape&gt;(this)
+          .style(&quot;fill&quot;, colorFn)
+          .style(&quot;stroke-width&quot;, strokeWidth)
+      })
+      .attr(&quot;title&quot;, (d) =&gt; chartConfig.getTitleText(d.properties))
+      .attr(&quot;class&quot;, regionClass)
+  }
+
+  const widths = chartConfig.getWidths(chartWidth)
+
+  const generateProjection = (center: [number, number], centerIndex: number) =&gt;
+    geoMercator()
+      .center(center)
+      .scale(2650)
+      .translate([widths[centerIndex] / 2, height / 2])
+
+  const svgs = widths.map(generateSvg)
+
+  svgs.forEach((svgItem, idx) =&gt; {
+    addDropShadowFilter(idx + 1, svgItem, 2, 0.3)
+  })
+
+  const projections = chartConfig.projectionsCenters.map(generateProjection)
+  const paths = projections.map(generatePath)
+
+  svgs.forEach((svgItem, svgIndex) =&gt; {
+    generateAreas(svgItem, paths[svgIndex], svgIndex + 1)
+  })
+
+  $(`.${regionClass}`).tooltip({
+    track: true,
+  })
+}
+
+const addDropShadowFilter = function (
+  id: number,
+  svg: SVG,
+  deviation: number,
+  slope: number
+) {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, `drop-shadow-${id}`)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:20,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:8,&quot;text&quot;:&quot;dataGeoParsed&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:24,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:56,&quot;character&quot;:32,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:34,&quot;text&quot;:&quot;geometries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:45,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 08 Aug 2021 18:22:12 GMT</p>
+    </body>
+  </html>
+  

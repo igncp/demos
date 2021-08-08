@@ -1,0 +1,211 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>SVGSpinners.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/SVGSpinners/SVGSpinners.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">275</td><td class="">275</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+import { Selection, select } from &quot;d3&quot;
+
+import { TemplateType } from &quot;../common&quot;
+import StoryInfo from &quot;../StoryInfo&quot;
+
+import * as styles from &quot;./svgSpinners.module.css&quot;
+
+enum SpinnerType {
+  First = &quot;first&quot;,
+  Second = &quot;second&quot;,
+  Third = &quot;third&quot;,
+}
+
+type Props = { color: string; size: number; type: SpinnerType }
+type SpinnerFn = (
+  svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;,
+  p: Props
+) =&gt; void
+
+const ROOT_ID = &quot;example&quot;
+
+const firstSpinnerFn: SpinnerFn = (svg, props) =&gt; {
+  svg.attr(&quot;class&quot;, styles.firstSpinner)
+
+  const circleCenter = 50
+
+  ;[
+    { className: styles.firstCircle, direction: 1, radius: 47 },
+    { className: styles.secondCircle, direction: -1, radius: 39 },
+  ].forEach(({ className, direction, radius }) =&gt; {
+    svg
+      .append(&quot;circle&quot;)
+      .attr(&quot;class&quot;, className)
+      .attr(&quot;r&quot;, radius)
+      .attr(&quot;cx&quot;, circleCenter)
+      .attr(&quot;cy&quot;, circleCenter)
+      .attr(&quot;stroke&quot;, props.color)
+      .append(&quot;animateTransform&quot;)
+      .attr(&quot;attributeName&quot;, &quot;transform&quot;)
+      .attr(&quot;type&quot;, &quot;rotate&quot;)
+      .attr(&quot;dur&quot;, &quot;5s&quot;)
+      .attr(&quot;from&quot;, [0, circleCenter, circleCenter].join(&quot; &quot;))
+      .attr(&quot;to&quot;, [360 * direction, circleCenter, circleCenter].join(&quot; &quot;))
+      .attr(&quot;repeatCount&quot;, &quot;indefinite&quot;)
+  })
+
+  Array.from({ length: 5 })
+    .map((_, idx) =&gt; [30 + idx * 10, (idx + 1) * 0.1])
+    .forEach(([x, begin]) =&gt; {
+      const valueLimit = 5
+
+      svg
+        .append(&quot;rect&quot;)
+        .attr(&quot;x&quot;, x)
+        .attr(&quot;y&quot;, &quot;35&quot;)
+        .attr(&quot;width&quot;, &quot;5&quot;)
+        .attr(&quot;height&quot;, &quot;30&quot;)
+        .append(&quot;animateTransform&quot;)
+        .attr(&quot;attributeName&quot;, &quot;transform&quot;)
+        .attr(&quot;type&quot;, &quot;translate&quot;)
+        .attr(&quot;dur&quot;, &quot;1s&quot;)
+        .attr(
+          &quot;values&quot;,
+          [
+            [0, valueLimit],
+            [0, -valueLimit],
+            [0, valueLimit],
+          ]
+            .map((v) =&gt; v.join(&quot; &quot;))
+            .join(&quot; ; &quot;)
+        )
+        .attr(&quot;repeatCount&quot;, &quot;indefinite&quot;)
+        .attr(&quot;begin&quot;, begin)
+    })
+}
+
+const secondSpinnerFn: SpinnerFn = (svg, props) =&gt; {
+  const circleCenter = 50
+  const smallCircleRadius = 4
+  const bigCircleRadius = 40
+
+  svg
+    .append(&quot;circle&quot;)
+    .attr(&quot;fill&quot;, &quot;none&quot;)
+    .attr(&quot;stroke&quot;, props.color)
+    .attr(&quot;cx&quot;, circleCenter)
+    .attr(&quot;cy&quot;, circleCenter)
+    .attr(&quot;r&quot;, bigCircleRadius)
+    .style(&quot;opacity&quot;, &quot;0.5&quot;)
+
+  svg
+    .append(&quot;circle&quot;)
+    .attr(&quot;fill&quot;, props.color)
+    .attr(&quot;cx&quot;, circleCenter - bigCircleRadius)
+    .attr(&quot;cy&quot;, circleCenter)
+    .attr(&quot;r&quot;, smallCircleRadius)
+    .append(&quot;animateTransform&quot;)
+    .attr(&quot;attributeName&quot;, &quot;transform&quot;)
+    .attr(&quot;dur&quot;, &quot;2s&quot;)
+    .attr(&quot;type&quot;, &quot;rotate&quot;)
+    .attr(&quot;from&quot;, [0, circleCenter, circleCenter].join(&quot; &quot;))
+    .attr(&quot;to&quot;, [360, circleCenter, circleCenter].join(&quot; &quot;))
+    .attr(&quot;repeatCount&quot;, &quot;indefinite&quot;)
+}
+
+const thirdSpinnerFn: SpinnerFn = (svg) =&gt; {
+  Array.from({ length: 3 }).forEach((_, idx: number, arr) =&gt; {
+    svg
+      .append(&quot;circle&quot;)
+      .attr(&quot;stroke&quot;, &quot;none&quot;)
+      .attr(&quot;cx&quot;, 6 + 20 * idx)
+      .attr(&quot;cy&quot;, &quot;50&quot;)
+      .attr(&quot;r&quot;, &quot;5&quot;)
+      .append(&quot;animate&quot;)
+      .attr(&quot;attributeName&quot;, &quot;opacity&quot;)
+      .attr(&quot;dur&quot;, &quot;1s&quot;)
+      .attr(&quot;values&quot;, [0, 1, 0].join(&quot;;&quot;))
+      .attr(&quot;repeatCount&quot;, &quot;indefinite&quot;)
+      .attr(&quot;begin&quot;, (1 / arr.length) * idx)
+  })
+}
+
+const spinnersFns: { [key in SpinnerType]: SpinnerFn } = {
+  [SpinnerType.First]: firstSpinnerFn,
+  [SpinnerType.Second]: secondSpinnerFn,
+  [SpinnerType.Third]: thirdSpinnerFn,
+}
+
+const main = (props: Props) =&gt; {
+  const svg = select(`#${ROOT_ID}`)
+    .text(&quot;&quot;)
+    .append(&quot;svg&quot;)
+    .attr(&quot;viewBox&quot;, [0, 0, 100, 100].join(&quot;, &quot;))
+    .append(&quot;g&quot;)
+    .attr(&quot;fill&quot;, props.color)
+
+  spinnersFns[props.type](svg, props)
+}
+
+const SVGSpinners = (props: Props) =&gt; {
+  React.useEffect(() =&gt; {
+    main(props)
+  })
+
+  const { size } = props
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        source=&quot;https://codepen.io/nikhil8krishnan/pen/rVoXJa&quot;
+        sourceText=&quot;Source (only ported a few)&quot;
+        storyName=&quot;SVGSpinners&quot;
+      /&gt;
+      &lt;div
+        style={{
+          height: size,
+          width: size,
+        }}
+      &gt;
+        &lt;div id={ROOT_ID} /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;SVGSpinners {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+const createStory = (spinnerType: SpinnerType) =&gt; {
+  const story = (args: Props) =&gt; &lt;Template {...args} type={spinnerType} /&gt;
+
+  story.args = {
+    color: &quot;green&quot;,
+    size: 250,
+  }
+
+  return story
+}
+
+export const First = createStory(SpinnerType.First)
+export const Second = createStory(SpinnerType.Second)
+export const Third = createStory(SpinnerType.Third)
+
+export default {
+  argTypes: {
+    color: { control: &quot;color&quot; },
+    size: &quot;number&quot;,
+  },
+  component: SVGSpinners,
+  title: &quot;SVG/Spinners&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 08 Aug 2021 18:22:12 GMT</p>
+    </body>
+  </html>
+  
