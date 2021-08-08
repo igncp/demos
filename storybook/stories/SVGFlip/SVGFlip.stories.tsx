@@ -2,8 +2,9 @@ import React from "react"
 import { select } from "d3"
 
 import { TemplateType } from "../common"
+import StoryInfo from "../StoryInfo"
 
-import "./svgFlip.module.css"
+import * as styles from "./svgFlip.module.css"
 
 type Props = { color: string; infinite: boolean }
 
@@ -30,7 +31,7 @@ const main = ({ color, infinite }: Props) => {
         .attr("fill", "orange")
         .style(
           "animation",
-          ["flip_left", "1s", infinite && "infinite", "forwards"]
+          [styles.flipLeft, "1s", infinite && "infinite", "forwards"]
             .filter((v) => !!v)
             .join(" ")
         )
@@ -48,15 +49,10 @@ const SVGFlip = (props: Props) => {
   return (
     <div>
       <p>Hover the rectangle to flip the circle</p>
-      <p>
-        <a
-          href="https://codepen.io/demianpt/pen/qbLaQZ"
-          rel="noreferrer"
-          target="_blank"
-        >
-          Source
-        </a>
-      </p>
+      <StoryInfo
+        source="https://codepen.io/demianpt/pen/qbLaQZ"
+        storyName="SVGFlip"
+      />
       <div id={ROOT_ID} />
     </div>
   )

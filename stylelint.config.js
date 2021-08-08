@@ -11,6 +11,7 @@ module.exports = {
   extends: "stylelint-config-standard",
   plugins: ["stylelint-order", "stylelint-scss"],
   rules: {
+    "at-rule-no-unknown": [true, { ignoreAtRules: ["mixin", "define-mixin"] }],
     "block-closing-brace-newline-after": "always",
     "block-closing-brace-newline-before": "always",
     "block-opening-brace-newline-after": "always",
@@ -25,7 +26,10 @@ module.exports = {
     "order/properties-alphabetical-order": true,
 
     "scss/dollar-variable-colon-space-after": "always",
-    "scss/dollar-variable-empty-line-after": "always",
+    "scss/dollar-variable-empty-line-after": [
+      "always",
+      { except: ["before-dollar-variable"] },
+    ],
     "scss/dollar-variable-pattern": commonPattern,
 
     "selector-class-pattern": commonPattern,

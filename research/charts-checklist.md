@@ -19,7 +19,7 @@ For new charts using data, they should cover most of these points
     - Avoid one-letter names
     - Avoid very generic names unless intentional
         - For example: 'data', 'content', 'parsed', diminutives
-        - Inside reusable charts, the data can be generic
+        - Inside reusable charts, the data names can be generic
 - Add references to relevant documentations
 - Add some personal description of the implementation, under the `docs` array in the info
 - Use `import { foo, bar } from "baz"` instead of `import * as baz from "baz"` where possible
@@ -35,5 +35,6 @@ For new charts using data, they should cover most of these points
     - Remove page's unnecessary classes: when used by style, add them by code
     - Separate data fetching from the chart rendering
     - Be able to tear down and cleanup its content and other generated components
+    - When selecting over classes globally (e.g. with tooltip), use CSS modules or uuids
 - Move as many styles as possible to the `.module.css` sheet inside classes
 - Use new styling features, and document them, like filters, animations, svg, etc

@@ -34,7 +34,6 @@ I've updated this repository after it was inactive for several years. The remain
 1. [ ] Remove or change dependencies
     - [ ] Remove Bootstrap but keep same look and feel
 1. [ ] Resolve TypeScript cases with `any`
-1. [ ] Support CSS modules and PostCSS in storybook
 
 ## License
 

@@ -1,0 +1,60 @@
+import { json } from "d3"
+import { GeoJsonProperties } from "geojson"
+import { Objects, Topology } from "topojson-specification"
+
+import { ChartConfig } from "./spain-map-chart"
+
+type Data = Topology<Objects<GeoJsonProperties>>
+
+export type Properties = {
+  ENGTYPE_3: string // e.g. Comarca
+  HASC_3: string
+  ID_0: number
+  ID_1: number
+  ID_2: number
+  ID_3: number
+  ISO: string // e.g. ESP
+  NAME_0: string // e.g. Spain
+  NAME_1: string // e.g. Castilla y Leon
+  NAME_2: string // e.g. Leon
+  NAME_3: string // Sometimes not defined, with 'n.a.'
+  NL_NAME_3: string
+  REMARKS_3: string
+  Shape_Area: number // eslint-disable-line camelcase
+  Shape_Leng: number // eslint-disable-line camelcase
+  TYPE_3: string // e.g. Comarca
+  VALIDFR_3: string
+  VALIDTO_3: string
+}
+
+type Config = ChartConfig<Properties>
+
+const getTitleText: Config["getTitleText"] = (d) =>
+  [(d.NAME_3 || "").includes("n.a.") ? "" : d.NAME_3, d.NAME_2, d.NAME_1]
+    .filter((v) => !!v)
+    .join(", ")
+
+const getWidths: Config["getWidths"] = (chartWidth) => {
+  const widthCanarias = chartWidth / 3.5
+  const widthPeninsula = chartWidth - widthCanarias - 10
+
+  return [widthCanarias, widthPeninsula]
+}
+
+const projectionsCenters: Config["projectionsCenters"] = [
+  [-13, 23],
+  [10, 35.5],
+]
+
+export const createChartConfig = (data: Data): Config => ({
+  data,
+  getTitleText,
+  getWidths,
+  projectionsCenters,
+  rootElId: "chart",
+})
+
+export const fetchData = () =>
+  (json(
+    `${ROOT_PATH}data/d3js/spain-map/data.json`
+  ) as unknown) as Promise<Data>

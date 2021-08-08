@@ -1,0 +1,22 @@
+.firstSpinner {
+  .firstCircle {
+    $strokeDasharray: 14.2472;
+
+    stroke-dasharray: $strokeDasharray, $strokeDasharray;
+    stroke-miterlimit: 15;
+    stroke-width: 6px;
+  }
+
+  .secondCircle {
+    $strokeDasharray: 10;
+
+    stroke-dasharray: $strokeDasharray, $strokeDasharray;
+    stroke-miterlimit: 10;
+    stroke-width: 1px;
+  }
+
+  .firstCircle,
+  .secondCircle {
+    fill: none;
+  }
+}

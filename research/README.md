@@ -1,7 +1,10 @@
-## Libraries to try
+## Libraries to try with charts
 
 - https://thednp.github.io/kute.js/index.html
 - https://mattboldt.com/demos/typed-js/
+- Threejs for 3D visualizations
+- Redux Toolkit
+- Rxjs for real-time charts
 
 ## Charts to maybe expand on
 
@@ -14,6 +17,11 @@
 - https://observablehq.com/@carmen-tm/women-architects-i-didnt-hear-about
 - https://observablehq.com/@peatroot/stars-and-constellations?collection=@observablehq/visualization
 - https://observablehq.com/@d3/band-chart?collection=@observablehq/visualization
+
+## For Storybook
+
+- https://onextrapixel.com/examples-of-svg-animations/
+- Canvas
 
 ## Datasets
 
@@ -29,3 +37,7 @@
 
 - Zoom with slider, pan with mouse, zooming with mouse can be annoying as it prevents scroll
 - Real-time charts: updating over time
+
+## Charts ideas
+
+- Different regions in China

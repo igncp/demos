@@ -2,11 +2,10 @@
 /* global d3, anime, topojson, chroma, Qs, hotkeys, uuid */
 /* eslint-enable no-unused-vars */
 
-const width = 800
-const height = 800
+// notes:
+// - performance is not great due to the number of elements, canvas may be a better solution
 
-const innerRadius = Math.min(width, height) * 0.5 - 20
-const outerRadius = innerRadius + 20
+const height = 800
 
 const formatValue = (x) => `${x}`
 
@@ -61,7 +60,7 @@ const main = async () => {
     renderItems()
   })
 
-  $("#slider").slider({
+  $("#slider-time").slider({
     change: (_e, { value }) => {
       if (value === 3) {
         // @TODO: error in this case
@@ -78,17 +77,24 @@ const main = async () => {
   const names = countries.concat(regions)
 
   const color = d3.scaleOrdinal(names, d3.schemeCategory10)
+
+  const zoomed = function (zoomEvent) {
+    d3.select(this)
+      .transition()
+      .duration(500)
+      .attr("transform", zoomEvent.transform)
+  }
+
+  const { width } = document.getElementById("chart").getBoundingClientRect()
+
+  const innerRadius = Math.min(width, height) * 0.5 - 20
+  const outerRadius = innerRadius + 20
+
   const ribbonCommon = (r) =>
     r.radius(innerRadius - 0.5).padAngle(1 / innerRadius)
 
   const ribbonArrow = ribbonCommon(d3.ribbonArrow())
   const ribbon = ribbonCommon(d3.ribbon())
-
-  const zoomed = function (zoomEvent) {
-    const transition = d3.select(this).transition().duration(150)
-
-    transition.attr("transform", zoomEvent.transform)
-  }
 
   const zoomBehavior = d3
     .zoom()
@@ -98,15 +104,27 @@ const main = async () => {
     ])
     .on("end", zoomed)
 
+  const totalHeight = height + 50
+
   const svg = d3
     .select("#chart")
+    .style("overflow", "hidden")
+    .style("border", "solid 1px black")
     .append("svg")
-    .style("margin-top", "20px")
-    .attr(
-      "viewBox",
-      [-width / 2, -height / 2 - 100, width, height + 100 * 2].join(", ")
-    )
+    .attr("width", width)
+    .attr("height", totalHeight)
+    .append("g")
+    .attr("transform", `translate(${width / 2}, ${totalHeight / 2})`)
+    .append("g")
     .call(zoomBehavior)
+
+  // this rect is to allow zooming
+  svg
+    .append("rect")
+    .attr("fill", "#fff")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("transform", `translate(-${width / 2}, -${totalHeight / 2})`)
 
   const textId = uuid.v1()
 
@@ -269,13 +287,31 @@ const main = async () => {
       )
 
     ribbons
-      .append("title")
-      .text(
+      .style("cursor", "pointer")
+      .attr(
+        "title",
         (d) =>
           `"${names[d.target.index]}" spends into "${
             names[d.source.index]
           }": ${formatValue(d.source.value)}`
       )
+      .on("click", function (_e, d) {
+        const el = d3.select(this)
+        const name = `${names[d.source.index]}_${names[d.target.index]}`
+
+        if (state.lastFocused === name) {
+          ribbons.attr("display", "block")
+          state.lastFocused = null
+        } else {
+          ribbons.attr("display", "none")
+          el.attr("display", "block")
+          state.lastFocused = name
+        }
+      })
+
+    $(".ribbon").tooltip({
+      track: true,
+    })
 
     const getGroupText = (d) => {
       if (d.endAngle - d.startAngle < 0.07) {
@@ -286,8 +322,6 @@ const main = async () => {
     }
 
     const initialGroupData = groupContainer.selectAll(".group").data()
-
-    console.log("initialGroupData", initialGroupData)
 
     groupContainer
       .selectAll(".group")
@@ -324,6 +358,7 @@ const main = async () => {
             .attr("dy", -3)
             .append("textPath")
             .attr("xlink:href", `#${textId}`)
+            .style("user-select", "none")
             .attr("class", "group-text")
             .text(getGroupText)
             .attr("fill", "black")
@@ -337,7 +372,7 @@ const main = async () => {
             const latestRibbons = ribbonContainer.selectAll(".ribbon")
 
             if (state.lastFocused === name) {
-              latestRibbons.attr("opacity", () => 1)
+              latestRibbons.attr("display", () => "block")
               state.lastFocused = null
 
               return
@@ -346,15 +381,15 @@ const main = async () => {
             state.lastFocused = name
 
             if (countries.includes(name)) {
-              latestRibbons.attr("opacity", (d2) =>
-                d2.source.index === d.index ? 1 : 0
+              latestRibbons.attr("display", (d2) =>
+                d2.source.index === d.index ? "block" : "none"
               )
 
               return
             }
 
-            latestRibbons.attr("opacity", (d2) =>
-              d2.target.index === d.index ? 1 : 0
+            latestRibbons.attr("display", (d2) =>
+              d2.target.index === d.index ? "block" : "none"
             )
           })
 

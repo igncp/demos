@@ -1,0 +1,90 @@
+$dashoffset: 470;
+$baseColor: #19f6e8;
+$highlightColor: red;
+
+.shape {
+  fill: transparent;
+  stroke: $baseColor;
+  stroke-dasharray: 140 $dashoffset;
+  stroke-dashoffset: -$dashoffset;
+  stroke-width: 8px;
+}
+
+.text {
+  color: #333;
+  font-size: 22px;
+  left: 0;
+  letter-spacing: 8px;
+  line-height: 32px;
+  position: absolute;
+  right: 0;
+  top: 12px;
+  transition: letter-spacing ease-in 0.2s;
+}
+
+@define-mixin draw-keyframes-initial {
+  stroke-dasharray: 140 540;
+  stroke-dashoffset: -474;
+  stroke-width: 8px;
+}
+
+@define-mixin draw-keyframes-final {
+  stroke-dasharray: 760;
+  stroke-dashoffset: 0;
+  stroke-width: 2px;
+}
+
+@keyframes hoverBorderLoop {
+  0% {
+    stroke: $highlightColor;
+
+    @mixin draw-keyframes-initial;
+  }
+
+  33%,
+  60% {
+    stroke: $highlightColor;
+
+    @mixin draw-keyframes-final;
+  }
+
+  80% {
+    stroke: $highlightColor;
+
+    @mixin draw-keyframes-initial;
+  }
+
+  80.01%,
+  100% {
+    stroke: $baseColor;
+
+    @mixin draw-keyframes-initial;
+  }
+}
+
+@keyframes hoverBorder {
+  0% {
+    stroke: $highlightColor;
+
+    @mixin draw-keyframes-initial;
+  }
+
+  100% {
+    stroke: $highlightColor;
+
+    @mixin draw-keyframes-final;
+  }
+}
+
+.svgWrapper {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  text-align: center;
+
+  &:hover {
+    .text {
+      letter-spacing: 10px;
+    }
+  }
+}
