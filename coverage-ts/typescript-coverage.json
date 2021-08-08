@@ -954,6 +954,125 @@
       "kind": 1
     },
     {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 42,
+      "character": 40,
+      "text": "zoomEvent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 46,
+      "character": 23,
+      "text": "zoomEvent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 46,
+      "character": 33,
+      "text": "transform",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 86,
+      "character": 24,
+      "text": "r",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 87,
+      "character": 4,
+      "text": "r",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 87,
+      "character": 6,
+      "text": "radius",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 87,
+      "character": 32,
+      "text": "padAngle",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 89,
+      "character": 8,
+      "text": "ribbonArrow",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 90,
+      "character": 8,
+      "text": "ribbon",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 152,
+      "character": 10,
+      "text": "usedRibbon",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 153,
+      "character": 58,
+      "text": "ribbon",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 153,
+      "character": 67,
+      "text": "ribbonArrow",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 214,
+      "character": 23,
+      "text": "usedRibbon",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 231,
+      "character": 29,
+      "text": "usedRibbon",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 249,
+      "character": 23,
+      "text": "usedRibbon",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 266,
+      "character": 29,
+      "text": "_e",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
+      "line": 341,
+      "character": 26,
+      "text": "_e",
+      "kind": 1
+    },
+    {
       "file": "src/demos/fish-eye/fish-eye.ts",
       "line": 153,
       "character": 10,
@@ -2445,8 +2564,8 @@
       "kind": 1
     }
   ],
-  "percentage": 97.60548885077186,
-  "total": 14575,
-  "covered": 14226,
-  "uncovered": 349
+  "percentage": 97.63106796116504,
+  "total": 15450,
+  "covered": 15084,
+  "uncovered": 366
 }
