@@ -1,0 +1,302 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>CanvasOrbitParticles.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasOrbitParticles/CanvasOrbitParticles.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">422</td><td class="">422</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+import { select } from &quot;d3&quot;
+
+import { TemplateType } from &quot;../common&quot;
+import StoryInfo from &quot;../StoryInfo&quot;
+
+// Docs:
+// https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+// https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arc
+
+type Props = {
+  clearAlpha: number
+  count: number
+  displayLight: boolean
+  displayOrbitals: boolean
+  jitterHue: number
+  jitterRadius: number
+  lightAlpha: number
+  orbitalAlpha: number
+  scale: number
+  speed: number
+}
+
+const ROOT_ID = &quot;example&quot;
+
+const random = (min: number, max: number) =&gt; Math.random() * (max - min) + min
+const innerRadius = 300
+
+const main = ({
+  clearAlpha,
+  count,
+  displayLight,
+  displayOrbitals,
+  jitterHue,
+  jitterRadius,
+  lightAlpha,
+  orbitalAlpha,
+  scale,
+  speed,
+}: Props) =&gt; {
+  const { width } = (document.getElementById(
+    ROOT_ID
+  ) as HTMLElement).getBoundingClientRect()
+  const height = 500
+
+  const canvasEl = select(`#${ROOT_ID}`)
+    .text(&quot;&quot;)
+    .append(&quot;canvas&quot;)
+    .attr(&quot;height&quot;, height)
+    .attr(&quot;width&quot;, width)
+    .style(&quot;background&quot;, &quot;#000&quot;)
+    .node() as HTMLCanvasElement
+
+  const ctx = canvasEl.getContext(&quot;2d&quot;) as CanvasRenderingContext2D
+
+  const center = {
+    x: width / 2,
+    y: height / 2,
+  } as const
+
+  const orbs: Orb[] = []
+  let dt = 1
+  let t = Date.now()
+
+  class Orb {
+    private angle: number
+    private lastAngle: number
+    private readonly radius: number
+    private readonly size: number
+    private readonly speed: number
+    private x: number
+    private y: number
+
+    public constructor(x: number, y: number) {
+      const dx = x / scale - center.x / scale
+      const dy = y / scale - center.y / scale
+
+      this.x = x
+      this.y = y
+
+      this.angle = Math.atan2(dy, dx)
+      this.lastAngle = this.angle
+      this.radius = Math.sqrt(dx * dx + dy * dy)
+      this.size = this.radius / innerRadius + 1
+      this.speed = (random(1, 10) / 300000) * this.radius + 0.015
+    }
+
+    public update() {
+      this.lastAngle = this.angle
+      this.angle += this.speed * (speed / 50) * dt
+      this.x = this.radius * Math.cos(this.angle)
+      this.y = this.radius * Math.sin(this.angle)
+    }
+
+    public render() {
+      if (displayOrbitals) {
+        let radius =
+          jitterRadius === 0
+            ? this.radius
+            : this.radius + random(-jitterRadius, jitterRadius)
+
+        radius = jitterRadius !== 0 &amp;&amp; radius &lt; 0 ? 0.001 : radius
+
+        ctx.strokeStyle = `hsla(${[
+          (this.angle + 90) / (Math.PI / 180) + random(-jitterHue, jitterHue),
+          &quot;100%&quot;,
+          &quot;50%&quot;,
+          orbitalAlpha / 100,
+        ].join(&quot;, &quot;)})`
+        ctx.lineWidth = this.size
+        ctx.beginPath()
+
+        if (speed &gt;= 0) {
+          ctx.arc(0, 0, radius, this.lastAngle, this.angle + 0.001, false)
+        } else {
+          ctx.arc(0, 0, radius, this.angle, this.lastAngle + 0.001, false)
+        }
+
+        ctx.stroke()
+        ctx.closePath()
+      }
+
+      if (displayLight) {
+        ctx.lineWidth = 0.5
+        ctx.strokeStyle = `hsla(${[
+          (this.angle + 90) / (Math.PI / 180) + random(-jitterHue, jitterHue),
+          &quot;100%&quot;,
+          &quot;70%&quot;,
+          lightAlpha / 100,
+        ].join(&quot;, &quot;)})`
+        ctx.beginPath()
+        ctx.moveTo(0, 0)
+        ctx.lineTo(this.x, this.y)
+        ctx.stroke()
+      }
+    }
+  }
+
+  const createOrb = (config?: { x: number; y: number }) =&gt; {
+    const x = config?.x ? config.x : 0
+    const y = config?.y ? config.y : 0
+
+    orbs.push(new Orb(x, y))
+  }
+
+  let isMouseDown = false
+
+  const createMouseOrb = (e: MouseEvent) =&gt; {
+    const rect = canvasEl.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+
+    createOrb({ x, y })
+  }
+
+  canvasEl.addEventListener(&quot;mouseup&quot;, (e: MouseEvent) =&gt; {
+    isMouseDown = false
+
+    e.stopPropagation()
+    e.preventDefault()
+  })
+
+  canvasEl.addEventListener(&quot;mousedown&quot;, (e: MouseEvent) =&gt; {
+    isMouseDown = true
+
+    createMouseOrb(e)
+
+    e.stopPropagation()
+    e.preventDefault()
+  })
+
+  canvasEl.addEventListener(&quot;mousemove&quot;, (e: MouseEvent) =&gt; {
+    if (isMouseDown) {
+      createMouseOrb(e)
+    }
+  })
+
+  let total = count
+
+  while (total--) {
+    createOrb({
+      x: random(width / 2 - innerRadius, width / 2 + innerRadius),
+      y: random(height / 2 - innerRadius, height / 2 + innerRadius),
+    })
+  }
+
+  const clear = () =&gt; {
+    ctx.globalCompositeOperation = &quot;destination-out&quot;
+    ctx.fillStyle = `rgba(0,0,0,${clearAlpha / 100})`
+    ctx.fillRect(0, 0, width, height)
+    ctx.globalCompositeOperation = &quot;lighter&quot;
+  }
+
+  const update = () =&gt; {
+    dt = Date.now() - t
+
+    dt = dt &lt; 0.1 ? 0.1 : dt / 16
+    dt = dt &gt; 5 ? 5 : dt
+    t = Date.now()
+
+    orbs.forEach((orb) =&gt; {
+      orb.update()
+    })
+  }
+
+  const draw = () =&gt; {
+    ctx.save()
+    ctx.translate(center.x, center.y)
+    ctx.scale(scale, scale)
+
+    orbs.forEach((orb) =&gt; {
+      orb.render()
+    })
+
+    ctx.restore()
+  }
+
+  let isStopped = false
+
+  const loop = () =&gt; {
+    if (isStopped) {
+      return
+    }
+
+    update()
+    draw()
+    clear()
+
+    requestAnimationFrame(loop)
+  }
+
+  loop()
+
+  return {
+    stop: () =&gt; {
+      isStopped = true
+    },
+  }
+}
+
+const CanvasOrbitParticles = (props: Props) =&gt; {
+  React.useEffect(() =&gt; {
+    const { stop } = main(props)
+
+    return stop
+  })
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        source=&quot;https://codepen.io/jackrugile/pen/aCzHs&quot;
+        storyName=&quot;CanvasOrbitParticles&quot;
+      /&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;CanvasOrbitParticles {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const args: Props = {
+  clearAlpha: 10,
+  count: 200,
+  displayLight: true,
+  displayOrbitals: true,
+  jitterHue: 0,
+  jitterRadius: 0,
+  lightAlpha: 4,
+  orbitalAlpha: 100,
+  scale: 5,
+  speed: 65,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {},
+  component: CanvasOrbitParticles,
+  title: &quot;Canvas/OrbitParticles&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 09 Aug 2021 22:47:29 GMT</p>
+    </body>
+  </html>
+  
