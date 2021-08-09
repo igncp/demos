@@ -21,7 +21,7 @@
   mix-blend-mode: multiply;
 }
 
-.sliderTime {
+div.sliderTime {
   background: #c4dcf9;
   margin: 20px 0;
 }

@@ -28,18 +28,18 @@ const margin = {
 }
 const height = 400
 
-export type ChartConfig<A> = {
+export type ChartConfig<ChartData> = {
   colorDomain: string[]
-  getChartItems: () => A[]
-  getEmptyItem: () => A
-  getHeaderText: (o: { chartItems: A[] }) => string
+  getChartItems: () => ChartData[]
+  getEmptyItem: () => ChartData
+  getHeaderText: (o: { chartItems: ChartData[] }) => string
   getIsSmall: () => boolean
-  getItemId: (a: A) => string
-  getItemLabel: (a: A) => string
-  getItemMetric: (i: A) => number
-  getItemTitle: (o: { itemData: A }) => string
-  getStringForColor: (d: A) => string
-  onClick: (m: A) => void
+  getItemId: (a: ChartData) => string
+  getItemLabel: (a: ChartData) => string
+  getItemMetric: (i: ChartData) => number
+  getItemTitle: (o: { itemData: ChartData }) => string
+  getStringForColor: (d: ChartData) => string
+  onClick: (m: ChartData) => void
   rootElId: string
 }
 
@@ -47,10 +47,10 @@ type RenderChartReturn = {
   updateChart: () => void
 }
 
-export const renderChart = <A>(
-  chartConfig: ChartConfig<A>
+export const renderChart = <ChartData>(
+  chartConfig: ChartConfig<ChartData>
 ): RenderChartReturn => {
-  type ChartNode = HierarchyCircularNode<A>
+  type ChartNode = HierarchyCircularNode<ChartData>
 
   const chartEl = document.getElementById(chartConfig.rootElId) as HTMLElement
   const { width } = chartEl.getBoundingClientRect()
@@ -124,7 +124,7 @@ export const renderChart = <A>(
 
     const isSmall = chartConfig.getIsSmall()
 
-    const root = pack<A>()
+    const root = pack<ChartData>()
       .size(isSmall ? [width / 2, height / 2] : [width, height])
       .padding(3)(structure)
 
@@ -137,13 +137,13 @@ export const renderChart = <A>(
     )
 
     const getDataKey = (node: unknown) =>
-      chartConfig.getItemId((node as HierarchyCircularNode<A>).data)
+      chartConfig.getItemId((node as HierarchyCircularNode<ChartData>).data)
 
     const leaf = svgContent.selectAll(".leaf").data(leaves, getDataKey)
 
     leaf.exit().remove()
 
-    const getTitle = (node: HierarchyCircularNode<A>) =>
+    const getTitle = (node: HierarchyCircularNode<ChartData>) =>
       chartConfig.getItemTitle({
         itemData: node.data,
       })
@@ -211,7 +211,7 @@ export const renderChart = <A>(
         chartConfig.onClick(node.data)
       })
 
-    const generateColor = (node: HierarchyCircularNode<A>) =>
+    const generateColor = (node: HierarchyCircularNode<ChartData>) =>
       color(chartConfig.getStringForColor(node.data))
 
     const generateDarkerColor = (node: ChartNode) => {

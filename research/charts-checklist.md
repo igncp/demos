@@ -36,5 +36,6 @@ For new charts using data, they should cover most of these points
     - Separate data fetching from the chart rendering
     - Be able to tear down and cleanup its content and other generated components
     - When selecting over classes globally (e.g. with tooltip), use CSS modules or uuids
+    - Use advanced TS features: utility types, `as const`, string template types
 - Move as many styles as possible to the `.module.css` sheet inside classes
 - Use new styling features, and document them, like filters, animations, svg, etc

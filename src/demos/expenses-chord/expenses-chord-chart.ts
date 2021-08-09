@@ -36,7 +36,7 @@ type ChartState = {
 const durations = {
   ribbonAnimation: 1000,
   zoom: 500,
-}
+} as const
 
 const easingFn = easeCircle
 

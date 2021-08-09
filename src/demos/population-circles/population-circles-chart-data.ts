@@ -66,7 +66,7 @@ export const createChartConfig = (
       females: [],
       males: [],
       total: [],
-    } as Municipality["values"],
+    },
   })
 
   const getItemMetric: Config["getItemMetric"] = (
@@ -112,7 +112,7 @@ export const createChartConfig = (
       acc[val]!.push(idx)
 
       return acc
-    }, {} as { [k: string]: number[] | undefined })
+    }, {} as Record<string, number[] | undefined>)
 
     const sortedDataValues = dataValues.sort((a, b) => a - b)
 
@@ -153,10 +153,7 @@ export const createChartConfig = (
 
     const populationTotal = chartItems.reduce(
       (acc, item) =>
-        acc +
-        item.values[state.populationType as PopulationType][
-          state.timeRangeIndex
-        ].count,
+        acc + item.values[state.populationType][state.timeRangeIndex].count,
       0
     )
 
