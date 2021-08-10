@@ -1,12 +1,7 @@
 import React from "react"
 import { select } from "d3"
 
-import { TemplateType } from "../common"
-import StoryInfo from "../StoryInfo"
-
-// Docs:
-// https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
-// https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arc
+import { StoryInfo, TemplateType, canvasDocs } from "../common"
 
 type Props = {
   clearAlpha: number
@@ -248,6 +243,7 @@ const CanvasOrbitParticles = (props: Props) => {
   return (
     <div>
       <StoryInfo
+        docs={[canvasDocs.globalCompositeOperation, canvasDocs.arc]}
         source="https://codepen.io/jackrugile/pen/aCzHs"
         storyName="CanvasOrbitParticles"
       />

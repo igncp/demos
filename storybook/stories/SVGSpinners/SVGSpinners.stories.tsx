@@ -1,8 +1,7 @@
 import React from "react"
 import { Selection, select } from "d3"
 
-import { TemplateType } from "../common"
-import StoryInfo from "../StoryInfo"
+import { StoryInfo, TemplateType, svgDocs } from "../common"
 
 import * as styles from "./svgSpinners.module.css"
 
@@ -148,6 +147,7 @@ const SVGSpinners = (props: Props) => {
   return (
     <div>
       <StoryInfo
+        docs={[svgDocs.animateTransform]}
         source="https://codepen.io/nikhil8krishnan/pen/rVoXJa"
         sourceText="Source (only ported a few)"
         storyName="SVGSpinners"

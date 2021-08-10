@@ -1,8 +1,7 @@
 import React from "react"
 import { select } from "d3"
 
-import { TemplateType } from "../common"
-import StoryInfo from "../StoryInfo"
+import { StoryInfo, TemplateType } from "../common"
 
 import * as styles from "./svgFlip.module.css"
 

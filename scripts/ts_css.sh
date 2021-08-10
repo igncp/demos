@@ -8,8 +8,8 @@ set -e
 linter_fix() {
   ./node_modules/.bin/eslint \
     --fix \
-    src/**/*.css.d.ts \
-    storybook/stories/**/*.css.d.ts \
+    "src/**/*.css.d.ts" \
+    "storybook/stories/**/*.css.d.ts" \
     2>&1
 }
 
