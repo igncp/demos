@@ -1,0 +1,436 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>CanvasTearableCloth.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasTearableCloth/CanvasTearableCloth.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">635</td><td class="">635</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+import { select } from &quot;d3&quot;
+
+import { StoryInfo, TemplateType } from &quot;../common&quot;
+
+// @TODO: Finish refactoring and adding docs
+
+type Props = {
+  clothHeight: number
+  clothWidth: number
+  gravity: number
+  mouseCut: number
+  mouseInfluence: number
+  physicsAccuracy: number
+  spacing: number
+  startY: number
+  tearDistance: number
+}
+
+const ROOT_ID = &quot;example&quot;
+
+const pointDelta = 0.016
+const pointDeltaSquare = pointDelta * pointDelta
+
+const main = ({
+  clothHeight,
+  clothWidth,
+  gravity,
+  mouseCut,
+  mouseInfluence,
+  physicsAccuracy,
+  spacing,
+  startY,
+  tearDistance,
+}: Props) =&gt; {
+  const { width } = (document.getElementById(
+    ROOT_ID
+  ) as HTMLElement).getBoundingClientRect()
+  const height = 400
+
+  const canvasEl = select(`#${ROOT_ID}`)
+    .text(&quot;&quot;)
+    .append(&quot;canvas&quot;)
+    .attr(&quot;height&quot;, height)
+    .attr(&quot;width&quot;, width)
+    .style(&quot;background&quot;, &quot;#000&quot;)
+    .node() as HTMLCanvasElement
+
+  const ctx = canvasEl.getContext(&quot;2d&quot;) as CanvasRenderingContext2D
+
+  ctx.strokeStyle = &quot;#888&quot;
+
+  const boundsx = width - 1
+  const boundsy = height - 1
+
+  const state = {
+    isStopped: false,
+  }
+
+  const mouseState = {
+    button: 1,
+    down: false,
+    px: 0,
+    py: 0,
+    x: 0,
+    y: 0,
+  }
+
+  class Point {
+    public x: number
+    public y: number
+    public px: number
+    public py: number
+
+    private pinX: number | null
+    private pinY: number | null
+    private constraints: Constraint[]
+    private vx: number
+    private vy: number
+
+    public constructor(x: number, y: number) {
+      this.x = x
+      this.y = y
+      this.px = x
+      this.py = y
+
+      this.pinX = null
+      this.pinY = null
+      this.constraints = []
+      this.vx = 0
+      this.vy = 0
+    }
+
+    public update() {
+      if (mouseState.down) {
+        const diffX = this.x - mouseState.x
+        const diffY = this.y - mouseState.y
+        const dist = Math.sqrt(diffX * diffX + diffY * diffY)
+
+        if (mouseState.button === 1) {
+          if (dist &lt; mouseInfluence) {
+            this.px = this.x - (mouseState.x - mouseState.px) * 1.8
+            this.py = this.y - (mouseState.y - mouseState.py) * 1.8
+          }
+        } else if (dist &lt; mouseCut) {
+          this.constraints = []
+        }
+      }
+
+      this.addForce(0, gravity)
+
+      const newX =
+        this.x + (this.x - this.px) * 0.99 + (this.vx / 2) * pointDeltaSquare
+      const newY =
+        this.y + (this.y - this.py) * 0.99 + (this.vy / 2) * pointDeltaSquare
+
+      this.px = this.x
+      this.py = this.y
+
+      this.x = newX
+      this.y = newY
+
+      this.vx = 0
+      this.vy = 0
+    }
+
+    public draw() {
+      if (!this.constraints.length) {
+        return
+      }
+
+      let {
+        constraints: { length: i },
+      } = this
+
+      while (i--) {
+        this.constraints[i].draw()
+      }
+    }
+
+    public resolveConstraints() {
+      if (this.pinX !== null &amp;&amp; this.pinY !== null) {
+        this.x = this.pinX
+        this.y = this.pinY
+
+        return
+      }
+
+      let {
+        constraints: { length: i },
+      } = this
+
+      while (i--) {
+        this.constraints[i].resolve()
+      }
+
+      if (this.x &gt; boundsx) {
+        this.x = 2 * boundsx - this.x
+      } else if (1 &gt; this.x) {
+        this.x = 2 - this.x
+      }
+
+      if (this.y &lt; 1) {
+        this.y = 2 - this.y
+      } else if (this.y &gt; boundsy) {
+        this.y = 2 * boundsy - this.y
+      }
+    }
+
+    public attach(point: Point) {
+      const constraint = new Constraint(this, point)
+
+      this.constraints.push(constraint)
+    }
+
+    public removeConstraint(constraint: Constraint) {
+      this.constraints.splice(this.constraints.indexOf(constraint), 1)
+    }
+
+    public addForce(x: number, y: number) {
+      this.vx += x
+      this.vy += y
+
+      const round = 400
+
+      this.vx = ~~(this.vx * round) / round
+      this.vy = ~~(this.vy * round) / round
+    }
+
+    public pin(pinX: number, pinY: number) {
+      this.pinX = pinX
+      this.pinY = pinY
+    }
+  }
+
+  class Constraint {
+    private readonly p1: Point
+    private readonly p2: Point
+    private readonly length: number
+
+    public constructor(p1: Point, p2: Point) {
+      this.p1 = p1
+      this.p2 = p2
+      this.length = spacing
+    }
+
+    public resolve() {
+      const diffX = this.p1.x - this.p2.x
+      const diffY = this.p1.y - this.p2.y
+      const distance = Math.sqrt(diffX * diffX + diffY * diffY)
+      const diff = (this.length - distance) / distance
+
+      if (distance &gt; tearDistance) {
+        this.p1.removeConstraint(this)
+      }
+
+      const halfDiff = diff / 2
+      const px = diffX * halfDiff
+      const py = diffY * halfDiff
+
+      this.p1.x += px
+      this.p1.y += py
+      this.p2.x -= px
+      this.p2.y -= py
+    }
+
+    public draw() {
+      ctx.moveTo(this.p1.x, this.p1.y)
+      ctx.lineTo(this.p2.x, this.p2.y)
+    }
+  }
+
+  class Cloth {
+    private readonly points: Point[]
+
+    public constructor() {
+      this.points = []
+
+      this.generatePoints()
+    }
+
+    public update() {
+      let i = physicsAccuracy
+
+      while (i--) {
+        let {
+          points: { length: pointIdxInner },
+        } = this
+
+        while (pointIdxInner--) {
+          this.points[pointIdxInner].resolveConstraints()
+        }
+      }
+
+      let {
+        points: { length: pointIdx },
+      } = this
+
+      while (pointIdx--) {
+        this.points[pointIdx].update()
+      }
+    }
+
+    public draw() {
+      ctx.beginPath()
+
+      let {
+        points: { length: pointIdx },
+      } = this
+
+      while (pointIdx--) {
+        this.points[pointIdx].draw()
+      }
+
+      ctx.stroke()
+    }
+
+    private generatePoints() {
+      const startX = width / 2 - (clothWidth * spacing) / 2
+
+      for (let y = 0; y &lt;= clothHeight; y++) {
+        for (let x = 0; x &lt;= clothWidth; x++) {
+          const newPoint = new Point(startX + x * spacing, startY + y * spacing)
+
+          if (x !== 0) {
+            const {
+              points: { [this.points.length - 1]: pointLeft },
+            } = this
+
+            newPoint.attach(pointLeft)
+          }
+
+          if (y === 0) {
+            newPoint.pin(newPoint.x, newPoint.y)
+          } else {
+            const {
+              points: { [x + (y - 1) * (clothWidth + 1)]: pointAbove },
+            } = this
+
+            newPoint.attach(pointAbove)
+          }
+
+          this.points.push(newPoint)
+        }
+      }
+    }
+  }
+
+  const cloth = new Cloth()
+
+  canvasEl.onmousedown = (e) =&gt; {
+    e.preventDefault()
+
+    mouseState.button = e.which
+    mouseState.px = mouseState.x
+    mouseState.py = mouseState.y
+
+    const rect = canvasEl.getBoundingClientRect()
+
+    mouseState.x = e.clientX - rect.left
+    mouseState.y = e.clientY - rect.top
+    mouseState.down = true
+  }
+
+  canvasEl.onmouseup = (e) =&gt; {
+    e.preventDefault()
+    mouseState.down = false
+  }
+
+  canvasEl.onmousemove = (e) =&gt; {
+    e.preventDefault()
+
+    mouseState.px = mouseState.x
+    mouseState.py = mouseState.y
+
+    const rect = canvasEl.getBoundingClientRect()
+
+    mouseState.x = e.clientX - rect.left
+    mouseState.y = e.clientY - rect.top
+  }
+
+  canvasEl.oncontextmenu = (e) =&gt; {
+    e.preventDefault()
+  }
+
+  const loop = () =&gt; {
+    if (state.isStopped) {
+      return
+    }
+
+    ctx.clearRect(0, 0, width, height)
+
+    cloth.update()
+    cloth.draw()
+
+    requestAnimationFrame(loop)
+  }
+
+  loop()
+
+  return {
+    stop: () =&gt; {
+      state.isStopped = true
+    },
+  }
+}
+
+const CanvasTearableCloth = (props: Props) =&gt; {
+  React.useEffect(() =&gt; {
+    const { stop } = main(props)
+
+    return stop
+  })
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[
+          {
+            link: &quot;https://en.wikipedia.org/wiki/Verlet_integration&quot;,
+            name: &quot;Verlet Integration&quot;,
+          },
+        ]}
+        source=&quot;https://codepen.io/dissimulate/pen/KrAwx&quot;
+        storyName=&quot;CanvasTearableCloth&quot;
+      /&gt;
+      &lt;p&gt;This story is still under development&lt;/p&gt;
+      &lt;p&gt;The left and right mouse buttons have different behaviors&lt;/p&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;CanvasTearableCloth {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const args: Props = {
+  clothHeight: 30,
+  clothWidth: 50,
+  gravity: 1200,
+  mouseCut: 5,
+  mouseInfluence: 20,
+  physicsAccuracy: 3,
+  spacing: 7,
+  startY: 20,
+  tearDistance: 60,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {},
+  component: CanvasTearableCloth,
+  title: &quot;Canvas/Cloth&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 10 Aug 2021 23:28:50 GMT</p>
+    </body>
+  </html>
+  

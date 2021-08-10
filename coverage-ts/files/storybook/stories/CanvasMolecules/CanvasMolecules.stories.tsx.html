@@ -1,0 +1,278 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>CanvasMolecules.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasMolecules/CanvasMolecules.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">374</td><td class="">374</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+import { select } from &quot;d3&quot;
+
+import { StoryInfo, TemplateType, canvasDocs } from &quot;../common&quot;
+
+type Props = {
+  count: number
+  interactionDistance: number
+  interactionLineWidth: number
+  radiusBase: number
+  speedBase: number
+}
+
+const ROOT_ID = &quot;example&quot;
+
+const colors = [&quot;#f35d4f&quot;, &quot;#f36849&quot;, &quot;#c0d988&quot;, &quot;#6ddaf1&quot;, &quot;#f1e85b&quot;]
+
+const getRandomInt = (min: number, max: number) =&gt;
+  Math.floor(Math.random() * (max - min + 1)) + min
+
+type CanvasBoundaries = {
+  height: number
+  width: number
+}
+
+type ParticleOpts = CanvasBoundaries &amp; {
+  id: number
+  radiusBase: number
+  speedBase: number
+  x?: number
+  y?: number
+}
+
+class Particle {
+  public x: number
+  public y: number
+  public radius: number
+  public color: string
+  public vx: number
+  public vy: number
+
+  private readonly id: number
+
+  public constructor({
+    height,
+    id,
+    radiusBase,
+    speedBase,
+    width,
+    x,
+    y,
+  }: ParticleOpts) {
+    this.id = id
+    this.x = x ?? Math.round(Math.random() * width)
+    this.y = y ?? Math.round(Math.random() * height)
+    this.radius = Math.random() * radiusBase + 1
+    this.color = colors[getRandomInt(0, colors.length)]
+    this.vx = Math.random() * speedBase - speedBase / 2
+    this.vy = Math.random() * speedBase - speedBase / 2
+  }
+
+  public updatePosition({ height, width }: CanvasBoundaries) {
+    this.x += this.vx
+    this.y += this.vy
+
+    if (this.x &gt; width) this.x = 0
+    if (this.x &lt; 0) this.x = width
+    if (this.y &gt; height) this.y = 0
+    if (this.y &lt; 0) this.y = height
+  }
+
+  public shouldInteractWithParticle(
+    otherParticle: Particle,
+    interactionDistance: number
+  ): boolean {
+    return (
+      this.id !== otherParticle.id &amp;&amp;
+      this.color === otherParticle.color &amp;&amp;
+      this.findDistance(otherParticle) &lt; interactionDistance
+    )
+  }
+
+  private findDistance(otherParticle: Particle): number {
+    return Math.sqrt(
+      Math.pow(otherParticle.x - this.x, 2) +
+        Math.pow(otherParticle.y - this.y, 2)
+    )
+  }
+}
+
+const main = ({
+  count,
+  interactionDistance,
+  interactionLineWidth,
+  radiusBase,
+  speedBase,
+}: Props) =&gt; {
+  const { width } = (document.getElementById(
+    ROOT_ID
+  ) as HTMLElement).getBoundingClientRect()
+  const height = 500
+
+  const particleArgs = {
+    height,
+    radiusBase,
+    speedBase,
+    width,
+  }
+
+  const canvasEl = select(`#${ROOT_ID}`)
+    .text(&quot;&quot;)
+    .append(&quot;canvas&quot;)
+    .attr(&quot;height&quot;, height)
+    .attr(&quot;width&quot;, width)
+    .style(&quot;background&quot;, &quot;#000&quot;)
+    .node() as HTMLCanvasElement
+
+  const ctx = canvasEl.getContext(&quot;2d&quot;) as CanvasRenderingContext2D
+
+  const particles: Particle[] = Array.from({ length: count }).map(
+    (_, idx) =&gt;
+      new Particle({
+        ...particleArgs,
+        id: idx,
+      })
+  )
+
+  const draw = () =&gt; {
+    ctx.clearRect(0, 0, width, height)
+    ctx.globalCompositeOperation = &quot;lighter&quot;
+
+    particles.forEach((particleA) =&gt; {
+      let radiusFactor = 1
+
+      ctx.fillStyle = particleA.color
+      ctx.strokeStyle = particleA.color
+
+      particles.forEach((particleB) =&gt; {
+        if (
+          particleA.shouldInteractWithParticle(particleB, interactionDistance)
+        ) {
+          ctx.beginPath()
+          ctx.lineWidth = interactionLineWidth
+          ctx.moveTo(particleA.x, particleA.y)
+          ctx.lineTo(particleB.x, particleB.y)
+          ctx.stroke()
+
+          radiusFactor += 1
+        }
+      })
+
+      ctx.beginPath()
+      ctx.arc(
+        particleA.x,
+        particleA.y,
+        particleA.radius * radiusFactor,
+        0,
+        Math.PI * 2
+      )
+      ctx.fill()
+      ctx.closePath()
+
+      ctx.beginPath()
+      ctx.arc(
+        particleA.x,
+        particleA.y,
+        (particleA.radius + 5) * radiusFactor,
+        0,
+        Math.PI * 2
+      )
+      ctx.stroke()
+      ctx.closePath()
+
+      particleA.updatePosition({ height, width })
+    })
+  }
+
+  canvasEl.addEventListener(&quot;click&quot;, (e) =&gt; {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const rect = canvasEl.getBoundingClientRect()
+
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+
+    particles.push(
+      new Particle({
+        ...particleArgs,
+        id: particles.length,
+        x,
+        y,
+      })
+    )
+  })
+
+  let isStopped = false
+
+  const loop = () =&gt; {
+    if (isStopped) {
+      return
+    }
+
+    draw()
+    requestAnimationFrame(loop)
+  }
+
+  loop()
+
+  return {
+    stop: () =&gt; {
+      isStopped = true
+    },
+  }
+}
+
+const CanvasMolecules = (props: Props) =&gt; {
+  React.useEffect(() =&gt; {
+    const { stop } = main(props)
+
+    return stop
+  })
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[
+          canvasDocs.arc,
+          canvasDocs.clearRect,
+          canvasDocs.globalCompositeOperation,
+        ]}
+        source=&quot;https://codepen.io/eltonkamami/pen/ECrKd&quot;
+        storyName=&quot;CanvasMolecules&quot;
+      /&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;CanvasMolecules {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const args: Props = {
+  count: 500,
+  interactionDistance: 50,
+  interactionLineWidth: 0.5,
+  radiusBase: 1,
+  speedBase: 3,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {},
+  component: CanvasMolecules,
+  title: &quot;Canvas/Molecules&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 10 Aug 2021 23:28:50 GMT</p>
+    </body>
+  </html>
+  
