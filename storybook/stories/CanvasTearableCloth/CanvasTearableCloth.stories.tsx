@@ -1,9 +1,7 @@
 import React from "react"
 import { select } from "d3"
 
-import { StoryInfo, TemplateType } from "../common"
-
-// @TODO: Finish refactoring and adding docs
+import { StoryInfo, TemplateType, canvasDocs } from "../common"
 
 type Props = {
   clothHeight: number
@@ -21,6 +19,13 @@ const ROOT_ID = "example"
 
 const pointDelta = 0.016
 const pointDeltaSquare = pointDelta * pointDelta
+
+const loopReversed = <A extends unknown[]>(
+  arr: A,
+  fn: (a: A[0]) => void
+): void => {
+  arr.slice().reverse().forEach(fn)
+}
 
 const main = ({
   clothHeight,
@@ -129,13 +134,9 @@ const main = ({
         return
       }
 
-      let {
-        constraints: { length: i },
-      } = this
-
-      while (i--) {
-        this.constraints[i].draw()
-      }
+      loopReversed(this.constraints, (constraint) => {
+        constraint.draw()
+      })
     }
 
     public resolveConstraints() {
@@ -146,13 +147,9 @@ const main = ({
         return
       }
 
-      let {
-        constraints: { length: i },
-      } = this
-
-      while (i--) {
-        this.constraints[i].resolve()
-      }
+      loopReversed(this.constraints, (constraint) => {
+        constraint.resolve()
+      })
 
       if (this.x > boundsx) {
         this.x = 2 * boundsx - this.x
@@ -240,37 +237,25 @@ const main = ({
     }
 
     public update() {
-      let i = physicsAccuracy
+      let physicalRound = physicsAccuracy
 
-      while (i--) {
-        let {
-          points: { length: pointIdxInner },
-        } = this
-
-        while (pointIdxInner--) {
-          this.points[pointIdxInner].resolveConstraints()
-        }
+      while (physicalRound--) {
+        loopReversed(this.points, (point) => {
+          point.resolveConstraints()
+        })
       }
 
-      let {
-        points: { length: pointIdx },
-      } = this
-
-      while (pointIdx--) {
-        this.points[pointIdx].update()
-      }
+      loopReversed(this.points, (point) => {
+        point.update()
+      })
     }
 
     public draw() {
       ctx.beginPath()
 
-      let {
-        points: { length: pointIdx },
-      } = this
-
-      while (pointIdx--) {
-        this.points[pointIdx].draw()
-      }
+      loopReversed(this.points, (point) => {
+        point.draw()
+      })
 
       ctx.stroke()
     }
@@ -380,6 +365,7 @@ const CanvasTearableCloth = (props: Props) => {
             link: "https://en.wikipedia.org/wiki/Verlet_integration",
             name: "Verlet Integration",
           },
+          canvasDocs.clearRect,
         ]}
         source="https://codepen.io/dissimulate/pen/KrAwx"
         storyName="CanvasTearableCloth"
