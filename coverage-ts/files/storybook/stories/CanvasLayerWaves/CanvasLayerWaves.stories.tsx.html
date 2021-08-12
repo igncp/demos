@@ -1,0 +1,259 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>CanvasLayerWaves.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasLayerWaves/CanvasLayerWaves.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">350</td><td class="">350</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+import { select } from &quot;d3&quot;
+
+import {
+  StoryInfo,
+  TemplateType,
+  canvasDocs,
+  createRangeControl,
+} from &quot;../common&quot;
+import { noise, noiseFactor } from &quot;./noise&quot;
+
+type Props = {
+  cols: number
+  fov: number
+  rows: number
+  waveHeight: number
+  zoom: number
+}
+
+type Point = {
+  x: number
+  y: number
+  z: number
+}
+
+type Triangle = [Point, Point, Point]
+type Mesh = Triangle[]
+
+const ROOT_ID = &quot;example&quot;
+
+const main = ({ cols, fov, rows, waveHeight, zoom }: Props) =&gt; {
+  const { width } = (document.getElementById(
+    ROOT_ID
+  ) as HTMLElement).getBoundingClientRect()
+  const height = 500
+  const state = {
+    isStopped: false,
+    offsetX: 0,
+    offsetY: 0,
+  }
+
+  const canvasEl = select(`#${ROOT_ID}`)
+    .text(&quot;&quot;)
+    .append(&quot;canvas&quot;)
+    .attr(&quot;height&quot;, height)
+    .attr(&quot;width&quot;, width)
+    .node() as HTMLCanvasElement
+
+  const ctx = canvasEl.getContext(&quot;2d&quot;)!
+
+  const increaseOffset = 0.01
+
+  const mesh: Mesh = []
+
+  const generateMesh = () =&gt; {
+    mesh.length = 0
+
+    const gridWidth = width / cols
+    const gridHeight = height / rows
+    const gridDepth = fov / rows
+
+    Array.from({ length: cols }).forEach((_: unknown, col: number) =&gt; {
+      Array.from({ length: rows }).forEach((__: unknown, row: number) =&gt; {
+        mesh.push([
+          {
+            x: col * gridWidth,
+            y: row * gridHeight + gridHeight,
+            z: fov - (row * gridDepth + gridDepth),
+          },
+          {
+            x: col * gridWidth,
+            y: row * gridHeight,
+            z: fov - row * gridDepth,
+          },
+          {
+            x: col * gridWidth + gridWidth,
+            y: row * gridHeight,
+            z: fov - row * gridDepth,
+          },
+        ])
+
+        mesh.push([
+          {
+            x: col * gridWidth + gridWidth,
+            y: row * gridHeight,
+            z: fov - row * gridDepth,
+          },
+          {
+            x: col * gridWidth + gridWidth,
+            y: row * gridHeight + gridHeight,
+            z: fov - (row * gridDepth + gridDepth),
+          },
+          {
+            x: col * gridWidth,
+            y: row * gridHeight + gridHeight,
+            z: fov - (row * gridDepth + gridDepth),
+          },
+        ])
+      })
+    })
+  }
+
+  const drawMesh = () =&gt; {
+    projectMesh()
+
+    ctx.clearRect(0, 0, width, height)
+
+    ctx.globalCompositeOperation = &quot;lighter&quot;
+    ctx.strokeStyle = &quot;black&quot;
+
+    mesh.forEach((triangle) =&gt; {
+      const firstPoint = triangle[0]
+
+      ctx.beginPath()
+      ctx.moveTo(firstPoint.x, firstPoint.y)
+
+      triangle.forEach((point) =&gt; {
+        ctx.lineTo(point.x, point.y)
+      })
+
+      ctx.closePath()
+      ctx.stroke()
+    })
+  }
+
+  const addNoise = () =&gt; {
+    mesh.forEach((triangle) =&gt; {
+      triangle.forEach((point) =&gt; {
+        point.y +=
+          waveHeight *
+          noise(
+            point.x * noiseFactor + state.offsetX,
+            point.y * noiseFactor + state.offsetY
+          )
+      })
+    })
+  }
+
+  const clip = (fragment: number, total: number) =&gt; fragment - total / 2
+
+  const projectMesh = () =&gt; {
+    mesh.forEach((triangle) =&gt; {
+      triangle.forEach((point) =&gt; {
+        const projectionScale = (zoom * fov) / (fov + point.z)
+
+        point.x = clip(point.x, width) * projectionScale + width / 2
+        point.y = clip(point.y, height) * projectionScale + height / 3
+      })
+    })
+  }
+
+  const updateSimulation = () =&gt; {
+    state.offsetX += increaseOffset
+    state.offsetY -= increaseOffset
+
+    generateMesh()
+    addNoise()
+  }
+
+  const draw = () =&gt; {
+    updateSimulation()
+    drawMesh()
+  }
+
+  const loop = () =&gt; {
+    draw()
+
+    if (!state.isStopped) {
+      requestAnimationFrame(loop)
+    }
+  }
+
+  loop()
+
+  return {
+    stop: () =&gt; {
+      state.isStopped = true
+    },
+  }
+}
+
+const CanvasLayerWaves = (props: Props) =&gt; {
+  React.useEffect(() =&gt; {
+    const { stop } = main(props)
+
+    return stop
+  })
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[
+          canvasDocs.beginPath,
+          canvasDocs.clearRect,
+          canvasDocs.globalCompositeOperation,
+          canvasDocs.strokeStyle,
+        ]}
+        source=&quot;https://codepen.io/MadeByMike/pen/zBrpBL&quot;
+        storyName=&quot;CanvasLayerWaves&quot;
+      /&gt;
+      &lt;p&gt;The approach of this simulation is to generate the mesh every time&lt;/p&gt;
+      &lt;p&gt;
+        It is interesting how it projects the mesh into the 2D. There are no
+        interactions.
+      &lt;/p&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;CanvasLayerWaves {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const [rowsArgs, rowsControls] = createRangeControl(40, 1, 20)
+const [colsArgs, colsControls] = createRangeControl(40, 1, 20)
+const [zoomArgs, zoomControls] = createRangeControl(1, 0.5, 0.5, 5)
+const [waveHeightArgs, waveHeightControls] = createRangeControl(15, 1, 15, 35)
+
+const args: Props = {
+  cols: colsArgs,
+  fov: 200,
+  rows: rowsArgs,
+  waveHeight: waveHeightArgs,
+  zoom: zoomArgs,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {
+    cols: colsControls,
+    rows: rowsControls,
+    waveHeight: waveHeightControls,
+    zoom: zoomControls,
+  },
+  component: CanvasLayerWaves,
+  title: &quot;Canvas/LayerWaves&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 12 Aug 2021 23:27:24 GMT</p>
+    </body>
+  </html>
+  
