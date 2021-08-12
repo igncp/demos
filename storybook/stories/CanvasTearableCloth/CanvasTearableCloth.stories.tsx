@@ -1,7 +1,12 @@
 import React from "react"
 import { select } from "d3"
 
-import { StoryInfo, TemplateType, canvasDocs } from "../common"
+import {
+  StoryInfo,
+  TemplateType,
+  canvasDocs,
+  createRangeControl,
+} from "../common"
 
 type Props = {
   clothHeight: number
@@ -48,12 +53,11 @@ const main = ({
     .append("canvas")
     .attr("height", height)
     .attr("width", width)
-    .style("background", "#000")
     .node() as HTMLCanvasElement
 
   const ctx = canvasEl.getContext("2d") as CanvasRenderingContext2D
 
-  ctx.strokeStyle = "#888"
+  ctx.strokeStyle = "#333"
 
   const boundsx = width - 1
   const boundsy = height - 1
@@ -370,7 +374,6 @@ const CanvasTearableCloth = (props: Props) => {
         source="https://codepen.io/dissimulate/pen/KrAwx"
         storyName="CanvasTearableCloth"
       />
-      <p>This story is still under development</p>
       <p>The left and right mouse buttons have different behaviors</p>
       <div id={ROOT_ID} />
     </div>
@@ -383,9 +386,12 @@ const Template = ((props: Props) => (
 
 export const Common = Template.bind({})
 
+const [clothHeightArgs, clothHeightControls] = createRangeControl(30, 1, 25)
+const [clothWidthArgs, clothWidthControls] = createRangeControl(50, 1, 49, 150)
+
 const args: Props = {
-  clothHeight: 30,
-  clothWidth: 50,
+  clothHeight: clothHeightArgs,
+  clothWidth: clothWidthArgs,
   gravity: 1200,
   mouseCut: 5,
   mouseInfluence: 20,
@@ -398,7 +404,10 @@ const args: Props = {
 Common.args = args
 
 export default {
-  argTypes: {},
+  argTypes: {
+    clothHeight: clothHeightControls,
+    clothWidth: clothWidthControls,
+  },
   component: CanvasTearableCloth,
   title: "Canvas/Cloth",
 }

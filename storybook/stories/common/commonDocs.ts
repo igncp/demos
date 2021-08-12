@@ -15,8 +15,10 @@ const getSVGAttributeDoc = (name: string) => ({
 
 export const canvasDocs = {
   arc: getCanvasRenderingDoc("arc"),
+  beginPath: getCanvasRenderingDoc("beginPath"),
   clearRect: getCanvasRenderingDoc("clearRect"),
   globalCompositeOperation: getCanvasRenderingDoc("globalCompositeOperation"),
+  strokeStyle: getCanvasRenderingDoc("strokeStyle"),
 } as const
 
 export const svgDocs = {
