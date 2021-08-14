@@ -41,6 +41,12 @@ object-assign
  * Released under the MIT License.
  */
 
+/**
+ * @license
+ * Copyright 2010-2021 Three.js Authors
+ * SPDX-License-Identifier: MIT
+ */
+
 /** @license React v0.20.1
  * scheduler.production.min.js
  *
