@@ -208,7 +208,6 @@ const main = (
   }
 
   const raycaster = new Raycaster()
-  const pointer = new Vector2()
 
   const onWindowResize = () => {
     camera.aspect = window.innerWidth / window.innerHeight
@@ -217,9 +216,25 @@ const main = (
     renderer.setSize(window.innerWidth, window.innerHeight)
   }
 
+  const container = document.getElementById(ROOT_ID) as HTMLElement
+
+  container.innerHTML = ""
+
+  const containerRect = container.getBoundingClientRect()
+  const pointer = new Vector2()
+
   const onPointerMove = (event: MouseEvent) => {
-    pointer.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1
-    pointer.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
+    pointer.x =
+      ((event.clientX - containerRect.left) / renderer.domElement.clientWidth) *
+        2 -
+      1
+    pointer.y =
+      -(
+        (event.clientY - containerRect.top) /
+        renderer.domElement.clientHeight
+      ) *
+        2 +
+      1
     raycaster.setFromCamera(pointer, camera)
 
     const intersects = raycaster.intersectObject(mesh)
@@ -232,11 +247,7 @@ const main = (
     }
   }
 
-  const container = document.getElementById(ROOT_ID) as HTMLElement
-
-  container.innerHTML = ""
-
-  const { width } = container.getBoundingClientRect()
+  const { width } = containerRect
   const renderer = new WebGLRenderer({ antialias: true })
 
   renderer.setPixelRatio(window.devicePixelRatio)

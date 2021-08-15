@@ -43,6 +43,7 @@ export const threeDocs = {
   canvasTexture: getThreeDoc(["textures", "CanvasTexture"]),
   color: getThreeDoc(["math", "color"]),
   improveNoiseExample: getThreeExampleDoc(["math", "ImprovedNoise"]),
+  meshPhysicalMaterial: getThreeDoc(["materials", "MeshPhysicalMaterial"]),
   vector3: getThreeDoc(["math", "Vector3"]),
   webGLRenderer: getThreeDoc(["renderers", "WebGLRenderer"]),
 }
