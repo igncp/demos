@@ -11,7 +11,9 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasReflectiveSpheres/CanvasReflectiveSpheres.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">397</td><td class="">397</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasReflectiveSpheres/CanvasReflectiveSpheres.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">525</td><td class="">525</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+
+import { scalePow } from &quot;d3&quot;
 
 import {
   ACESFilmicToneMapping,
@@ -24,9 +26,11 @@ import {
   MeshPhysicalMaterial,
   PerspectiveCamera,
   PointLight,
+  Raycaster,
   Scene,
   SphereGeometry,
   TextGeometry,
+  Vector2,
   Vector3,
   WebGLRenderer,
   sRGBEncoding,
@@ -35,7 +39,14 @@ import {
 import { OrbitControls } from &quot;three/examples/jsm/controls/OrbitControls.js&quot;
 import fontData from &quot;three/examples/fonts/gentilis_regular.typeface.json&quot;
 
-import { StoryInfo, TemplateType, createRangeControl } from &quot;../common&quot;
+import {
+  StoryInfo,
+  TemplateType,
+  createRangeControl,
+  threeDocs,
+} from &quot;../common&quot;
+
+// @TODO: Refactor code and add more docs
 
 type Props = {
   automaticCamera: boolean
@@ -50,8 +61,6 @@ const sphereRadius = (cubeWidth / numberOfSphersPerSide) * 0.8 * 0.5
 const stepSize = 1.0 / numberOfSphersPerSide
 
 const render = (simulation: Simulation) =&gt; {
-  const timer = Date.now() * 0.00025
-
   const {
     camera,
     particleLight,
@@ -61,41 +70,125 @@ const render = (simulation: Simulation) =&gt; {
   } = simulation
 
   if (automaticCamera) {
+    const timer = Date.now() * 0.00025
+
     camera.position.x = Math.cos(timer) * 800
     camera.position.z = Math.sin(timer) * 800
+    camera.lookAt(scene.position)
   }
 
-  camera.lookAt(scene.position)
+  const {
+    state: { currentTime },
+  } = simulation
 
-  particleLight.position.x = Math.sin(timer * 7) * 300
-  particleLight.position.y = Math.cos(timer * 5) * 400
-  particleLight.position.z = Math.cos(timer * 3) * 300
+  particleLight.position.x = Math.sin(currentTime * 7) * 300
+  particleLight.position.y = Math.cos(currentTime * 5) * 400
+  particleLight.position.z = Math.cos(currentTime * 3) * 300
 
   renderer.render(scene, camera)
 }
 
-const animate = (opts: { simulation: Simulation; state: State }) =&gt; {
-  if (opts.state.isStopped) {
+const speedScale = scalePow().exponent(3).domain([0, 100]).range([0, 20_000])
+
+const animate = (simulation: Simulation) =&gt; {
+  if (simulation.state.isStopped) {
     return
   }
 
-  requestAnimationFrame(() =&gt; animate(opts))
+  requestAnimationFrame(() =&gt; animate(simulation))
 
-  render(opts.simulation)
+  simulation.state.currentTime +=
+    speedScale(simulation.props.lightPointSpeed) / 1_000_000
+
+  render(simulation)
 }
 
 const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
+  const container = document.getElementById(ROOT_ID) as HTMLElement
+  const containerRect = container.getBoundingClientRect()
+  const { width } = containerRect
+  const height = 600
+
+  const renderer =
+    prevSimulation?.renderer ?? new WebGLRenderer({ antialias: true })
+  const camera =
+    prevSimulation?.camera ?? new PerspectiveCamera(40, width / height, 1, 2500)
+  const scene = prevSimulation?.scene ?? new Scene()
+  const spheresList: Sphere[] = prevSimulation?.spheresList ?? []
+  const mouse = new Vector2()
+
+  const onClick = (event: MouseEvent) =&gt; {
+    event.preventDefault()
+
+    mouse.x =
+      ((event.clientX - containerRect.left) / renderer.domElement.clientWidth) *
+        2 -
+      1
+    mouse.y =
+      -(
+        (event.clientY - containerRect.top) /
+        renderer.domElement.clientHeight
+      ) *
+        2 +
+      1
+
+    const raycaster = new Raycaster()
+
+    raycaster.setFromCamera(mouse, camera)
+
+    const intersects = raycaster.intersectObjects(scene.children)
+
+    if (!intersects.length) {
+      return
+    }
+
+    const clickedSphere = spheresList.find(
+      (s) =&gt; s.uuid === intersects[0].object.uuid
+    )
+
+    if (!clickedSphere) {
+      return
+    }
+
+    if (clickedSphere.uuid === state.selectedSphereUuid) {
+      spheresList.forEach((sphere) =&gt; {
+        if (sphere.uuid === clickedSphere.uuid) {
+          return
+        }
+
+        scene.add(sphere)
+      })
+      state.selectedSphereUuid = &quot;&quot;
+    } else {
+      spheresList.forEach((sphere) =&gt; {
+        if (sphere.uuid === clickedSphere.uuid) {
+          return
+        }
+
+        scene.remove(sphere)
+      })
+      state.selectedSphereUuid = clickedSphere.uuid
+    }
+  }
+
+  container.addEventListener(&quot;click&quot;, onClick)
+
   const state: State = {
+    currentTime: prevSimulation?.state.currentTime ?? 0,
     isStopped: false,
+    selectedSphereUuid: prevSimulation?.state.selectedSphereUuid ?? &quot;&quot;,
   }
 
   const createSimulation = (): Simulation =&gt; ({
-    camera: prevSimulation?.camera ?? camera,
+    camera,
     particleLight: prevSimulation?.particleLight ?? particleLight,
     props,
-    renderer: prevSimulation?.renderer ?? renderer,
-    scene: prevSimulation?.scene ?? scene,
+    renderer,
+    scene,
+    spheresList,
+    state,
     stop: () =&gt; {
+      container.removeEventListener(&quot;click&quot;, onClick)
       state.isStopped = true
     },
   })
@@ -105,28 +198,17 @@ const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
 
     const simulation = createSimulation()
 
-    animate({
-      simulation,
-      state,
-    })
+    animate(simulation)
 
     return simulation
   }
-
-  const container = document.getElementById(ROOT_ID) as HTMLElement
-  const { width } = container.getBoundingClientRect()
-  const height = 600
 
   container.innerHTML = &quot;&quot;
   container.setAttribute(&quot;height&quot;, `${height}px`)
   container.setAttribute(&quot;width&quot;, `${width}px`)
   container.style.border = &quot;1px solid black&quot;
 
-  const camera = new PerspectiveCamera(40, width / height, 1, 2500)
-
   camera.position.set(0.0, 400, 400 * 3.5)
-
-  const scene = new Scene()
 
   scene.background = new Color(0xffffff)
 
@@ -135,7 +217,7 @@ const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
   for (let alpha = 0; alpha &lt;= 1.0; alpha += stepSize) {
     for (let beta = 0; beta &lt;= 1.0; beta += stepSize) {
       for (let gamma = 0; gamma &lt;= 1.0; gamma += stepSize) {
-        const diffuseColor = new Color().setHSL(alpha, 0.5, 0.25)
+        const diffuseColor = new Color().setRGB(alpha, beta, gamma)
 
         const material = new MeshPhysicalMaterial({
           clearcoat: 1.0 - alpha,
@@ -154,6 +236,8 @@ const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
         mesh.position.z = gamma * 400 - 200
 
         scene.add(mesh)
+
+        spheresList.push(mesh)
       }
     }
   }
@@ -164,24 +248,26 @@ const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
       curveSegments: 1,
       font,
       height: 1,
-      size: 20,
+      size: 40,
     })
 
-    const textMaterial = new MeshBasicMaterial({ color: 0x000000 })
+    const textMaterial = new MeshBasicMaterial({
+      color: 0x000000,
+    })
     const textMesh = new Mesh(textGeo, textMaterial)
 
     textMesh.position.copy(location)
     scene.add(textMesh)
   }
 
-  addLabel(&quot;+clearcoat&quot;, new Vector3(-350, 0, 0))
+  addLabel(&quot;+clearcoat&quot;, new Vector3(-550, 0, 0))
   addLabel(&quot;-clearcoat&quot;, new Vector3(350, 0, 0))
 
-  addLabel(&quot;+clearcoatRoughness&quot;, new Vector3(0, -300, 0))
-  addLabel(&quot;-clearcoatRoughness&quot;, new Vector3(0, 300, 0))
+  addLabel(&quot;+clearcoatRoughness&quot;, new Vector3(-200, -300, 0))
+  addLabel(&quot;-clearcoatRoughness&quot;, new Vector3(-200, 300, 0))
 
-  addLabel(&quot;+reflectivity&quot;, new Vector3(0, 0, -300))
-  addLabel(&quot;-reflectivity&quot;, new Vector3(0, 0, 300))
+  addLabel(&quot;+reflectivity&quot;, new Vector3(-150, 0, -300))
+  addLabel(&quot;-reflectivity&quot;, new Vector3(-150, 0, 300))
 
   const particleLight = new Mesh(
     new SphereGeometry(20, 8, 8),
@@ -196,8 +282,6 @@ const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
   scene.add(particleLight)
   scene.add(new AmbientLight(0x222222))
   scene.add(directionalLight)
-
-  const renderer = new WebGLRenderer({ antialias: true })
 
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(width, height)
@@ -215,13 +299,12 @@ const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
 
   const newSimulation = createSimulation()
 
-  animate({
-    simulation: newSimulation,
-    state,
-  })
+  animate(newSimulation)
 
   return newSimulation
 }
+
+type Sphere = Mesh&lt;SphereGeometry, MeshPhysicalMaterial&gt;
 
 type Simulation = {
   camera: PerspectiveCamera
@@ -229,11 +312,15 @@ type Simulation = {
   props: Props
   renderer: WebGLRenderer
   scene: Scene
+  spheresList: Sphere[]
+  state: State
   stop: () =&gt; void
 }
 
 type State = {
+  currentTime: number
   isStopped: boolean
+  selectedSphereUuid: string
 }
 
 const CanvasLayerWaves = (props: Props) =&gt; {
@@ -250,10 +337,14 @@ const CanvasLayerWaves = (props: Props) =&gt; {
   return (
     &lt;div&gt;
       &lt;StoryInfo
-        docs={[]}
+        docs={[threeDocs.meshPhysicalMaterial]}
         source=&quot;https://github.com/mrdoob/three.js/blob/dev/examples/webgl_materials_variations_physical.html&quot;
         storyName=&quot;CanvasReflectiveSpheres&quot;
       /&gt;
+      &lt;p&gt;
+        You can click on a sphere to select it and hide the rest. This
+        functionality is new and not present in the example.
+      &lt;/p&gt;
       &lt;div id={ROOT_ID} /&gt;
     &lt;/div&gt;
   )
@@ -286,7 +377,7 @@ export default {
   title: &quot;Canvas/Reflective Spheres&quot;,
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 15 Aug 2021 21:52:38 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 15 Aug 2021 23:22:14 GMT</p>
     </body>
   </html>
   
