@@ -1,0 +1,292 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>CanvasReflectiveSpheres.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasReflectiveSpheres/CanvasReflectiveSpheres.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">397</td><td class="">397</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+
+import {
+  ACESFilmicToneMapping,
+  AmbientLight,
+  Color,
+  DirectionalLight,
+  Font,
+  Mesh,
+  MeshBasicMaterial,
+  MeshPhysicalMaterial,
+  PerspectiveCamera,
+  PointLight,
+  Scene,
+  SphereGeometry,
+  TextGeometry,
+  Vector3,
+  WebGLRenderer,
+  sRGBEncoding,
+} from &quot;three&quot;
+
+import { OrbitControls } from &quot;three/examples/jsm/controls/OrbitControls.js&quot;
+import fontData from &quot;three/examples/fonts/gentilis_regular.typeface.json&quot;
+
+import { StoryInfo, TemplateType, createRangeControl } from &quot;../common&quot;
+
+type Props = {
+  automaticCamera: boolean
+  lightPointSpeed: number
+}
+
+const ROOT_ID = &quot;example&quot;
+
+const cubeWidth = 400
+const numberOfSphersPerSide = 5
+const sphereRadius = (cubeWidth / numberOfSphersPerSide) * 0.8 * 0.5
+const stepSize = 1.0 / numberOfSphersPerSide
+
+const render = (simulation: Simulation) =&gt; {
+  const timer = Date.now() * 0.00025
+
+  const {
+    camera,
+    particleLight,
+    props: { automaticCamera },
+    renderer,
+    scene,
+  } = simulation
+
+  if (automaticCamera) {
+    camera.position.x = Math.cos(timer) * 800
+    camera.position.z = Math.sin(timer) * 800
+  }
+
+  camera.lookAt(scene.position)
+
+  particleLight.position.x = Math.sin(timer * 7) * 300
+  particleLight.position.y = Math.cos(timer * 5) * 400
+  particleLight.position.z = Math.cos(timer * 3) * 300
+
+  renderer.render(scene, camera)
+}
+
+const animate = (opts: { simulation: Simulation; state: State }) =&gt; {
+  if (opts.state.isStopped) {
+    return
+  }
+
+  requestAnimationFrame(() =&gt; animate(opts))
+
+  render(opts.simulation)
+}
+
+const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
+  const state: State = {
+    isStopped: false,
+  }
+
+  const createSimulation = (): Simulation =&gt; ({
+    camera: prevSimulation?.camera ?? camera,
+    particleLight: prevSimulation?.particleLight ?? particleLight,
+    props,
+    renderer: prevSimulation?.renderer ?? renderer,
+    scene: prevSimulation?.scene ?? scene,
+    stop: () =&gt; {
+      state.isStopped = true
+    },
+  })
+
+  if (prevSimulation) {
+    prevSimulation.stop()
+
+    const simulation = createSimulation()
+
+    animate({
+      simulation,
+      state,
+    })
+
+    return simulation
+  }
+
+  const container = document.getElementById(ROOT_ID) as HTMLElement
+  const { width } = container.getBoundingClientRect()
+  const height = 600
+
+  container.innerHTML = &quot;&quot;
+  container.setAttribute(&quot;height&quot;, `${height}px`)
+  container.setAttribute(&quot;width&quot;, `${width}px`)
+  container.style.border = &quot;1px solid black&quot;
+
+  const camera = new PerspectiveCamera(40, width / height, 1, 2500)
+
+  camera.position.set(0.0, 400, 400 * 3.5)
+
+  const scene = new Scene()
+
+  scene.background = new Color(0xffffff)
+
+  const geometry = new SphereGeometry(sphereRadius, 32, 16)
+
+  for (let alpha = 0; alpha &lt;= 1.0; alpha += stepSize) {
+    for (let beta = 0; beta &lt;= 1.0; beta += stepSize) {
+      for (let gamma = 0; gamma &lt;= 1.0; gamma += stepSize) {
+        const diffuseColor = new Color().setHSL(alpha, 0.5, 0.25)
+
+        const material = new MeshPhysicalMaterial({
+          clearcoat: 1.0 - alpha,
+          clearcoatRoughness: 1.0 - beta,
+          color: diffuseColor,
+          envMap: null,
+          metalness: 0,
+          reflectivity: 1.0 - gamma,
+          roughness: 0.5,
+        })
+
+        const mesh = new Mesh(geometry, material)
+
+        mesh.position.x = alpha * 400 - 200
+        mesh.position.y = beta * 400 - 200
+        mesh.position.z = gamma * 400 - 200
+
+        scene.add(mesh)
+      }
+    }
+  }
+
+  const addLabel = (name: string, location: Vector3) =&gt; {
+    const font = new Font(fontData)
+    const textGeo = new TextGeometry(name, {
+      curveSegments: 1,
+      font,
+      height: 1,
+      size: 20,
+    })
+
+    const textMaterial = new MeshBasicMaterial({ color: 0x000000 })
+    const textMesh = new Mesh(textGeo, textMaterial)
+
+    textMesh.position.copy(location)
+    scene.add(textMesh)
+  }
+
+  addLabel(&quot;+clearcoat&quot;, new Vector3(-350, 0, 0))
+  addLabel(&quot;-clearcoat&quot;, new Vector3(350, 0, 0))
+
+  addLabel(&quot;+clearcoatRoughness&quot;, new Vector3(0, -300, 0))
+  addLabel(&quot;-clearcoatRoughness&quot;, new Vector3(0, 300, 0))
+
+  addLabel(&quot;+reflectivity&quot;, new Vector3(0, 0, -300))
+  addLabel(&quot;-reflectivity&quot;, new Vector3(0, 0, 300))
+
+  const particleLight = new Mesh(
+    new SphereGeometry(20, 8, 8),
+    new MeshBasicMaterial({ color: 0xffa500 })
+  )
+  const directionalLight = new DirectionalLight(0xffffff, 1)
+  const pointLight = new PointLight(0xffa500, 2, 800)
+
+  directionalLight.position.set(1, 1, 1).normalize()
+  particleLight.add(pointLight)
+
+  scene.add(particleLight)
+  scene.add(new AmbientLight(0x222222))
+  scene.add(directionalLight)
+
+  const renderer = new WebGLRenderer({ antialias: true })
+
+  renderer.setPixelRatio(window.devicePixelRatio)
+  renderer.setSize(width, height)
+  renderer.outputEncoding = sRGBEncoding
+  renderer.toneMapping = ACESFilmicToneMapping
+  renderer.toneMappingExposure = 0.75
+  renderer.setClearColor(0xffffff, 0)
+
+  const controls = new OrbitControls(camera, renderer.domElement)
+
+  controls.minDistance = 200
+  controls.maxDistance = 2000
+
+  container.appendChild(renderer.domElement)
+
+  const newSimulation = createSimulation()
+
+  animate({
+    simulation: newSimulation,
+    state,
+  })
+
+  return newSimulation
+}
+
+type Simulation = {
+  camera: PerspectiveCamera
+  particleLight: Mesh&lt;SphereGeometry, MeshBasicMaterial&gt;
+  props: Props
+  renderer: WebGLRenderer
+  scene: Scene
+  stop: () =&gt; void
+}
+
+type State = {
+  isStopped: boolean
+}
+
+const CanvasLayerWaves = (props: Props) =&gt; {
+  const [prevSimulation, setPrevSimulation] = React.useState&lt;Simulation | null&gt;(
+    null
+  )
+
+  React.useEffect(() =&gt; {
+    const newSimulation = main(props, prevSimulation)
+
+    setPrevSimulation(newSimulation)
+  }, [props])
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[]}
+        source=&quot;https://github.com/mrdoob/three.js/blob/dev/examples/webgl_materials_variations_physical.html&quot;
+        storyName=&quot;CanvasReflectiveSpheres&quot;
+      /&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;CanvasLayerWaves {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const [lightPointSpeedArg, lightPointSpeedControls] = createRangeControl(
+  50,
+  1,
+  50
+)
+
+const args: Props = {
+  automaticCamera: false,
+  lightPointSpeed: lightPointSpeedArg,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {
+    lightPointSpeed: lightPointSpeedControls,
+  },
+  component: CanvasLayerWaves,
+  title: &quot;Canvas/Reflective Spheres&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 15 Aug 2021 21:52:38 GMT</p>
+    </body>
+  </html>
+  
