@@ -33,8 +33,6 @@ import {
   threeDocs,
 } from "../common"
 
-// @TODO: Refactor code and add more docs
-
 type Props = {
   automaticCamera: boolean
   lightPointSpeed: number
@@ -310,7 +308,7 @@ type State = {
   selectedSphereUuid: string
 }
 
-const CanvasLayerWaves = (props: Props) => {
+const CanvasReflectiveSpheres = (props: Props) => {
   const [prevSimulation, setPrevSimulation] = React.useState<Simulation | null>(
     null
   )
@@ -338,7 +336,7 @@ const CanvasLayerWaves = (props: Props) => {
 }
 
 const Template = ((props: Props) => (
-  <CanvasLayerWaves {...props} />
+  <CanvasReflectiveSpheres {...props} />
 )) as TemplateType<Props>
 
 export const Common = Template.bind({})
@@ -360,6 +358,6 @@ export default {
   argTypes: {
     lightPointSpeed: lightPointSpeedControls,
   },
-  component: CanvasLayerWaves,
+  component: CanvasReflectiveSpheres,
   title: "Canvas/Reflective Spheres",
 }
