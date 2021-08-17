@@ -1,3 +1,5 @@
+import anime from "animejs"
+import chroma from "chroma-js"
 import {
   Selection,
   format as formatD3,
@@ -13,10 +15,8 @@ import {
   sankeyLeft,
   sankeyLinkHorizontal,
 } from "d3-sankey"
-import qs from "query-string"
-import chroma from "chroma-js"
-import anime from "animejs"
 import hotkeys from "hotkeys-js"
+import qs from "query-string"
 
 import * as styles from "./energy-sankey.module.css"
 

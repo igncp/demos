@@ -1,3 +1,4 @@
+import anime from "animejs"
 import {
   GeoProjection,
   Selection,
@@ -8,7 +9,6 @@ import {
   timeFormat,
   zoom,
 } from "d3"
-import anime from "animejs"
 import qs from "query-string"
 import { v1 as uuidv1 } from "uuid"
 

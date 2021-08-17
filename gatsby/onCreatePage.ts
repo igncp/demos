@@ -8,11 +8,10 @@ import {
   IndexPageProps,
 } from "../src/common"
 
-import d3Data from "./info/d3js"
-import raphaelData from "./info/raphael"
-import metas from "./info/metas"
-
 import { ROOT_PATH } from "./constants"
+import d3Data from "./info/d3js"
+import metas from "./info/metas"
+import raphaelData from "./info/raphael"
 
 const categoryToData = {
   d3js: d3Data,

@@ -1,5 +1,5 @@
-import React from "react"
 import { select } from "d3"
+import React from "react"
 
 import {
   StoryInfo,
@@ -7,6 +7,7 @@ import {
   canvasDocs,
   createRangeControl,
 } from "../common"
+
 import { noise, noiseFactor } from "./noise"
 
 type Props = {

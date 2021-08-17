@@ -1,5 +1,5 @@
-import React from "react"
 import { select } from "d3"
+import React from "react"
 
 import { StoryInfo, TemplateType } from "../common"
 

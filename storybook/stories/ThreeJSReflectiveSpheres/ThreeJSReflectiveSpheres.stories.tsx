@@ -1,7 +1,5 @@
-import React from "react"
-
 import { scalePow } from "d3"
-
+import React from "react"
 import {
   ACESFilmicToneMapping,
   AmbientLight,
@@ -22,9 +20,8 @@ import {
   WebGLRenderer,
   sRGBEncoding,
 } from "three"
-
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import fontData from "three/examples/fonts/gentilis_regular.typeface.json"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 
 import {
   StoryInfo,
@@ -308,7 +305,7 @@ type State = {
   selectedSphereUuid: string
 }
 
-const CanvasReflectiveSpheres = (props: Props) => {
+const ThreeJSReflectiveSpheres = (props: Props) => {
   const [prevSimulation, setPrevSimulation] = React.useState<Simulation | null>(
     null
   )
@@ -324,7 +321,7 @@ const CanvasReflectiveSpheres = (props: Props) => {
       <StoryInfo
         docs={[threeDocs.meshPhysicalMaterial]}
         source="https://github.com/mrdoob/three.js/blob/dev/examples/webgl_materials_variations_physical.html"
-        storyName="CanvasReflectiveSpheres"
+        storyName="ThreeJSReflectiveSpheres"
       />
       <p>
         You can click on a sphere to select it and hide the rest. This
@@ -336,7 +333,7 @@ const CanvasReflectiveSpheres = (props: Props) => {
 }
 
 const Template = ((props: Props) => (
-  <CanvasReflectiveSpheres {...props} />
+  <ThreeJSReflectiveSpheres {...props} />
 )) as TemplateType<Props>
 
 export const Common = Template.bind({})
@@ -358,6 +355,6 @@ export default {
   argTypes: {
     lightPointSpeed: lightPointSpeedControls,
   },
-  component: CanvasReflectiveSpheres,
-  title: "Canvas/Reflective Spheres",
+  component: ThreeJSReflectiveSpheres,
+  title: "ThreeJS/Reflective Spheres",
 }

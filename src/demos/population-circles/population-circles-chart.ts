@@ -1,3 +1,5 @@
+import anime from "animejs"
+import chroma from "chroma-js"
 import {
   BaseType,
   D3ZoomEvent,
@@ -13,8 +15,6 @@ import {
   select,
   zoom,
 } from "d3"
-import anime from "animejs"
-import chroma from "chroma-js"
 
 import * as styles from "./population-circles.module.css"
 

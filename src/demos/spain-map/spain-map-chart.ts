@@ -10,8 +10,8 @@ import {
   scaleLinear,
   select,
 } from "d3"
-import { feature } from "topojson-client"
 import { GeoJsonProperties } from "geojson"
+import { feature } from "topojson-client"
 import { Objects, Topology } from "topojson-specification"
 import { v1 as uuidv1 } from "uuid"
 

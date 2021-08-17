@@ -1,8 +1,7 @@
 import * as React from "react"
 
-import PageTitle from "./page-title"
 import Footer from "./footer"
-
+import PageTitle from "./page-title"
 import "./styles/styles.css"
 
 type Props = {

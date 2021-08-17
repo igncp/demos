@@ -3,8 +3,8 @@ import { Helmet } from "react-helmet"
 
 import { IndexPageProps } from "@/common"
 
-import Layout from "@/components/layout"
 import DemosList from "@/components/demos-list"
+import Layout from "@/components/layout"
 
 const IndexPage = ({
   pageContext: { groupedDemos, meta, numberPerGroup },

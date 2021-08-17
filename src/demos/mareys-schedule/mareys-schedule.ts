@@ -10,7 +10,6 @@ import {
   timeParse,
   tsv,
 } from "d3"
-
 import each from "lodash/each"
 import last from "lodash/last"
 

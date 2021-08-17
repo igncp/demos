@@ -1,5 +1,4 @@
 import React from "react"
-
 import {
   CanvasTexture,
   ClampToEdgeWrapping,
@@ -16,7 +15,6 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three"
-
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { ImprovedNoise } from "three/examples/jsm/math/ImprovedNoise"
 
@@ -357,7 +355,7 @@ const main = (
   }
 }
 
-const CanvasTerrain = (props: Props) => {
+const ThreeJSTerrain = (props: Props) => {
   const [previousSimulation, setSimulation] = React.useState<Simulation | null>(
     null
   )
@@ -381,7 +379,7 @@ const CanvasTerrain = (props: Props) => {
         ]}
         source="https://github.com/mrdoob/three.js/blob/dev/examples/webgl_geometry_terrain_raycast.html"
         sourceText="Source (official example, ported to TS)"
-        storyName="CanvasTerrain"
+        storyName="ThreeJSTerrain"
       />
       <div id={ROOT_ID} />
     </div>
@@ -389,7 +387,7 @@ const CanvasTerrain = (props: Props) => {
 }
 
 const Template = ((props: Props) => (
-  <CanvasTerrain {...props} />
+  <ThreeJSTerrain {...props} />
 )) as TemplateType<Props>
 
 export const Common = Template.bind({})
@@ -420,6 +418,6 @@ export default {
     worldDepth: worldDepthControl,
     worldWidth: worldWidthControl,
   },
-  component: CanvasTerrain,
-  title: "Canvas/Terrain",
+  component: ThreeJSTerrain,
+  title: "ThreeJS/Terrain",
 }

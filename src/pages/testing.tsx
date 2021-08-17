@@ -1,5 +1,5 @@
-import React, { useEffect } from "react"
 import QUnit from "qunit"
+import React, { useEffect } from "react"
 
 import d3Tests from "@/testing/d3"
 import raphaelTests from "@/testing/raphael"

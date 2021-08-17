@@ -1,5 +1,4 @@
 /* global d3 */
-
 import * as d3next from "d3"
 
 const colors = () => "#fff"

@@ -1,3 +1,16 @@
 {
+  "experimentalBabelParserPluginsList": ["jsx", "typescript"],
+  "importOrder": [
+    "^[^.@]",
+    "^@[^/]",
+    "^@/common",
+    "^@/components",
+    "^@/demos",
+    "^@/",
+    "^\\.\\.",
+    "^\\.",
+    "\\.css$"
+  ],
+  "importOrderSeparation": true,
   "semi": false
 }

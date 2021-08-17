@@ -15,3 +15,12 @@ export const createRangeControl = (
       },
     },
   ] as const
+
+export const createSelectControl = <A>(vals: A[]) =>
+  [
+    vals[0],
+    {
+      control: { type: "select" },
+      options: vals,
+    },
+  ] as const

@@ -1,13 +1,10 @@
-import React from "react"
-
 import Prism from "prismjs"
-
 // https://prismjs.com/#supported-languages
 import "prismjs/components/prism-jsx"
-import "prismjs/components/prism-typescript"
 import "prismjs/components/prism-scss"
-
+import "prismjs/components/prism-typescript"
 import "prismjs/themes/prism-coy.css"
+import React from "react"
 
 import { DemoInfo } from "@/common"
 
