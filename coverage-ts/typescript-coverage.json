@@ -3,7 +3,7 @@
   "anys": [
     {
       "file": "gatsby/onCreatePage.ts",
-      "line": 26,
+      "line": 25,
       "character": 11,
       "text": "_",
       "kind": 1
@@ -1172,49 +1172,49 @@
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 347,
+      "line": 346,
       "character": 8,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 349,
+      "line": 348,
       "character": 2,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 349,
+      "line": 348,
       "character": 9,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 351,
+      "line": 350,
       "character": 29,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 351,
+      "line": 350,
       "character": 36,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 358,
+      "line": 357,
       "character": 2,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 358,
+      "line": 357,
       "character": 9,
       "text": "slider",
       "kind": 1
@@ -2562,10 +2562,115 @@
       "character": 21,
       "text": "length",
       "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 174,
+      "character": 25,
+      "text": "event",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 175,
+      "character": 8,
+      "text": "event",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 175,
+      "character": 14,
+      "text": "isPrimary",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 179,
+      "character": 34,
+      "text": "event",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 179,
+      "character": 40,
+      "text": "clientX",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 207,
+      "character": 34,
+      "text": "fontsData",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 210,
+      "character": 20,
+      "text": "fontsData",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 269,
+      "character": 25,
+      "text": "event",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 270,
+      "character": 8,
+      "text": "event",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 270,
+      "character": 14,
+      "text": "isPrimary",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 274,
+      "character": 21,
+      "text": "event",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 274,
+      "character": 27,
+      "text": "clientX",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 281,
+      "character": 23,
+      "text": "event",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 282,
+      "character": 8,
+      "text": "event",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
+      "line": 282,
+      "character": 14,
+      "text": "isPrimary",
+      "kind": 1
     }
   ],
-  "percentage": 98.04288540719747,
-  "total": 18701,
-  "covered": 18335,
-  "uncovered": 366
+  "percentage": 98.02098483274465,
+  "total": 19252,
+  "covered": 18871,
+  "uncovered": 381
 }

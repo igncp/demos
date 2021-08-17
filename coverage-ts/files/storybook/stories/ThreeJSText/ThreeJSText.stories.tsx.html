@@ -1,0 +1,412 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>ThreeJSText.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSText/ThreeJSText.stories.tsx</td><td class="">97.23%</td><td class="">95%</td><td class="">541</td><td class="">526</td><td class="">15</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+import {
+  Color,
+  DirectionalLight,
+  Fog,
+  Font,
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  MeshPhongMaterial,
+  PerspectiveCamera,
+  PlaneGeometry,
+  PointLight,
+  Scene,
+  TextGeometry,
+  Vector3,
+  WebGLRenderer,
+} from &quot;three&quot;
+
+import {
+  StoryInfo,
+  TemplateType,
+  createRangeControl,
+  createSelectControl,
+} from &quot;../common&quot;
+
+enum FontWeight {
+  Bold = &quot;bold&quot;,
+  Regular = &quot;regular&quot;,
+}
+
+enum FontName {
+  DroidSans = &quot;droid_sans&quot;,
+  DroidSerif = &quot;droid_sans&quot;,
+  Gentilis = &quot;gentilis&quot;,
+  Helvetiker = &quot;helvetiker&quot;,
+  Optimer = &quot;optimer&quot;,
+}
+
+type Props = {
+  bevelEnabled: boolean
+  fontName: FontName
+  fontWeight: FontWeight
+  size: number
+  text: string
+}
+
+const ROOT_ID = &quot;example&quot;
+
+const fontsMap: { [key in FontName]: { [key2 in FontWeight]: any } } = {
+  [FontName.DroidSans]: {
+    [FontWeight.Regular]: require(&quot;three/examples/fonts/droid/droid_sans_regular.typeface.json&quot;),
+    [FontWeight.Bold]: require(&quot;three/examples/fonts/droid/droid_sans_bold.typeface.json&quot;),
+  },
+  [FontName.DroidSerif]: {
+    [FontWeight.Regular]: require(&quot;three/examples/fonts/droid/droid_serif_regular.typeface.json&quot;),
+    [FontWeight.Bold]: require(&quot;three/examples/fonts/droid/droid_serif_bold.typeface.json&quot;),
+  },
+  [FontName.Gentilis]: {
+    [FontWeight.Regular]: require(&quot;three/examples/fonts/gentilis_regular.typeface.json&quot;),
+    [FontWeight.Bold]: require(&quot;three/examples/fonts/gentilis_bold.typeface.json&quot;),
+  },
+  [FontName.Helvetiker]: {
+    [FontWeight.Regular]: require(&quot;three/examples/fonts/helvetiker_regular.typeface.json&quot;),
+    [FontWeight.Bold]: require(&quot;three/examples/fonts/helvetiker_bold.typeface.json&quot;),
+  },
+  [FontName.Optimer]: {
+    [FontWeight.Regular]: require(&quot;three/examples/fonts/optimer_regular.typeface.json&quot;),
+    [FontWeight.Bold]: require(&quot;three/examples/fonts/optimer_bold.typeface.json&quot;),
+  },
+} as const
+
+type State = {
+  firstLetter: boolean
+  isStopped: boolean
+  pointerX: number
+  pointerXOnPointerDown: number
+  targetRotation: number
+  targetRotationOnPointerDown: number
+}
+
+type MeshItems = Array&lt;Mesh&lt;TextGeometry, MeshPhongMaterial[]&gt;&gt;
+
+type Simulation = {
+  camera: PerspectiveCamera
+  cameraTarget: Vector3
+  dirLight: DirectionalLight
+  group: Group
+  meshItems: MeshItems
+  plane: Mesh
+  pointLight: PointLight
+  props: Props
+  renderer: WebGLRenderer
+  scene: Scene
+  state: State
+  stop: () =&gt; void
+}
+
+const bevelSize = 1.5
+const bevelThickness = 2
+const curveSegments = 4
+const height = 400
+const hover = 30
+const textHeight = 20
+
+const materials = [
+  new MeshPhongMaterial({ color: 0xffffff, flatShading: true }), // front
+  new MeshPhongMaterial({ color: 0xffffff }), // side
+]
+
+const main = (
+  props: Props,
+  previousSimulation: Simulation | null
+): Simulation =&gt; {
+  const container = document.getElementById(ROOT_ID) as HTMLElement
+  const { width } = container.getBoundingClientRect()
+  const halfWidth = width / 2
+
+  const camera =
+    previousSimulation?.camera ??
+    new PerspectiveCamera(30, width / height, 1, 1500)
+  const renderer =
+    previousSimulation?.renderer ?? new WebGLRenderer({ antialias: true })
+  const scene = previousSimulation?.scene ?? new Scene()
+  const group = previousSimulation?.group ?? new Group()
+  const cameraTarget =
+    previousSimulation?.cameraTarget ?? new Vector3(0, 150, 0)
+  const plane =
+    previousSimulation?.plane ??
+    new Mesh(
+      new PlaneGeometry(10000, 10000),
+      new MeshBasicMaterial({
+        color: 0xffffff,
+        opacity: 0.5,
+        transparent: true,
+      })
+    )
+  const dirLight =
+    previousSimulation?.dirLight ?? new DirectionalLight(0xffffff, 0.125)
+  const pointLight =
+    previousSimulation?.pointLight ?? new PointLight(0xffffff, 1.5)
+  const meshItems: MeshItems = previousSimulation?.meshItems ?? []
+
+  const { bevelEnabled, fontName, fontWeight, size, text } = props
+
+  const state: State = {
+    firstLetter: true,
+    pointerX: 0,
+    pointerXOnPointerDown: 0,
+    targetRotation: 0,
+    targetRotationOnPointerDown: 0,
+
+    ...(previousSimulation?.state ?? {}),
+    isStopped: false,
+  }
+
+  const createSimulation = () =&gt; ({
+    camera,
+    cameraTarget,
+    dirLight,
+    group,
+    meshItems,
+    plane,
+    pointLight,
+    props,
+    renderer,
+    scene,
+    state,
+    stop: () =&gt; {
+      container.removeEventListener(&quot;pointerdown&quot;, onPointerDown)
+      state.isStopped = true
+    },
+  })
+
+  const onPointerDown = (event: any) =&gt; {
+    if (event.isPrimary === false) {
+      return
+    }
+
+    state.pointerXOnPointerDown = event.clientX - halfWidth
+    state.targetRotationOnPointerDown = state.targetRotation
+
+    document.addEventListener(&quot;pointermove&quot;, onPointerMove)
+    document.addEventListener(&quot;pointerup&quot;, onPointerUp)
+  }
+
+  const addListeners = () =&gt; {
+    container.addEventListener(&quot;pointerdown&quot;, onPointerDown)
+  }
+
+  const animate = () =&gt; {
+    if (state.isStopped) {
+      return
+    }
+
+    requestAnimationFrame(animate)
+
+    group.rotation.y += (state.targetRotation - group.rotation.y) * 0.05
+
+    camera.lookAt(cameraTarget)
+
+    renderer.clear()
+    renderer.render(scene, camera)
+  }
+
+  const getFont = () =&gt; {
+    const {
+      [fontName]: { [fontWeight]: fontsData },
+    } = fontsMap
+
+    return new Font(fontsData)
+  }
+
+  const createText = () =&gt; {
+    const textGeo = new TextGeometry(text, {
+      bevelEnabled,
+      bevelSize,
+      bevelThickness,
+      curveSegments,
+      font: getFont(),
+      height: textHeight,
+      size,
+    })
+
+    textGeo.computeBoundingBox()
+
+    const centerOffset =
+      -0.5 * (textGeo.boundingBox!.max.x - textGeo.boundingBox!.min.x)
+
+    const textMesh1 = new Mesh(textGeo, materials)
+
+    textMesh1.position.x = centerOffset
+    textMesh1.position.y = hover
+    textMesh1.position.z = 0
+
+    textMesh1.rotation.x = 0
+    textMesh1.rotation.y = Math.PI * 2
+
+    group.add(textMesh1)
+
+    meshItems.push(textMesh1)
+
+    const textMesh2 = new Mesh(textGeo, materials)
+
+    textMesh2.position.x = centerOffset
+    textMesh2.position.y = -hover
+    textMesh2.position.z = textHeight
+
+    textMesh2.rotation.x = Math.PI
+    textMesh2.rotation.y = Math.PI * 2
+
+    group.add(textMesh2)
+
+    meshItems.push(textMesh2)
+  }
+
+  const refreshText = () =&gt; {
+    meshItems.forEach((meshItem) =&gt; {
+      group.remove(meshItem)
+    })
+    meshItems.length = 0
+
+    if (!text) {
+      return
+    }
+
+    createText()
+  }
+
+  const onPointerMove = (event: any) =&gt; {
+    if (event.isPrimary === false) {
+      return
+    }
+
+    state.pointerX = event.clientX - halfWidth
+
+    state.targetRotation =
+      state.targetRotationOnPointerDown +
+      (state.pointerX - state.pointerXOnPointerDown) * 0.02
+  }
+
+  const onPointerUp = (event: any) =&gt; {
+    if (event.isPrimary === false) {
+      return
+    }
+
+    document.removeEventListener(&quot;pointermove&quot;, onPointerMove)
+    document.removeEventListener(&quot;pointerup&quot;, onPointerUp)
+  }
+
+  if (previousSimulation) {
+    previousSimulation.stop()
+
+    addListeners()
+    animate()
+    refreshText()
+
+    return createSimulation()
+  }
+
+  addListeners()
+
+  dirLight.position.set(0, 0, 1).normalize()
+  scene.add(dirLight)
+  camera.position.set(0, 400, 700)
+  pointLight.position.set(0, 100, 90)
+  scene.add(pointLight)
+
+  scene.background = new Color(0xffffff)
+  scene.fog = new Fog(0xcccccc, 250, 1400)
+
+  pointLight.color.setHSL(Math.random(), 1, 0.5)
+
+  group.position.y = 100
+
+  scene.add(group)
+
+  refreshText()
+
+  plane.position.y = 100
+  plane.rotation.x = -Math.PI / 2
+  scene.add(plane)
+
+  renderer.setPixelRatio(window.devicePixelRatio)
+  renderer.setSize(width, height)
+
+  container.innerHTML = &quot;&quot;
+  container.appendChild(renderer.domElement)
+
+  container.style.touchAction = &quot;none&quot;
+
+  animate()
+
+  return createSimulation()
+}
+
+const ThreeJSText = (props: Props) =&gt; {
+  const [
+    previousSimulation,
+    setPreviousSimulation,
+  ] = React.useState&lt;Simulation | null&gt;(null)
+
+  React.useEffect(() =&gt; {
+    const newSimulation = main(props, previousSimulation)
+
+    setPreviousSimulation(newSimulation)
+  }, [props])
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[]}
+        source=&quot;https://threejs.org/examples/webgl_geometry_text.html#FF00CB010#three.js&quot;
+        sourceText=&quot;Source (official example, ported to TS)&quot;
+        storyName=&quot;ThreeJSText&quot;
+      /&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;ThreeJSText {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const [fontNameArg, fontNameControl] = createSelectControl(
+  Object.values(FontName)
+)
+const [fontWeightArg, fontWeightControl] = createSelectControl(
+  Object.values(FontWeight)
+)
+const [sizeArg, sizeControls] = createRangeControl(70, 1, 20, 100)
+
+const args: Props = {
+  bevelEnabled: true,
+  fontName: fontNameArg,
+  fontWeight: fontWeightArg,
+  size: sizeArg,
+  text: &quot;Demos&quot;,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {
+    fontName: fontNameControl,
+    fontWeight: fontWeightControl,
+    size: sizeControls,
+  },
+  component: ThreeJSText,
+  title: &quot;ThreeJS/Text&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:174,&quot;character&quot;:25,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:175,&quot;character&quot;:8,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:175,&quot;character&quot;:14,&quot;text&quot;:&quot;isPrimary&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:179,&quot;character&quot;:34,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:179,&quot;character&quot;:40,&quot;text&quot;:&quot;clientX&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:207,&quot;character&quot;:34,&quot;text&quot;:&quot;fontsData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:210,&quot;character&quot;:20,&quot;text&quot;:&quot;fontsData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:269,&quot;character&quot;:25,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:270,&quot;character&quot;:8,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:270,&quot;character&quot;:14,&quot;text&quot;:&quot;isPrimary&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:274,&quot;character&quot;:21,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:274,&quot;character&quot;:27,&quot;text&quot;:&quot;clientX&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:281,&quot;character&quot;:23,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:282,&quot;character&quot;:8,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:282,&quot;character&quot;:14,&quot;text&quot;:&quot;isPrimary&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 17 Aug 2021 22:37:01 GMT</p>
+    </body>
+  </html>
+  
