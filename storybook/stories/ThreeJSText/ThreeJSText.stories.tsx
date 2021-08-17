@@ -31,7 +31,7 @@ enum FontWeight {
 
 enum FontName {
   DroidSans = "droid_sans",
-  DroidSerif = "droid_sans",
+  DroidSerif = "droid_serif",
   Gentilis = "gentilis",
   Helvetiker = "helvetiker",
   Optimer = "optimer",
