@@ -34,10 +34,7 @@ type Simulation = {
 
 const font = new Font(FontData)
 
-export const demo = (
-  props: Props,
-  prevSimulation: Simulation | null
-): Simulation => {
+const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
   const { text: message } = props
   const container = document.getElementById(ROOT_ID) as HTMLElement
   const { width } = container.getBoundingClientRect()
