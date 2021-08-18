@@ -2579,14 +2579,14 @@
     },
     {
       "file": "storybook/stories/ThreeJSTextStroke/ThreeJSTextStroke.stories.tsx",
-      "line": 109,
+      "line": 106,
       "character": 21,
       "text": "push",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSTextStroke/ThreeJSTextStroke.stories.tsx",
-      "line": 109,
+      "line": 106,
       "character": 26,
       "text": "apply",
       "kind": 1
