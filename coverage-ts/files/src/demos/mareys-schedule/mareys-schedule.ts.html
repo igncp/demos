@@ -74,6 +74,19 @@ const trainTypeToStyle: { [key in TrainType]: string } = {
   N: styles.tN,
 }
 
+const getFormatTime = () =&gt; timeParse(&quot;%I:%M%p&quot;)
+
+const parseTime = (timeStr: string) =&gt; {
+  const formatTime = getFormatTime()
+  const timeDate = formatTime(timeStr)
+
+  if (timeDate !== null &amp;&amp; timeDate.getHours() &lt; 3) {
+    timeDate.setDate(timeDate.getDate() + 1)
+  }
+
+  return timeDate
+}
+
 const fetchData = async (): Promise&lt;Data&gt; =&gt; {
   const data = ((await tsv(
     `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`
@@ -179,19 +192,6 @@ const refreshOnHourChange = ({
   redraw(times as LimitsStr)
 }
 
-const getFormatTime = () =&gt; timeParse(&quot;%I:%M%p&quot;)
-
-const parseTime = (timeStr: string) =&gt; {
-  const formatTime = getFormatTime()
-  const timeDate = formatTime(timeStr)
-
-  if (timeDate !== null &amp;&amp; timeDate.getHours() &lt; 3) {
-    timeDate.setDate(timeDate.getDate() + 1)
-  }
-
-  return timeDate
-}
-
 const formatAMPM = function (date: Date) {
   let hours = date.getHours()
   const ampm = hours &gt;= 12 ? &quot;PM&quot; : &quot;AM&quot;
@@ -203,6 +203,40 @@ const formatAMPM = function (date: Date) {
   const minutesStr = minutes &lt; 10 ? `0${minutes}` : minutes.toString()
 
   return `${hours}:${minutesStr} ${ampm}`
+}
+
+const filterBlackOpacity = (
+  id: string,
+  svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;,
+  deviation: number,
+  slope: number
+) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs
+    .append(&quot;filter&quot;)
+    .attr(&quot;height&quot;, &quot;500%&quot;)
+    .attr(&quot;id&quot;, `drop-shadow-${id}`)
+    .attr(&quot;width&quot;, &quot;500%&quot;)
+    .attr(&quot;x&quot;, &quot;-200%&quot;)
+    .attr(&quot;y&quot;, &quot;-200%&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
 }
 
 const margin = {
@@ -371,43 +405,9 @@ const main = async () =&gt; {
   slider.slider(&quot;values&quot;, [10, 50])
 }
 
-const filterBlackOpacity = (
-  id: string,
-  svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;,
-  deviation: number,
-  slope: number
-) =&gt; {
-  const defs = svg.append(&quot;defs&quot;)
-  const filter = defs
-    .append(&quot;filter&quot;)
-    .attr(&quot;height&quot;, &quot;500%&quot;)
-    .attr(&quot;id&quot;, `drop-shadow-${id}`)
-    .attr(&quot;width&quot;, &quot;500%&quot;)
-    .attr(&quot;x&quot;, &quot;-200%&quot;)
-    .attr(&quot;y&quot;, &quot;-200%&quot;)
-
-  filter
-    .append(&quot;feGaussianBlur&quot;)
-    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
-    .attr(&quot;stdDeviation&quot;, deviation)
-
-  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
-  filter
-    .append(&quot;feComponentTransfer&quot;)
-    .append(&quot;feFuncA&quot;)
-    .attr(&quot;slope&quot;, slope)
-    .attr(&quot;type&quot;, &quot;linear&quot;)
-
-  const feMerge = filter.append(&quot;feMerge&quot;)
-
-  feMerge.append(&quot;feMergeNode&quot;)
-
-  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
-}
-
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:346,&quot;character&quot;:8,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:348,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:348,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:350,&quot;character&quot;:29,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:350,&quot;character&quot;:36,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:357,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:357,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 17 Aug 2021 22:45:51 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:380,&quot;character&quot;:8,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:382,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:382,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:384,&quot;character&quot;:29,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:384,&quot;character&quot;:36,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:391,&quot;character&quot;:2,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/mareys-schedule.ts&quot;,&quot;line&quot;:391,&quot;character&quot;:9,&quot;text&quot;:&quot;slider&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 18 Aug 2021 22:45:40 GMT</p>
     </body>
   </html>
   

@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSText/ThreeJSText.stories.tsx</td><td class="">97.23%</td><td class="">95%</td><td class="">541</td><td class="">526</td><td class="">15</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSText/ThreeJSText.stories.tsx</td><td class="">99.63%</td><td class="">95%</td><td class="">547</td><td class="">545</td><td class="">2</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
 import {
   Color,
   DirectionalLight,
@@ -35,6 +35,7 @@ import {
   TemplateType,
   createRangeControl,
   createSelectControl,
+  webAPIDocs,
 } from &quot;../common&quot;
 
 enum FontWeight {
@@ -167,6 +168,39 @@ const main = (
     isStopped: false,
   }
 
+  const onPointerMove = (event: PointerEvent) =&gt; {
+    if (!event.isPrimary) {
+      return
+    }
+
+    state.pointerX = event.clientX - halfWidth
+
+    state.targetRotation =
+      state.targetRotationOnPointerDown +
+      (state.pointerX - state.pointerXOnPointerDown) * 0.02
+  }
+
+  const onPointerUp = (event: PointerEvent) =&gt; {
+    if (!event.isPrimary) {
+      return
+    }
+
+    document.removeEventListener(&quot;pointermove&quot;, onPointerMove)
+    document.removeEventListener(&quot;pointerup&quot;, onPointerUp)
+  }
+
+  const onPointerDown = (event: PointerEvent) =&gt; {
+    if (!event.isPrimary) {
+      return
+    }
+
+    state.pointerXOnPointerDown = event.clientX - halfWidth
+    state.targetRotationOnPointerDown = state.targetRotation
+
+    document.addEventListener(&quot;pointermove&quot;, onPointerMove)
+    document.addEventListener(&quot;pointerup&quot;, onPointerUp)
+  }
+
   const createSimulation = () =&gt; ({
     camera,
     cameraTarget,
@@ -184,18 +218,6 @@ const main = (
       state.isStopped = true
     },
   })
-
-  const onPointerDown = (event: any) =&gt; {
-    if (event.isPrimary === false) {
-      return
-    }
-
-    state.pointerXOnPointerDown = event.clientX - halfWidth
-    state.targetRotationOnPointerDown = state.targetRotation
-
-    document.addEventListener(&quot;pointermove&quot;, onPointerMove)
-    document.addEventListener(&quot;pointerup&quot;, onPointerUp)
-  }
 
   const addListeners = () =&gt; {
     container.addEventListener(&quot;pointerdown&quot;, onPointerDown)
@@ -280,27 +302,6 @@ const main = (
     createText()
   }
 
-  const onPointerMove = (event: any) =&gt; {
-    if (event.isPrimary === false) {
-      return
-    }
-
-    state.pointerX = event.clientX - halfWidth
-
-    state.targetRotation =
-      state.targetRotationOnPointerDown +
-      (state.pointerX - state.pointerXOnPointerDown) * 0.02
-  }
-
-  const onPointerUp = (event: any) =&gt; {
-    if (event.isPrimary === false) {
-      return
-    }
-
-    document.removeEventListener(&quot;pointermove&quot;, onPointerMove)
-    document.removeEventListener(&quot;pointerup&quot;, onPointerUp)
-  }
-
   if (previousSimulation) {
     previousSimulation.stop()
 
@@ -362,7 +363,7 @@ const ThreeJSText = (props: Props) =&gt; {
   return (
     &lt;div&gt;
       &lt;StoryInfo
-        docs={[]}
+        docs={[webAPIDocs.pointerEvent]}
         source=&quot;https://threejs.org/examples/webgl_geometry_text.html#FF00CB010#three.js&quot;
         sourceText=&quot;Source (official example, ported to TS)&quot;
         storyName=&quot;ThreeJSText&quot;
@@ -405,8 +406,8 @@ export default {
   component: ThreeJSText,
   title: &quot;ThreeJS/Text&quot;,
 }
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:174,&quot;character&quot;:25,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:175,&quot;character&quot;:8,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:175,&quot;character&quot;:14,&quot;text&quot;:&quot;isPrimary&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:179,&quot;character&quot;:34,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:179,&quot;character&quot;:40,&quot;text&quot;:&quot;clientX&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:207,&quot;character&quot;:34,&quot;text&quot;:&quot;fontsData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:210,&quot;character&quot;:20,&quot;text&quot;:&quot;fontsData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:269,&quot;character&quot;:25,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:270,&quot;character&quot;:8,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:270,&quot;character&quot;:14,&quot;text&quot;:&quot;isPrimary&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:274,&quot;character&quot;:21,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:274,&quot;character&quot;:27,&quot;text&quot;:&quot;clientX&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:281,&quot;character&quot;:23,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:282,&quot;character&quot;:8,&quot;text&quot;:&quot;event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:282,&quot;character&quot;:14,&quot;text&quot;:&quot;isPrimary&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 17 Aug 2021 22:45:51 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:229,&quot;character&quot;:34,&quot;text&quot;:&quot;fontsData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSText/ThreeJSText.stories.tsx&quot;,&quot;line&quot;:232,&quot;character&quot;:20,&quot;text&quot;:&quot;fontsData&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 18 Aug 2021 22:45:40 GMT</p>
     </body>
   </html>
   

@@ -74,9 +74,113 @@ const getRandomInt = (min: number, max: number): number =&gt; {
 const fetchData = () =&gt;
   json(`${ROOT_PATH}data/d3js/energy-sankey/data.json`) as Promise&lt;EnergyData&gt;
 
+const createGradients = (
+  svg: Selection&lt;SVGElement, unknown, HTMLElement, unknown&gt;,
+  fromColor: string,
+  toColor: string,
+  addedGradients: AddedGradients
+): string =&gt; {
+  const id = `link-gradient-${fromColor}-${toColor}`.replace(/#/g, &quot;&quot;)
+
+  if (id in addedGradients) {
+    return id
+  }
+
+  const duration = getRandomInt(1, 3)
+  const colorScale = chroma.scale([fromColor, toColor])
+
+  const text = `
+&lt;linearGradient id=&quot;${id}&quot;&gt;
+  &lt;stop offset=&quot;0%&quot; stop-color=&quot;${fromColor}&quot; /&gt;
+  &lt;stop offset=&quot;50%&quot; stop-color=&quot;${colorScale(0.5)}&quot;&gt;
+    &lt;animate attributeName=&quot;offset&quot;
+      values=&quot;${[5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2, 3, 4]
+        .map((n) =&gt; `.${n}`)
+        .join(&quot;;&quot;)}&quot;
+      dur=&quot;${duration}s&quot;
+      repeatCount=&quot;indefinite&quot; /&gt;
+  &lt;/stop&gt;
+  &lt;stop offset=&quot;100%&quot; stop-color=&quot;${toColor}&quot; /&gt;
+&lt;/linearGradient&gt;
+`.trim()
+
+  svg.append(&quot;defs&quot;).html(text)
+
+  addedGradients[id] = true
+
+  return id
+}
+
 const sankeyHeight = 1000
 const legendHeight = 0
 const svgHeight = sankeyHeight + legendHeight
+
+const nodeClickHandler = ({
+  d,
+  linkPath,
+  onNodeClick,
+  state,
+}: {
+  d: EnergySankeyNode
+  linkPath: Selection&lt;SVGPathElement, EnergySankeyLink, SVGGElement, unknown&gt;
+  onNodeClick?: OnNodeClick
+  state: State
+}) =&gt; {
+  if (state.isInTransition) return
+
+  if (onNodeClick) {
+    const shouldPreventDefault = onNodeClick(d)
+
+    if (shouldPreventDefault) return
+  }
+
+  if (state.selectedNode === d.name) {
+    linkPath.attr(&quot;display&quot;, null).style(&quot;opacity&quot;, null)
+    state.selectedNode = &quot;&quot;
+  } else {
+    state.isInTransition = true
+
+    if (state.selectedNode) {
+      linkPath
+        .style(&quot;opacity&quot;, (l) =&gt;
+          [
+            (l.source as EnergySankeyNode).name,
+            (l.target as EnergySankeyNode).name,
+          ].includes(state.selectedNode)
+            ? null
+            : 0
+        )
+        .attr(&quot;display&quot;, null)
+    }
+
+    requestAnimationFrame(() =&gt; {
+      linkPath
+        .transition()
+        .duration(500)
+        .style(&quot;opacity&quot;, (l) =&gt;
+          [
+            (l.source as EnergySankeyNode).name,
+            (l.target as EnergySankeyNode).name,
+          ].includes(d.name)
+            ? null
+            : 0
+        )
+        .on(&quot;end&quot;, () =&gt; {
+          state.isInTransition = false
+          linkPath.attr(&quot;display&quot;, (l) =&gt;
+            [
+              (l.source as EnergySankeyNode).name,
+              (l.target as EnergySankeyNode).name,
+            ].includes(d.name)
+              ? null
+              : &quot;none&quot;
+          )
+        })
+
+      state.selectedNode = d.name
+    })
+  }
+}
 
 const renderChart = ({
   data,
@@ -174,7 +278,7 @@ const renderChart = ({
     .on(&quot;click&quot;, (_e: unknown, d: EnergySankeyNode) =&gt;
       nodeClickHandler({
         d,
-        linkPath,
+        linkPath, // eslint-disable-line @typescript-eslint/no-use-before-define
         onNodeClick,
         state,
       })
@@ -276,110 +380,6 @@ const renderChart = ({
     .text((d) =&gt; d.name)
 }
 
-const nodeClickHandler = ({
-  d,
-  linkPath,
-  onNodeClick,
-  state,
-}: {
-  d: EnergySankeyNode
-  linkPath: Selection&lt;SVGPathElement, EnergySankeyLink, SVGGElement, unknown&gt;
-  onNodeClick?: OnNodeClick
-  state: State
-}) =&gt; {
-  if (state.isInTransition) return
-
-  if (onNodeClick) {
-    const shouldPreventDefault = onNodeClick(d)
-
-    if (shouldPreventDefault) return
-  }
-
-  if (state.selectedNode === d.name) {
-    linkPath.attr(&quot;display&quot;, null).style(&quot;opacity&quot;, null)
-    state.selectedNode = &quot;&quot;
-  } else {
-    state.isInTransition = true
-
-    if (state.selectedNode) {
-      linkPath
-        .style(&quot;opacity&quot;, (l) =&gt;
-          [
-            (l.source as EnergySankeyNode).name,
-            (l.target as EnergySankeyNode).name,
-          ].includes(state.selectedNode)
-            ? null
-            : 0
-        )
-        .attr(&quot;display&quot;, null)
-    }
-
-    requestAnimationFrame(() =&gt; {
-      linkPath
-        .transition()
-        .duration(500)
-        .style(&quot;opacity&quot;, (l) =&gt;
-          [
-            (l.source as EnergySankeyNode).name,
-            (l.target as EnergySankeyNode).name,
-          ].includes(d.name)
-            ? null
-            : 0
-        )
-        .on(&quot;end&quot;, () =&gt; {
-          state.isInTransition = false
-          linkPath.attr(&quot;display&quot;, (l) =&gt;
-            [
-              (l.source as EnergySankeyNode).name,
-              (l.target as EnergySankeyNode).name,
-            ].includes(d.name)
-              ? null
-              : &quot;none&quot;
-          )
-        })
-
-      state.selectedNode = d.name
-    })
-  }
-}
-
-const createGradients = (
-  svg: Selection&lt;SVGElement, unknown, HTMLElement, unknown&gt;,
-  fromColor: string,
-  toColor: string,
-  addedGradients: AddedGradients
-): string =&gt; {
-  const id = `link-gradient-${fromColor}-${toColor}`.replace(/#/g, &quot;&quot;)
-
-  if (id in addedGradients) {
-    return id
-  }
-
-  const duration = getRandomInt(1, 3)
-  const colorScale = chroma.scale([fromColor, toColor])
-
-  const text = `
-&lt;linearGradient id=&quot;${id}&quot;&gt;
-  &lt;stop offset=&quot;0%&quot; stop-color=&quot;${fromColor}&quot; /&gt;
-  &lt;stop offset=&quot;50%&quot; stop-color=&quot;${colorScale(0.5)}&quot;&gt;
-    &lt;animate attributeName=&quot;offset&quot;
-      values=&quot;${[5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2, 3, 4]
-        .map((n) =&gt; `.${n}`)
-        .join(&quot;;&quot;)}&quot;
-      dur=&quot;${duration}s&quot;
-      repeatCount=&quot;indefinite&quot; /&gt;
-  &lt;/stop&gt;
-  &lt;stop offset=&quot;100%&quot; stop-color=&quot;${toColor}&quot; /&gt;
-&lt;/linearGradient&gt;
-`.trim()
-
-  svg.append(&quot;defs&quot;).html(text)
-
-  addedGradients[id] = true
-
-  return id
-}
-
 const main = async () =&gt; {
   hotkeys(&quot;control&quot;, () =&gt; {})
 
@@ -407,7 +407,7 @@ const main = async () =&gt; {
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 17 Aug 2021 22:45:51 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 18 Aug 2021 22:45:40 GMT</p>
     </body>
   </html>
   

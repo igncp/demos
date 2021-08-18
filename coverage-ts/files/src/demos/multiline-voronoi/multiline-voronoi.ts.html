@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/multiline-voronoi/multiline-voronoi.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">532</td><td class="">532</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/multiline-voronoi/multiline-voronoi.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">534</td><td class="">534</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Selection,
   axisBottom,
   axisLeft,
@@ -49,6 +49,21 @@ type CityMetric = {
 }
 
 const formatStr = &quot;%Y-%m&quot;
+
+const monthNames = [
+  &quot;January&quot;,
+  &quot;February&quot;,
+  &quot;March&quot;,
+  &quot;April&quot;,
+  &quot;May&quot;,
+  &quot;June&quot;,
+  &quot;July&quot;,
+  &quot;August&quot;,
+  &quot;September&quot;,
+  &quot;October&quot;,
+  &quot;November&quot;,
+  &quot;December&quot;,
+]
 
 const texts = {
   chartTitle: &quot;US Unemployment Rate&quot;,
@@ -98,21 +113,6 @@ const fetchData = async () =&gt; {
   return { cities, months }
 }
 
-const monthNames = [
-  &quot;January&quot;,
-  &quot;February&quot;,
-  &quot;March&quot;,
-  &quot;April&quot;,
-  &quot;May&quot;,
-  &quot;June&quot;,
-  &quot;July&quot;,
-  &quot;August&quot;,
-  &quot;September&quot;,
-  &quot;October&quot;,
-  &quot;November&quot;,
-  &quot;December&quot;,
-]
-
 const margin = {
   bottom: 70,
   left: 80,
@@ -126,6 +126,30 @@ type RenderChart = (o: {
   rootElId: string
 }) =&gt; {
   setVoronoi: (v: boolean) =&gt; void
+}
+
+const addFilter = (
+  svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, &quot;drop-shadow&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, 1)
+
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, &quot;1&quot;)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
 }
 
 const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
@@ -189,9 +213,33 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
     .style(&quot;font-weight&quot;, &quot;bold&quot;)
     .text(texts.chartTitle)
 
+  const focus = svg
+    .append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, &quot;translate(-100,-100)&quot;)
+    .attr(&quot;class&quot;, styles.focus)
+
   addFilter(svg)
 
   const line = lineD3&lt;CityMetric&gt;().x(lineXTransformer).y(lineYTransformer)
+
+  const generateLines = (usedCities: City[]) =&gt; {
+    svg
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, styles.cities)
+      .selectAll(&quot;path&quot;)
+      .data(usedCities)
+      .enter()
+      .append(&quot;path&quot;)
+      .attr(&quot;d&quot;, function (city: City) {
+        cityNameToLine[city.name] = this
+
+        return line(city.metrics)
+      })
+      .style(&quot;stroke&quot;, (_city, index) =&gt; color(index.toString()))
+      .style(&quot;filter&quot;, () =&gt; &quot;url(#drop-shadow)&quot;)
+
+    generateVoronoi(usedCities) // eslint-disable-line @typescript-eslint/no-use-before-define
+  }
 
   const generateVoronoi = (usedCities: City[]) =&gt; {
     const mouseover = (_e: unknown, cityMetric: CityMetric) =&gt; {
@@ -222,9 +270,8 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
     const clicked = (_e: unknown, d: CityMetric) =&gt; {
       state.clickToggle = !state.clickToggle
 
-      selectAll(&quot;.cities&quot;).remove()
-      selectAll(&quot;.voronoi&quot;).remove()
-      selectAll(&quot;.focus&quot;).remove()
+      selectAll(`.${styles.cities}`).remove()
+      selectAll(`.${styles.voronoi}`).remove()
 
       const inputData: City[] = (() =&gt; {
         if (state.clickToggle) {
@@ -238,11 +285,6 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
 
       generateLines(inputData)
     }
-
-    const focus = svg
-      .append(&quot;g&quot;)
-      .attr(&quot;transform&quot;, &quot;translate(-100,-100)&quot;)
-      .attr(&quot;class&quot;, styles.focus)
 
     focus.append(&quot;circle&quot;).attr(&quot;r&quot;, 3.5)
     focus.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;text1&quot;).attr(&quot;y&quot;, -30)
@@ -280,25 +322,6 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
       .on(&quot;click&quot;, clicked)
   }
 
-  const generateLines = (usedCities: City[]) =&gt; {
-    svg
-      .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, styles.cities)
-      .selectAll(&quot;path&quot;)
-      .data(usedCities)
-      .enter()
-      .append(&quot;path&quot;)
-      .attr(&quot;d&quot;, function (city: City) {
-        cityNameToLine[city.name] = this
-
-        return line(city.metrics)
-      })
-      .style(&quot;stroke&quot;, (_city, index) =&gt; color(index.toString()))
-      .style(&quot;filter&quot;, () =&gt; &quot;url(#drop-shadow)&quot;)
-
-    generateVoronoi(usedCities)
-  }
-
   generateLines(cities)
 
   return {
@@ -306,30 +329,6 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
       state.voronoiGroup!.classed(styles.voronoiShow, checked)
     },
   }
-}
-
-const addFilter = (
-  svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
-) =&gt; {
-  const defs = svg.append(&quot;defs&quot;)
-  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, &quot;drop-shadow&quot;)
-
-  filter
-    .append(&quot;feGaussianBlur&quot;)
-    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
-    .attr(&quot;stdDeviation&quot;, 1)
-
-  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
-  filter
-    .append(&quot;feComponentTransfer&quot;)
-    .append(&quot;feFuncA&quot;)
-    .attr(&quot;slope&quot;, &quot;1&quot;)
-    .attr(&quot;type&quot;, &quot;linear&quot;)
-
-  const feMerge = filter.append(&quot;feMerge&quot;)
-
-  feMerge.append(&quot;feMergeNode&quot;)
-  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
 }
 
 const main = async () =&gt; {
@@ -357,7 +356,7 @@ const main = async () =&gt; {
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 17 Aug 2021 22:45:51 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 18 Aug 2021 22:45:40 GMT</p>
     </body>
   </html>
   

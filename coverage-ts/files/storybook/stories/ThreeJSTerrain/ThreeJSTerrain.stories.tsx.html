@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSTerrain/ThreeJSTerrain.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">619</td><td class="">619</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSTerrain/ThreeJSTerrain.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">597</td><td class="">597</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
 import {
   CanvasTexture,
   ClampToEdgeWrapping,
@@ -220,19 +220,52 @@ const main = (
 
   const raycaster = new Raycaster()
 
-  const onWindowResize = () =&gt; {
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
-
-    renderer.setSize(window.innerWidth, window.innerHeight)
-  }
-
   const container = document.getElementById(ROOT_ID) as HTMLElement
 
   container.innerHTML = &quot;&quot;
 
   const containerRect = container.getBoundingClientRect()
   const pointer = new Vector2()
+
+  const { width } = containerRect
+  const renderer = new WebGLRenderer({ antialias: true })
+
+  const camera = new PerspectiveCamera(
+    60,
+    width / window.innerHeight,
+    10,
+    20000
+  )
+
+  const newHeightData = generateHeight(worldWidth, worldDepth, mountainHeight)
+
+  const createMaterial = () =&gt;
+    new MeshBasicMaterial({
+      map: createTexture(newHeightData),
+      opacity: 0.8,
+      transparent: true,
+    })
+
+  const material = createMaterial()
+
+  const geometry = new PlaneGeometry(
+    planeSize,
+    planeSize,
+    worldWidth - 1,
+    worldDepth - 1
+  )
+  const mesh = new Mesh(geometry, material)
+
+  const geometryHelper = new ConeGeometry(
+    surfaceConeRadius,
+    surfaceConeHeight,
+    surfaceConeRadialSegments
+  )
+
+  geometryHelper.translate(0, 50, 0)
+  geometryHelper.rotateX(Math.PI / 2)
+
+  const surfaceCone = new Mesh(geometryHelper, new MeshNormalMaterial())
 
   const onPointerMove = (event: MouseEvent) =&gt; {
     pointer.x =
@@ -258,9 +291,6 @@ const main = (
     }
   }
 
-  const { width } = containerRect
-  const renderer = new WebGLRenderer({ antialias: true })
-
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(width, canvasHeight)
   container.appendChild(renderer.domElement)
@@ -269,33 +299,17 @@ const main = (
 
   scene.background = new Color(0xffffff)
 
-  const camera = new PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    10,
-    20000
-  )
-
   const controls = new OrbitControls(camera, renderer.domElement)
 
   controls.minDistance = 1000
   controls.maxDistance = 10000
   controls.maxPolarAngle = Math.PI / 2
 
-  const newHeightData = generateHeight(worldWidth, worldDepth, mountainHeight)
-
   controls.target.y =
     newHeightData[worldHalfWidth + worldHalfDepth * worldWidth] + 500
   camera.position.y = controls.target.y + 2000
   camera.position.x = 2000
   controls.update()
-
-  const geometry = new PlaneGeometry(
-    planeSize,
-    planeSize,
-    worldWidth - 1,
-    worldDepth - 1
-  )
 
   geometry.rotateX(-Math.PI / 2)
 
@@ -316,28 +330,7 @@ const main = (
   // @ts-ignore
   geometry.computeFaceNormals()
 
-  const createMaterial = () =&gt;
-    new MeshBasicMaterial({
-      map: createTexture(newHeightData),
-      opacity: 0.8,
-      transparent: true,
-    })
-
-  const material = createMaterial()
-  const mesh = new Mesh(geometry, material)
-
   scene.add(mesh)
-
-  const geometryHelper = new ConeGeometry(
-    surfaceConeRadius,
-    surfaceConeHeight,
-    surfaceConeRadialSegments
-  )
-
-  geometryHelper.translate(0, 50, 0)
-  geometryHelper.rotateX(Math.PI / 2)
-
-  const surfaceCone = new Mesh(geometryHelper, new MeshNormalMaterial())
 
   scene.add(surfaceCone)
 
@@ -352,7 +345,6 @@ const main = (
   }
 
   container.addEventListener(&quot;pointermove&quot;, onPointerMove)
-  window.addEventListener(&quot;resize&quot;, onWindowResize)
 
   animate()
 
@@ -362,7 +354,6 @@ const main = (
     props,
     stop: () =&gt; {
       container.removeEventListener(&quot;pointermove&quot;, onPointerMove)
-      window.removeEventListener(&quot;resize&quot;, onWindowResize)
       state.isStopped = true
     },
   }
@@ -435,7 +426,7 @@ export default {
   title: &quot;ThreeJS/Terrain&quot;,
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 17 Aug 2021 22:45:51 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 18 Aug 2021 22:45:40 GMT</p>
     </body>
   </html>
   

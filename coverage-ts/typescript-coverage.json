@@ -1109,14 +1109,14 @@
     },
     {
       "file": "src/demos/force/force.ts",
-      "line": 123,
+      "line": 133,
       "character": 28,
       "text": "_ev",
       "kind": 1
     },
     {
       "file": "src/demos/force/force.ts",
-      "line": 126,
+      "line": 136,
       "character": 29,
       "text": "_ev",
       "kind": 1
@@ -1137,84 +1137,84 @@
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 154,
+      "line": 200,
       "character": 12,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 154,
+      "line": 200,
       "character": 18,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 155,
+      "line": 201,
       "character": 14,
       "text": "type",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 169,
+      "line": 215,
       "character": 14,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 199,
+      "line": 245,
       "character": 43,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 346,
+      "line": 380,
       "character": 8,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 348,
+      "line": 382,
       "character": 2,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 348,
+      "line": 382,
       "character": 9,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 350,
+      "line": 384,
       "character": 29,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 350,
+      "line": 384,
       "character": 36,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 357,
+      "line": 391,
       "character": 2,
       "text": "slider",
       "kind": 1
     },
     {
       "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 357,
+      "line": 391,
       "character": 9,
       "text": "slider",
       "kind": 1
@@ -1256,51 +1256,51 @@
     },
     {
       "file": "src/demos/moving-line/moving-line.ts",
-      "line": 41,
-      "character": 10,
-      "text": "paper",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/moving-line/moving-line.ts",
-      "line": 41,
-      "character": 18,
-      "text": "Raphael",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/moving-line/moving-line.ts",
-      "line": 47,
-      "character": 10,
-      "text": "line",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/moving-line/moving-line.ts",
-      "line": 47,
-      "character": 17,
-      "text": "paper",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/moving-line/moving-line.ts",
-      "line": 47,
-      "character": 23,
-      "text": "path",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/moving-line/moving-line.ts",
-      "line": 79,
+      "line": 71,
       "character": 18,
       "text": "className",
       "kind": 1
     },
     {
       "file": "src/demos/moving-line/moving-line.ts",
-      "line": 79,
+      "line": 71,
       "character": 28,
       "text": "baseVal",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/moving-line/moving-line.ts",
+      "line": 149,
+      "character": 10,
+      "text": "paper",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/moving-line/moving-line.ts",
+      "line": 149,
+      "character": 18,
+      "text": "Raphael",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/moving-line/moving-line.ts",
+      "line": 155,
+      "character": 10,
+      "text": "line",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/moving-line/moving-line.ts",
+      "line": 155,
+      "character": 17,
+      "text": "paper",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/moving-line/moving-line.ts",
+      "line": 155,
+      "character": 23,
+      "text": "path",
       "kind": 1
     },
     {
@@ -1326,21 +1326,21 @@
     },
     {
       "file": "src/demos/population-circles/population-circles-chart.ts",
-      "line": 171,
+      "line": 192,
       "character": 34,
       "text": "_event",
       "kind": 1
     },
     {
       "file": "src/demos/population-circles/population-circles-chart.ts",
-      "line": 190,
+      "line": 211,
       "character": 34,
       "text": "_event",
       "kind": 1
     },
     {
       "file": "src/demos/population-circles/population-circles-chart.ts",
-      "line": 209,
+      "line": 230,
       "character": 20,
       "text": "_event",
       "kind": 1
@@ -1375,42 +1375,42 @@
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 54,
+      "line": 82,
       "character": 20,
       "text": "dataGeo",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 56,
+      "line": 84,
       "character": 8,
       "text": "dataGeoParsed",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 56,
+      "line": 84,
       "character": 24,
       "text": "dataGeo",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 56,
+      "line": 84,
       "character": 32,
       "text": "map",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 62,
+      "line": 90,
       "character": 34,
       "text": "geometries",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 62,
+      "line": 90,
       "character": 45,
       "text": "length",
       "kind": 1
@@ -1438,1022 +1438,1022 @@
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 179,
+      "line": 213,
       "character": 39,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 179,
+      "line": 213,
       "character": 51,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 180,
+      "line": 214,
       "character": 19,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 180,
+      "line": 214,
       "character": 25,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 180,
+      "line": 214,
       "character": 33,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 180,
+      "line": 214,
       "character": 39,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 190,
+      "line": 224,
       "character": 15,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 190,
+      "line": 224,
       "character": 21,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 190,
+      "line": 224,
       "character": 27,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 190,
+      "line": 224,
       "character": 33,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 203,
+      "line": 237,
       "character": 40,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 203,
+      "line": 237,
       "character": 52,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 204,
+      "line": 238,
       "character": 19,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 204,
+      "line": 238,
       "character": 25,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 204,
+      "line": 238,
       "character": 33,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 204,
+      "line": 238,
       "character": 39,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 214,
+      "line": 248,
       "character": 15,
       "text": "item2",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 214,
+      "line": 248,
       "character": 21,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 214,
+      "line": 248,
       "character": 27,
       "text": "item1",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 214,
+      "line": 248,
       "character": 33,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 227,
+      "line": 261,
       "character": 29,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 227,
+      "line": 261,
       "character": 41,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 227,
+      "line": 261,
       "character": 57,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 228,
+      "line": 262,
       "character": 6,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 228,
+      "line": 262,
       "character": 18,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 229,
+      "line": 263,
       "character": 6,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 229,
+      "line": 263,
       "character": 18,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 232,
+      "line": 266,
       "character": 8,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 232,
+      "line": 266,
       "character": 14,
       "text": "forEach",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 232,
+      "line": 266,
       "character": 23,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 240,
+      "line": 274,
       "character": 16,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 240,
+      "line": 274,
       "character": 21,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 247,
+      "line": 281,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 247,
+      "line": 281,
       "character": 15,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 249,
+      "line": 283,
       "character": 26,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 249,
+      "line": 283,
       "character": 31,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 253,
+      "line": 287,
       "character": 15,
       "text": "items",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 253,
+      "line": 287,
       "character": 21,
       "text": "forEach",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 253,
+      "line": 287,
       "character": 30,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 261,
+      "line": 295,
       "character": 16,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 261,
+      "line": 295,
       "character": 21,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 268,
+      "line": 302,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 268,
+      "line": 302,
       "character": 15,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 270,
+      "line": 304,
       "character": 26,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 270,
+      "line": 304,
       "character": 31,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 274,
+      "line": 308,
       "character": 10,
       "text": "sortOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 280,
+      "line": 314,
       "character": 10,
       "text": "timeOrder",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 287,
+      "line": 321,
       "character": 36,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 288,
+      "line": 322,
       "character": 6,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 288,
+      "line": 322,
       "character": 11,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 288,
+      "line": 322,
       "character": 29,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 288,
+      "line": 322,
       "character": 34,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 290,
+      "line": 324,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 290,
+      "line": 324,
       "character": 15,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
+      "line": 325,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
+      "line": 325,
       "character": 13,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
+      "line": 325,
       "character": 28,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
+      "line": 325,
       "character": 33,
       "text": "start",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
+      "line": 325,
       "character": 39,
       "text": "getTime",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 292,
+      "line": 326,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 292,
+      "line": 326,
       "character": 13,
       "text": "instant",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 294,
+      "line": 328,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 294,
+      "line": 328,
       "character": 13,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 294,
+      "line": 328,
       "character": 29,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 294,
+      "line": 328,
       "character": 34,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 295,
+      "line": 329,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 295,
+      "line": 329,
       "character": 13,
       "text": "instant",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 298,
+      "line": 332,
       "character": 10,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 298,
+      "line": 332,
       "character": 15,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 299,
+      "line": 333,
       "character": 8,
       "text": "item",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 299,
+      "line": 333,
       "character": 13,
       "text": "end",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 320,
+      "line": 354,
       "character": 39,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 364,
+      "line": 398,
       "character": 9,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 368,
+      "line": 402,
       "character": 9,
       "text": "yScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 368,
+      "line": 402,
       "character": 19,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 368,
+      "line": 402,
       "character": 54,
       "text": "track",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 370,
+      "line": 404,
       "character": 9,
       "text": "yearsScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 388,
+      "line": 422,
       "character": 39,
       "text": "yScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 444,
+      "line": 478,
       "character": 41,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 447,
+      "line": 481,
       "character": 32,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 447,
+      "line": 481,
       "character": 53,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 451,
+      "line": 485,
       "character": 29,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 451,
+      "line": 485,
       "character": 50,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 532,
+      "line": 566,
       "character": 18,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 532,
+      "line": 566,
       "character": 29,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 540,
+      "line": 574,
       "character": 22,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 540,
+      "line": 574,
       "character": 33,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 541,
+      "line": 575,
       "character": 19,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 541,
+      "line": 575,
       "character": 30,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 542,
+      "line": 576,
       "character": 18,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 542,
+      "line": 576,
       "character": 29,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 544,
+      "line": 578,
       "character": 28,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 544,
+      "line": 578,
       "character": 39,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 547,
+      "line": 581,
       "character": 12,
       "text": "min",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 547,
+      "line": 581,
       "character": 23,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 547,
+      "line": 581,
       "character": 30,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 548,
+      "line": 582,
       "character": 12,
       "text": "max",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 548,
+      "line": 582,
       "character": 23,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 548,
+      "line": 582,
       "character": 30,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 550,
+      "line": 584,
       "character": 26,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 550,
+      "line": 584,
       "character": 37,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 550,
+      "line": 584,
       "character": 42,
       "text": "min",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 550,
+      "line": 584,
       "character": 47,
       "text": "max",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 572,
+      "line": 606,
       "character": 23,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 573,
+      "line": 607,
       "character": 10,
       "text": "newDomain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 573,
+      "line": 607,
       "character": 27,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 573,
+      "line": 607,
       "character": 34,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 575,
+      "line": 609,
       "character": 10,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 575,
+      "line": 609,
       "character": 12,
       "text": "selection",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 576,
+      "line": 610,
       "character": 8,
       "text": "newDomain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 577,
+      "line": 611,
       "character": 25,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 577,
+      "line": 611,
       "character": 27,
       "text": "selection",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 578,
+      "line": 612,
       "character": 25,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 578,
+      "line": 612,
       "character": 27,
       "text": "selection",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 584,
+      "line": 618,
       "character": 27,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 585,
+      "line": 619,
       "character": 19,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 585,
+      "line": 619,
       "character": 22,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 585,
+      "line": 619,
       "character": 29,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 585,
+      "line": 619,
       "character": 36,
       "text": "newDomain",
       "kind": 1
     },
     {
       "file": "src/demos/timeline/timeline.ts",
-      "line": 587,
+      "line": 621,
       "character": 19,
       "text": "d",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 132,
-      "character": 6,
-      "text": "mousedownLink",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 133,
-      "character": 6,
-      "text": "mousedownNode",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 134,
-      "character": 6,
-      "text": "mouseupNode",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 137,
-      "character": 4,
-      "text": "mousedownNode",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 138,
-      "character": 4,
-      "text": "mouseupNode",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 139,
-      "character": 4,
-      "text": "mousedownLink",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 211,
+      "line": 208,
       "character": 28,
       "text": "_ev",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 214,
+      "line": 211,
       "character": 29,
       "text": "_ev",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 266,
+      "line": 238,
+      "character": 6,
+      "text": "mousedownLink",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/vectors/vectors.ts",
+      "line": 239,
+      "character": 6,
+      "text": "mousedownNode",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/vectors/vectors.ts",
+      "line": 240,
+      "character": 6,
+      "text": "mouseupNode",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/vectors/vectors.ts",
+      "line": 243,
+      "character": 4,
+      "text": "mousedownNode",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/vectors/vectors.ts",
+      "line": 244,
+      "character": 4,
+      "text": "mouseupNode",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/vectors/vectors.ts",
+      "line": 245,
+      "character": 4,
+      "text": "mousedownLink",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/vectors/vectors.ts",
+      "line": 265,
       "character": 24,
       "text": "evt",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 269,
+      "line": 268,
       "character": 8,
       "text": "evt",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 269,
+      "line": 268,
       "character": 12,
       "text": "ctrlKey",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 269,
+      "line": 268,
       "character": 23,
       "text": "mousedownNode",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 269,
+      "line": 268,
       "character": 40,
       "text": "mousedownLink",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 273,
+      "line": 272,
       "character": 20,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 275,
+      "line": 274,
       "character": 10,
       "text": "dim",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 275,
+      "line": 274,
       "character": 16,
       "text": "e",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 275,
+      "line": 274,
       "character": 18,
       "text": "getBoundingClientRect",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 276,
+      "line": 275,
       "character": 14,
       "text": "evt",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 276,
+      "line": 275,
       "character": 18,
       "text": "clientX",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 276,
+      "line": 275,
       "character": 28,
       "text": "dim",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 276,
+      "line": 275,
       "character": 32,
       "text": "left",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 277,
+      "line": 276,
       "character": 14,
       "text": "evt",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 277,
+      "line": 276,
       "character": 18,
       "text": "clientY",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 277,
+      "line": 276,
       "character": 28,
       "text": "dim",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 277,
+      "line": 276,
       "character": 32,
       "text": "top",
       "kind": 1
     },
     {
       "file": "src/demos/vectors/vectors.ts",
-      "line": 300,
+      "line": 299,
       "character": 30,
       "text": "mouseupNode",
       "kind": 1
@@ -2565,112 +2565,35 @@
     },
     {
       "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 174,
-      "character": 25,
-      "text": "event",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 175,
-      "character": 8,
-      "text": "event",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 175,
-      "character": 14,
-      "text": "isPrimary",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 179,
-      "character": 34,
-      "text": "event",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 179,
-      "character": 40,
-      "text": "clientX",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 207,
+      "line": 229,
       "character": 34,
       "text": "fontsData",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 210,
+      "line": 232,
       "character": 20,
       "text": "fontsData",
       "kind": 1
     },
     {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 269,
-      "character": 25,
-      "text": "event",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 270,
-      "character": 8,
-      "text": "event",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 270,
-      "character": 14,
-      "text": "isPrimary",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 274,
+      "file": "storybook/stories/ThreeJSTextStroke/ThreeJSTextStroke.stories.tsx",
+      "line": 109,
       "character": 21,
-      "text": "event",
+      "text": "push",
       "kind": 1
     },
     {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 274,
-      "character": 27,
-      "text": "clientX",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 281,
-      "character": 23,
-      "text": "event",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 282,
-      "character": 8,
-      "text": "event",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 282,
-      "character": 14,
-      "text": "isPrimary",
+      "file": "storybook/stories/ThreeJSTextStroke/ThreeJSTextStroke.stories.tsx",
+      "line": 109,
+      "character": 26,
+      "text": "apply",
       "kind": 1
     }
   ],
-  "percentage": 98.02098483274465,
-  "total": 19252,
-  "covered": 18871,
-  "uncovered": 381
+  "percentage": 98.1040225467589,
+  "total": 19515,
+  "covered": 19145,
+  "uncovered": 370
 }

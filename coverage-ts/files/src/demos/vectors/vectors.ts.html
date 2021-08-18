@@ -134,31 +134,6 @@ const renderGraph: RenderGraph = ({ data, rootElId }) =&gt; {
   rootEl.classList.add(styles.vectorsChart)
 
   const { width } = rootEl.getBoundingClientRect()
-
-  // @TODO
-  let lastNodeId = &quot;C&quot;.charCodeAt(0)
-
-  const ticked = () =&gt; {
-    updateLinks()
-    updateNodes()
-  }
-
-  let mousedownLink: any = null
-  let mousedownNode: any = null
-  let mouseupNode: any = null
-
-  const resetMouseVars = () =&gt; {
-    mousedownNode = null
-    mouseupNode = null
-    mousedownLink = null
-  }
-
-  const simulation = forceSimulation(nodes)
-    .force(&quot;charge&quot;, forceManyBody().strength(-50))
-    .force(&quot;center&quot;, forceCenter(width / 2, height / 2))
-    .force(&quot;link&quot;, forceLink().links(links).distance(100))
-    .on(&quot;tick&quot;, ticked)
-
   const svg = select(`#${rootElId}`)
     .append(&quot;svg&quot;)
     .attr(&quot;width&quot;, width)
@@ -166,14 +141,8 @@ const renderGraph: RenderGraph = ({ data, rootElId }) =&gt; {
 
   setupSVG(svg)
 
-  svg
-    .selectAll(`.${styles.link}`)
-    .data(links)
-    .enter()
-    .append(&quot;svg:path&quot;)
-    .attr(&quot;class&quot;, styles.link)
-    .attr(&quot;marker-end&quot;, &quot;url(#end)&quot;)
-    .attr(&quot;id&quot;, (_d, i) =&gt; `link-${i}`)
+  // @TODO
+  let lastNodeId = &quot;C&quot;.charCodeAt(0)
 
   const updateLinks = () =&gt; {
     const linksEls = svg
@@ -202,6 +171,34 @@ const renderGraph: RenderGraph = ({ data, rootElId }) =&gt; {
       .attr(&quot;class&quot;, `${styles.link} ${styles.dragline}`)
 
     linksEls.exit().remove()
+  }
+
+  const ticked = () =&gt; {
+    updateLinks()
+    updateNodes() // eslint-disable-line @typescript-eslint/no-use-before-define
+  }
+
+  const simulation = forceSimulation(nodes)
+    .force(&quot;charge&quot;, forceManyBody().strength(-50))
+    .force(&quot;center&quot;, forceCenter(width / 2, height / 2))
+    .force(&quot;link&quot;, forceLink().links(links).distance(100))
+    .on(&quot;tick&quot;, ticked)
+
+  const dragstarted = (event: CustomDragEvent, d: Node) =&gt; {
+    if (!event.active) simulation.alphaTarget(0.3).restart()
+    d.fx = d.x
+    d.fy = d.y
+  }
+
+  const dragged = (event: CustomDragEvent, d: Node) =&gt; {
+    d.fx = event.x
+    d.fy = event.y
+  }
+
+  const dragended = (event: CustomDragEvent, d: Node) =&gt; {
+    if (!event.active) simulation.alphaTarget(0)
+    d.fx = null
+    d.fy = null
   }
 
   const updateNodes = () =&gt; {
@@ -252,22 +249,24 @@ const renderGraph: RenderGraph = ({ data, rootElId }) =&gt; {
     textsEls.exit().remove()
   }
 
-  const dragstarted = (event: CustomDragEvent, d: Node) =&gt; {
-    if (!event.active) simulation.alphaTarget(0.3).restart()
-    d.fx = d.x
-    d.fy = d.y
+  let mousedownLink: any = null
+  let mousedownNode: any = null
+  let mouseupNode: any = null
+
+  const resetMouseVars = () =&gt; {
+    mousedownNode = null
+    mouseupNode = null
+    mousedownLink = null
   }
 
-  const dragged = (event: CustomDragEvent, d: Node) =&gt; {
-    d.fx = event.x
-    d.fy = event.y
-  }
-
-  const dragended = (event: CustomDragEvent, d: Node) =&gt; {
-    if (!event.active) simulation.alphaTarget(0)
-    d.fx = null
-    d.fy = null
-  }
+  svg
+    .selectAll(`.${styles.link}`)
+    .data(links)
+    .enter()
+    .append(&quot;svg:path&quot;)
+    .attr(&quot;class&quot;, styles.link)
+    .attr(&quot;marker-end&quot;, &quot;url(#end)&quot;)
+    .attr(&quot;id&quot;, (_d, i) =&gt; `link-${i}`)
 
   const keydown = function () {
     console.log(&quot;keydown&quot;) // eslint-disable-line no-console
@@ -336,8 +335,8 @@ const main = () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:132,&quot;character&quot;:6,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:133,&quot;character&quot;:6,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:134,&quot;character&quot;:6,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:4,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:138,&quot;character&quot;:4,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:139,&quot;character&quot;:4,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:211,&quot;character&quot;:28,&quot;text&quot;:&quot;_ev&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:214,&quot;character&quot;:29,&quot;text&quot;:&quot;_ev&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:266,&quot;character&quot;:24,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:8,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:12,&quot;text&quot;:&quot;ctrlKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:23,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:269,&quot;character&quot;:40,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:273,&quot;character&quot;:20,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:10,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:16,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:18,&quot;text&quot;:&quot;getBoundingClientRect&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:14,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:18,&quot;text&quot;:&quot;clientX&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:28,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:32,&quot;text&quot;:&quot;left&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:14,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:18,&quot;text&quot;:&quot;clientY&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:28,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:277,&quot;character&quot;:32,&quot;text&quot;:&quot;top&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:300,&quot;character&quot;:30,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 17 Aug 2021 22:45:51 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:208,&quot;character&quot;:28,&quot;text&quot;:&quot;_ev&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:211,&quot;character&quot;:29,&quot;text&quot;:&quot;_ev&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:238,&quot;character&quot;:6,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:239,&quot;character&quot;:6,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:240,&quot;character&quot;:6,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:243,&quot;character&quot;:4,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:244,&quot;character&quot;:4,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:245,&quot;character&quot;:4,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:265,&quot;character&quot;:24,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:268,&quot;character&quot;:8,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:268,&quot;character&quot;:12,&quot;text&quot;:&quot;ctrlKey&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:268,&quot;character&quot;:23,&quot;text&quot;:&quot;mousedownNode&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:268,&quot;character&quot;:40,&quot;text&quot;:&quot;mousedownLink&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:272,&quot;character&quot;:20,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:274,&quot;character&quot;:10,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:274,&quot;character&quot;:16,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:274,&quot;character&quot;:18,&quot;text&quot;:&quot;getBoundingClientRect&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:14,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:18,&quot;text&quot;:&quot;clientX&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:28,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:275,&quot;character&quot;:32,&quot;text&quot;:&quot;left&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:14,&quot;text&quot;:&quot;evt&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:18,&quot;text&quot;:&quot;clientY&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:28,&quot;text&quot;:&quot;dim&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:276,&quot;character&quot;:32,&quot;text&quot;:&quot;top&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/vectors/vectors.ts&quot;,&quot;line&quot;:299,&quot;character&quot;:30,&quot;text&quot;:&quot;mouseupNode&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 18 Aug 2021 22:45:40 GMT</p>
     </body>
   </html>
   
