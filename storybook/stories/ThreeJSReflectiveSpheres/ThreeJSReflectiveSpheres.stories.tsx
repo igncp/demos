@@ -99,6 +99,12 @@ const main = (props: Props, prevSimulation: Simulation | null) => {
   const spheresList: Sphere[] = prevSimulation?.spheresList ?? []
   const mouse = new Vector2()
 
+  const state: State = {
+    currentTime: prevSimulation?.state.currentTime ?? 0,
+    isStopped: false,
+    selectedSphereUuid: prevSimulation?.state.selectedSphereUuid ?? "",
+  }
+
   const onClick = (event: MouseEvent) => {
     event.preventDefault()
 
@@ -153,17 +159,18 @@ const main = (props: Props, prevSimulation: Simulation | null) => {
     }
   }
 
-  container.addEventListener("click", onClick)
+  const particleLight =
+    prevSimulation?.particleLight ??
+    new Mesh(
+      new SphereGeometry(20, 8, 8),
+      new MeshBasicMaterial({ color: 0xffa500 })
+    )
 
-  const state: State = {
-    currentTime: prevSimulation?.state.currentTime ?? 0,
-    isStopped: false,
-    selectedSphereUuid: prevSimulation?.state.selectedSphereUuid ?? "",
-  }
+  container.addEventListener("click", onClick)
 
   const createSimulation = (): Simulation => ({
     camera,
-    particleLight: prevSimulation?.particleLight ?? particleLight,
+    particleLight,
     props,
     renderer,
     scene,
@@ -251,10 +258,6 @@ const main = (props: Props, prevSimulation: Simulation | null) => {
   addLabel("+reflectivity", new Vector3(-150, 0, -300))
   addLabel("-reflectivity", new Vector3(-150, 0, 300))
 
-  const particleLight = new Mesh(
-    new SphereGeometry(20, 8, 8),
-    new MeshBasicMaterial({ color: 0xffa500 })
-  )
   const directionalLight = new DirectionalLight(0xffffff, 1)
   const pointLight = new PointLight(0xffa500, 2, 800)
 

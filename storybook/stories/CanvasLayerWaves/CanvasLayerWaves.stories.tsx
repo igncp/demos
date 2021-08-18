@@ -101,6 +101,19 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
     })
   }
 
+  const clip = (fragment: number, total: number) => fragment - total / 2
+
+  const projectMesh = () => {
+    mesh.forEach((triangle) => {
+      triangle.forEach((point) => {
+        const projectionScale = (zoom * fov) / (fov + point.z)
+
+        point.x = clip(point.x, width) * projectionScale + width / 2
+        point.y = clip(point.y, height) * projectionScale + height / 3
+      })
+    })
+  }
+
   const drawMesh = () => {
     projectMesh()
 
@@ -133,19 +146,6 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
             point.x * noiseFactor + state.offsetX,
             point.y * noiseFactor + state.offsetY
           )
-      })
-    })
-  }
-
-  const clip = (fragment: number, total: number) => fragment - total / 2
-
-  const projectMesh = () => {
-    mesh.forEach((triangle) => {
-      triangle.forEach((point) => {
-        const projectionScale = (zoom * fov) / (fov + point.z)
-
-        point.x = clip(point.x, width) * projectionScale + width / 2
-        point.y = clip(point.y, height) * projectionScale + height / 3
       })
     })
   }

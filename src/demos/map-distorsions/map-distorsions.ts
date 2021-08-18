@@ -72,6 +72,52 @@ type Dimension = {
   type: any
 }
 
+const filterColor = (
+  id: string,
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  deviation: number,
+  slope: number
+) => {
+  const defs = svg.append("defs")
+  const filter = defs.append("filter").attr("id", `drop-shadow-${id}`)
+
+  filter
+    .append("feOffset")
+    .attr("dx", 0.5)
+    .attr("dy", 0.5)
+    .attr("in", "SourceGraphic")
+    .attr("result", "offOut")
+
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "offOut")
+    .attr("result", "blurOut")
+    .attr("stdDeviation", deviation)
+
+  filter
+    .append("feBlend")
+    .attr("in", "SourceGraphic")
+    .attr("in2", "blurOut")
+    .attr("mode", "normal")
+
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", slope)
+    .attr("type", "linear")
+}
+
+const colorsScale = <P extends number = any>(domain: [number, number]) => {
+  const c = scaleLinear().domain(domain).range([0, 1])
+  const colorScale = scaleLinear<string>()
+    .domain(range(0, 1, 1.0 / colors.length))
+    .range(colors)
+
+  return function (p: P) {
+    return colorScale(c(p))
+  }
+}
+
 const renderChart: RenderChart = ({ data, rootElId }) => {
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
@@ -220,6 +266,10 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     el.appendChild(this)
   }
 
+  const projection = svg.selectAll<SVGElement, ProjectionItem>(
+    `.${styles.axis} text,.${styles.background} path,.${styles.foreground} path`
+  )
+
   const mouseover = (_e: unknown, overProjection: ProjectionItem) => {
     svg.selectAll(`.${styles.foreground} path`).style("filter", "none")
     svg.classed(styles.active, true)
@@ -250,62 +300,11 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .style("filter", "url(#drop-shadow-lines)")
     .style("stroke", (_d, projectionItemIndex) => colorFn(projectionItemIndex))
 
-  const projection = svg
-    .selectAll<SVGElement, ProjectionItem>(
-      `.${styles.axis} text,.${styles.background} path,.${styles.foreground} path`
-    )
-    .on("mouseover", mouseover)
-    .on("mouseout", mouseout)
+  projection.on("mouseover", mouseover).on("mouseout", mouseout)
 
   $(`.${styles.background} path, .${styles.foreground} path`).tooltip({
     track: true,
   })
-}
-
-const colorsScale = <P extends number = any>(domain: [number, number]) => {
-  const c = scaleLinear().domain(domain).range([0, 1])
-  const colorScale = scaleLinear<string>()
-    .domain(range(0, 1, 1.0 / colors.length))
-    .range(colors)
-
-  return function (p: P) {
-    return colorScale(c(p))
-  }
-}
-
-const filterColor = (
-  id: string,
-  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
-  deviation: number,
-  slope: number
-) => {
-  const defs = svg.append("defs")
-  const filter = defs.append("filter").attr("id", `drop-shadow-${id}`)
-
-  filter
-    .append("feOffset")
-    .attr("dx", 0.5)
-    .attr("dy", 0.5)
-    .attr("in", "SourceGraphic")
-    .attr("result", "offOut")
-
-  filter
-    .append("feGaussianBlur")
-    .attr("in", "offOut")
-    .attr("result", "blurOut")
-    .attr("stdDeviation", deviation)
-
-  filter
-    .append("feBlend")
-    .attr("in", "SourceGraphic")
-    .attr("in2", "blurOut")
-    .attr("mode", "normal")
-
-  filter
-    .append("feComponentTransfer")
-    .append("feFuncA")
-    .attr("slope", slope)
-    .attr("type", "linear")
 }
 
 const main = async () => {

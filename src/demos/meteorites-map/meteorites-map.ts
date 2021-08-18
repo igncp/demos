@@ -345,9 +345,20 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     selectedMeteorite: null,
   }
 
+  const modal = select(`#${rootElId}`)
+    .append("div")
+    .attr("class", styles.modal)
+    .style("top", `${-modalHiddenTop}px`)
+
+  const meteoritesGeo: MeteoriteGeo[] = meteorites.map((a) => ({
+    ...a,
+    geometry: a.geolocation,
+    type: "Feature",
+  }))
+
   const removeSelectionFn = () => {
     removeSelection({
-      meteoritesEls,
+      meteoritesEls, // eslint-disable-line @typescript-eslint/no-use-before-define
       modal,
       state,
     })
@@ -360,7 +371,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     clickEvent.stopPropagation()
     meteoriteClickHandler({
       clickedMeteorite,
-      meteoritesEls,
+      meteoritesEls, // eslint-disable-line @typescript-eslint/no-use-before-define
       meteoritesGeo,
       modal,
       projectionFn,
@@ -368,17 +379,6 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
       state,
     })
   }
-
-  const meteoritesGeo: MeteoriteGeo[] = meteorites.map((a) => ({
-    ...a,
-    geometry: a.geolocation,
-    type: "Feature",
-  }))
-
-  const modal = select(`#${rootElId}`)
-    .append("div")
-    .attr("class", styles.modal)
-    .style("top", `${-modalHiddenTop}px`)
 
   const svg = select(`#${rootElId}`)
     .append("svg")

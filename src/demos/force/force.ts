@@ -55,9 +55,17 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
 
   const { width } = rootEl.getBoundingClientRect()
 
+  const svg = d3
+    .select(`#${rootElId}`)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+
   const ticked = () => {
+    /* eslint-disable @typescript-eslint/no-use-before-define */
     updateLinks()
     updateNodes()
+    /* eslint-enable @typescript-eslint/no-use-before-define */
   }
 
   const simulation = d3
@@ -67,20 +75,22 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
     .force("link", d3.forceLink().links(links))
     .on("tick", ticked)
 
-  const svg = d3
-    .select(`#${rootElId}`)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
+  const dragstarted = (event: CustomDragEvent, d: Node) => {
+    if (!event.active) simulation.alphaTarget(0.3).restart()
+    d.fx = d.x
+    d.fy = d.y
+  }
 
-  svg
-    .selectAll(`.${styles.linkCurved}`)
-    .data(links)
-    .enter()
-    .append("svg:path")
-    .attr("class", styles.linkCurved)
-    .attr("marker-end", "url(#end)")
-    .attr("id", (_d, i) => `link-${i}`)
+  const dragged = (event: CustomDragEvent, d: Node) => {
+    d.fx = event.x
+    d.fy = event.y
+  }
+
+  const dragended = (event: CustomDragEvent, d: Node) => {
+    if (!event.active) simulation.alphaTarget(0)
+    d.fx = null
+    d.fy = null
+  }
 
   const updateLinks = () => {
     const linksEls = svg
@@ -154,22 +164,14 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
     textsEls.exit().remove()
   }
 
-  const dragstarted = (event: CustomDragEvent, d: Node) => {
-    if (!event.active) simulation.alphaTarget(0.3).restart()
-    d.fx = d.x
-    d.fy = d.y
-  }
-
-  const dragged = (event: CustomDragEvent, d: Node) => {
-    d.fx = event.x
-    d.fy = event.y
-  }
-
-  const dragended = (event: CustomDragEvent, d: Node) => {
-    if (!event.active) simulation.alphaTarget(0)
-    d.fx = null
-    d.fy = null
-  }
+  svg
+    .selectAll(`.${styles.linkCurved}`)
+    .data(links)
+    .enter()
+    .append("svg:path")
+    .attr("class", styles.linkCurved)
+    .attr("marker-end", "url(#end)")
+    .attr("id", (_d, i) => `link-${i}`)
 }
 
 const main = async () => {

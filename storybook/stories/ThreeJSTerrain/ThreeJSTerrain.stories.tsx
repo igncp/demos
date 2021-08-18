@@ -207,19 +207,52 @@ const main = (
 
   const raycaster = new Raycaster()
 
-  const onWindowResize = () => {
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
-
-    renderer.setSize(window.innerWidth, window.innerHeight)
-  }
-
   const container = document.getElementById(ROOT_ID) as HTMLElement
 
   container.innerHTML = ""
 
   const containerRect = container.getBoundingClientRect()
   const pointer = new Vector2()
+
+  const { width } = containerRect
+  const renderer = new WebGLRenderer({ antialias: true })
+
+  const camera = new PerspectiveCamera(
+    60,
+    width / window.innerHeight,
+    10,
+    20000
+  )
+
+  const newHeightData = generateHeight(worldWidth, worldDepth, mountainHeight)
+
+  const createMaterial = () =>
+    new MeshBasicMaterial({
+      map: createTexture(newHeightData),
+      opacity: 0.8,
+      transparent: true,
+    })
+
+  const material = createMaterial()
+
+  const geometry = new PlaneGeometry(
+    planeSize,
+    planeSize,
+    worldWidth - 1,
+    worldDepth - 1
+  )
+  const mesh = new Mesh(geometry, material)
+
+  const geometryHelper = new ConeGeometry(
+    surfaceConeRadius,
+    surfaceConeHeight,
+    surfaceConeRadialSegments
+  )
+
+  geometryHelper.translate(0, 50, 0)
+  geometryHelper.rotateX(Math.PI / 2)
+
+  const surfaceCone = new Mesh(geometryHelper, new MeshNormalMaterial())
 
   const onPointerMove = (event: MouseEvent) => {
     pointer.x =
@@ -245,9 +278,6 @@ const main = (
     }
   }
 
-  const { width } = containerRect
-  const renderer = new WebGLRenderer({ antialias: true })
-
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(width, canvasHeight)
   container.appendChild(renderer.domElement)
@@ -256,33 +286,17 @@ const main = (
 
   scene.background = new Color(0xffffff)
 
-  const camera = new PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    10,
-    20000
-  )
-
   const controls = new OrbitControls(camera, renderer.domElement)
 
   controls.minDistance = 1000
   controls.maxDistance = 10000
   controls.maxPolarAngle = Math.PI / 2
 
-  const newHeightData = generateHeight(worldWidth, worldDepth, mountainHeight)
-
   controls.target.y =
     newHeightData[worldHalfWidth + worldHalfDepth * worldWidth] + 500
   camera.position.y = controls.target.y + 2000
   camera.position.x = 2000
   controls.update()
-
-  const geometry = new PlaneGeometry(
-    planeSize,
-    planeSize,
-    worldWidth - 1,
-    worldDepth - 1
-  )
 
   geometry.rotateX(-Math.PI / 2)
 
@@ -303,28 +317,7 @@ const main = (
   // @ts-ignore
   geometry.computeFaceNormals()
 
-  const createMaterial = () =>
-    new MeshBasicMaterial({
-      map: createTexture(newHeightData),
-      opacity: 0.8,
-      transparent: true,
-    })
-
-  const material = createMaterial()
-  const mesh = new Mesh(geometry, material)
-
   scene.add(mesh)
-
-  const geometryHelper = new ConeGeometry(
-    surfaceConeRadius,
-    surfaceConeHeight,
-    surfaceConeRadialSegments
-  )
-
-  geometryHelper.translate(0, 50, 0)
-  geometryHelper.rotateX(Math.PI / 2)
-
-  const surfaceCone = new Mesh(geometryHelper, new MeshNormalMaterial())
 
   scene.add(surfaceCone)
 
@@ -339,7 +332,6 @@ const main = (
   }
 
   container.addEventListener("pointermove", onPointerMove)
-  window.addEventListener("resize", onWindowResize)
 
   animate()
 
@@ -349,7 +341,6 @@ const main = (
     props,
     stop: () => {
       container.removeEventListener("pointermove", onPointerMove)
-      window.removeEventListener("resize", onWindowResize)
       state.isStopped = true
     },
   }

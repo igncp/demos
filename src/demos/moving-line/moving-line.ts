@@ -33,34 +33,26 @@ const height = 300
 type RenderChartOpts = { graphData: Data; rootElId: string }
 
 const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
-  const initLineGraph = function () {
-    const rootEl = document.getElementById(rootElId) as HTMLElement
+  const createPathString = () => {
+    const {
+      charts: {
+        [graphData.current]: { points },
+      },
+    } = graphData
 
-    rootEl.classList.add(styles.movingLineChart)
+    let path = `M ${graphData.xOffset} ${graphData.yOffset - points[0].value}`
+    let i = 0
 
-    const { width } = rootEl.getBoundingClientRect()
-    const paper = Raphael(rootElId, width, height)
+    const { length } = points
 
-    graphData.paper = paper
-
-    const path = createPathString()
-
-    const line = paper.path(path)
-
-    graphData.line = line
-    drawPoints()
-
-    setInterval(advanceGraph, 3000)
-  }
-
-  const advanceGraph = function () {
-    if (graphData.current < graphData.charts.length - 1) {
-      graphData.current++
-    } else {
-      graphData.current = 1
+    while (i < length) {
+      path += " L "
+      path += `${graphData.xOffset + i * graphData.xDelta} `
+      path += graphData.yOffset - points[i].value
+      i++
     }
 
-    animateChart()
+    return path
   }
 
   const drawPoints = function () {
@@ -139,26 +131,34 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
     )
   }
 
-  const createPathString = function () {
-    const {
-      charts: {
-        [graphData.current]: { points },
-      },
-    } = graphData
-
-    let path = `M ${graphData.xOffset} ${graphData.yOffset - points[0].value}`
-    let i = 0
-
-    const { length } = points
-
-    while (i < length) {
-      path += " L "
-      path += `${graphData.xOffset + i * graphData.xDelta} `
-      path += graphData.yOffset - points[i].value
-      i++
+  const advanceGraph = function () {
+    if (graphData.current < graphData.charts.length - 1) {
+      graphData.current++
+    } else {
+      graphData.current = 1
     }
 
-    return path
+    animateChart()
+  }
+
+  const initLineGraph = function () {
+    const rootEl = document.getElementById(rootElId) as HTMLElement
+
+    rootEl.classList.add(styles.movingLineChart)
+
+    const { width } = rootEl.getBoundingClientRect()
+    const paper = Raphael(rootElId, width, height)
+
+    graphData.paper = paper
+
+    const path = createPathString()
+
+    const line = paper.path(path)
+
+    graphData.line = line
+    drawPoints()
+
+    setInterval(advanceGraph, 3000)
   }
 
   initLineGraph()

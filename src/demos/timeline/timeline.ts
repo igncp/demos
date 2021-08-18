@@ -97,6 +97,40 @@ const toYear = (date: Date) => {
   return bcString + Math.abs(year)
 }
 
+const filterBlackOpacity = (
+  id: string,
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  deviation: number,
+  slope: number
+) => {
+  const defs = svg.append("defs")
+  const filter = defs
+    .append("filter")
+    .attr("height", "500%")
+    .attr("id", `drop-shadow-${id}`)
+    .attr("width", "500%")
+    .attr("x", "-200%")
+    .attr("y", "-200%")
+
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", deviation)
+
+  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", slope)
+    .attr("type", "linear")
+
+  const feMerge = filter.append("feMerge")
+
+  feMerge.append("feMergeNode")
+
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
+}
+
 class Timeline {
   private readonly chart: Selection<SVGGElement, unknown, HTMLElement, unknown>
 
@@ -607,40 +641,6 @@ class Timeline {
 
     return this
   }
-}
-
-const filterBlackOpacity = (
-  id: string,
-  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
-  deviation: number,
-  slope: number
-) => {
-  const defs = svg.append("defs")
-  const filter = defs
-    .append("filter")
-    .attr("height", "500%")
-    .attr("id", `drop-shadow-${id}`)
-    .attr("width", "500%")
-    .attr("x", "-200%")
-    .attr("y", "-200%")
-
-  filter
-    .append("feGaussianBlur")
-    .attr("in", "SourceAlpha")
-    .attr("stdDeviation", deviation)
-
-  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
-  filter
-    .append("feComponentTransfer")
-    .append("feFuncA")
-    .attr("slope", slope)
-    .attr("type", "linear")
-
-  const feMerge = filter.append("feMerge")
-
-  feMerge.append("feMergeNode")
-
-  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
 const main = async () => {

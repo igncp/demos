@@ -169,7 +169,7 @@ const main = ({
     }
 
     public attach(point: Point) {
-      const constraint = new Constraint(this, point)
+      const constraint = new Constraint(this, point) // eslint-disable-line @typescript-eslint/no-use-before-define
 
       this.constraints.push(constraint)
     }

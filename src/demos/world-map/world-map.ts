@@ -43,7 +43,7 @@ const renderChart: RenderChart = ({ rootElId, world }) => {
     if (!(d as unknown) || state.lastZoomId === d.id) {
       state.lastZoomId = null
 
-      countries
+      countries // eslint-disable-line @typescript-eslint/no-use-before-define
         .transition()
         .duration(transitionDuration)
         .attr(
@@ -58,12 +58,12 @@ const renderChart: RenderChart = ({ rootElId, world }) => {
 
     state.lastZoomId = d.id
 
-    const centroid = path.centroid(d)
+    const centroid = path.centroid(d) // eslint-disable-line @typescript-eslint/no-use-before-define
 
     const x = centroid[0]
     const y = centroid[1]
 
-    countries
+    countries // eslint-disable-line @typescript-eslint/no-use-before-define
       .transition()
       .duration(transitionDuration)
       .attr(

@@ -42,6 +42,7 @@ const tsRules = {
   "@typescript-eslint/no-unnecessary-type-constraint": 2,
   "@typescript-eslint/no-unused-expressions": 2,
   "@typescript-eslint/no-unused-vars": 2,
+  "@typescript-eslint/no-use-before-define": 2,
   "@typescript-eslint/prefer-nullish-coalescing": 2,
   "@typescript-eslint/prefer-optional-chain": 2,
   "@typescript-eslint/prefer-readonly": 2,

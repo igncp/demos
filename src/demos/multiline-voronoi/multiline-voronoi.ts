@@ -37,6 +37,21 @@ type CityMetric = {
 
 const formatStr = "%Y-%m"
 
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+]
+
 const texts = {
   chartTitle: "US Unemployment Rate",
   tooltipPart1: (cityMetric: CityMetric) => `${cityMetric.cityName.trim()}: `,
@@ -85,21 +100,6 @@ const fetchData = async () => {
   return { cities, months }
 }
 
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-]
-
 const margin = {
   bottom: 70,
   left: 80,
@@ -113,6 +113,30 @@ type RenderChart = (o: {
   rootElId: string
 }) => {
   setVoronoi: (v: boolean) => void
+}
+
+const addFilter = (
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
+) => {
+  const defs = svg.append("defs")
+  const filter = defs.append("filter").attr("id", "drop-shadow")
+
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", 1)
+
+  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", "1")
+    .attr("type", "linear")
+
+  const feMerge = filter.append("feMerge")
+
+  feMerge.append("feMergeNode")
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
 const renderChart: RenderChart = ({ cities, months, rootElId }) => {
@@ -176,9 +200,33 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
     .style("font-weight", "bold")
     .text(texts.chartTitle)
 
+  const focus = svg
+    .append("g")
+    .attr("transform", "translate(-100,-100)")
+    .attr("class", styles.focus)
+
   addFilter(svg)
 
   const line = lineD3<CityMetric>().x(lineXTransformer).y(lineYTransformer)
+
+  const generateLines = (usedCities: City[]) => {
+    svg
+      .append("g")
+      .attr("class", styles.cities)
+      .selectAll("path")
+      .data(usedCities)
+      .enter()
+      .append("path")
+      .attr("d", function (city: City) {
+        cityNameToLine[city.name] = this
+
+        return line(city.metrics)
+      })
+      .style("stroke", (_city, index) => color(index.toString()))
+      .style("filter", () => "url(#drop-shadow)")
+
+    generateVoronoi(usedCities) // eslint-disable-line @typescript-eslint/no-use-before-define
+  }
 
   const generateVoronoi = (usedCities: City[]) => {
     const mouseover = (_e: unknown, cityMetric: CityMetric) => {
@@ -209,9 +257,8 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
     const clicked = (_e: unknown, d: CityMetric) => {
       state.clickToggle = !state.clickToggle
 
-      selectAll(".cities").remove()
-      selectAll(".voronoi").remove()
-      selectAll(".focus").remove()
+      selectAll(`.${styles.cities}`).remove()
+      selectAll(`.${styles.voronoi}`).remove()
 
       const inputData: City[] = (() => {
         if (state.clickToggle) {
@@ -225,11 +272,6 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
 
       generateLines(inputData)
     }
-
-    const focus = svg
-      .append("g")
-      .attr("transform", "translate(-100,-100)")
-      .attr("class", styles.focus)
 
     focus.append("circle").attr("r", 3.5)
     focus.append("text").attr("class", "text1").attr("y", -30)
@@ -267,25 +309,6 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
       .on("click", clicked)
   }
 
-  const generateLines = (usedCities: City[]) => {
-    svg
-      .append("g")
-      .attr("class", styles.cities)
-      .selectAll("path")
-      .data(usedCities)
-      .enter()
-      .append("path")
-      .attr("d", function (city: City) {
-        cityNameToLine[city.name] = this
-
-        return line(city.metrics)
-      })
-      .style("stroke", (_city, index) => color(index.toString()))
-      .style("filter", () => "url(#drop-shadow)")
-
-    generateVoronoi(usedCities)
-  }
-
   generateLines(cities)
 
   return {
@@ -293,30 +316,6 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
       state.voronoiGroup!.classed(styles.voronoiShow, checked)
     },
   }
-}
-
-const addFilter = (
-  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
-) => {
-  const defs = svg.append("defs")
-  const filter = defs.append("filter").attr("id", "drop-shadow")
-
-  filter
-    .append("feGaussianBlur")
-    .attr("in", "SourceAlpha")
-    .attr("stdDeviation", 1)
-
-  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
-  filter
-    .append("feComponentTransfer")
-    .append("feFuncA")
-    .attr("slope", "1")
-    .attr("type", "linear")
-
-  const feMerge = filter.append("feMerge")
-
-  feMerge.append("feMergeNode")
-  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
 const main = async () => {

@@ -47,6 +47,27 @@ type RenderChartReturn = {
   updateChart: () => void
 }
 
+const addDropShadow = (
+  svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>,
+  name: string,
+  slope: number,
+  deviation: number
+) => {
+  svg.append("filter").html(`
+<filter id="${name}" height="130%">
+  <feGaussianBlur in="SourceAlpha" stdDeviation="${deviation}"/>
+  <feOffset dx="2" dy="2" result="offsetblur"/>
+  <feComponentTransfer>
+    <feFuncA type="linear" slope="${slope}"/>
+  </feComponentTransfer>
+  <feMerge>
+    <feMergeNode/>
+    <feMergeNode in="SourceGraphic"/>
+  </feMerge>
+</filter>
+`)
+}
+
 export const renderChart = <ChartData>(
   chartConfig: ChartConfig<ChartData>
 ): RenderChartReturn => {
@@ -271,25 +292,4 @@ export const renderChart = <ChartData>(
   return {
     updateChart: transitionChart,
   }
-}
-
-const addDropShadow = (
-  svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>,
-  name: string,
-  slope: number,
-  deviation: number
-) => {
-  svg.append("filter").html(`
-<filter id="${name}" height="130%">
-  <feGaussianBlur in="SourceAlpha" stdDeviation="${deviation}"/>
-  <feOffset dx="2" dy="2" result="offsetblur"/>
-  <feComponentTransfer>
-    <feFuncA type="linear" slope="${slope}"/>
-  </feComponentTransfer>
-  <feMerge>
-    <feMergeNode/>
-    <feMergeNode in="SourceGraphic"/>
-  </feMerge>
-</filter>
-`)
 }

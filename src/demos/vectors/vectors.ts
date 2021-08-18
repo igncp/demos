@@ -121,31 +121,6 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
   rootEl.classList.add(styles.vectorsChart)
 
   const { width } = rootEl.getBoundingClientRect()
-
-  // @TODO
-  let lastNodeId = "C".charCodeAt(0)
-
-  const ticked = () => {
-    updateLinks()
-    updateNodes()
-  }
-
-  let mousedownLink: any = null
-  let mousedownNode: any = null
-  let mouseupNode: any = null
-
-  const resetMouseVars = () => {
-    mousedownNode = null
-    mouseupNode = null
-    mousedownLink = null
-  }
-
-  const simulation = forceSimulation(nodes)
-    .force("charge", forceManyBody().strength(-50))
-    .force("center", forceCenter(width / 2, height / 2))
-    .force("link", forceLink().links(links).distance(100))
-    .on("tick", ticked)
-
   const svg = select(`#${rootElId}`)
     .append("svg")
     .attr("width", width)
@@ -153,14 +128,8 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
 
   setupSVG(svg)
 
-  svg
-    .selectAll(`.${styles.link}`)
-    .data(links)
-    .enter()
-    .append("svg:path")
-    .attr("class", styles.link)
-    .attr("marker-end", "url(#end)")
-    .attr("id", (_d, i) => `link-${i}`)
+  // @TODO
+  let lastNodeId = "C".charCodeAt(0)
 
   const updateLinks = () => {
     const linksEls = svg
@@ -189,6 +158,34 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
       .attr("class", `${styles.link} ${styles.dragline}`)
 
     linksEls.exit().remove()
+  }
+
+  const ticked = () => {
+    updateLinks()
+    updateNodes() // eslint-disable-line @typescript-eslint/no-use-before-define
+  }
+
+  const simulation = forceSimulation(nodes)
+    .force("charge", forceManyBody().strength(-50))
+    .force("center", forceCenter(width / 2, height / 2))
+    .force("link", forceLink().links(links).distance(100))
+    .on("tick", ticked)
+
+  const dragstarted = (event: CustomDragEvent, d: Node) => {
+    if (!event.active) simulation.alphaTarget(0.3).restart()
+    d.fx = d.x
+    d.fy = d.y
+  }
+
+  const dragged = (event: CustomDragEvent, d: Node) => {
+    d.fx = event.x
+    d.fy = event.y
+  }
+
+  const dragended = (event: CustomDragEvent, d: Node) => {
+    if (!event.active) simulation.alphaTarget(0)
+    d.fx = null
+    d.fy = null
   }
 
   const updateNodes = () => {
@@ -239,22 +236,24 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
     textsEls.exit().remove()
   }
 
-  const dragstarted = (event: CustomDragEvent, d: Node) => {
-    if (!event.active) simulation.alphaTarget(0.3).restart()
-    d.fx = d.x
-    d.fy = d.y
+  let mousedownLink: any = null
+  let mousedownNode: any = null
+  let mouseupNode: any = null
+
+  const resetMouseVars = () => {
+    mousedownNode = null
+    mouseupNode = null
+    mousedownLink = null
   }
 
-  const dragged = (event: CustomDragEvent, d: Node) => {
-    d.fx = event.x
-    d.fy = event.y
-  }
-
-  const dragended = (event: CustomDragEvent, d: Node) => {
-    if (!event.active) simulation.alphaTarget(0)
-    d.fx = null
-    d.fy = null
-  }
+  svg
+    .selectAll(`.${styles.link}`)
+    .data(links)
+    .enter()
+    .append("svg:path")
+    .attr("class", styles.link)
+    .attr("marker-end", "url(#end)")
+    .attr("id", (_d, i) => `link-${i}`)
 
   const keydown = function () {
     console.log("keydown") // eslint-disable-line no-console

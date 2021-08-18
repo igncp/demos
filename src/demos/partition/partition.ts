@@ -99,6 +99,30 @@ const getInterpolatorFn = (
   }
 }
 
+const addFilter = (
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
+) => {
+  const defs = svg.append("defs")
+  const filter = defs.append("filter")
+
+  filter.attr("id", "drop-shadow")
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", 9)
+  filter.append("feOffset").attr("dx", 2).attr("dy", 5)
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", ".5")
+    .attr("type", "linear")
+
+  const feMerge = filter.append("feMerge")
+
+  feMerge.append("feMergeNode")
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
+}
+
 const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
   const { width } = (document.getElementById(
     "chart"
@@ -263,12 +287,6 @@ const main = async () => {
     return result as PartitionType
   }
 
-  formEl.addEventListener("change", () => {
-    const newPartitionType = getCurrentSelectedRadio()
-
-    updatePartition(newPartitionType)
-  })
-
   const partitionType = getCurrentSelectedRadio()
 
   const { updatePartition } = renderChart({
@@ -276,30 +294,12 @@ const main = async () => {
     rootData,
     rootElId: "chart",
   })
-}
 
-const addFilter = (
-  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
-) => {
-  const defs = svg.append("defs")
-  const filter = defs.append("filter")
+  formEl.addEventListener("change", () => {
+    const newPartitionType = getCurrentSelectedRadio()
 
-  filter.attr("id", "drop-shadow")
-  filter
-    .append("feGaussianBlur")
-    .attr("in", "SourceAlpha")
-    .attr("stdDeviation", 9)
-  filter.append("feOffset").attr("dx", 2).attr("dy", 5)
-  filter
-    .append("feComponentTransfer")
-    .append("feFuncA")
-    .attr("slope", ".5")
-    .attr("type", "linear")
-
-  const feMerge = filter.append("feMerge")
-
-  feMerge.append("feMergeNode")
-  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
+    updatePartition(newPartitionType)
+  })
 }
 
 export default main

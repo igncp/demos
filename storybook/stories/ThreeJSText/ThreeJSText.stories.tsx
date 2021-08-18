@@ -22,6 +22,7 @@ import {
   TemplateType,
   createRangeControl,
   createSelectControl,
+  webAPIDocs,
 } from "../common"
 
 enum FontWeight {
@@ -154,6 +155,39 @@ const main = (
     isStopped: false,
   }
 
+  const onPointerMove = (event: PointerEvent) => {
+    if (!event.isPrimary) {
+      return
+    }
+
+    state.pointerX = event.clientX - halfWidth
+
+    state.targetRotation =
+      state.targetRotationOnPointerDown +
+      (state.pointerX - state.pointerXOnPointerDown) * 0.02
+  }
+
+  const onPointerUp = (event: PointerEvent) => {
+    if (!event.isPrimary) {
+      return
+    }
+
+    document.removeEventListener("pointermove", onPointerMove)
+    document.removeEventListener("pointerup", onPointerUp)
+  }
+
+  const onPointerDown = (event: PointerEvent) => {
+    if (!event.isPrimary) {
+      return
+    }
+
+    state.pointerXOnPointerDown = event.clientX - halfWidth
+    state.targetRotationOnPointerDown = state.targetRotation
+
+    document.addEventListener("pointermove", onPointerMove)
+    document.addEventListener("pointerup", onPointerUp)
+  }
+
   const createSimulation = () => ({
     camera,
     cameraTarget,
@@ -171,18 +205,6 @@ const main = (
       state.isStopped = true
     },
   })
-
-  const onPointerDown = (event: any) => {
-    if (event.isPrimary === false) {
-      return
-    }
-
-    state.pointerXOnPointerDown = event.clientX - halfWidth
-    state.targetRotationOnPointerDown = state.targetRotation
-
-    document.addEventListener("pointermove", onPointerMove)
-    document.addEventListener("pointerup", onPointerUp)
-  }
 
   const addListeners = () => {
     container.addEventListener("pointerdown", onPointerDown)
@@ -267,27 +289,6 @@ const main = (
     createText()
   }
 
-  const onPointerMove = (event: any) => {
-    if (event.isPrimary === false) {
-      return
-    }
-
-    state.pointerX = event.clientX - halfWidth
-
-    state.targetRotation =
-      state.targetRotationOnPointerDown +
-      (state.pointerX - state.pointerXOnPointerDown) * 0.02
-  }
-
-  const onPointerUp = (event: any) => {
-    if (event.isPrimary === false) {
-      return
-    }
-
-    document.removeEventListener("pointermove", onPointerMove)
-    document.removeEventListener("pointerup", onPointerUp)
-  }
-
   if (previousSimulation) {
     previousSimulation.stop()
 
@@ -349,7 +350,7 @@ const ThreeJSText = (props: Props) => {
   return (
     <div>
       <StoryInfo
-        docs={[]}
+        docs={[webAPIDocs.pointerEvent]}
         source="https://threejs.org/examples/webgl_geometry_text.html#FF00CB010#three.js"
         sourceText="Source (official example, ported to TS)"
         storyName="ThreeJSText"

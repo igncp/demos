@@ -61,6 +61,19 @@ const trainTypeToStyle: { [key in TrainType]: string } = {
   N: styles.tN,
 }
 
+const getFormatTime = () => timeParse("%I:%M%p")
+
+const parseTime = (timeStr: string) => {
+  const formatTime = getFormatTime()
+  const timeDate = formatTime(timeStr)
+
+  if (timeDate !== null && timeDate.getHours() < 3) {
+    timeDate.setDate(timeDate.getDate() + 1)
+  }
+
+  return timeDate
+}
+
 const fetchData = async (): Promise<Data> => {
   const data = ((await tsv(
     `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`
@@ -166,19 +179,6 @@ const refreshOnHourChange = ({
   redraw(times as LimitsStr)
 }
 
-const getFormatTime = () => timeParse("%I:%M%p")
-
-const parseTime = (timeStr: string) => {
-  const formatTime = getFormatTime()
-  const timeDate = formatTime(timeStr)
-
-  if (timeDate !== null && timeDate.getHours() < 3) {
-    timeDate.setDate(timeDate.getDate() + 1)
-  }
-
-  return timeDate
-}
-
 const formatAMPM = function (date: Date) {
   let hours = date.getHours()
   const ampm = hours >= 12 ? "PM" : "AM"
@@ -190,6 +190,40 @@ const formatAMPM = function (date: Date) {
   const minutesStr = minutes < 10 ? `0${minutes}` : minutes.toString()
 
   return `${hours}:${minutesStr} ${ampm}`
+}
+
+const filterBlackOpacity = (
+  id: string,
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
+  deviation: number,
+  slope: number
+) => {
+  const defs = svg.append("defs")
+  const filter = defs
+    .append("filter")
+    .attr("height", "500%")
+    .attr("id", `drop-shadow-${id}`)
+    .attr("width", "500%")
+    .attr("x", "-200%")
+    .attr("y", "-200%")
+
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", deviation)
+
+  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", slope)
+    .attr("type", "linear")
+
+  const feMerge = filter.append("feMerge")
+
+  feMerge.append("feMergeNode")
+
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
 const margin = {
@@ -356,40 +390,6 @@ const main = async () => {
   })
 
   slider.slider("values", [10, 50])
-}
-
-const filterBlackOpacity = (
-  id: string,
-  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
-  deviation: number,
-  slope: number
-) => {
-  const defs = svg.append("defs")
-  const filter = defs
-    .append("filter")
-    .attr("height", "500%")
-    .attr("id", `drop-shadow-${id}`)
-    .attr("width", "500%")
-    .attr("x", "-200%")
-    .attr("y", "-200%")
-
-  filter
-    .append("feGaussianBlur")
-    .attr("in", "SourceAlpha")
-    .attr("stdDeviation", deviation)
-
-  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
-  filter
-    .append("feComponentTransfer")
-    .append("feFuncA")
-    .attr("slope", slope)
-    .attr("type", "linear")
-
-  const feMerge = filter.append("feMerge")
-
-  feMerge.append("feMergeNode")
-
-  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
 export default main

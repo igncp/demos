@@ -25,6 +25,34 @@ const strokeWidth = 0.4
 
 type SVG = Selection<BaseType, unknown, HTMLElement, unknown>
 
+const addDropShadowFilter = function (
+  id: number,
+  svg: SVG,
+  deviation: number,
+  slope: number
+) {
+  const defs = svg.append("defs")
+  const filter = defs.append("filter").attr("id", `drop-shadow-${id}`)
+
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", deviation)
+
+  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", slope)
+    .attr("type", "linear")
+
+  const feMerge = filter.append("feMerge")
+
+  feMerge.append("feMergeNode")
+
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
+}
+
 type Data = Topology<Objects<GeoJsonProperties>>
 
 export type ChartConfig<Properties> = {
@@ -144,32 +172,4 @@ export const renderChart = <Properties>(
   $(`.${regionClass}`).tooltip({
     track: true,
   })
-}
-
-const addDropShadowFilter = function (
-  id: number,
-  svg: SVG,
-  deviation: number,
-  slope: number
-) {
-  const defs = svg.append("defs")
-  const filter = defs.append("filter").attr("id", `drop-shadow-${id}`)
-
-  filter
-    .append("feGaussianBlur")
-    .attr("in", "SourceAlpha")
-    .attr("stdDeviation", deviation)
-
-  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
-  filter
-    .append("feComponentTransfer")
-    .append("feFuncA")
-    .attr("slope", slope)
-    .attr("type", "linear")
-
-  const feMerge = filter.append("feMerge")
-
-  feMerge.append("feMergeNode")
-
-  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }

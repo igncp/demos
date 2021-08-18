@@ -25,6 +25,13 @@ const getThreeExampleDoc = (path: string[]) => ({
   name: `${path.join(".")} example source code`,
 })
 
+export const webAPIDocs = {
+  pointerEvent: {
+    link: "https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent",
+    name: "PointerEvent",
+  },
+}
+
 export const canvasDocs = {
   arc: getCanvasRenderingDoc("arc"),
   beginPath: getCanvasRenderingDoc("beginPath"),
