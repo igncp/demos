@@ -138,6 +138,8 @@ module.exports = {
     "no-func-assign": 2,
     "no-multi-assign": 2,
     "no-nested-ternary": 2,
+    "no-new-func": 2,
+    "no-param-reassign": 2,
     "no-restricted-globals": [2, "global"],
     "no-return-assign": [2, "always"],
     "no-shadow": 0, // using ts plugin one

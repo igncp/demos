@@ -51,9 +51,9 @@ type AddedGradients = { [k: string]: true }
 type ShouldPreventDefault = boolean
 type OnNodeClick = (node: EnergySankeyNode) => ShouldPreventDefault
 
-const getRandomInt = (min: number, max: number): number => {
-  min = Math.ceil(min)
-  max = Math.floor(max)
+const getRandomInt = (minRaw: number, maxRaw: number): number => {
+  const min = Math.ceil(minRaw)
+  const max = Math.floor(maxRaw)
 
   return Math.floor(Math.random() * (max - min + 1)) + min
 }

@@ -26,6 +26,11 @@ const getThreeExampleDoc = (path: string[]) => ({
 })
 
 export const webAPIDocs = {
+  GLSLShaders: {
+    link:
+      "https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders",
+    name: "GLSL Shaders",
+  },
   pointerEvent: {
     link: "https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent",
     name: "PointerEvent",
@@ -44,13 +49,19 @@ export const canvasDocs = {
 export const svgDocs = {
   animateTransform: getSVGElementDoc("animateTransform"),
   begin: getSVGAttributeDoc("begin"),
+  feConvolveMatrix: getSVGElementDoc("feConvolveMatrix"),
+  feFlood: getSVGElementDoc("feFlood"),
+  feMorphology: getSVGElementDoc("feMorphology"),
+  fePointLight: getSVGElementDoc("fePointLight"),
 } as const
 
 export const threeDocs = {
   canvasTexture: getThreeDoc(["textures", "CanvasTexture"]),
   color: getThreeDoc(["math", "color"]),
   improveNoiseExample: getThreeExampleDoc(["math", "ImprovedNoise"]),
+  materialsConstants: getThreeDoc(["constants", "Materials"]),
   meshPhysicalMaterial: getThreeDoc(["materials", "MeshPhysicalMaterial"]),
+  shaderMaterial: getThreeDoc(["materials", "ShaderMaterial"]),
   vector3: getThreeDoc(["math", "Vector3"]),
   webGLRenderer: getThreeDoc(["renderers", "WebGLRenderer"]),
 }

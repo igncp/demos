@@ -1,0 +1,20 @@
+$baseColor: #4cfed7;
+
+::-moz-selection,
+::selection {
+  background: $baseColor;
+}
+
+.svg {
+  display: block;
+  height: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+}
+
+.filtered {
+  color: $baseColor;
+  fill: $baseColor;
+  filter: url(#filter);
+}

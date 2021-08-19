@@ -259,9 +259,13 @@ class Timeline {
       return 0
     }
 
-    const calculateTracks = (items: any, sortOrder: any, timeOrder: any) => {
-      sortOrder = sortOrder || "descending"
-      timeOrder = timeOrder || "backward"
+    const calculateTracks = (
+      items: any,
+      sortOrderInitial: string,
+      timeOrderInitial: string
+    ) => {
+      const sortOrder = sortOrderInitial || "descending"
+      const timeOrder = timeOrderInitial || "backward"
 
       const sortBackward = () =>
         items.forEach((item: any) => {
