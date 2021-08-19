@@ -1,0 +1,219 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>SVGTextFilter.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/SVGTextFilter/SVGTextFilter.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">112</td><td class="">112</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { select } from &quot;d3&quot;
+import React from &quot;react&quot;
+
+import {
+  StoryInfo,
+  TemplateType,
+  createRangeControl,
+  createSelectControl,
+  svgDocs,
+} from &quot;../common&quot;
+
+import * as styles from &quot;./styles.module.css&quot;
+
+const ROOT_ID = &quot;example&quot;
+
+const demo = ({ fontFamily, fontSize, skew, text }: Props) =&gt; {
+  const container = document.getElementById(ROOT_ID) as HTMLElement
+  const { width } = container.getBoundingClientRect()
+
+  select(`#${ROOT_ID}`)
+    .text(&quot;&quot;)
+    .append(&quot;svg&quot;)
+    .attr(&quot;class&quot;, styles.svg)
+    .attr(&quot;width&quot;, width).html(`
+  &lt;defs&gt;
+    &lt;filter id=&quot;filter&quot;&gt;
+      &lt;!-- Colors: --&gt;
+      &lt;feFlood flood-color=&quot;#4CFED7&quot;  flood-opacity=&quot;1&quot; result=&quot;COL_green-l&quot; /&gt;
+      &lt;feFlood flood-color=&quot;#0A4D39&quot;  flood-opacity=&quot;1&quot; result=&quot;COL_green-m&quot; /&gt;
+      &lt;feFlood flood-color=&quot;#2A9B83&quot;  flood-opacity=&quot;1&quot; result=&quot;COL_green-d&quot; /&gt;
+      &lt;feFlood flood-color=&quot;#FA5C71&quot;  flood-opacity=&quot;1&quot; result=&quot;COL_red-l&quot; /&gt;
+      &lt;feFlood flood-color=&quot;#A5122B&quot;  flood-opacity=&quot;1&quot; result=&quot;COL_red-d&quot; /&gt;
+      &lt;feFlood flood-color=&quot;rgba(0,0,0,0)&quot; flood-opacity=&quot;0&quot; result=&quot;TRANSPARENT&quot; /&gt;
+      &lt;!-- Colors end --&gt;
+
+      &lt;!-- Lower Green Bevel --&gt;
+      &lt;feMorphology operator=&quot;dilate&quot; radius=&quot;10&quot; in=&quot;SourceAlpha&quot; result=&quot;GREEN-BEVEL-1_10&quot; /&gt;
+      &lt;feConvolveMatrix order=&quot;8,8&quot; divisor=&quot;1&quot;
+        kernelMatrix = &quot;1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1&quot; in=&quot;GREEN-BEVEL-1_10&quot; result=&quot;GREEN-BEVEL-1_20&quot; /&gt;
+      &lt;feComposite operator=&quot;in&quot; in=&quot;COL_green-d&quot;  in2=&quot;GREEN-BEVEL-1_20&quot; result=&quot;GREEN-BEVEL-1_30&quot; /&gt;
+      &lt;!-- Lower Green Bevel End --&gt;
+
+      &lt;!-- Lower Green Front --&gt;
+      &lt;feComposite operator=&quot;in&quot; in=&quot;COL_green-l&quot; in2=&quot;GREEN-BEVEL-1_10&quot; result=&quot;GREEN-FRONT-1_0&quot; /&gt;
+      &lt;feOffset dx=&quot;4&quot; dy=&quot;4&quot; in=&quot;GREEN-FRONT-1_0&quot; result=&quot;GREEN-FRONT-1_10&quot;/&gt;
+      &lt;feSpecularLighting surfaceScale=&quot;0&quot; specularConstant=&quot;.75&quot; specularExponent=&quot;30&quot; lighting-color=&quot;#white&quot; in=&quot;GREEN-FRONT-1_10&quot; result=&quot;GREEN-FRONT-1_20&quot;&gt;
+        &lt;fePointLight x=&quot;0&quot; y=&quot;-30&quot; z=&quot;400&quot; /&gt;
+      &lt;/feSpecularLighting&gt;
+      &lt;feComposite operator=&quot;out&quot; in2=&quot;GREEN-FRONT-1_20&quot; in=&quot;GREEN-FRONT-1_10&quot; result=&quot;GREEN-FRONT-1_30&quot; /&gt;
+      &lt;!-- Lower Green Front End --&gt;
+
+      &lt;!-- Upper Green Bevel --&gt;
+      &lt;feMorphology operator=&quot;dilate&quot; radius=&quot;7&quot; in=&quot;SourceAlpha&quot; result=&quot;GREEN-BEVEL-2_0&quot; /&gt;
+      &lt;feConvolveMatrix order=&quot;8,8&quot; divisor=&quot;1&quot;
+        kernelMatrix = &quot;1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1&quot;
+        in=&quot;GREEN-BEVEL-2_0&quot;
+        result=&quot;GREEN-BEVEL-2_10&quot;
+      /&gt;
+      &lt;feComposite operator=&quot;in&quot; in=&quot;COL_green-d&quot; in2=&quot;GREEN-BEVEL-2_10&quot; result=&quot;GREEN-BEVEL-2_20&quot; /&gt;
+      &lt;feOffset dx=&quot;9&quot; dy=&quot;9&quot; in=&quot;GREEN-BEVEL-2_20&quot; result=&quot;GREEN-BEVEL-2_30&quot;/&gt;
+      &lt;!-- Upper Green Bevel end --&gt;
+
+      &lt;!-- Upper Green Front --&gt;
+      &lt;feOffset dx=&quot;18&quot; dy=&quot;18&quot; in=&quot;GREEN-BEVEL-2_0&quot; result=&quot;GREEN-FRONT-2_10&quot;/&gt;
+      &lt;feComposite operator=&quot;in&quot; in=&quot;COL_green-l&quot; in2=&quot;GREEN-FRONT-2_10&quot; result=&quot;GREEN-FRONT-2_20&quot; /&gt;
+      &lt;feSpecularLighting surfaceScale=&quot;0&quot; specularConstant=&quot;0.75&quot; specularExponent=&quot;40&quot; lighting-color=&quot;#white&quot; in=&quot;GREEN-FRONT-2_20&quot; result=&quot;GREEN-FRONT-2_30&quot;&gt;
+        &lt;fePointLight x=&quot;120&quot; y=&quot;170&quot; z=&quot;500&quot; /&gt;
+      &lt;/feSpecularLighting&gt;
+       &lt;feComposite operator=&quot;in&quot; in2=&quot;GREEN-FRONT-2_10&quot; in=&quot;GREEN-FRONT-2_30&quot; result=&quot;GREEN-FRONT-2_40&quot; /&gt;
+      &lt;!-- Upper Green Front end --&gt;
+
+      &lt;!-- Bevels and Front shaded --&gt;
+      &lt;feMerge  result=&quot;SHADED-BEVELS_0&quot;&gt;
+        &lt;feMergeNode in=&quot;GREEN-BEVEL-1_10&quot; /&gt;
+        &lt;feMergeNode in=&quot;GREEN-FRONT-1_30&quot; /&gt;
+        &lt;feMergeNode in=&quot;GREEN-BEVEL-2_30&quot; /&gt;
+        &lt;feMergeNode in=&quot;GREEN-FRONT-2_20&quot; /&gt;
+        &lt;feMergeNode in=&quot;GREEN-FRONT-2_40&quot; /&gt;
+        &lt;feMergeNode in=&quot;TRANSPARENT&quot; /&gt;
+      &lt;/feMerge&gt;
+
+      &lt;feSpecularLighting surfaceScale=&quot;0&quot; specularConstant=&quot;0.45&quot; specularExponent=&quot;30&quot; lighting-color=&quot;#white&quot; in=&quot;SHADED-BEVELS_0&quot; result=&quot;SHADED-BEVELS_10&quot;&gt;
+          &lt;fePointLight x=&quot;320&quot; y=&quot;-20&quot; z=&quot;400&quot; /&gt;
+      &lt;/feSpecularLighting&gt;
+      &lt;feComposite operator=&quot;in&quot; in2=&quot;SHADED-BEVELS_0&quot; in=&quot;SHADED-BEVELS_10&quot; result=&quot;SHADED-BEVELS_30&quot; /&gt;
+      &lt;!-- Bevels and Front shaded end --&gt;
+
+      &lt;!-- Upper Red Bevel --&gt;
+      &lt;feConvolveMatrix order=&quot;4,4&quot; divisor=&quot;1&quot;
+        kernelMatrix=&quot;1 0 0 0
+        0 1 0 0
+        0 0 1 0
+        0 0 0 1&quot; in=&quot;SourceAlpha&quot; result = &quot;RED-BEVEL-0_0&quot;
+      /&gt;
+      &lt;feComposite in=&quot;COL_red-d&quot; in2=&quot;RED-BEVEL-0_0&quot; operator=&quot;in&quot;  result=&quot;RED-BEVEL-0_10&quot; /&gt;
+      &lt;feOffset dx=&quot;20&quot; dy=&quot;20&quot; in=&quot;RED-BEVEL-0_10&quot; result=&quot;RED-BEVEL-0_20&quot;/&gt;
+      &lt;!-- Upper Red Bevel end --&gt;
+
+      &lt;!-- Upper Red Front --&gt;
+      &lt;feComposite operator=&quot;in&quot;  in=&quot;COL_red-l&quot; in2=&quot;SourceAlpha&quot; result=&quot;RED-FRONT-0_0&quot; /&gt;
+      &lt;feOffset dx=&quot;24&quot; dy=&quot;24&quot; in=&quot;RED-FRONT-0_0&quot; result=&quot;RED-FRONT-0_10&quot;/&gt;
+      &lt;feSpecularLighting
+        surfaceScale=&quot;0&quot;
+        specularConstant=&quot;.45&quot;
+        specularExponent=&quot;30&quot;
+        lighting-color=&quot;#white&quot;
+        in=&quot;RED-FRONT-0_10&quot;
+        result=&quot;RED-FRONT-0_20&quot;
+      &gt;
+        &lt;fePointLight x=&quot;20&quot; y=&quot;180&quot; z=&quot;300&quot; /&gt;
+      &lt;/feSpecularLighting&gt;
+      &lt;feComposite operator=&quot;in&quot; in2=&quot;RED-FRONT-0_10&quot; in=&quot;RED-FRONT-0_20&quot; result=&quot;RED-FRONT-0_30&quot; /&gt;
+      &lt;!-- Upper Red Front end--&gt;
+
+      &lt;!-- Inner Line --&gt;
+      &lt;feMorphology radius=&quot;4&quot; in=&quot;SourceAlpha&quot; result=&quot;INNER-LINE_0&quot; /&gt;
+      &lt;feMorphology radius=&quot;5&quot; in=&quot;SourceAlpha&quot; result=&quot;INNER-LINE_10&quot; /&gt;
+      &lt;feComposite operator=&quot;out&quot; in=&quot;INNER-LINE_0&quot; in2=&quot;INNER-LINE_10&quot; result=&quot;INNER-LINE_20&quot; /&gt;
+      &lt;feComposite operator=&quot;in&quot; in=&quot;COL_green-l&quot; in2=&quot;INNER-LINE_20&quot; result=&quot;INNER-LINE_30&quot; /&gt;
+      &lt;feOffset dx=&quot;24&quot; dy=&quot;24&quot; in=&quot;INNER-LINE_30&quot; result=&quot;INNER-LINE_40&quot; /&gt;
+      &lt;!-- Inner Line end --&gt;
+
+      &lt;feMerge result=&quot;extruded-m&quot;&gt;
+        &lt;feMergeNode in=&quot;SHADED-BEVELS_0&quot; /&gt;
+        &lt;feMergeNode in=&quot;SHADED-BEVELS_30&quot; /&gt;
+        &lt;feMergeNode in=&quot;RED-BEVEL-0_20&quot; /&gt;
+        &lt;feMergeNode in=&quot;RED-FRONT-0_10&quot; /&gt;
+        &lt;feMergeNode in=&quot;RED-FRONT-0_30&quot; /&gt;
+        &lt;feMergeNode in=&quot;INNER-LINE_40&quot; /&gt;
+        &lt;feMergeNode in=&quot;TRANSPARENT&quot; /&gt;
+      &lt;/feMerge&gt;
+    &lt;/filter&gt;
+  &lt;/defs&gt;
+  &lt;g class=&quot;${styles.filtered}&quot;&gt;
+    &lt;text x=&quot;20&quot; y=&quot;${100 + skew * 10 + fontSize}&quot;
+      transform=&quot;skewY(-${skew})&quot;
+      style=&quot;font-family: ${fontFamily}; font-size: ${fontSize}px;&quot;
+    &gt;
+      ${text}
+    &lt;/text&gt;
+  &lt;/g&gt;
+`)
+}
+
+type Props = {
+  fontFamily: string
+  fontSize: number
+  skew: number
+  text: string
+}
+
+const SVGTextFilter = (props: Props) =&gt; {
+  React.useEffect(() =&gt; {
+    demo(props)
+  }, [props])
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[
+          svgDocs.feConvolveMatrix,
+          svgDocs.feFlood,
+          svgDocs.feMorphology,
+          svgDocs.fePointLight,
+        ]}
+        source=&quot;https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/091ac72c-a975-481c-9c5a-f3adf7961f83/3dneon-svg.html&quot;
+        storyName=&quot;SVGTextFilter&quot;
+      /&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;SVGTextFilter {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const [fontsArgs, fontsControls] = createSelectControl([&quot;sans-serif&quot;, &quot;serif&quot;])
+const [fontSizeArgs, fontSizeControls] = createRangeControl(170, 1, 150, 100)
+const [skewArgs, skewControls] = createRangeControl(12, 1, 12)
+
+const args: Props = {
+  fontFamily: fontsArgs,
+  fontSize: fontSizeArgs,
+  skew: skewArgs,
+  text: &quot;Demos&quot;,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {
+    fontFamily: fontsControls,
+    fontSize: fontSizeControls,
+    skew: skewControls,
+  },
+  component: SVGTextFilter,
+  title: &quot;SVG/Text Filter&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 19 Aug 2021 23:11:44 GMT</p>
+    </body>
+  </html>
+  
