@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSReflectiveSpheres/ThreeJSReflectiveSpheres.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">524</td><td class="">524</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { scalePow } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSReflectiveSpheres/ThreeJSReflectiveSpheres.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">553</td><td class="">553</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { scalePow } from &quot;d3&quot;
 import React from &quot;react&quot;
 import {
   ACESFilmicToneMapping,
@@ -43,9 +43,28 @@ import {
   threeDocs,
 } from &quot;../common&quot;
 
+type Sphere = Mesh&lt;SphereGeometry, MeshPhysicalMaterial&gt;
+
 type Props = {
   automaticCamera: boolean
   lightPointSpeed: number
+}
+
+type State = {
+  currentTime: number
+  isStopped: boolean
+  selectedSphereUuid: string
+}
+
+type Simulation = {
+  camera: PerspectiveCamera
+  particleLight: Mesh&lt;SphereGeometry, MeshBasicMaterial&gt;
+  props: Props
+  renderer: WebGLRenderer
+  scene: Scene
+  spheresList: Sphere[]
+  state: State
+  stop: () =&gt; void
 }
 
 const ROOT_ID = &quot;example&quot;
@@ -98,7 +117,14 @@ const animate = (simulation: Simulation) =&gt; {
   render(simulation)
 }
 
-const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
+const font = new Font(fontData)
+
+type CreateDemo = (o: {
+  prevSimulation: Simulation | null
+  props: Props
+}) =&gt; Simulation
+
+const createDemo: CreateDemo = ({ prevSimulation, props }) =&gt; {
   const container = document.getElementById(ROOT_ID) as HTMLElement
   const containerRect = container.getBoundingClientRect()
   const { width } = containerRect
@@ -118,16 +144,17 @@ const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
     selectedSphereUuid: prevSimulation?.state.selectedSphereUuid ?? &quot;&quot;,
   }
 
-  const onClick = (event: MouseEvent) =&gt; {
-    event.preventDefault()
+  const onClick = (clickEvent: MouseEvent) =&gt; {
+    clickEvent.preventDefault()
 
     mouse.x =
-      ((event.clientX - containerRect.left) / renderer.domElement.clientWidth) *
+      ((clickEvent.clientX - containerRect.left) /
+        renderer.domElement.clientWidth) *
         2 -
       1
     mouse.y =
       -(
-        (event.clientY - containerRect.top) /
+        (clickEvent.clientY - containerRect.top) /
         renderer.domElement.clientHeight
       ) *
         2 +
@@ -244,8 +271,9 @@ const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
     }
   }
 
-  const addLabel = (name: string, location: Vector3) =&gt; {
-    const font = new Font(fontData)
+  type AddLabel = (o: { location: Vector3; name: string }) =&gt; void
+
+  const addLabel: AddLabel = ({ location, name }) =&gt; {
     const textGeo = new TextGeometry(name, {
       curveSegments: 1,
       font,
@@ -262,17 +290,31 @@ const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
     scene.add(textMesh)
   }
 
-  addLabel(&quot;+clearcoat&quot;, new Vector3(-550, 0, 0))
-  addLabel(&quot;-clearcoat&quot;, new Vector3(350, 0, 0))
+  addLabel({ location: new Vector3(-550, 0, 0), name: &quot;+clearcoat&quot; })
+  addLabel({ location: new Vector3(350, 0, 0), name: &quot;-clearcoat&quot; })
 
-  addLabel(&quot;+clearcoatRoughness&quot;, new Vector3(-200, -300, 0))
-  addLabel(&quot;-clearcoatRoughness&quot;, new Vector3(-200, 300, 0))
+  addLabel({
+    location: new Vector3(-200, -300, 0),
+    name: &quot;+clearcoatRoughness&quot;,
+  })
+  addLabel({ location: new Vector3(-200, 300, 0), name: &quot;-clearcoatRoughness&quot; })
 
-  addLabel(&quot;+reflectivity&quot;, new Vector3(-150, 0, -300))
-  addLabel(&quot;-reflectivity&quot;, new Vector3(-150, 0, 300))
+  addLabel({ location: new Vector3(-150, 0, -300), name: &quot;+reflectivity&quot; })
+  addLabel({ location: new Vector3(-150, 0, 300), name: &quot;-reflectivity&quot; })
 
-  const directionalLight = new DirectionalLight(0xffffff, 1)
-  const pointLight = new PointLight(0xffa500, 2, 800)
+  const directionalLightIntensity = 1
+  const directionalLight = new DirectionalLight(
+    0xffffff,
+    directionalLightIntensity
+  )
+
+  const pointLightIntensity = 2
+  const pointLightDistance = 800
+  const pointLight = new PointLight(
+    0xffa500,
+    pointLightIntensity,
+    pointLightDistance
+  )
 
   directionalLight.position.set(1, 1, 1).normalize()
   particleLight.add(pointLight)
@@ -302,32 +344,13 @@ const main = (props: Props, prevSimulation: Simulation | null) =&gt; {
   return newSimulation
 }
 
-type Sphere = Mesh&lt;SphereGeometry, MeshPhysicalMaterial&gt;
-
-type Simulation = {
-  camera: PerspectiveCamera
-  particleLight: Mesh&lt;SphereGeometry, MeshBasicMaterial&gt;
-  props: Props
-  renderer: WebGLRenderer
-  scene: Scene
-  spheresList: Sphere[]
-  state: State
-  stop: () =&gt; void
-}
-
-type State = {
-  currentTime: number
-  isStopped: boolean
-  selectedSphereUuid: string
-}
-
 const ThreeJSReflectiveSpheres = (props: Props) =&gt; {
   const [prevSimulation, setPrevSimulation] = React.useState&lt;Simulation | null&gt;(
     null
   )
 
   React.useEffect(() =&gt; {
-    const newSimulation = main(props, prevSimulation)
+    const newSimulation = createDemo({ prevSimulation, props })
 
     setPrevSimulation(newSimulation)
   }, [props])
@@ -375,7 +398,7 @@ export default {
   title: &quot;ThreeJS/Reflective Spheres&quot;,
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 19 Aug 2021 23:11:44 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
     </body>
   </html>
   

@@ -62,13 +62,13 @@ const filterBlackOpacity = (
   feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
 }
 
-export type ChartConfig&lt;A&gt; = {
+export type ChartConfig&lt;AreaPoint&gt; = {
+  areaPoints: AreaPoint[]
   getChartTitle: () =&gt; string
-  getItemId: (a: A) =&gt; number
-  getItemTitle: (a: A) =&gt; string
-  getItemXValue: (a: A) =&gt; number
-  getItemYValue: (a: A) =&gt; number
-  items: A[]
+  getItemId: (areaPoint: AreaPoint) =&gt; number
+  getItemTitle: (areaPoint: AreaPoint) =&gt; string
+  getItemXValue: (areaPoint: AreaPoint) =&gt; number
+  getItemYValue: (areaPoint: AreaPoint) =&gt; number
   rootElId: string
 }
 
@@ -76,8 +76,10 @@ type ChartReturn = {
   toggleVoronoi: () =&gt; void
 }
 
-export const renderChart = &lt;A&gt;(chartConfig: ChartConfig&lt;A&gt;): ChartReturn =&gt; {
-  const { items, rootElId } = chartConfig
+export const renderChart = &lt;AreaPoint&gt;(
+  chartConfig: ChartConfig&lt;AreaPoint&gt;
+): ChartReturn =&gt; {
+  const { areaPoints, rootElId } = chartConfig
   const { width: elWidth } = (document.getElementById(
     rootElId
   ) as HTMLElement).getBoundingClientRect()
@@ -114,24 +116,26 @@ export const renderChart = &lt;A&gt;(chartConfig: ChartConfig&lt;A&gt;): ChartRe
 
   filterBlackOpacity(&quot;points&quot;, svg, 2, 0.5)
 
-  const xMax = max(items, chartConfig.getItemXValue) as number
-  const xMin = min(items, chartConfig.getItemXValue) as number
+  const xMax = max(areaPoints, chartConfig.getItemXValue) as number
+  const xMin = min(areaPoints, chartConfig.getItemXValue) as number
 
-  const yMax = max(items, chartConfig.getItemYValue) as number
-  const yMin = min(items, chartConfig.getItemYValue) as number
+  const yMax = max(areaPoints, chartConfig.getItemYValue) as number
+  const yMin = min(areaPoints, chartConfig.getItemYValue) as number
 
   const xScale = scaleLinear().domain([xMin, xMax]).range([0, width])
   const yScale = scaleLinear()
     .domain([yMax + 0.05, yMin - 0.05])
     .range([0, height])
 
-  const extractXScale = (d: A) =&gt; xScale(chartConfig.getItemXValue(d))
-  const extractYScale = (d: A) =&gt; yScale(chartConfig.getItemYValue(d))
+  const extractXScale = (areaPoint: AreaPoint) =&gt;
+    xScale(chartConfig.getItemXValue(areaPoint))
+  const extractYScale = (areaPoint: AreaPoint) =&gt;
+    yScale(chartConfig.getItemYValue(areaPoint))
 
   const getSmallDeviceTicksScale = () =&gt;
     scaleQuantize()
       .domain([0, 500])
-      .range(Array.from({ length: 6 }).map((_, i) =&gt; i))
+      .range(Array.from({ length: 6 }).map((_, rangeIndex) =&gt; rangeIndex))
 
   const ticks = isSmallDevice ? getSmallDeviceTicksScale()(elWidth) : null
 
@@ -155,12 +159,12 @@ export const renderChart = &lt;A&gt;(chartConfig: ChartConfig&lt;A&gt;): ChartRe
     .selectAll(&quot;text&quot;)
     .attr(&quot;dx&quot;, &quot;-.25em&quot;)
 
-  const area = areaD3&lt;A&gt;().x(extractXScale).y0(height).y1(extractYScale)
-  const line = lineD3&lt;A&gt;().x(extractXScale).y(extractYScale)
+  const area = areaD3&lt;AreaPoint&gt;().x(extractXScale).y0(height).y1(extractYScale)
+  const line = lineD3&lt;AreaPoint&gt;().x(extractXScale).y(extractYScale)
 
   svg
     .append(&quot;path&quot;)
-    .datum(items)
+    .datum(areaPoints)
     .attr(&quot;class&quot;, styles.line)
     .attr(&quot;d&quot;, line)
     .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
@@ -174,39 +178,50 @@ export const renderChart = &lt;A&gt;(chartConfig: ChartConfig&lt;A&gt;): ChartRe
 
   svg
     .append(&quot;path&quot;)
-    .datum(items)
+    .datum(areaPoints)
     .attr(&quot;class&quot;, styles.area)
     .attr(&quot;d&quot;, area)
     .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
 
-  const voronoi = Delaunay.from(items, extractXScale, extractYScale).voronoi([
+  const voronoi = Delaunay.from(
+    areaPoints,
+    extractXScale,
+    extractYScale
+  ).voronoi([
     -margin.left,
     -margin.top,
     width + margin.right,
     height + margin.bottom,
   ])
 
-  const mouseover = (_e: unknown, d: A) =&gt; {
-    select(`.point-${chartConfig.getItemId(d)}`).style(&quot;display&quot;, &quot;block&quot;)
+  const mouseover = (_e: unknown, areaPoint: AreaPoint) =&gt; {
+    select(`.point-${chartConfig.getItemId(areaPoint)}`).style(
+      &quot;display&quot;,
+      &quot;block&quot;
+    )
   }
 
-  const mouseleave = (_mouseEvent: unknown, d: A) =&gt; {
-    select(`.point-${chartConfig.getItemId(d)}`).style(&quot;display&quot;, &quot;none&quot;)
+  const mouseleave = (_mouseEvent: unknown, areaPoint: AreaPoint) =&gt; {
+    select(`.point-${chartConfig.getItemId(areaPoint)}`).style(
+      &quot;display&quot;,
+      &quot;none&quot;
+    )
   }
 
   svg
     .selectAll(&quot;circle&quot;)
-    .data(items)
+    .data(areaPoints)
     .enter()
     .append(&quot;circle&quot;)
     .attr(
       &quot;transform&quot;,
-      (item: A) =&gt; `translate(${extractXScale(item)},${extractYScale(item)})`
+      (areaPoint: AreaPoint) =&gt;
+        `translate(${extractXScale(areaPoint)},${extractYScale(areaPoint)})`
     )
     .attr(&quot;r&quot;, &quot;5px&quot;)
     .attr(
       &quot;class&quot;,
-      (item) =&gt; `${styles.point} point-${chartConfig.getItemId(item)}`
+      (areaPoint) =&gt; `${styles.point} point-${chartConfig.getItemId(areaPoint)}`
     )
     .style(&quot;filter&quot;, &quot;url(#drop-shadow-points)&quot;)
 
@@ -214,10 +229,12 @@ export const renderChart = &lt;A&gt;(chartConfig: ChartConfig&lt;A&gt;): ChartRe
 
   voronoiGroup
     .selectAll(&quot;path&quot;)
-    .data(items)
+    .data(areaPoints)
     .enter()
     .append(&quot;path&quot;)
-    .attr(&quot;d&quot;, (item) =&gt; voronoi.renderCell(chartConfig.getItemId(item)))
+    .attr(&quot;d&quot;, (areaPoint) =&gt;
+      voronoi.renderCell(chartConfig.getItemId(areaPoint))
+    )
     .on(&quot;mouseover&quot;, mouseover)
     .on(&quot;mouseleave&quot;, mouseleave)
     .attr(&quot;class&quot;, &quot;voronoi-group&quot;)
@@ -241,7 +258,7 @@ export const renderChart = &lt;A&gt;(chartConfig: ChartConfig&lt;A&gt;): ChartRe
   }
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 19 Aug 2021 23:11:44 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
     </body>
   </html>
   

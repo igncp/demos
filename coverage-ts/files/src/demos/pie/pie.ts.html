@@ -26,33 +26,34 @@
 import cloneDeep from &quot;lodash/cloneDeep&quot;
 
 const fetchData = async () =&gt; {
-  const data = await fetch(`${ROOT_PATH}data/d3js/pie/data.json`)
-  const jsonData = await data.json()
+  const pieRawData = await fetch(`${ROOT_PATH}data/d3js/pie/data.json`)
+  const pieJsonData = await pieRawData.json()
 
-  return jsonData
+  return pieJsonData
 }
 
 type Slice = {
-  ea0?: SliceArc
+  arbitraryValue: number
+  ea0?: PieArcDatum&lt;Slice&gt;
   label: string
-  val: number
 }
+
 type SliceArc = PieArcDatum&lt;Slice&gt;
 
 const height = 300
 const outerRadius = 100
 
-const stashArcs = (d: SliceArc) =&gt; {
-  d.data.ea0 = cloneDeep(d)
+const stashArcs = (arcItem: SliceArc) =&gt; {
+  arcItem.data.ea0 = cloneDeep(arcItem)
 }
 
 const arc = arcD3&lt;SliceArc&gt;().outerRadius(outerRadius).innerRadius(0)
 
 type ArcDatum = Omit&lt;DefaultArcObject &amp; SliceArc, &quot;innerRadius&quot; | &quot;outerRadius&quot;&gt;
 
-const textTransform = (d: ArcDatum): string =&gt; {
+const textTransform = (arcData: ArcDatum): string =&gt; {
   const centroidD = {
-    ...d,
+    ...arcData,
     innerRadius: outerRadius / 2,
     outerRadius,
   }
@@ -62,9 +63,9 @@ const textTransform = (d: ArcDatum): string =&gt; {
 
 const pie = pieD3&lt;Slice&gt;()
   .sort(null)
-  .value((slice: Slice) =&gt; slice.val)
+  .value((slice: Slice) =&gt; slice.arbitraryValue)
 
-const color = scaleOrdinal(schemePastel2)
+const colorScale = scaleOrdinal(schemePastel2)
 const easeFn = easeBack
 const transitionDuration = 3000
 
@@ -80,7 +81,7 @@ const arcTween = (finalSlice: SliceArc) =&gt; {
 }
 
 type PieChartOpts = {
-  data: Slice[]
+  pieSlices: Slice[]
   rootElId: string
 }
 
@@ -89,12 +90,12 @@ type ChartLabels = Selection&lt;SVGTextElement, SliceArc, SVGGElement, unknown&g
 
 class PieChart {
   private readonly rootElId: string
-  private readonly data: Slice[]
+  private readonly slices: Slice[]
   private paths: ChartPaths | null
   private labels: ChartLabels | null
 
-  public constructor({ data, rootElId }: PieChartOpts) {
-    this.data = data
+  public constructor({ pieSlices, rootElId }: PieChartOpts) {
+    this.slices = pieSlices
     this.rootElId = rootElId
 
     this.paths = null
@@ -103,30 +104,30 @@ class PieChart {
     this.render()
   }
 
-  public update(val: number) {
-    const { data, labels, paths } = this
-    const index = Math.floor(Math.random() * data.length)
+  public update(newSliceValue: number) {
+    const { labels, paths, slices } = this
+    const sliceIndex = Math.floor(Math.random() * slices.length)
 
-    data[index].val = val
+    slices[sliceIndex].arbitraryValue = newSliceValue
     ;(paths as ChartPaths)
-      .data(pie(data))
+      .data(pie(slices))
       .transition()
       .duration(transitionDuration)
       .ease(easeFn)
       .attrTween(&quot;d&quot;, arcTween)
     ;(labels as ChartLabels)
-      .data(pie(data))
+      .data(pie(slices))
       .transition()
       .duration(transitionDuration)
       .ease(easeFn)
       .attr(&quot;transform&quot;, textTransform)
-      .each(function (d: { data: Slice }) {
-        select(this).text(d.data.val)
+      .each(function (slice) {
+        select(this).text(slice.data.arbitraryValue)
       })
   }
 
   private render() {
-    const { data, rootElId } = this
+    const { rootElId, slices } = this
     const { width } = (document.getElementById(
       rootElId
     ) as HTMLElement).getBoundingClientRect()
@@ -138,20 +139,20 @@ class PieChart {
       .append(&quot;g&quot;)
       .attr(&quot;transform&quot;, `translate(${width / 2},${height / 2})`)
 
-    const slices = svg
+    const slicesEls = svg
       .selectAll(&quot;.slice&quot;)
-      .data(pie(data))
+      .data(pie(slices))
       .enter()
       .append(&quot;g&quot;)
       .attr(&quot;class&quot;, &quot;slice&quot;)
 
-    this.paths = slices
+    this.paths = slicesEls
       .append(&quot;path&quot;)
       .attr(&quot;d&quot;, arc)
-      .attr(&quot;fill&quot;, (_d, i) =&gt; color(i.toString()))
+      .attr(&quot;fill&quot;, (_slice, sliceIndex) =&gt; colorScale(sliceIndex.toString()))
       .each(stashArcs)
 
-    this.labels = slices
+    this.labels = slicesEls
       .filter((slice: SliceArc) =&gt; slice.endAngle - slice.startAngle &gt; 0.2)
       .append(&quot;text&quot;)
       .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
@@ -159,33 +160,33 @@ class PieChart {
       .attr(&quot;transform&quot;, textTransform)
       .style(&quot;fill&quot;, &quot;black&quot;)
       .style(&quot;font&quot;, &quot;bold 12px Arial&quot;)
-      .text((d) =&gt; d.data.val)
+      .text((slice) =&gt; slice.data.arbitraryValue)
 
-    slices.append(&quot;title&quot;).text((d) =&gt; d.data.label)
+    slicesEls.append(&quot;title&quot;).text((slice) =&gt; slice.data.label)
   }
 }
 
 const main = async () =&gt; {
-  const data = await fetchData()
+  const pieJsonData = await fetchData()
 
   const chart = new PieChart({
-    data,
+    pieSlices: pieJsonData,
     rootElId: &quot;chart&quot;,
   })
 
   ;(document.getElementById(&quot;change-data&quot;) as HTMLElement).addEventListener(
     &quot;click&quot;,
     () =&gt; {
-      const randomVal = Math.floor(Math.random() * 44) + 2
+      const newSliceValue = Math.floor(Math.random() * 44) + 2
 
-      chart.update(randomVal)
+      chart.update(newSliceValue)
     }
   )
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:8,&quot;text&quot;:&quot;jsonData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:9,&quot;text&quot;:&quot;jsonData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 19 Aug 2021 23:11:44 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:8,&quot;text&quot;:&quot;pieJsonData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:9,&quot;text&quot;:&quot;pieJsonData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/pie/pie.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:8,&quot;text&quot;:&quot;pieJsonData&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
     </body>
   </html>
   

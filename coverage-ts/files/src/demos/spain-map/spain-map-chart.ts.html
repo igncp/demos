@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/spain-map/spain-map-chart.ts</td><td class="">97.79%</td><td class="">95%</td><td class="">272</td><td class="">266</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/spain-map/spain-map-chart.ts</td><td class="">97.79%</td><td class="">95%</td><td class="">271</td><td class="">265</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   BaseType,
   GeoPath,
   GeoPermissibleObjects,
@@ -66,10 +66,10 @@ const addDropShadowFilter = function (
   feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
 }
 
-type Data = Topology&lt;Objects&lt;GeoJsonProperties&gt;&gt;
+export type AreasData = Topology&lt;Objects&lt;GeoJsonProperties&gt;&gt;
 
 export type ChartConfig&lt;Properties&gt; = {
-  data: Data
+  areasData: AreasData
   getTitleText: (p: Properties) =&gt; string
   getWidths: (chartWidth: number) =&gt; number[]
   projectionsCenters: Array&lt;[number, number]&gt;
@@ -79,10 +79,10 @@ export type ChartConfig&lt;Properties&gt; = {
 export const renderChart = &lt;Properties&gt;(
   chartConfig: ChartConfig&lt;Properties&gt;
 ) =&gt; {
-  const { data, rootElId } = chartConfig
+  const { areasData, rootElId } = chartConfig
 
   type DataShape = GeoPermissibleObjects &amp; {
-    index: number
+    areaIndex: number
     properties: Properties
   }
 
@@ -92,13 +92,15 @@ export const renderChart = &lt;Properties&gt;(
 
   const {
     objects: { data1: dataRoot },
-  } = data
-  const { features: dataGeo } = feature(data, dataRoot) as any
+  } = areasData
+  const { features: dataGeo } = feature(areasData, dataRoot) as any
 
-  const dataGeoParsed = dataGeo.map((d: DataShape, i: number) =&gt; ({
-    ...d,
-    index: i,
-  }))
+  const dataGeoParsed = dataGeo.map(
+    (areaData: DataShape, areaIndex: number) =&gt; ({
+      ...areaData,
+      areaIndex,
+    })
+  )
 
   const colorScale = scaleLinear()
     .domain([0, (dataRoot as any).geometries.length])
@@ -107,8 +109,8 @@ export const renderChart = &lt;Properties&gt;(
     .domain(range(0, 1, 1.0 / colorsScheme.length))
     .range(colorsScheme)
 
-  const colorFn = function (d: DataShape) {
-    return colorScaleConversion(colorScale(d.index))
+  const colorFn = function (areaData: DataShape) {
+    return colorScaleConversion(colorScale(areaData.areaIndex))
   }
 
   const svg = select(`#${rootElId}`)
@@ -157,7 +159,9 @@ export const renderChart = &lt;Properties&gt;(
           .style(&quot;fill&quot;, colorFn)
           .style(&quot;stroke-width&quot;, strokeWidth)
       })
-      .attr(&quot;title&quot;, (d) =&gt; chartConfig.getTitleText(d.properties))
+      .attr(&quot;title&quot;, (areaData) =&gt;
+        chartConfig.getTitleText(areaData.properties)
+      )
       .attr(&quot;class&quot;, regionClass)
   }
 
@@ -186,8 +190,8 @@ export const renderChart = &lt;Properties&gt;(
     track: true,
   })
 }
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:20,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:8,&quot;text&quot;:&quot;dataGeoParsed&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:24,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:32,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:34,&quot;text&quot;:&quot;geometries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:45,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 19 Aug 2021 23:11:44 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:20,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:8,&quot;text&quot;:&quot;dataGeoParsed&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:24,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:32,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:92,&quot;character&quot;:34,&quot;text&quot;:&quot;geometries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:92,&quot;character&quot;:45,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
     </body>
   </html>
   

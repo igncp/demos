@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/population-circles/population-circles-chart.ts</td><td class="">99.37%</td><td class="">95%</td><td class="">475</td><td class="">472</td><td class="">3</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import anime from &quot;animejs&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/population-circles/population-circles-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">482</td><td class="">482</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import anime from &quot;animejs&quot;
 import chroma from &quot;chroma-js&quot;
 import {
   BaseType,
@@ -41,18 +41,18 @@ const margin = {
 }
 const height = 400
 
-export type ChartConfig&lt;ChartData&gt; = {
+export type ChartConfig&lt;CircleData&gt; = {
   colorDomain: string[]
-  getChartItems: () =&gt; ChartData[]
-  getEmptyItem: () =&gt; ChartData
-  getHeaderText: (o: { chartItems: ChartData[] }) =&gt; string
+  getChartItems: () =&gt; CircleData[]
+  getEmptyItem: () =&gt; CircleData
+  getHeaderText: (o: { chartItems: CircleData[] }) =&gt; string
   getIsSmall: () =&gt; boolean
-  getItemId: (a: ChartData) =&gt; string
-  getItemLabel: (a: ChartData) =&gt; string
-  getItemMetric: (i: ChartData) =&gt; number
-  getItemTitle: (o: { itemData: ChartData }) =&gt; string
-  getStringForColor: (d: ChartData) =&gt; string
-  onClick: (m: ChartData) =&gt; void
+  getItemId: (circleData: CircleData) =&gt; string
+  getItemLabel: (circleData: CircleData) =&gt; string
+  getItemMetric: (circleData: CircleData) =&gt; number
+  getItemTitle: (o: { circleData: CircleData }) =&gt; string
+  getStringForColor: (circleData: CircleData) =&gt; string
+  onClick: (m: CircleData) =&gt; void
   rootElId: string
 }
 
@@ -60,12 +60,14 @@ type RenderChartReturn = {
   updateChart: () =&gt; void
 }
 
-const addDropShadow = (
-  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;,
-  name: string,
-  slope: number,
+type AddDropShadow = (o: {
   deviation: number
-) =&gt; {
+  name: string
+  slope: number
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+}) =&gt; void
+
+const addDropShadow: AddDropShadow = ({ deviation, name, slope, svg }) =&gt; {
   svg.append(&quot;filter&quot;).html(`
 &lt;filter id=&quot;${name}&quot; height=&quot;130%&quot;&gt;
   &lt;feGaussianBlur in=&quot;SourceAlpha&quot; stdDeviation=&quot;${deviation}&quot;/&gt;
@@ -81,10 +83,10 @@ const addDropShadow = (
 `)
 }
 
-export const renderChart = &lt;ChartData&gt;(
-  chartConfig: ChartConfig&lt;ChartData&gt;
+export const renderChart = &lt;CircleData&gt;(
+  chartConfig: ChartConfig&lt;CircleData&gt;
 ): RenderChartReturn =&gt; {
-  type ChartNode = HierarchyCircularNode&lt;ChartData&gt;
+  type ChartNode = HierarchyCircularNode&lt;CircleData&gt;
 
   const chartEl = document.getElementById(chartConfig.rootElId) as HTMLElement
   const { width } = chartEl.getBoundingClientRect()
@@ -92,6 +94,7 @@ export const renderChart = &lt;ChartData&gt;(
   const lastPosition = { k: 1, x: 0, y: 0 }
 
   // this zoom function is not working well in all directions
+  // eslint-disable-next-line max-params
   const zoomed = function (
     this: SVGSVGElement,
     zoomEvent: D3ZoomEvent&lt;SVGSVGElement, unknown&gt;
@@ -135,7 +138,7 @@ export const renderChart = &lt;ChartData&gt;(
     .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
     .call(zoomBehavior)
 
-  addDropShadow(svg, dropShadowBaseId, 0.5, 2)
+  addDropShadow({ deviation: 2, name: dropShadowBaseId, slope: 0.5, svg })
 
   const header = svg
     .append(&quot;text&quot;)
@@ -158,7 +161,7 @@ export const renderChart = &lt;ChartData&gt;(
 
     const isSmall = chartConfig.getIsSmall()
 
-    const root = pack&lt;ChartData&gt;()
+    const root = pack&lt;CircleData&gt;()
       .size(isSmall ? [width / 2, height / 2] : [width, height])
       .padding(3)(structure)
 
@@ -171,15 +174,15 @@ export const renderChart = &lt;ChartData&gt;(
     )
 
     const getDataKey = (node: unknown) =&gt;
-      chartConfig.getItemId((node as HierarchyCircularNode&lt;ChartData&gt;).data)
+      chartConfig.getItemId((node as HierarchyCircularNode&lt;CircleData&gt;).data)
 
     const leaf = svgContent.selectAll(&quot;.leaf&quot;).data(leaves, getDataKey)
 
     leaf.exit().remove()
 
-    const getTitle = (node: HierarchyCircularNode&lt;ChartData&gt;) =&gt;
+    const getTitle = (node: HierarchyCircularNode&lt;CircleData&gt;) =&gt;
       chartConfig.getItemTitle({
-        itemData: node.data,
+        circleData: node.data,
       })
 
     leaf
@@ -203,7 +206,7 @@ export const renderChart = &lt;ChartData&gt;(
       .attr(&quot;class&quot;, &quot;leaf&quot;)
       .attr(&quot;title&quot;, getTitle)
       .attr(&quot;transform&quot;, (node) =&gt; `translate(${node.x + 1},${node.y + 1})`)
-      .on(&quot;mouseenter&quot;, function (_event, node) {
+      .on(&quot;mouseenter&quot;, function (...[, node]) {
         const selection = select(this).select(`.${styles.circle}`)
 
         select(this)
@@ -222,7 +225,7 @@ export const renderChart = &lt;ChartData&gt;(
 
         hoverAnimations[id] = hoverAnimation
       })
-      .on(&quot;mouseleave&quot;, function (_event, node) {
+      .on(&quot;mouseleave&quot;, function (...[, node]) {
         const selection = select(this).select(`.${styles.circle}`)
 
         select(this).select(&quot;.letter&quot;).attr(&quot;filter&quot;, null)
@@ -241,11 +244,11 @@ export const renderChart = &lt;ChartData&gt;(
           targets: [selection.node()],
         })
       })
-      .on(&quot;click&quot;, (_event, node) =&gt; {
+      .on(&quot;click&quot;, (...[, node]) =&gt; {
         chartConfig.onClick(node.data)
       })
 
-    const generateColor = (node: HierarchyCircularNode&lt;ChartData&gt;) =&gt;
+    const generateColor = (node: HierarchyCircularNode&lt;CircleData&gt;) =&gt;
       color(chartConfig.getStringForColor(node.data))
 
     const generateDarkerColor = (node: ChartNode) =&gt; {
@@ -261,11 +264,12 @@ export const renderChart = &lt;ChartData&gt;(
         | ChartTransition
         | Selection&lt;SVGTextElement, ChartNode, SVGGElement, unknown&gt;
     ) =&gt; {
-      const el = letter.text((node) =&gt;
+      const letterSelection = letter.text((node) =&gt;
         chartConfig.getItemLabel(node.data)
       ) as ChartTransition
 
-      el.style(&quot;font-size&quot;, (node) =&gt; `${node.r.toFixed(0)}px`)
+      letterSelection
+        .style(&quot;font-size&quot;, (node) =&gt; `${node.r.toFixed(0)}px`)
         .attr(&quot;dy&quot;, (node) =&gt; node.r / 3)
         .attr(&quot;fill&quot;, generateDarkerColor)
     }
@@ -306,8 +310,8 @@ export const renderChart = &lt;ChartData&gt;(
     updateChart: transitionChart,
   }
 }
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/population-circles/population-circles-chart.ts&quot;,&quot;line&quot;:192,&quot;character&quot;:34,&quot;text&quot;:&quot;_event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles-chart.ts&quot;,&quot;line&quot;:211,&quot;character&quot;:34,&quot;text&quot;:&quot;_event&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/population-circles/population-circles-chart.ts&quot;,&quot;line&quot;:230,&quot;character&quot;:20,&quot;text&quot;:&quot;_event&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 19 Aug 2021 23:11:44 GMT</p>
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
     </body>
   </html>
   

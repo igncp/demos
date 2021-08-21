@@ -1,0 +1,347 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>ThreeJSPhysicsFalls.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSPhysicsFalls/ThreeJSPhysicsFalls.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">453</td><td class="">453</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { scaleLinear } from &quot;d3&quot;
+import debounce from &quot;lodash/debounce&quot;
+import React from &quot;react&quot;
+import {
+  BoxGeometry,
+  Color,
+  DirectionalLight,
+  DynamicDrawUsage,
+  HemisphereLight,
+  IcosahedronGeometry,
+  InstancedMesh,
+  Matrix4,
+  Mesh,
+  MeshLambertMaterial,
+  PerspectiveCamera,
+  Scene,
+  ShadowMaterial,
+  Vector3,
+  WebGLRenderer,
+  sRGBEncoding,
+} from &quot;three&quot;
+import { OrbitControls } from &quot;three/examples/jsm/controls/OrbitControls.js&quot;
+
+import { StoryInfo, TemplateType, createRangeControl } from &quot;../common&quot;
+
+import { createOimoPhysics } from &quot;./OimoPhysics&quot;
+
+const ROOT_ID = &quot;example&quot;
+
+type Physics = ReturnType&lt;typeof createOimoPhysics&gt;
+
+type State = {
+  isStopped: boolean
+  timeCounter: number
+}
+
+type SimulationEls = {
+  boxes: InstancedMesh
+  camera: PerspectiveCamera
+  floor: Mesh
+  hemiLight: HemisphereLight
+  position: Vector3
+  renderer: WebGLRenderer
+  scene: Scene
+  spheres: InstancedMesh
+}
+
+type Props = {
+  itemsNumber: number
+  speed: number
+}
+
+type Simulation = {
+  elements: SimulationEls
+  physics: Physics
+  props: Props
+  state: State
+  stop: () =&gt; void
+}
+
+const createPhysics = (previousSimulation: Simulation | null): Physics =&gt;
+  previousSimulation?.physics ? previousSimulation.physics : createOimoPhysics()
+
+const speedScale = scaleLinear().domain([0, 200]).range([200, 1])
+
+type CreateDemo = (o: {
+  physics: Physics
+  previousSimulation: Simulation | null
+  props: Props
+}) =&gt; Simulation
+
+const createDemo: CreateDemo = ({
+  physics,
+  previousSimulation,
+  props,
+}): Simulation =&gt; {
+  const state: State = {
+    timeCounter: 0,
+    ...(previousSimulation?.state ?? {}),
+    isStopped: false,
+  }
+  const container = document.getElementById(ROOT_ID) as HTMLElement
+  const { width } = container.getBoundingClientRect()
+  const height = 500
+
+  const elements: SimulationEls = (() =&gt; {
+    if (previousSimulation) {
+      return previousSimulation.elements
+    }
+
+    const floor = new Mesh(
+      new BoxGeometry(1000, 5, 1000),
+      new ShadowMaterial({ color: 0x777777 })
+    )
+
+    const material = new MeshLambertMaterial()
+    const geometryBox = new BoxGeometry(0.1, 0.1, 0.1)
+    const geometrySphere = new IcosahedronGeometry(0.075, 3)
+
+    const shapesTypes = 2
+
+    return {
+      boxes: new InstancedMesh(
+        geometryBox,
+        material,
+        Math.ceil(props.itemsNumber / shapesTypes)
+      ),
+      camera: new PerspectiveCamera(50, width / height, 0.1, 100),
+      floor,
+      hemiLight: new HemisphereLight(),
+      position: new Vector3(),
+      renderer: new WebGLRenderer({ antialias: true }),
+      scene: new Scene(),
+      spheres: new InstancedMesh(
+        geometrySphere,
+        material,
+        Math.ceil(props.itemsNumber / shapesTypes)
+      ),
+    }
+  })()
+
+  const {
+    boxes,
+    camera,
+    floor,
+    hemiLight,
+    position,
+    renderer,
+    scene,
+    spheres,
+  } = elements
+
+  const createSimulation = (): Simulation =&gt; ({
+    elements,
+    physics,
+    props,
+    state,
+    stop: () =&gt; {
+      state.isStopped = true
+    },
+  })
+
+  const meshList = [boxes, spheres] as const
+
+  const setupInitialSimulation = () =&gt; {
+    camera.position.set(-1, 1.5, 2)
+    camera.lookAt(0, 0.5, 0)
+
+    scene.background = new Color(0xffffff)
+
+    hemiLight.intensity = 0.35
+    scene.add(hemiLight)
+
+    const dirLight = new DirectionalLight()
+
+    dirLight.position.set(5, 5, 5)
+    dirLight.castShadow = true
+    dirLight.shadow.camera.zoom = 2
+    scene.add(dirLight)
+
+    floor.position.y = -2.5
+    floor.receiveShadow = true
+    scene.add(floor)
+    physics.addMesh({ mesh: floor })
+
+    meshList.forEach((mesh) =&gt; {
+      mesh.instanceMatrix.setUsage(DynamicDrawUsage)
+      mesh.castShadow = true
+      mesh.receiveShadow = true
+      scene.add(mesh)
+
+      const matrix = new Matrix4()
+      const color = new Color()
+
+      Array.from({ length: mesh.count }).forEach((...forEachArgs) =&gt; {
+        const [, meshItemIndex] = forEachArgs
+
+        matrix.setPosition(
+          Math.random() - 0.5,
+          Math.random() * 2,
+          Math.random() - 0.5
+        )
+
+        mesh.setMatrixAt(meshItemIndex, matrix)
+        mesh.setColorAt(meshItemIndex, color.setHex(0xffffff * Math.random()))
+      })
+
+      physics.addMesh({ mass: 1, mesh })
+    })
+
+    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setSize(width, height)
+    renderer.shadowMap.enabled = true
+    renderer.outputEncoding = sRGBEncoding
+
+    container.innerHTML = &quot;&quot;
+    container.append(renderer.domElement)
+
+    const controls = new OrbitControls(camera, renderer.domElement)
+
+    controls.target.y = 0.5
+    controls.update()
+  }
+
+  const animate = () =&gt; {
+    if (state.isStopped) {
+      return
+    }
+
+    requestAnimationFrame(animate)
+
+    renderer.render(scene, camera)
+
+    state.timeCounter += 1
+
+    if (!props.speed) {
+      return
+    }
+
+    const realSpeed = speedScale(props.speed)
+    const diff = Math.floor(state.timeCounter % realSpeed)
+
+    if (diff !== 0) {
+      return
+    }
+
+    meshList
+      .filter(() =&gt; Math.random() &gt; 0.5)
+      .forEach((mesh) =&gt; {
+        const bodyIndex = Math.floor(Math.random() * mesh.count)
+
+        position.set(0, Math.random() + 1, 0)
+        physics.setMeshPosition({ bodyIndex, mesh, position })
+      })
+  }
+
+  if (previousSimulation) {
+    previousSimulation.stop()
+
+    animate()
+
+    return createSimulation()
+  }
+
+  setupInitialSimulation()
+
+  animate()
+
+  return createSimulation()
+}
+
+type Demo = (o: {
+  previousSimulation: Simulation | null
+  props: Props
+}) =&gt; Simulation
+
+const demo: Demo = ({ previousSimulation, props }) =&gt; {
+  if (previousSimulation?.props.itemsNumber !== props.itemsNumber) {
+    previousSimulation?.physics.stop()
+
+    const physics = createPhysics(null)
+
+    return createDemo({ physics, previousSimulation: null, props })
+  }
+
+  const physics = createPhysics(previousSimulation)
+
+  return createDemo({ physics, previousSimulation, props })
+}
+
+const ThreeJSPhysicsFalls = (props: Props) =&gt; {
+  const simulationRef = React.useRef&lt;Simulation | null&gt;(null)
+
+  const runSimulation = React.useCallback(
+    debounce((latestProps: Props) =&gt; {
+      simulationRef.current?.stop()
+
+      simulationRef.current = demo({
+        previousSimulation: simulationRef.current,
+        props: latestProps,
+      })
+    }, 200),
+    []
+  )
+
+  React.useEffect(() =&gt; runSimulation(props), [props])
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[]}
+        source=&quot;https://github.com/mrdoob/three.js/blob/dev/examples/physics_oimo_instancing.html&quot;
+        sourceText=&quot;Source (official example, ported to TS)&quot;
+        storyName=&quot;ThreeJSPhysicsFalls&quot;
+      /&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;ThreeJSPhysicsFalls {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const [speedArgs, speedControls] = createRangeControl(100, 1, 100)
+const [itemsNumberArgs, itemsNumberControls] = createRangeControl(
+  100,
+  1,
+  99,
+  900
+)
+
+const args: Props = {
+  itemsNumber: itemsNumberArgs,
+  speed: speedArgs,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {
+    itemsNumber: itemsNumberControls,
+    speed: speedControls,
+  },
+  component: ThreeJSPhysicsFalls,
+  title: &quot;ThreeJS/Physics Falls&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
+    </body>
+  </html>
+  
