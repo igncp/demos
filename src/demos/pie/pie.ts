@@ -13,33 +13,34 @@ import {
 import cloneDeep from "lodash/cloneDeep"
 
 const fetchData = async () => {
-  const data = await fetch(`${ROOT_PATH}data/d3js/pie/data.json`)
-  const jsonData = await data.json()
+  const pieRawData = await fetch(`${ROOT_PATH}data/d3js/pie/data.json`)
+  const pieJsonData = await pieRawData.json()
 
-  return jsonData
+  return pieJsonData
 }
 
 type Slice = {
-  ea0?: SliceArc
+  arbitraryValue: number
+  ea0?: PieArcDatum<Slice>
   label: string
-  val: number
 }
+
 type SliceArc = PieArcDatum<Slice>
 
 const height = 300
 const outerRadius = 100
 
-const stashArcs = (d: SliceArc) => {
-  d.data.ea0 = cloneDeep(d)
+const stashArcs = (arcItem: SliceArc) => {
+  arcItem.data.ea0 = cloneDeep(arcItem)
 }
 
 const arc = arcD3<SliceArc>().outerRadius(outerRadius).innerRadius(0)
 
 type ArcDatum = Omit<DefaultArcObject & SliceArc, "innerRadius" | "outerRadius">
 
-const textTransform = (d: ArcDatum): string => {
+const textTransform = (arcData: ArcDatum): string => {
   const centroidD = {
-    ...d,
+    ...arcData,
     innerRadius: outerRadius / 2,
     outerRadius,
   }
@@ -49,9 +50,9 @@ const textTransform = (d: ArcDatum): string => {
 
 const pie = pieD3<Slice>()
   .sort(null)
-  .value((slice: Slice) => slice.val)
+  .value((slice: Slice) => slice.arbitraryValue)
 
-const color = scaleOrdinal(schemePastel2)
+const colorScale = scaleOrdinal(schemePastel2)
 const easeFn = easeBack
 const transitionDuration = 3000
 
@@ -67,7 +68,7 @@ const arcTween = (finalSlice: SliceArc) => {
 }
 
 type PieChartOpts = {
-  data: Slice[]
+  pieSlices: Slice[]
   rootElId: string
 }
 
@@ -76,12 +77,12 @@ type ChartLabels = Selection<SVGTextElement, SliceArc, SVGGElement, unknown>
 
 class PieChart {
   private readonly rootElId: string
-  private readonly data: Slice[]
+  private readonly slices: Slice[]
   private paths: ChartPaths | null
   private labels: ChartLabels | null
 
-  public constructor({ data, rootElId }: PieChartOpts) {
-    this.data = data
+  public constructor({ pieSlices, rootElId }: PieChartOpts) {
+    this.slices = pieSlices
     this.rootElId = rootElId
 
     this.paths = null
@@ -90,30 +91,30 @@ class PieChart {
     this.render()
   }
 
-  public update(val: number) {
-    const { data, labels, paths } = this
-    const index = Math.floor(Math.random() * data.length)
+  public update(newSliceValue: number) {
+    const { labels, paths, slices } = this
+    const sliceIndex = Math.floor(Math.random() * slices.length)
 
-    data[index].val = val
+    slices[sliceIndex].arbitraryValue = newSliceValue
     ;(paths as ChartPaths)
-      .data(pie(data))
+      .data(pie(slices))
       .transition()
       .duration(transitionDuration)
       .ease(easeFn)
       .attrTween("d", arcTween)
     ;(labels as ChartLabels)
-      .data(pie(data))
+      .data(pie(slices))
       .transition()
       .duration(transitionDuration)
       .ease(easeFn)
       .attr("transform", textTransform)
-      .each(function (d: { data: Slice }) {
-        select(this).text(d.data.val)
+      .each(function (slice) {
+        select(this).text(slice.data.arbitraryValue)
       })
   }
 
   private render() {
-    const { data, rootElId } = this
+    const { rootElId, slices } = this
     const { width } = (document.getElementById(
       rootElId
     ) as HTMLElement).getBoundingClientRect()
@@ -125,20 +126,20 @@ class PieChart {
       .append("g")
       .attr("transform", `translate(${width / 2},${height / 2})`)
 
-    const slices = svg
+    const slicesEls = svg
       .selectAll(".slice")
-      .data(pie(data))
+      .data(pie(slices))
       .enter()
       .append("g")
       .attr("class", "slice")
 
-    this.paths = slices
+    this.paths = slicesEls
       .append("path")
       .attr("d", arc)
-      .attr("fill", (_d, i) => color(i.toString()))
+      .attr("fill", (_slice, sliceIndex) => colorScale(sliceIndex.toString()))
       .each(stashArcs)
 
-    this.labels = slices
+    this.labels = slicesEls
       .filter((slice: SliceArc) => slice.endAngle - slice.startAngle > 0.2)
       .append("text")
       .attr("text-anchor", "middle")
@@ -146,26 +147,26 @@ class PieChart {
       .attr("transform", textTransform)
       .style("fill", "black")
       .style("font", "bold 12px Arial")
-      .text((d) => d.data.val)
+      .text((slice) => slice.data.arbitraryValue)
 
-    slices.append("title").text((d) => d.data.label)
+    slicesEls.append("title").text((slice) => slice.data.label)
   }
 }
 
 const main = async () => {
-  const data = await fetchData()
+  const pieJsonData = await fetchData()
 
   const chart = new PieChart({
-    data,
+    pieSlices: pieJsonData,
     rootElId: "chart",
   })
 
   ;(document.getElementById("change-data") as HTMLElement).addEventListener(
     "click",
     () => {
-      const randomVal = Math.floor(Math.random() * 44) + 2
+      const newSliceValue = Math.floor(Math.random() * 44) + 2
 
-      chart.update(randomVal)
+      chart.update(newSliceValue)
     }
   )
 }

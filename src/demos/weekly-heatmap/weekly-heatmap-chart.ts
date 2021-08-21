@@ -29,21 +29,21 @@ const axisOffset = -6
 const legendStroke = "#ccc"
 
 export type ChartConfig<ChartData> = {
-  data: ChartData[]
-  getIsHorizontalLabelBold: (a: string, i: number) => boolean
-  getIsVerticalLabelBold: (a: string, i: number) => boolean
-  getItemHorizontalIndex: (a: ChartData) => number
-  getItemTooltip: (a: ChartData) => string
-  getItemValue: (a: ChartData) => number
-  getItemVerticalIndex: (a: ChartData) => number
-  getLegendText: (value: number) => string
+  getIsHorizontalLabelBold: (label: string, labelIndex: number) => boolean
+  getIsVerticalLabelBold: (label: string, labelIndex: number) => boolean
+  getItemHorizontalIndex: (cell: ChartData) => number
+  getItemTooltip: (cell: ChartData) => string
+  getItemValue: (cell: ChartData) => number
+  getItemVerticalIndex: (cell: ChartData) => number
+  getLegendText: (cellValue: number) => string
   horizontalLabels: string[]
   rootElId: string
   verticalLabels: string[]
+  weeklyData: ChartData[]
 }
 
 export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
-  const { data, rootElId } = chartConfig
+  const { rootElId, weeklyData } = chartConfig
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
   rootEl.classList.add(styles.weeklyHeatmapChart)
@@ -60,7 +60,7 @@ export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
   const cellSize = Math.floor(width / horizontalLabels.length)
   const legendElementWidth = cellSize * 2
 
-  const max = maxD3(data, (item) => chartConfig.getItemValue(item))
+  const max = maxD3(weeklyData, (cell) => chartConfig.getItemValue(cell))
 
   const colorScale = scaleQuantile<string>()
     .domain([0, buckets - 1, max])
@@ -115,7 +115,7 @@ export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
 
   const heatMap = svg
     .selectAll(".cell")
-    .data(data)
+    .data(weeklyData)
     .enter()
     .append("rect")
     .attr("class", `cell ${styles.bordered}`)
@@ -123,21 +123,27 @@ export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
     .attr("rx", rectRadiusSize)
     .attr("ry", rectRadiusSize)
     .attr("width", cellSize)
-    .attr("x", (item) => chartConfig.getItemHorizontalIndex(item) * cellSize)
-    .attr("y", (item) => chartConfig.getItemVerticalIndex(item) * cellSize)
+    .attr(
+      "x",
+      (cellItem) => chartConfig.getItemHorizontalIndex(cellItem) * cellSize
+    )
+    .attr(
+      "y",
+      (cellItem) => chartConfig.getItemVerticalIndex(cellItem) * cellSize
+    )
     .attr("title", chartConfig.getItemTooltip)
     .style("fill", colors[0])
 
   heatMap
     .transition()
     .duration(6000)
-    .style("fill", (item) => colorScale(chartConfig.getItemValue(item)))
+    .style("fill", (cellItem) => colorScale(chartConfig.getItemValue(cellItem)))
 
   $(".cell").tooltip()
 
   const legend = svg
     .selectAll(".legend")
-    .data<any>([0].concat(colorScale.quantiles()), (d) => d)
+    .data<any>([0].concat(colorScale.quantiles()), (legendValue) => legendValue)
     .enter()
     .append("g")
     .attr("class", "legend")

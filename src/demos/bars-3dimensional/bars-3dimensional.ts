@@ -151,7 +151,7 @@ class Chart {
       cg: { deep },
     } = this
 
-    for (let i = 0, _i = 0; _i <= 3; i = ++_i) {
+    for (let i = 0, _i = 0; _i <= 3; _i += 1, i = _i) {
       const path = `M5,${25 * i} ${this.cg.width},${
         this.cg.heightOffset + i * 25
       }`

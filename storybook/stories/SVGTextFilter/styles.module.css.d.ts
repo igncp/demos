@@ -1,5 +1,5 @@
 declare const styles: {
-  readonly filtered: string
-  readonly svg: string
+  readonly "filtered": string
+  readonly "svg": string
 }
 export = styles

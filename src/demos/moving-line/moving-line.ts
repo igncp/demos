@@ -49,7 +49,7 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
       path += " L "
       path += `${graphData.xOffset + i * graphData.xDelta} `
       path += graphData.yOffset - points[i].value
-      i++
+      i += 1
     }
 
     return path
@@ -72,7 +72,7 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
       circle.node.className.baseVal = styles.point
       circle.attr("title", `Value: ${0}`)
       points[i].point = circle
-      i++
+      i += 1
     }
   }
 
@@ -119,7 +119,7 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
       )
       points[i].point.node.childNodes[0].remove()
       points[i].point.attr("title", `Value: ${newData.points[i].value}`)
-      i++
+      i += 1
     }
 
     graphData.line.animate(
@@ -133,7 +133,7 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
 
   const advanceGraph = function () {
     if (graphData.current < graphData.charts.length - 1) {
-      graphData.current++
+      graphData.current += 1
     } else {
       graphData.current = 1
     }

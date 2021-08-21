@@ -1,10 +1,6 @@
 import { json } from "d3"
-import { GeoJsonProperties } from "geojson"
-import { Objects, Topology } from "topojson-specification"
 
-import { ChartConfig } from "./spain-map-chart"
-
-type Data = Topology<Objects<GeoJsonProperties>>
+import { AreasData, ChartConfig } from "./spain-map-chart"
 
 export type Properties = {
   ENGTYPE_3: string // e.g. Comarca
@@ -29,8 +25,12 @@ export type Properties = {
 
 type Config = ChartConfig<Properties>
 
-const getTitleText: Config["getTitleText"] = (d) =>
-  [(d.NAME_3 || "").includes("n.a.") ? "" : d.NAME_3, d.NAME_2, d.NAME_1]
+const getTitleText: Config["getTitleText"] = (areaProperties) =>
+  [
+    (areaProperties.NAME_3 || "").includes("n.a.") ? "" : areaProperties.NAME_3,
+    areaProperties.NAME_2,
+    areaProperties.NAME_1,
+  ]
     .filter((v) => !!v)
     .join(", ")
 
@@ -46,15 +46,15 @@ const projectionsCenters: Config["projectionsCenters"] = [
   [10, 35.5],
 ]
 
-export const createChartConfig = (data: Data): Config => ({
-  data,
+export const createChartConfig = (areasData: AreasData): Config => ({
+  areasData,
   getTitleText,
   getWidths,
   projectionsCenters,
   rootElId: "chart",
 })
 
-export const fetchData = () =>
+export const fetchAreasData = () =>
   (json(
     `${ROOT_PATH}data/d3js/spain-map/data.json`
-  ) as unknown) as Promise<Data>
+  ) as unknown) as Promise<AreasData>

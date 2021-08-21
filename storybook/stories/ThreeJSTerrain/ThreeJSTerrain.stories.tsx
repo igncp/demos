@@ -97,13 +97,14 @@ const generateTexture = (
   const { data: imageData } = image
 
   for (
-    let rgbIdx = 0, j = 0, { length: l } = imageData;
-    rgbIdx < l;
-    rgbIdx += 4, j++
+    let rgbIdx = 0, heightIndex = 0, { length: imageLength } = imageData;
+    rgbIdx < imageLength;
+    rgbIdx += 4, heightIndex += 1
   ) {
-    shadeVector.x = heightData[j - 2] - heightData[j + 2]
+    shadeVector.x = heightData[heightIndex - 2] - heightData[heightIndex + 2]
     shadeVector.y = 2
-    shadeVector.z = heightData[j - width * 2] - heightData[j + width * 2]
+    shadeVector.z =
+      heightData[heightIndex - width * 2] - heightData[heightIndex + width * 2]
     shadeVector.normalize()
 
     const shade = (shadeVector.dot(sun) * lightLevel) / 100
@@ -141,13 +142,13 @@ const generateTexture = (
   const { data: imageDataScaled } = imageScaled
 
   Array.from({ length: imageDataScaled.length / scaleFactor }).forEach(
-    (_, num: number) => {
-      const v = Math.floor(Math.random() * 5)
-      const index = num * scaleFactor
+    (_, imageIndexBase: number) => {
+      const imageAddition = Math.floor(Math.random() * 5)
+      const imageIndex = imageIndexBase * scaleFactor
 
-      imageDataScaled[index] += v
-      imageDataScaled[index + 1] += v
-      imageDataScaled[index + 2] += v
+      imageDataScaled[imageIndex] += imageAddition
+      imageDataScaled[imageIndex + 1] += imageAddition
+      imageDataScaled[imageIndex + 2] += imageAddition
     }
   )
 
@@ -254,14 +255,15 @@ const main = (
 
   const surfaceCone = new Mesh(geometryHelper, new MeshNormalMaterial())
 
-  const onPointerMove = (event: MouseEvent) => {
+  const onPointerMove = (pointerEvent: PointerEvent) => {
     pointer.x =
-      ((event.clientX - containerRect.left) / renderer.domElement.clientWidth) *
+      ((pointerEvent.clientX - containerRect.left) /
+        renderer.domElement.clientWidth) *
         2 -
       1
     pointer.y =
       -(
-        (event.clientY - containerRect.top) /
+        (pointerEvent.clientY - containerRect.top) /
         renderer.domElement.clientHeight
       ) *
         2 +
@@ -303,9 +305,9 @@ const main = (
   const vertices = geometry.attributes.position.array as number[]
 
   for (
-    let heightArrIdx = 0, vertexIdx = 0, { length: l } = vertices;
-    heightArrIdx < l;
-    heightArrIdx++, vertexIdx += 3
+    let heightArrIdx = 0, vertexIdx = 0, { length: verticesLength } = vertices;
+    heightArrIdx < verticesLength;
+    heightArrIdx += 1, vertexIdx += 3
   ) {
     const heightVertexIdx = vertexIdx + 1
 

@@ -30,9 +30,28 @@ import {
   threeDocs,
 } from "../common"
 
+type Sphere = Mesh<SphereGeometry, MeshPhysicalMaterial>
+
 type Props = {
   automaticCamera: boolean
   lightPointSpeed: number
+}
+
+type State = {
+  currentTime: number
+  isStopped: boolean
+  selectedSphereUuid: string
+}
+
+type Simulation = {
+  camera: PerspectiveCamera
+  particleLight: Mesh<SphereGeometry, MeshBasicMaterial>
+  props: Props
+  renderer: WebGLRenderer
+  scene: Scene
+  spheresList: Sphere[]
+  state: State
+  stop: () => void
 }
 
 const ROOT_ID = "example"
@@ -85,7 +104,14 @@ const animate = (simulation: Simulation) => {
   render(simulation)
 }
 
-const main = (props: Props, prevSimulation: Simulation | null) => {
+const font = new Font(fontData)
+
+type CreateDemo = (o: {
+  prevSimulation: Simulation | null
+  props: Props
+}) => Simulation
+
+const createDemo: CreateDemo = ({ prevSimulation, props }) => {
   const container = document.getElementById(ROOT_ID) as HTMLElement
   const containerRect = container.getBoundingClientRect()
   const { width } = containerRect
@@ -105,16 +131,17 @@ const main = (props: Props, prevSimulation: Simulation | null) => {
     selectedSphereUuid: prevSimulation?.state.selectedSphereUuid ?? "",
   }
 
-  const onClick = (event: MouseEvent) => {
-    event.preventDefault()
+  const onClick = (clickEvent: MouseEvent) => {
+    clickEvent.preventDefault()
 
     mouse.x =
-      ((event.clientX - containerRect.left) / renderer.domElement.clientWidth) *
+      ((clickEvent.clientX - containerRect.left) /
+        renderer.domElement.clientWidth) *
         2 -
       1
     mouse.y =
       -(
-        (event.clientY - containerRect.top) /
+        (clickEvent.clientY - containerRect.top) /
         renderer.domElement.clientHeight
       ) *
         2 +
@@ -231,8 +258,9 @@ const main = (props: Props, prevSimulation: Simulation | null) => {
     }
   }
 
-  const addLabel = (name: string, location: Vector3) => {
-    const font = new Font(fontData)
+  type AddLabel = (o: { location: Vector3; name: string }) => void
+
+  const addLabel: AddLabel = ({ location, name }) => {
     const textGeo = new TextGeometry(name, {
       curveSegments: 1,
       font,
@@ -249,17 +277,31 @@ const main = (props: Props, prevSimulation: Simulation | null) => {
     scene.add(textMesh)
   }
 
-  addLabel("+clearcoat", new Vector3(-550, 0, 0))
-  addLabel("-clearcoat", new Vector3(350, 0, 0))
+  addLabel({ location: new Vector3(-550, 0, 0), name: "+clearcoat" })
+  addLabel({ location: new Vector3(350, 0, 0), name: "-clearcoat" })
 
-  addLabel("+clearcoatRoughness", new Vector3(-200, -300, 0))
-  addLabel("-clearcoatRoughness", new Vector3(-200, 300, 0))
+  addLabel({
+    location: new Vector3(-200, -300, 0),
+    name: "+clearcoatRoughness",
+  })
+  addLabel({ location: new Vector3(-200, 300, 0), name: "-clearcoatRoughness" })
 
-  addLabel("+reflectivity", new Vector3(-150, 0, -300))
-  addLabel("-reflectivity", new Vector3(-150, 0, 300))
+  addLabel({ location: new Vector3(-150, 0, -300), name: "+reflectivity" })
+  addLabel({ location: new Vector3(-150, 0, 300), name: "-reflectivity" })
 
-  const directionalLight = new DirectionalLight(0xffffff, 1)
-  const pointLight = new PointLight(0xffa500, 2, 800)
+  const directionalLightIntensity = 1
+  const directionalLight = new DirectionalLight(
+    0xffffff,
+    directionalLightIntensity
+  )
+
+  const pointLightIntensity = 2
+  const pointLightDistance = 800
+  const pointLight = new PointLight(
+    0xffa500,
+    pointLightIntensity,
+    pointLightDistance
+  )
 
   directionalLight.position.set(1, 1, 1).normalize()
   particleLight.add(pointLight)
@@ -289,32 +331,13 @@ const main = (props: Props, prevSimulation: Simulation | null) => {
   return newSimulation
 }
 
-type Sphere = Mesh<SphereGeometry, MeshPhysicalMaterial>
-
-type Simulation = {
-  camera: PerspectiveCamera
-  particleLight: Mesh<SphereGeometry, MeshBasicMaterial>
-  props: Props
-  renderer: WebGLRenderer
-  scene: Scene
-  spheresList: Sphere[]
-  state: State
-  stop: () => void
-}
-
-type State = {
-  currentTime: number
-  isStopped: boolean
-  selectedSphereUuid: string
-}
-
 const ThreeJSReflectiveSpheres = (props: Props) => {
   const [prevSimulation, setPrevSimulation] = React.useState<Simulation | null>(
     null
   )
 
   React.useEffect(() => {
-    const newSimulation = main(props, prevSimulation)
+    const newSimulation = createDemo({ prevSimulation, props })
 
     setPrevSimulation(newSimulation)
   }, [props])

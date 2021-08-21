@@ -2,42 +2,45 @@ import { csv } from "d3"
 
 import { ChartConfig } from "./area-chart"
 
-type PointBase = {
+type IncomeItemBase = {
   percent: number
   year: number
 }
 
-export type Point = PointBase & {
-  index: number
+export type IncomeItem = IncomeItemBase & {
+  pointIndex: number
 }
 
-export const fetchData = async (): Promise<Point[]> => {
+export const fetchData = async (): Promise<IncomeItem[]> => {
   const result = (await (csv(
     `${ROOT_PATH}data/d3js/area/data.csv`
-  ) as unknown)) as PointBase[]
+  ) as unknown)) as IncomeItem[]
 
-  return result.map((p, index) => ({
+  return result.map((p, pointIndex) => ({
     ...p,
-    index,
+    pointIndex,
   }))
 }
 
-type Config = ChartConfig<Point>
+type Config = ChartConfig<IncomeItem>
 
-const getItemXValue: Config["getItemXValue"] = (point) => point.year
-const getItemYValue: Config["getItemYValue"] = (point) => point.percent / 100
-const getItemId: Config["getItemId"] = (point) => point.index
-const getItemTitle: Config["getItemTitle"] = (point: Point) =>
-  `Year: ${point.year}, Percent: ${point.percent}%`
+const getItemXValue: Config["getItemXValue"] = (incomeItem) => incomeItem.year
+const getItemYValue: Config["getItemYValue"] = (incomeItem) =>
+  incomeItem.percent / 100
+const getItemId: Config["getItemId"] = (incomeItem) => incomeItem.pointIndex
+const getItemTitle: Config["getItemTitle"] = (incomeItem: IncomeItem) =>
+  `Year: ${incomeItem.year}, Percent: ${incomeItem.percent}%`
 const getChartTitle = () =>
   "Share of top decile [aka top 10%] in national income"
 
-export const createChartConfig = (items: Point[]): ChartConfig<Point> => ({
+export const createChartConfig = (
+  dataPoints: IncomeItem[]
+): ChartConfig<IncomeItem> => ({
+  areaPoints: dataPoints,
   getChartTitle,
   getItemId,
   getItemTitle,
   getItemXValue,
   getItemYValue,
-  items,
   rootElId: "chart",
 })

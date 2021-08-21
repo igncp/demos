@@ -3,17 +3,17 @@ import { tsv } from "d3"
 import { ChartConfig } from "./weekly-heatmap-chart"
 
 export type TimeItem = {
+  arbitraryMetric: number
   day: number
   hour: number
-  value: number
 }
 
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
 
-const hours = Array.from({ length: 24 }).map((_, index: number) => {
-  const num = index % 12
+const hours = Array.from({ length: 24 }).map((_, hourIndex: number) => {
+  const num = hourIndex % 12
 
-  return `${num + 1} ${index >= 11 && index !== 23 ? "pm" : "am"}`
+  return `${num + 1} ${hourIndex >= 11 && hourIndex !== 23 ? "pm" : "am"}`
 })
 
 const workingHourMin = 7
@@ -22,20 +22,23 @@ const workingDayMin = 0
 const workingDayMax = 4
 
 export const fetchData = async (): Promise<TimeItem[]> => {
-  const data: any = await tsv(`${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`)
+  const weeklyTSVData: any = await tsv(
+    `${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`
+  )
 
-  return data.map((timeItem: TimeItem) => ({
+  return weeklyTSVData.map((timeItem: any) => ({
+    arbitraryMetric: +timeItem.value,
     day: +timeItem.day,
     hour: +timeItem.hour,
-    value: +timeItem.value,
   }))
 }
 
 type Config = ChartConfig<TimeItem>
 
-const getItemValue: Config["getItemValue"] = (item) => item.value
+const getItemValue: Config["getItemValue"] = (timeItem) =>
+  timeItem.arbitraryMetric
 const getItemTooltip: Config["getItemTooltip"] = (timeItem) =>
-  `Value: ${timeItem.value}`
+  `Arbitrary Metric: ${timeItem.arbitraryMetric}`
 const getItemHorizontalIndex: Config["getItemHorizontalIndex"] = (timeItem) =>
   timeItem.hour - 1
 const getItemVerticalIndex: Config["getItemVerticalIndex"] = (timeItem) =>
@@ -50,11 +53,10 @@ const getIsVerticalLabelBold: Config["getIsVerticalLabelBold"] = (
   dayIndex
 ) => dayIndex >= workingDayMin && dayIndex <= workingDayMax
 
-const getLegendText: Config["getLegendText"] = (value) =>
-  `≥ ${value.toFixed(2)}`
+const getLegendText: Config["getLegendText"] = (arbitraryMetric) =>
+  `≥ ${arbitraryMetric.toFixed(2)}`
 
-export const createChartConfig = (data: TimeItem[]): Config => ({
-  data,
+export const createChartConfig = (weeklyData: TimeItem[]): Config => ({
   getIsHorizontalLabelBold,
   getIsVerticalLabelBold,
   getItemHorizontalIndex,
@@ -65,4 +67,5 @@ export const createChartConfig = (data: TimeItem[]): Config => ({
   horizontalLabels: hours,
   rootElId: "chart",
   verticalLabels: days,
+  weeklyData,
 })

@@ -76,7 +76,10 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
     .on("tick", ticked)
 
   const dragstarted = (event: CustomDragEvent, d: Node) => {
-    if (!event.active) simulation.alphaTarget(0.3).restart()
+    if (!event.active) {
+      simulation.alphaTarget(0.3).restart()
+    }
+
     d.fx = d.x
     d.fy = d.y
   }
@@ -87,7 +90,10 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
   }
 
   const dragended = (event: CustomDragEvent, d: Node) => {
-    if (!event.active) simulation.alphaTarget(0)
+    if (!event.active) {
+      simulation.alphaTarget(0)
+    }
+
     d.fx = null
     d.fy = null
   }

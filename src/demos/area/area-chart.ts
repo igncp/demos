@@ -49,13 +49,13 @@ const filterBlackOpacity = (
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-export type ChartConfig<A> = {
+export type ChartConfig<AreaPoint> = {
+  areaPoints: AreaPoint[]
   getChartTitle: () => string
-  getItemId: (a: A) => number
-  getItemTitle: (a: A) => string
-  getItemXValue: (a: A) => number
-  getItemYValue: (a: A) => number
-  items: A[]
+  getItemId: (areaPoint: AreaPoint) => number
+  getItemTitle: (areaPoint: AreaPoint) => string
+  getItemXValue: (areaPoint: AreaPoint) => number
+  getItemYValue: (areaPoint: AreaPoint) => number
   rootElId: string
 }
 
@@ -63,8 +63,10 @@ type ChartReturn = {
   toggleVoronoi: () => void
 }
 
-export const renderChart = <A>(chartConfig: ChartConfig<A>): ChartReturn => {
-  const { items, rootElId } = chartConfig
+export const renderChart = <AreaPoint>(
+  chartConfig: ChartConfig<AreaPoint>
+): ChartReturn => {
+  const { areaPoints, rootElId } = chartConfig
   const { width: elWidth } = (document.getElementById(
     rootElId
   ) as HTMLElement).getBoundingClientRect()
@@ -101,24 +103,26 @@ export const renderChart = <A>(chartConfig: ChartConfig<A>): ChartReturn => {
 
   filterBlackOpacity("points", svg, 2, 0.5)
 
-  const xMax = max(items, chartConfig.getItemXValue) as number
-  const xMin = min(items, chartConfig.getItemXValue) as number
+  const xMax = max(areaPoints, chartConfig.getItemXValue) as number
+  const xMin = min(areaPoints, chartConfig.getItemXValue) as number
 
-  const yMax = max(items, chartConfig.getItemYValue) as number
-  const yMin = min(items, chartConfig.getItemYValue) as number
+  const yMax = max(areaPoints, chartConfig.getItemYValue) as number
+  const yMin = min(areaPoints, chartConfig.getItemYValue) as number
 
   const xScale = scaleLinear().domain([xMin, xMax]).range([0, width])
   const yScale = scaleLinear()
     .domain([yMax + 0.05, yMin - 0.05])
     .range([0, height])
 
-  const extractXScale = (d: A) => xScale(chartConfig.getItemXValue(d))
-  const extractYScale = (d: A) => yScale(chartConfig.getItemYValue(d))
+  const extractXScale = (areaPoint: AreaPoint) =>
+    xScale(chartConfig.getItemXValue(areaPoint))
+  const extractYScale = (areaPoint: AreaPoint) =>
+    yScale(chartConfig.getItemYValue(areaPoint))
 
   const getSmallDeviceTicksScale = () =>
     scaleQuantize()
       .domain([0, 500])
-      .range(Array.from({ length: 6 }).map((_, i) => i))
+      .range(Array.from({ length: 6 }).map((_, rangeIndex) => rangeIndex))
 
   const ticks = isSmallDevice ? getSmallDeviceTicksScale()(elWidth) : null
 
@@ -142,12 +146,12 @@ export const renderChart = <A>(chartConfig: ChartConfig<A>): ChartReturn => {
     .selectAll("text")
     .attr("dx", "-.25em")
 
-  const area = areaD3<A>().x(extractXScale).y0(height).y1(extractYScale)
-  const line = lineD3<A>().x(extractXScale).y(extractYScale)
+  const area = areaD3<AreaPoint>().x(extractXScale).y0(height).y1(extractYScale)
+  const line = lineD3<AreaPoint>().x(extractXScale).y(extractYScale)
 
   svg
     .append("path")
-    .datum(items)
+    .datum(areaPoints)
     .attr("class", styles.line)
     .attr("d", line)
     .attr("clip-path", "url(#clip)")
@@ -161,39 +165,50 @@ export const renderChart = <A>(chartConfig: ChartConfig<A>): ChartReturn => {
 
   svg
     .append("path")
-    .datum(items)
+    .datum(areaPoints)
     .attr("class", styles.area)
     .attr("d", area)
     .attr("clip-path", "url(#clip)")
 
-  const voronoi = Delaunay.from(items, extractXScale, extractYScale).voronoi([
+  const voronoi = Delaunay.from(
+    areaPoints,
+    extractXScale,
+    extractYScale
+  ).voronoi([
     -margin.left,
     -margin.top,
     width + margin.right,
     height + margin.bottom,
   ])
 
-  const mouseover = (_e: unknown, d: A) => {
-    select(`.point-${chartConfig.getItemId(d)}`).style("display", "block")
+  const mouseover = (_e: unknown, areaPoint: AreaPoint) => {
+    select(`.point-${chartConfig.getItemId(areaPoint)}`).style(
+      "display",
+      "block"
+    )
   }
 
-  const mouseleave = (_mouseEvent: unknown, d: A) => {
-    select(`.point-${chartConfig.getItemId(d)}`).style("display", "none")
+  const mouseleave = (_mouseEvent: unknown, areaPoint: AreaPoint) => {
+    select(`.point-${chartConfig.getItemId(areaPoint)}`).style(
+      "display",
+      "none"
+    )
   }
 
   svg
     .selectAll("circle")
-    .data(items)
+    .data(areaPoints)
     .enter()
     .append("circle")
     .attr(
       "transform",
-      (item: A) => `translate(${extractXScale(item)},${extractYScale(item)})`
+      (areaPoint: AreaPoint) =>
+        `translate(${extractXScale(areaPoint)},${extractYScale(areaPoint)})`
     )
     .attr("r", "5px")
     .attr(
       "class",
-      (item) => `${styles.point} point-${chartConfig.getItemId(item)}`
+      (areaPoint) => `${styles.point} point-${chartConfig.getItemId(areaPoint)}`
     )
     .style("filter", "url(#drop-shadow-points)")
 
@@ -201,10 +216,12 @@ export const renderChart = <A>(chartConfig: ChartConfig<A>): ChartReturn => {
 
   voronoiGroup
     .selectAll("path")
-    .data(items)
+    .data(areaPoints)
     .enter()
     .append("path")
-    .attr("d", (item) => voronoi.renderCell(chartConfig.getItemId(item)))
+    .attr("d", (areaPoint) =>
+      voronoi.renderCell(chartConfig.getItemId(areaPoint))
+    )
     .on("mouseover", mouseover)
     .on("mouseleave", mouseleave)
     .attr("class", "voronoi-group")

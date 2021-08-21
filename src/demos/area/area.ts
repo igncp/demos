@@ -1,16 +1,16 @@
 import { renderChart } from "./area-chart"
-import { Point, createChartConfig, fetchData } from "./area-chart-data"
+import { IncomeItem, createChartConfig, fetchData } from "./area-chart-data"
 
 const main = async () => {
-  const data = await fetchData()
-  const chartConfig = createChartConfig(data)
+  const dataPoints = await fetchData()
+  const chartConfig = createChartConfig(dataPoints)
 
-  const { toggleVoronoi } = renderChart<Point>(chartConfig)
+  const { toggleVoronoi } = renderChart<IncomeItem>(chartConfig)
 
   ;(document.getElementById("toggle-voronoi") as HTMLElement).addEventListener(
     "click",
-    (e) => {
-      e.preventDefault()
+    (clickEvent: MouseEvent) => {
+      clickEvent.preventDefault()
 
       toggleVoronoi()
     }

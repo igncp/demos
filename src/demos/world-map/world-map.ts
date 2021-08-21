@@ -9,7 +9,7 @@ import {
 } from "d3"
 import { feature } from "topojson-client"
 
-type Data = GeoPermissibleObjects & {
+type CountryData = GeoPermissibleObjects & {
   id: number
 }
 
@@ -26,21 +26,24 @@ const renderChart: RenderChart = ({ rootElId, world }) => {
     lastZoomId: null,
   }
 
-  const { features: data } = feature(world, world.objects.countries) as any
+  const { features: featuresData } = feature(
+    world,
+    world.objects.countries
+  ) as any
 
   const colorScale = scaleLinear()
-    .domain([0, data.length - 1])
+    .domain([0, featuresData.length - 1])
     .range([0, 1])
-  const colorFn = (_d: Data, index: number) =>
-    interpolateRdYlGn(colorScale(index))
+  const colorFn = (_: CountryData, countryIndex: number) =>
+    interpolateRdYlGn(colorScale(countryIndex))
 
   const { width } = (document.getElementById(
     rootElId
   ) as HTMLElement).getBoundingClientRect()
   const height = 500
 
-  const setZoom = (_e: unknown, d: Data) => {
-    if (!(d as unknown) || state.lastZoomId === d.id) {
+  const setZoom = (_zoomEvent: unknown, countryData: CountryData) => {
+    if (!(countryData as unknown) || state.lastZoomId === countryData.id) {
       state.lastZoomId = null
 
       countries // eslint-disable-line @typescript-eslint/no-use-before-define
@@ -56,9 +59,9 @@ const renderChart: RenderChart = ({ rootElId, world }) => {
       return
     }
 
-    state.lastZoomId = d.id
+    state.lastZoomId = countryData.id
 
-    const centroid = path.centroid(d) // eslint-disable-line @typescript-eslint/no-use-before-define
+    const centroid = path.centroid(countryData) // eslint-disable-line @typescript-eslint/no-use-before-define
 
     const x = centroid[0]
     const y = centroid[1]
@@ -96,10 +99,10 @@ const renderChart: RenderChart = ({ rootElId, world }) => {
 
   const countries = content
     .selectAll(".country")
-    .data<Data>(data)
+    .data<CountryData>(featuresData)
     .enter()
     .append("path")
-    .attr("class", (d: Data) => `country ${d.id}`)
+    .attr("class", (countryData: CountryData) => `country ${countryData.id}`)
     .attr("d", path)
     .style("fill", colorFn)
     .style("stroke", "#FFF")

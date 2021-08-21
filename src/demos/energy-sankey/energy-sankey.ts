@@ -113,12 +113,16 @@ const nodeClickHandler = ({
   onNodeClick?: OnNodeClick
   state: State
 }) => {
-  if (state.isInTransition) return
+  if (state.isInTransition) {
+    return
+  }
 
   if (onNodeClick) {
     const shouldPreventDefault = onNodeClick(d)
 
-    if (shouldPreventDefault) return
+    if (shouldPreventDefault) {
+      return
+    }
   }
 
   if (state.selectedNode === d.name) {
@@ -320,7 +324,9 @@ const renderChart = ({
     .attr("class", styles.energyLink)
     .attr("stroke-width", (d) => Math.max(1, d.width!))
     .on("click", function () {
-      if (state.isInTransition) return
+      if (state.isInTransition) {
+        return
+      }
 
       const currentLink = select(this)
 

@@ -2,12 +2,12 @@ import { renderChart } from "./spain-map-chart"
 import {
   Properties,
   createChartConfig,
-  fetchData,
+  fetchAreasData,
 } from "./spain-map-chart-data"
 
 const main = async () => {
-  const data = await fetchData()
-  const chartConfig = createChartConfig(data)
+  const areasData = await fetchAreasData()
+  const chartConfig = createChartConfig(areasData)
 
   renderChart<Properties>(chartConfig)
 }

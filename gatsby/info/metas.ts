@@ -11,19 +11,19 @@ type Metas = {
 
 const metas: Metas = {
   d3js: {
-    area: {
+    "area": {
       description:
         "Area Chart example, using D3.js, with a transparent Voronoi overlay that gives the functionality know fast the nearest point to the mouse.",
     },
-    bars: {
+    "bars": {
       description:
         "Bar Chart example with a traslation interval, a custom color scale and dynamic entry of new data. You can also see how to animate an axis change.",
     },
-    bubbles: {
+    "bubbles": {
       description:
         "Bubbles Chart example with NV3D as D3.js extension, using data from the Nike API, and with a depurated style, an horizontal axis and other color scheme.",
     },
-    chord: {
+    "chord": {
       description:
         "Chord Chart example using D3.js, which has a different color scheme with a color for each country, and a special drop shadow filter for a 3D effect.",
     },
@@ -46,11 +46,11 @@ const metas: Metas = {
       description:
         "Fisheye Chart example using D3.js, with the Fisheye plugin. It has a more depurated style, and the ability to stop the scale changes when it's clicked.",
     },
-    force: {
+    "force": {
       description:
         "Force Chart example using D3.js with two source files of data, that shows how a process with several cycles and paths can be represented.",
     },
-    icosahedron: {
+    "icosahedron": {
       description:
         "Example using D3.js of a 3D geometric figure, which has each face with a different color using a color scale and a sinusoidal animated movement.",
     },
@@ -70,11 +70,11 @@ const metas: Metas = {
       description:
         "Multiline chart example using D3.js, with Voronoi functionality and the ability to show a single line after it is clicked. The label and style are also changed.",
     },
-    partition: {
+    "partition": {
       description:
         "Radial treemap example using D3.js, with data from a partition, where labels, mouse events and titles are added.",
     },
-    pie: {
+    "pie": {
       description:
         "Pie chart example using D3.js, with an animated transition and a random change of values to show how to animate between states.",
     },
@@ -85,14 +85,14 @@ const metas: Metas = {
       description:
         "Example of a geographic map using D3.js, where some styles have been added to give it a 3D effect.",
     },
-    timeline: {
+    "timeline": {
       description:
         "Example of historical timeline using D3.js, where a legend is place to ease the navigation, as well as a more depurated style with tooltips.",
     },
     "trend-line": {
       description: "Example of trend-line using D3.js, with extra animations.",
     },
-    vectors: {
+    "vectors": {
       description:
         "Not actually a chart, but the representation of pointing vectors, with the possibility of creation and movement, made with D3.js",
     },

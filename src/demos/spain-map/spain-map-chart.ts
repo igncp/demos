@@ -53,10 +53,10 @@ const addDropShadowFilter = function (
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-type Data = Topology<Objects<GeoJsonProperties>>
+export type AreasData = Topology<Objects<GeoJsonProperties>>
 
 export type ChartConfig<Properties> = {
-  data: Data
+  areasData: AreasData
   getTitleText: (p: Properties) => string
   getWidths: (chartWidth: number) => number[]
   projectionsCenters: Array<[number, number]>
@@ -66,10 +66,10 @@ export type ChartConfig<Properties> = {
 export const renderChart = <Properties>(
   chartConfig: ChartConfig<Properties>
 ) => {
-  const { data, rootElId } = chartConfig
+  const { areasData, rootElId } = chartConfig
 
   type DataShape = GeoPermissibleObjects & {
-    index: number
+    areaIndex: number
     properties: Properties
   }
 
@@ -79,13 +79,15 @@ export const renderChart = <Properties>(
 
   const {
     objects: { data1: dataRoot },
-  } = data
-  const { features: dataGeo } = feature(data, dataRoot) as any
+  } = areasData
+  const { features: dataGeo } = feature(areasData, dataRoot) as any
 
-  const dataGeoParsed = dataGeo.map((d: DataShape, i: number) => ({
-    ...d,
-    index: i,
-  }))
+  const dataGeoParsed = dataGeo.map(
+    (areaData: DataShape, areaIndex: number) => ({
+      ...areaData,
+      areaIndex,
+    })
+  )
 
   const colorScale = scaleLinear()
     .domain([0, (dataRoot as any).geometries.length])
@@ -94,8 +96,8 @@ export const renderChart = <Properties>(
     .domain(range(0, 1, 1.0 / colorsScheme.length))
     .range(colorsScheme)
 
-  const colorFn = function (d: DataShape) {
-    return colorScaleConversion(colorScale(d.index))
+  const colorFn = function (areaData: DataShape) {
+    return colorScaleConversion(colorScale(areaData.areaIndex))
   }
 
   const svg = select(`#${rootElId}`)
@@ -144,7 +146,9 @@ export const renderChart = <Properties>(
           .style("fill", colorFn)
           .style("stroke-width", strokeWidth)
       })
-      .attr("title", (d) => chartConfig.getTitleText(d.properties))
+      .attr("title", (areaData) =>
+        chartConfig.getTitleText(areaData.properties)
+      )
       .attr("class", regionClass)
   }
 

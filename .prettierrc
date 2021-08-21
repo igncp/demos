@@ -12,5 +12,6 @@
     "\\.css$"
   ],
   "importOrderSeparation": true,
+  "quoteProps": "preserve",
   "semi": false
 }

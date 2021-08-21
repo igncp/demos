@@ -53,7 +53,6 @@ const main = ({
     y: height / 2,
   } as const
 
-  const orbs: Orb[] = []
   let dt = 1
   let t = Date.now()
 
@@ -131,6 +130,8 @@ const main = ({
     }
   }
 
+  const orbs: Orb[] = []
+
   const createOrb = (config?: { x: number; y: number }) => {
     const x = config?.x ? config.x : 0
     const y = config?.y ? config.y : 0
@@ -172,11 +173,13 @@ const main = ({
 
   let total = count
 
-  while (total--) {
+  while (total) {
     createOrb({
       x: random(width / 2 - innerRadius, width / 2 + innerRadius),
       y: random(height / 2 - innerRadius, height / 2 + innerRadius),
     })
+
+    total -= 1
   }
 
   const clear = () => {

@@ -19,35 +19,34 @@ const main = async () => {
 
   const { updateChart } = renderChart<Municipality>(chartConfig)
 
-  select("form").on("change", (e) => {
-    state.populationType = e.target.value
+  select("form").on("change", (changeEvent) => {
+    state.populationType = changeEvent.target.value
     updateChart()
   })
 
   $(".population-slider").slider({
-    change: (_event, { values }) => {
-      const newValues = (values as [number, number]).map((v) => v / 100) as [
-        number,
-        number
-      ]
+    change: (...[, { values: populationValues }]) => {
+      const newValues = (populationValues as [number, number]).map(
+        (v) => v / 100
+      ) as [number, number]
 
       state.populationRange = newValues
       updateChart()
     },
     range: true,
-    values: [0, 100],
+    values: [0, 100], // eslint-disable-line id-denylist
   })
 
   const max = municipalities[0].values.total.length - 1
 
   $(".time-slider").slider({
-    change: (_event, { value }) => {
-      state.timeRangeIndex = value as number
+    change: (...[, { value: timeRangeIndex }]) => {
+      state.timeRangeIndex = timeRangeIndex as number
       updateChart()
     },
     max,
     min: 0,
-    value: 0,
+    value: 0, // eslint-disable-line id-denylist
   })
 }
 

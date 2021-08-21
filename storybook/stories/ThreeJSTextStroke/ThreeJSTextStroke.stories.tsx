@@ -9,6 +9,7 @@ import {
   Path,
   PerspectiveCamera,
   Scene,
+  Shape,
   ShapeGeometry,
   WebGLRenderer,
 } from "three"
@@ -24,6 +25,10 @@ type State = {
   isStopped: boolean
 }
 
+type Props = {
+  text: string
+}
+
 type Simulation = {
   camera: PerspectiveCamera
   props: Props
@@ -34,7 +39,12 @@ type Simulation = {
 
 const font = new Font(FontData)
 
-const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
+type CreateDemo = (o: {
+  prevSimulation: Simulation | null
+  props: Props
+}) => Simulation
+
+const createDemo: CreateDemo = ({ prevSimulation, props }) => {
   const { text: message } = props
   const container = document.getElementById(ROOT_ID) as HTMLElement
   const { width } = container.getBoundingClientRect()
@@ -80,8 +90,8 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
   const generateText = () => {
     scene.clear()
 
-    const shapes = font.generateShapes(message, 100)
-    const geometry = new ShapeGeometry(shapes)
+    const shapes = font.generateShapes(message, 100) as Array<Path | Shape>
+    const geometry = new ShapeGeometry(shapes as Shape[])
 
     geometry.computeBoundingBox()
 
@@ -97,14 +107,14 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
 
     const holeShapes: Path[] = []
 
-    shapes.forEach((shape) => {
+    ;(shapes as Shape[]).forEach((shape) => {
       if ((shape.holes.length || 0) > 0) {
         shape.holes.forEach((hole) => {
           holeShapes.push(hole)
         })
       }
     })
-    ;(shapes as any).push.apply(shapes, holeShapes)
+    shapes.push(...holeShapes)
 
     const style = SVGLoader.getStrokeStyle(5, color.getStyle())
 
@@ -113,6 +123,7 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
     shapes.forEach((shape) => {
       const points = shape.getPoints()
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const svgGeo = SVGLoader.pointsToStroke(points as any, style)
 
       svgGeo.translate(xMid, 0, 0)
@@ -164,17 +175,13 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
   return createSimulation()
 }
 
-type Props = {
-  text: string
-}
-
 const ThreeJSTextStroke = (props: Props) => {
   const [prevSimulation, setPrevSimulation] = React.useState<Simulation | null>(
     null
   )
 
   React.useEffect(() => {
-    const newSimulation = demo(props, prevSimulation)
+    const newSimulation = createDemo({ prevSimulation, props })
 
     setPrevSimulation(newSimulation)
   }, [props])

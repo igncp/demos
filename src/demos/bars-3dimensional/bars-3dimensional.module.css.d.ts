@@ -1,4 +1,4 @@
 declare const styles: {
-  readonly bars3DimensionalChart: string
+  readonly "bars3DimensionalChart": string
 }
 export = styles

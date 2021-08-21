@@ -35,6 +35,7 @@ I've updated this repository after it was inactive for several years. The remain
     - [ ] Remove Bootstrap but keep same look and feel
 1. [ ] Resolve TypeScript cases with `any`
 1. [ ] Resolve as many `@typescript-eslint/no-use-before-define` errors by using generics
+1. [ ] Try to forbid `* as FOO` types of imports in ESLint with import plugin
 
 ## License
 

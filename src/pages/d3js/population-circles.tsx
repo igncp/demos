@@ -19,7 +19,7 @@ const PopulationCircles = ({ pageContext }: DemoPageProps) => (
         { id: "total", label: "Total" },
         { id: "males", label: "Males" },
         { id: "females", label: "Females" },
-      ].map(({ id, label }, radioIndex) => (
+      ].map((...[{ id, label }, radioIndex]) => (
         <div className={styles.radio} key={id}>
           <input
             defaultChecked={radioIndex === 0}

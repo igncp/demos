@@ -12,14 +12,14 @@ enum SpinnerType {
 }
 
 type Props = { color: string; size: number; type: SpinnerType }
-type SpinnerFn = (
-  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
-  p: Props
-) => void
+type SpinnerFn = (o: {
+  props: Props
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
+}) => void
 
 const ROOT_ID = "example"
 
-const firstSpinnerFn: SpinnerFn = (svg, props) => {
+const firstSpinnerFn: SpinnerFn = ({ props, svg }) => {
   svg.attr("class", styles.firstSpinner)
 
   const circleCenter = 50
@@ -45,7 +45,7 @@ const firstSpinnerFn: SpinnerFn = (svg, props) => {
   })
 
   Array.from({ length: 5 })
-    .map((_, idx) => [30 + idx * 10, (idx + 1) * 0.1])
+    .map((...[, rectIndex]) => [30 + rectIndex * 10, (rectIndex + 1) * 0.1])
     .forEach(([x, begin]) => {
       const valueLimit = 5
 
@@ -74,7 +74,7 @@ const firstSpinnerFn: SpinnerFn = (svg, props) => {
     })
 }
 
-const secondSpinnerFn: SpinnerFn = (svg, props) => {
+const secondSpinnerFn: SpinnerFn = ({ props, svg }) => {
   const circleCenter = 50
   const smallCircleRadius = 4
   const bigCircleRadius = 40
@@ -103,12 +103,14 @@ const secondSpinnerFn: SpinnerFn = (svg, props) => {
     .attr("repeatCount", "indefinite")
 }
 
-const thirdSpinnerFn: SpinnerFn = (svg) => {
-  Array.from({ length: 3 }).forEach((_, idx: number, arr) => {
+const thirdSpinnerFn: SpinnerFn = ({ svg }) => {
+  const circlesCount = 3
+
+  Array.from({ length: circlesCount }).forEach((...[, circleIndex]) => {
     svg
       .append("circle")
       .attr("stroke", "none")
-      .attr("cx", 6 + 20 * idx)
+      .attr("cx", 26 * circleIndex)
       .attr("cy", "50")
       .attr("r", "5")
       .append("animate")
@@ -116,7 +118,7 @@ const thirdSpinnerFn: SpinnerFn = (svg) => {
       .attr("dur", "1s")
       .attr("values", [0, 1, 0].join(";"))
       .attr("repeatCount", "indefinite")
-      .attr("begin", (1 / arr.length) * idx)
+      .attr("begin", (1 / circlesCount) * circleIndex)
   })
 }
 
@@ -134,7 +136,7 @@ const main = (props: Props) => {
     .append("g")
     .attr("fill", props.color)
 
-  spinnersFns[props.type](svg, props)
+  spinnersFns[props.type]({ props, svg })
 }
 
 const SVGSpinners = (props: Props) => {

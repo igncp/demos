@@ -44,8 +44,8 @@ const StoryInfo = ({ docs, source, sourceText, storyName }: Props) => {
             <span> | </span>
             <a
               href="#"
-              onClick={(e) => {
-                e.preventDefault()
+              onClick={(clickEvent) => {
+                clickEvent.preventDefault()
                 setIsDocsBlockExpanded(!isDocsBlockExpanded)
               }}
             >

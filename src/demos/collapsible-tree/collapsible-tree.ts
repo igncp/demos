@@ -12,7 +12,7 @@ import {
 import * as styles from "./collapsible-tree.module.css"
 
 type DataNode = {
-  _children: TreeNode[] | undefined
+  _children: Array<HierarchyPointNode<DataNode>> | undefined
   children: DataNode[]
   id: number
   name: string
@@ -107,8 +107,13 @@ const renderChart: RenderChart = ({ rootData, rootElId }) => {
     let right = root
 
     root.eachBefore((node: HierarchyDataNode) => {
-      if (node.data.x < left.data.x) left = node
-      if (node.data.x > right.data.x) right = node
+      if (node.data.x < left.data.x) {
+        left = node
+      }
+
+      if (node.data.x > right.data.x) {
+        right = node
+      }
     })
 
     const toggleFn = () => {

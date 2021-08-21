@@ -24,15 +24,15 @@ type InitialDataItem = {
   name: string
 }
 
-type City = {
-  metrics: CityMetric[]
-  name: string
-}
-
 type CityMetric = {
   cityName: string
   date: Date
   value: number
+}
+
+type City = {
+  metrics: CityMetric[]
+  name: string
 }
 
 const formatStr = "%Y-%m"

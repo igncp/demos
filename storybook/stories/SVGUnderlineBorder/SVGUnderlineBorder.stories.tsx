@@ -28,9 +28,10 @@ const main = ({ infinite }: Props) => {
     .attr("width", width)
 
   const text = wrapper.append("div").attr("class", styles.text).text("HOVER")
+  const selectionsForMouse = [text, svg]
 
-  ;[text, svg].forEach((item) => {
-    item.on("mouseenter", () => {
+  selectionsForMouse.forEach((selection) => {
+    selection.on("mouseenter", () => {
       rect.style(
         "animation",
         (infinite
@@ -39,9 +40,8 @@ const main = ({ infinite }: Props) => {
         ).join(" ")
       )
     })
-  })
-  ;[text, svg].forEach((el) => {
-    el.on("mouseleave", () => {
+
+    selection.on("mouseleave", () => {
       rect.style("animation", null).style("stroke", null)
     })
   })

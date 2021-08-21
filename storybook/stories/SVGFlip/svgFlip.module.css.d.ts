@@ -1,4 +1,4 @@
 declare const styles: {
-  readonly flipLeft: string
+  readonly "flipLeft": string
 }
 export = styles

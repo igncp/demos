@@ -277,7 +277,7 @@ const main = ({
     public update() {
       let physicalRound = physicsAccuracy
 
-      while (physicalRound--) {
+      while (physicalRound) {
         loopReversed(this.points, (point) => {
           point.resolveConstraints({
             boundsX,
@@ -285,6 +285,8 @@ const main = ({
             tearDistance,
           })
         })
+
+        physicalRound -= 1
       }
 
       loopReversed(this.points, (point) => {
@@ -310,8 +312,8 @@ const main = ({
     private generatePoints() {
       const startX = width / 2 - (clothWidth * spacing) / 2
 
-      for (let y = 0; y <= clothHeight; y++) {
-        for (let x = 0; x <= clothWidth; x++) {
+      for (let y = 0; y <= clothHeight; y += 1) {
+        for (let x = 0; x <= clothWidth; x += 1) {
           const newPoint = new Point<Constraint>(
             startX + x * spacing,
             startY + y * spacing

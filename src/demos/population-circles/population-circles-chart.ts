@@ -28,18 +28,18 @@ const margin = {
 }
 const height = 400
 
-export type ChartConfig<ChartData> = {
+export type ChartConfig<CircleData> = {
   colorDomain: string[]
-  getChartItems: () => ChartData[]
-  getEmptyItem: () => ChartData
-  getHeaderText: (o: { chartItems: ChartData[] }) => string
+  getChartItems: () => CircleData[]
+  getEmptyItem: () => CircleData
+  getHeaderText: (o: { chartItems: CircleData[] }) => string
   getIsSmall: () => boolean
-  getItemId: (a: ChartData) => string
-  getItemLabel: (a: ChartData) => string
-  getItemMetric: (i: ChartData) => number
-  getItemTitle: (o: { itemData: ChartData }) => string
-  getStringForColor: (d: ChartData) => string
-  onClick: (m: ChartData) => void
+  getItemId: (circleData: CircleData) => string
+  getItemLabel: (circleData: CircleData) => string
+  getItemMetric: (circleData: CircleData) => number
+  getItemTitle: (o: { circleData: CircleData }) => string
+  getStringForColor: (circleData: CircleData) => string
+  onClick: (m: CircleData) => void
   rootElId: string
 }
 
@@ -47,12 +47,14 @@ type RenderChartReturn = {
   updateChart: () => void
 }
 
-const addDropShadow = (
-  svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>,
-  name: string,
-  slope: number,
+type AddDropShadow = (o: {
   deviation: number
-) => {
+  name: string
+  slope: number
+  svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
+}) => void
+
+const addDropShadow: AddDropShadow = ({ deviation, name, slope, svg }) => {
   svg.append("filter").html(`
 <filter id="${name}" height="130%">
   <feGaussianBlur in="SourceAlpha" stdDeviation="${deviation}"/>
@@ -68,10 +70,10 @@ const addDropShadow = (
 `)
 }
 
-export const renderChart = <ChartData>(
-  chartConfig: ChartConfig<ChartData>
+export const renderChart = <CircleData>(
+  chartConfig: ChartConfig<CircleData>
 ): RenderChartReturn => {
-  type ChartNode = HierarchyCircularNode<ChartData>
+  type ChartNode = HierarchyCircularNode<CircleData>
 
   const chartEl = document.getElementById(chartConfig.rootElId) as HTMLElement
   const { width } = chartEl.getBoundingClientRect()
@@ -79,6 +81,7 @@ export const renderChart = <ChartData>(
   const lastPosition = { k: 1, x: 0, y: 0 }
 
   // this zoom function is not working well in all directions
+  // eslint-disable-next-line max-params
   const zoomed = function (
     this: SVGSVGElement,
     zoomEvent: D3ZoomEvent<SVGSVGElement, unknown>
@@ -122,7 +125,7 @@ export const renderChart = <ChartData>(
     .attr("text-anchor", "middle")
     .call(zoomBehavior)
 
-  addDropShadow(svg, dropShadowBaseId, 0.5, 2)
+  addDropShadow({ deviation: 2, name: dropShadowBaseId, slope: 0.5, svg })
 
   const header = svg
     .append("text")
@@ -145,7 +148,7 @@ export const renderChart = <ChartData>(
 
     const isSmall = chartConfig.getIsSmall()
 
-    const root = pack<ChartData>()
+    const root = pack<CircleData>()
       .size(isSmall ? [width / 2, height / 2] : [width, height])
       .padding(3)(structure)
 
@@ -158,15 +161,15 @@ export const renderChart = <ChartData>(
     )
 
     const getDataKey = (node: unknown) =>
-      chartConfig.getItemId((node as HierarchyCircularNode<ChartData>).data)
+      chartConfig.getItemId((node as HierarchyCircularNode<CircleData>).data)
 
     const leaf = svgContent.selectAll(".leaf").data(leaves, getDataKey)
 
     leaf.exit().remove()
 
-    const getTitle = (node: HierarchyCircularNode<ChartData>) =>
+    const getTitle = (node: HierarchyCircularNode<CircleData>) =>
       chartConfig.getItemTitle({
-        itemData: node.data,
+        circleData: node.data,
       })
 
     leaf
@@ -190,7 +193,7 @@ export const renderChart = <ChartData>(
       .attr("class", "leaf")
       .attr("title", getTitle)
       .attr("transform", (node) => `translate(${node.x + 1},${node.y + 1})`)
-      .on("mouseenter", function (_event, node) {
+      .on("mouseenter", function (...[, node]) {
         const selection = select(this).select(`.${styles.circle}`)
 
         select(this)
@@ -209,7 +212,7 @@ export const renderChart = <ChartData>(
 
         hoverAnimations[id] = hoverAnimation
       })
-      .on("mouseleave", function (_event, node) {
+      .on("mouseleave", function (...[, node]) {
         const selection = select(this).select(`.${styles.circle}`)
 
         select(this).select(".letter").attr("filter", null)
@@ -228,11 +231,11 @@ export const renderChart = <ChartData>(
           targets: [selection.node()],
         })
       })
-      .on("click", (_event, node) => {
+      .on("click", (...[, node]) => {
         chartConfig.onClick(node.data)
       })
 
-    const generateColor = (node: HierarchyCircularNode<ChartData>) =>
+    const generateColor = (node: HierarchyCircularNode<CircleData>) =>
       color(chartConfig.getStringForColor(node.data))
 
     const generateDarkerColor = (node: ChartNode) => {
@@ -248,11 +251,12 @@ export const renderChart = <ChartData>(
         | ChartTransition
         | Selection<SVGTextElement, ChartNode, SVGGElement, unknown>
     ) => {
-      const el = letter.text((node) =>
+      const letterSelection = letter.text((node) =>
         chartConfig.getItemLabel(node.data)
       ) as ChartTransition
 
-      el.style("font-size", (node) => `${node.r.toFixed(0)}px`)
+      letterSelection
+        .style("font-size", (node) => `${node.r.toFixed(0)}px`)
         .attr("dy", (node) => node.r / 3)
         .attr("fill", generateDarkerColor)
     }

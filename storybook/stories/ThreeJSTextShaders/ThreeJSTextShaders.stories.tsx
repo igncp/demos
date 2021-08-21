@@ -62,16 +62,22 @@ type SimulationEls = {
   uniforms: Uniforms
 }
 
-type Simulation = {
-  els: SimulationEls
-  props: Props
-  state: State
-  stop: () => void
+type Props = {
+  blending: BlendingType
+  speed: number
+  text: string
 }
 
 type State = {
   isStopped: boolean
   rotationY: number
+}
+
+type Simulation = {
+  els: SimulationEls
+  props: Props
+  state: State
+  stop: () => void
 }
 
 const font = new Font(FontData)
@@ -251,12 +257,6 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
   animate()
 
   return createSimulation()
-}
-
-type Props = {
-  blending: BlendingType
-  speed: number
-  text: string
 }
 
 const ThreeJSTextShaders = (props: Props) => {

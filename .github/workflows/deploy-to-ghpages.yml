@@ -18,7 +18,7 @@ jobs:
 
       - name: Lint 🔎
         run: |
-          npm run lint
+          IS_CI=true npm run lint
 
       - name: Build 🔧
         run: |

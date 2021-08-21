@@ -1,4 +1,4 @@
 declare const styles: {
-  readonly icosahedronChart: string
+  readonly "icosahedronChart": string
 }
 export = styles

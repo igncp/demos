@@ -63,10 +63,17 @@ class Particle {
     this.x += this.vx
     this.y += this.vy
 
-    if (this.x > width) this.x = 0
-    if (this.x < 0) this.x = width
-    if (this.y > height) this.y = 0
-    if (this.y < 0) this.y = height
+    if (this.x > width) {
+      this.x = 0
+    } else if (this.x < 0) {
+      this.x = width
+    }
+
+    if (this.y > height) {
+      this.y = 0
+    } else if (this.y < 0) {
+      this.y = height
+    }
   }
 
   public shouldInteractWithParticle(

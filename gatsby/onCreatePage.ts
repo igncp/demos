@@ -110,7 +110,9 @@ for (const item in raphaelData) {
 const demosSummaries = d3jsDemosSummaries
   .concat(raphaelDemosSummaries)
   .sort((a, b) => {
-    if (a.name === b.name) return 0
+    if (a.name === b.name) {
+      return 0
+    }
 
     return a.name < b.name ? -1 : 1
   })

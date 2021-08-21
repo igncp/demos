@@ -274,13 +274,13 @@ class Timeline {
           for (
             let i = 0, _i = 0, { length: _ref } = tracks;
             0 <= _ref ? _i < _ref : _i > _ref;
-            i = 0 <= _ref ? ++_i : --_i
+            i = 0 <= _ref ? ++_i : --_i // eslint-disable-line no-plusplus
           ) {
             if (item.end < tracks[i]) {
               break
             }
 
-            track++
+            track += 1
           }
 
           item.track = track
@@ -295,13 +295,13 @@ class Timeline {
           for (
             let i = 0, _i = 0, { length: _ref } = tracks;
             0 <= _ref ? _i < _ref : _i > _ref;
-            i = 0 <= _ref ? ++_i : --_i
+            i = 0 <= _ref ? ++_i : --_i // eslint-disable-line no-plusplus
           ) {
             if (item.start > tracks[i]) {
               break
             }
 
-            track++
+            track += 1
           }
 
           item.track = track

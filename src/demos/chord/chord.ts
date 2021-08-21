@@ -62,9 +62,11 @@ const fetchData = async () => {
   const country = function (countryName: string): Country {
     if (!(countryName in countries)) {
       countries[countryName] = {
-        id: id++,
+        id,
         name: countryName,
       }
+
+      id += 1
     }
 
     return countries[countryName]

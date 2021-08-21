@@ -1,4 +1,4 @@
 declare const styles: {
-  readonly paragraph: string
+  readonly "paragraph": string
 }
 export = styles

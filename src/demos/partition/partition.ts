@@ -277,9 +277,13 @@ const main = async () => {
     const result = Array.from(
       (formEl.elements as unknown) as HTMLInputElement[]
     ).reduce((acc, el: HTMLInputElement) => {
-      if (acc) return acc
+      if (acc) {
+        return acc
+      }
 
-      if (el.checked) return el.value
+      if (el.checked) {
+        return el.value
+      }
 
       return ""
     }, "")

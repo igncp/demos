@@ -13,6 +13,13 @@ import * as styles from "./styles.module.css"
 
 const ROOT_ID = "example"
 
+type Props = {
+  fontFamily: string
+  fontSize: number
+  skew: number
+  text: string
+}
+
 const demo = ({ fontFamily, fontSize, skew, text }: Props) => {
   const container = document.getElementById(ROOT_ID) as HTMLElement
   const { width } = container.getBoundingClientRect()
@@ -140,13 +147,6 @@ const demo = ({ fontFamily, fontSize, skew, text }: Props) => {
     </text>
   </g>
 `)
-}
-
-type Props = {
-  fontFamily: string
-  fontSize: number
-  skew: number
-  text: string
 }
 
 const SVGTextFilter = (props: Props) => {

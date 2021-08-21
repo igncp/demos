@@ -331,8 +331,11 @@ const renderChart = ({ rootElId }) => {
     }
 
     const point = d3.mouse(this)
+
+    lastNodeId += 1
+
     const node = {
-      id: String.fromCharCode(++lastNodeId),
+      id: String.fromCharCode(lastNodeId),
       reflexive: false,
     }
 

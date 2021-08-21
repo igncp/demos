@@ -76,7 +76,7 @@ export type D3JS = {
 }
 
 const d3js: D3JS = {
-  area: {
+  "area": {
     data: ["data.csv"],
     docs: [
       ...d3SelectionItems,
@@ -96,7 +96,7 @@ const d3js: D3JS = {
       "The only return value from the render function is a function to allow toggling the visibility of the voronoi lines. This is done by changing the CSS class without re-rendering.",
     ],
   },
-  bars: {
+  "bars": {
     data: ["data.json"],
     docs: [],
     isCompleted: true,
@@ -110,7 +110,7 @@ const d3js: D3JS = {
     sources: ["http://codepen.io/basemoz/pen/mBoiL"],
     summary: [],
   },
-  bubbles: {
+  "bubbles": {
     data: ["data.json"],
     docs: [],
     isCompleted: true,
@@ -123,7 +123,7 @@ const d3js: D3JS = {
     sources: ["http://codepen.io/linghzang3/pen/GFdzh"],
     summary: [],
   },
-  chord: {
+  "chord": {
     data: ["data.csv"],
     docs: [],
     isCompleted: true,
@@ -217,7 +217,7 @@ const d3js: D3JS = {
     sources: ["http://bost.ocks.org/mike/fisheye/"],
     summary: [],
   },
-  force: {
+  "force": {
     data: ["links.json", "nodes.json"],
     docs: [],
     isCompleted: true,
@@ -226,7 +226,7 @@ const d3js: D3JS = {
     sources: ["http://codepen.io/MidnightLightning/pen/dclbA"],
     summary: [],
   },
-  icosahedron: {
+  "icosahedron": {
     data: [],
     docs: [],
     isCompleted: true,
@@ -310,7 +310,7 @@ const d3js: D3JS = {
     sources: ["http://bl.ocks.org/mbostock/8033015"],
     summary: [],
   },
-  partition: {
+  "partition": {
     data: ["flare.json"],
     docs: [
       ...d3EaseItems,
@@ -334,7 +334,7 @@ const d3js: D3JS = {
       "The chart displays the common flow for updating elements bound to data. Removing exited elements, adding new elements and applying the tween function to the selection.",
     ],
   },
-  pie: {
+  "pie": {
     data: ["data.json"],
     docs: [],
     isCompleted: true,
@@ -385,7 +385,7 @@ const d3js: D3JS = {
     sources: ["http://www.diva-gis.org/datadown"],
     summary: [],
   },
-  timeline: {
+  "timeline": {
     data: ["data.csv"],
     docs: [],
     isCompleted: true,
@@ -410,7 +410,7 @@ const d3js: D3JS = {
     ],
     summary: [],
   },
-  vectors: {
+  "vectors": {
     data: [],
     docs: [
       [

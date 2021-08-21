@@ -114,7 +114,10 @@ export const createChartConfig = (
       return acc
     }, {} as Record<string, number[] | undefined>)
 
-    const sortedDataValues = dataValues.sort((a, b) => a - b)
+    const sortedDataValues = dataValues.sort(
+      (municipalityAValue, municipalityBValue) =>
+        municipalityAValue - municipalityBValue
+    )
 
     const percentiles = sortedDataValues.reduce((acc, val, idx) => {
       const percentile = idx / sortedDataValues.length
@@ -152,8 +155,9 @@ export const createChartConfig = (
     const year = getYearStr(date)
 
     const populationTotal = chartItems.reduce(
-      (acc, item) =>
-        acc + item.values[state.populationType][state.timeRangeIndex].count,
+      (acc, circleData) =>
+        acc +
+        circleData.values[state.populationType][state.timeRangeIndex].count,
       0
     )
 
@@ -180,12 +184,12 @@ export const createChartConfig = (
 
   const getItemId: Config["getItemId"] = (municipality) => municipality.name
 
-  const getItemTitle: Config["getItemTitle"] = ({ itemData }) => {
+  const getItemTitle: Config["getItemTitle"] = ({ circleData }) => {
     const {
       values: {
         [state.populationType]: { [state.timeRangeIndex]: valueItem },
       },
-    } = itemData
+    } = circleData
 
     if (!valueItem as unknown) {
       return ""
@@ -193,7 +197,7 @@ export const createChartConfig = (
 
     const { [state.populationType]: itemsName } = typeNouns
 
-    return `${itemData.name} - ${formatPopulation(
+    return `${circleData.name} - ${formatPopulation(
       valueItem.count
     )} ${itemsName} - ${getYearStr(valueItem.date)}`
   }

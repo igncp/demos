@@ -1,10 +1,13 @@
+const denyList = require("./scripts/restrictedNames")
+
 const isFindRules = process.env.FIND_RULES === "true"
+const isStrict = process.env.IS_CI !== "true"
 
 const disabledRules = {
   "@typescript-eslint/ban-ts-comment": 0,
   "@typescript-eslint/explicit-module-boundary-types": 0,
   "@typescript-eslint/no-empty-function": 0,
-  "@typescript-eslint/no-explicit-any": 0, // too many at the moment to have this
+  "@typescript-eslint/no-explicit-any": isStrict ? 2 : 0, // too many at the moment to have this
   "@typescript-eslint/no-non-null-assertion": 0,
   "@typescript-eslint/no-unnecessary-type-assertion": 0,
   "@typescript-eslint/no-unsafe-assignment": 0,
@@ -42,7 +45,14 @@ const tsRules = {
   "@typescript-eslint/no-unnecessary-type-constraint": 2,
   "@typescript-eslint/no-unused-expressions": 2,
   "@typescript-eslint/no-unused-vars": 2,
-  "@typescript-eslint/no-use-before-define": 2,
+  "@typescript-eslint/no-use-before-define": [
+    2,
+    {
+      enums: true,
+      ignoreTypeReferences: false,
+      typedefs: true,
+    },
+  ],
   "@typescript-eslint/prefer-nullish-coalescing": 2,
   "@typescript-eslint/prefer-optional-chain": 2,
   "@typescript-eslint/prefer-readonly": 2,
@@ -125,24 +135,33 @@ module.exports = {
 
     "arrow-body-style": [2, "as-needed"],
     "block-scoped-var": 2,
-    camelcase: [2, { properties: "never" }],
+    "camelcase": [2, { properties: "never" }],
     "class-methods-use-this": 2,
     "consistent-return": 2,
-    eqeqeq: 2,
-    "eslint-comments/no-unused-disable": 2,
+    "eqeqeq": 2,
+    "eslint-comments/no-unused-disable": isStrict ? 2 : 0,
+    "id-denylist": [2, ...(isStrict ? denyList : [])],
     "init-declarations": [2, "always"],
+    "max-params": isStrict ? [2, 1] : 0,
     "newline-before-return": 2,
     "no-console": 2,
     "no-constant-condition": [2, { checkLoops: false }],
-    "no-else-return": 2,
+    "no-else-return": [2, { allowElseIf: false }],
     "no-func-assign": 2,
     "no-multi-assign": 2,
     "no-nested-ternary": 2,
     "no-new-func": 2,
     "no-param-reassign": 2,
+    "no-plusplus": 2,
     "no-restricted-globals": [2, "global"],
+    "no-restricted-syntax": [
+      "error",
+      "IfStatement[consequent.type!='BlockStatement']",
+    ],
     "no-return-assign": [2, "always"],
     "no-shadow": 0, // using ts plugin one
+    "no-unneeded-ternary": 2,
+    "no-unreachable": 2,
     "no-unreachable-loop": 2,
     "no-useless-call": 2,
     "no-useless-computed-key": 2,
@@ -221,11 +240,11 @@ module.exports = {
       2,
       {
         AssignmentExpression: {
-          array: false,
+          array: false, // eslint-disable-line id-denylist
           object: false,
         },
         VariableDeclarator: {
-          array: false,
+          array: false, // eslint-disable-line id-denylist
           object: true,
         },
       },
@@ -235,6 +254,8 @@ module.exports = {
     "prefer-template": 2,
 
     "prettier/prettier": "error",
+
+    "quote-props": [2, "consistent-as-needed"],
 
     "react/jsx-handler-names": 2,
     "react/jsx-sort-props": 2,

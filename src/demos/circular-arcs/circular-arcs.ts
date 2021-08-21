@@ -6,11 +6,6 @@ import * as styles from "./circular-arcs.module.css"
 
 const strokeWidth = 3
 
-type ExtendedRaphael = RaphaelPaper & {
-  arc: typeof arcFn
-  circularArc: typeof circularArc
-}
-
 type ArcFnOpts = {
   angle: number
   endX: number
@@ -38,8 +33,13 @@ type CircularArcOpts = {
   startAngle: number
 }
 
+type ExtendedRaphael<CircularArc> = RaphaelPaper & {
+  arc: typeof arcFn
+  circularArc: CircularArc
+}
+
 function circularArc(
-  this: ExtendedRaphael,
+  this: ExtendedRaphael<typeof circularArc>,
   { centerX, centerY, endAngle, radius, startAngle }: CircularArcOpts
 ) {
   const startX = centerX + radius * Math.cos((startAngle * Math.PI) / 180)
@@ -91,7 +91,7 @@ const addHoverHandlers = function (el: RaphaelPath) {
 type CreateArcOpts = {
   arcI: number
   fill: string
-  paper: ExtendedRaphael
+  paper: ExtendedRaphael<typeof circularArc>
   stroke: string
 }
 
@@ -129,7 +129,7 @@ const main = () => {
 
   const paper = Raphael(rootElId, width, height)
 
-  for (let arcI = 0; arcI <= 50; ++arcI) {
+  for (let arcI = 0; arcI <= 50; arcI += 1) {
     createArc({
       arcI,
       fill: "#85D588",
