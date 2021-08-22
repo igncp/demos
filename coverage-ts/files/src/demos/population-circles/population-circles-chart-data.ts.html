@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/population-circles/population-circles-chart-data.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">297</td><td class="">297</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { json } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/population-circles/population-circles-chart-data.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">311</td><td class="">311</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { json } from &quot;d3&quot;
 import hotkeys from &quot;hotkeys-js&quot;
 import qs from &quot;query-string&quot;
 
@@ -23,15 +23,15 @@ type PopulationRecord = {
 }
 
 export type Municipality = {
-  name: string
-  values: {
+  metrics: {
     females: PopulationRecord[]
     males: PopulationRecord[]
     total: PopulationRecord[]
   }
+  name: string
 }
 
-type PopulationType = keyof Municipality[&quot;values&quot;]
+type PopulationType = keyof Municipality[&quot;metrics&quot;]
 
 type State = {
   populationRange: [number, number]
@@ -45,10 +45,24 @@ export const createState = (): State =&gt; ({
   timeRangeIndex: 0,
 })
 
-export const fetchData = () =&gt;
-  (json(
+export const fetchData = async () =&gt; {
+  type OriginalMunicipality = {
+    [key in keyof Omit&lt;Municipality, &quot;metrics&quot;&gt;]: Municipality[key]
+  } &amp; {
+    values: Municipality[&quot;metrics&quot;] // eslint-disable-line id-denylist
+  }
+
+  const originalMunicipalities = (await (json(
     `${ROOT_PATH}data/d3js/population-circles/data.json`
-  ) as unknown) as Promise&lt;Municipality[]&gt;
+  ) as unknown)) as OriginalMunicipality[]
+
+  /* eslint-disable id-denylist */
+  return originalMunicipalities.map(({ values, ...otherProps }) =&gt; ({
+    ...otherProps,
+    metrics: values,
+  }))
+  /* eslint-enable id-denylist */
+}
 
 const formatPopulation = (populationNum: number) =&gt;
   Number(populationNum.toFixed(0)).toLocaleString(undefined, {
@@ -64,33 +78,36 @@ const typeNouns: Record&lt;string, string&gt; = {
 
 const getYearStr = (dateStr: string) =&gt; new Date(dateStr).getFullYear()
 
-export const createChartConfig = (
-  municipalities: Municipality[],
+export const createChartConfig = ({
+  municipalities,
+  state,
+}: {
+  municipalities: Municipality[]
   state: State
-): ChartConfig&lt;Municipality&gt; =&gt; {
+}): ChartConfig&lt;Municipality&gt; =&gt; {
   type Config = ChartConfig&lt;Municipality&gt;
 
   const colorDomain = municipalities.map((municipality) =&gt; municipality.name)
   const getStringForColor = (municipality: Municipality) =&gt; municipality.name
 
   const getEmptyItem = (): Municipality =&gt; ({
-    name: &quot;&quot;,
-    values: {
+    metrics: {
       females: [],
       males: [],
       total: [],
     },
+    name: &quot;&quot;,
   })
 
   const getItemMetric: Config[&quot;getItemMetric&quot;] = (
     municipality: Municipality
   ) =&gt; {
-    if (!(municipality.values as unknown)) {
+    if (!(municipality.metrics as unknown)) {
       return 1
     }
 
     const {
-      values: {
+      metrics: {
         [state.populationType]: { [state.timeRangeIndex]: valueItem },
       },
     } = municipality
@@ -102,7 +119,7 @@ export const createChartConfig = (
     const { populationRange, populationType, timeRangeIndex } = state
     const itemsWithCount = municipalities.filter((municipality) =&gt; {
       const {
-        values: {
+        metrics: {
           [populationType]: { [timeRangeIndex]: valueItem },
         },
       } = municipality
@@ -112,7 +129,7 @@ export const createChartConfig = (
 
     const dataValues = itemsWithCount.map((municipality) =&gt; {
       const {
-        values: {
+        metrics: {
           [populationType]: { [timeRangeIndex]: dataItem },
         },
       } = municipality
@@ -120,31 +137,34 @@ export const createChartConfig = (
       return dataItem.count
     })
 
-    const valueToIdx = dataValues.reduce((acc, val, idx) =&gt; {
-      acc[val] = acc[val] ?? []
-      acc[val]!.push(idx)
+    const valueToIdx = dataValues.reduce((...[acc, valueItem, valueIndex]) =&gt; {
+      acc[valueItem] = acc[valueIndex] ?? []
+      acc[valueItem]!.push(valueIndex)
 
       return acc
     }, {} as Record&lt;string, number[] | undefined&gt;)
 
     const sortedDataValues = dataValues.sort(
-      (municipalityAValue, municipalityBValue) =&gt;
+      (...[municipalityAValue, municipalityBValue]) =&gt;
         municipalityAValue - municipalityBValue
     )
 
-    const percentiles = sortedDataValues.reduce((acc, val, idx) =&gt; {
-      const percentile = idx / sortedDataValues.length
-      const { [val]: unsortedIndexes } = valueToIdx
+    const percentiles = sortedDataValues.reduce(
+      (...[percentilesAcc, valueItem, valueIndex]) =&gt; {
+        const percentile = valueIndex / sortedDataValues.length
+        const { [valueItem]: unsortedIndexes } = valueToIdx
 
-      unsortedIndexes!.forEach((idx2: number) =&gt; {
-        acc[idx2] = percentile
-      })
+        unsortedIndexes!.forEach((unsortedValueIndex: number) =&gt; {
+          percentilesAcc[unsortedValueIndex] = percentile
+        })
 
-      return acc
-    }, [] as number[])
+        return percentilesAcc
+      },
+      [] as number[]
+    )
 
-    const filteredData = itemsWithCount.filter((_municipality, idx) =&gt; {
-      const { [idx]: percentile } = percentiles
+    return itemsWithCount.filter((...[, percentileIndex]) =&gt; {
+      const { [percentileIndex]: percentile } = percentiles
 
       return (
         typeof percentile === &quot;number&quot; &amp;&amp;
@@ -152,13 +172,11 @@ export const createChartConfig = (
         percentile &lt;= populationRange[1]
       )
     })
-
-    return filteredData
   }
 
   const getHeaderText: Config[&quot;getHeaderText&quot;] = ({ chartItems }) =&gt; {
     const {
-      values: {
+      metrics: {
         [state.populationType]: {
           [state.timeRangeIndex]: { date },
         },
@@ -168,9 +186,9 @@ export const createChartConfig = (
     const year = getYearStr(date)
 
     const populationTotal = chartItems.reduce(
-      (acc, circleData) =&gt;
+      (...[acc, circleData]) =&gt;
         acc +
-        circleData.values[state.populationType][state.timeRangeIndex].count,
+        circleData.metrics[state.populationType][state.timeRangeIndex].count,
       0
     )
 
@@ -180,7 +198,7 @@ export const createChartConfig = (
 
     const { length: totalNum } = chartItems.filter(
       (chartItem) =&gt;
-        chartItem.values[state.populationType].length &gt;=
+        chartItem.metrics[state.populationType].length &gt;=
         state.timeRangeIndex + 1
     )
 
@@ -199,7 +217,7 @@ export const createChartConfig = (
 
   const getItemTitle: Config[&quot;getItemTitle&quot;] = ({ circleData }) =&gt; {
     const {
-      values: {
+      metrics: {
         [state.populationType]: { [state.timeRangeIndex]: valueItem },
       },
     } = circleData
@@ -248,7 +266,7 @@ export const createChartConfig = (
   }
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 17:19:53 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 23:05:07 GMT</p>
     </body>
   </html>
   

@@ -1235,107 +1235,86 @@
     },
     {
       "file": "src/demos/moving-line/moving-line.ts",
-      "line": 25,
-      "character": 8,
-      "text": "data",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/moving-line/moving-line.ts",
-      "line": 71,
+      "line": 62,
       "character": 18,
       "text": "className",
       "kind": 1
     },
     {
       "file": "src/demos/moving-line/moving-line.ts",
-      "line": 71,
+      "line": 62,
       "character": 28,
       "text": "baseVal",
       "kind": 1
     },
     {
       "file": "src/demos/moving-line/moving-line.ts",
-      "line": 149,
+      "line": 137,
       "character": 10,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/demos/moving-line/moving-line.ts",
-      "line": 149,
+      "line": 137,
       "character": 18,
       "text": "Raphael",
       "kind": 1
     },
     {
       "file": "src/demos/moving-line/moving-line.ts",
-      "line": 155,
+      "line": 143,
       "character": 10,
       "text": "line",
       "kind": 1
     },
     {
       "file": "src/demos/moving-line/moving-line.ts",
-      "line": 155,
+      "line": 143,
       "character": 17,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/demos/moving-line/moving-line.ts",
-      "line": 155,
+      "line": 143,
       "character": 23,
       "text": "path",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 548,
+      "line": 554,
       "character": 23,
       "text": "brushEvent",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 551,
+      "line": 557,
       "character": 10,
       "text": "brushEvent",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 551,
+      "line": 557,
       "character": 21,
       "text": "selection",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 553,
-      "character": 25,
-      "text": "brushEvent",
+      "line": 559,
+      "character": 22,
+      "text": "selectionStart",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 553,
-      "character": 36,
-      "text": "selection",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 554,
-      "character": 25,
-      "text": "brushEvent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 554,
-      "character": 36,
-      "text": "selection",
+      "line": 559,
+      "character": 38,
+      "text": "selectionEnd",
       "kind": 1
     },
     {
@@ -2060,8 +2039,8 @@
       "kind": 1
     }
   ],
-  "percentage": 98.61471045563775,
-  "total": 21223,
-  "covered": 20929,
-  "uncovered": 294
+  "percentage": 98.6320045129748,
+  "total": 21272,
+  "covered": 20981,
+  "uncovered": 291
 }

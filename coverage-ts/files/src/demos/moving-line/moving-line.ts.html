@@ -11,18 +11,18 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/moving-line/moving-line.ts</td><td class="">96.53%</td><td class="">95%</td><td class="">259</td><td class="">250</td><td class="">9</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { RaphaelElement, RaphaelPaper, RaphaelPath } from &quot;raphael&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/moving-line/moving-line.ts</td><td class="">96.76%</td><td class="">95%</td><td class="">247</td><td class="">239</td><td class="">8</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { RaphaelElement, RaphaelPaper, RaphaelPath } from &quot;raphael&quot;
 
 import Raphael from &quot;@/demos/_utils/browserRaphael&quot;
 
 import * as styles from &quot;./moving-line.module.css&quot;
 
-type Data = {
+type GraphData = {
   charts: Array&lt;{
     lower: string
     points: Array&lt;{
       point: RaphaelElement
-      value: number
+      value: number // eslint-disable-line id-denylist
     }&gt;
     upper: string
   }&gt;
@@ -34,16 +34,15 @@ type Data = {
   yOffset: number
 }
 
-const fetchData = async (): Promise&lt;Data&gt; =&gt; {
+const fetchGraphData = async (): Promise&lt;GraphData&gt; =&gt; {
   const response = await fetch(`${ROOT_PATH}data/raphael/moving-line/data.json`)
-  const data = await response.json()
 
-  return data
+  return response.json()
 }
 
 const height = 300
 
-type RenderChartOpts = { graphData: Data; rootElId: string }
+type RenderChartOpts = { graphData: GraphData; rootElId: string }
 
 const renderChart = ({ graphData, rootElId }: RenderChartOpts) =&gt; {
   const createPathString = () =&gt; {
@@ -54,16 +53,12 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) =&gt; {
     } = graphData
 
     let path = `M ${graphData.xOffset} ${graphData.yOffset - points[0].value}`
-    let i = 0
 
-    const { length } = points
-
-    while (i &lt; length) {
+    points.forEach((...[point, pointIndex]) =&gt; {
       path += &quot; L &quot;
-      path += `${graphData.xOffset + i * graphData.xDelta} `
-      path += graphData.yOffset - points[i].value
-      i += 1
-    }
+      path += `${graphData.xOffset + pointIndex * graphData.xDelta} `
+      path += graphData.yOffset - point.value
+    })
 
     return path
   }
@@ -72,68 +67,61 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) =&gt; {
     const radius = 6
     const { points } = graphData.charts[0]
 
-    let i = 0
-
-    const { length } = points
-
-    while (i &lt; length) {
-      const xPos = graphData.xOffset + i * graphData.xDelta
+    points.forEach((...[point, pointIndex]) =&gt; {
+      const xPos = graphData.xOffset + pointIndex * graphData.xDelta
       const { yOffset: yPos } = graphData
 
       const circle = graphData.paper.circle(xPos, yPos, radius)
 
       circle.node.className.baseVal = styles.point
       circle.attr(&quot;title&quot;, `Value: ${0}`)
-      points[i].point = circle
-      i += 1
-    }
+      point.point = circle
+    })
   }
 
-  const animateChart = function () {
+  const animateChart = () =&gt; {
     const {
       charts: { [graphData.current]: newData },
     } = graphData
-    let newPath = &quot;&quot;
 
     const upperLimit = parseInt(newData.upper) || 1
     const lowerLimit = parseInt(newData.lower) || 0
     const scaleFactor = graphData.yOffset / (upperLimit - lowerLimit)
-
     const { points } = graphData.charts[0]
 
-    let i = 0
+    let newPath = &quot;&quot;
 
-    const { length } = points
-
-    while (i &lt; length) {
-      if (i === 0) {
+    points.forEach((...[point, pointIndex]) =&gt; {
+      if (pointIndex === 0) {
         newPath += &quot;M &quot;
         newPath += `${graphData.xOffset} `
         newPath += `${
           graphData.yOffset -
-          (newData.points[i].value - lowerLimit) * scaleFactor
+          (newData.points[pointIndex].value - lowerLimit) * scaleFactor
         } `
       } else {
         newPath += &quot;L &quot;
-        newPath += `${graphData.xOffset + i * graphData.xDelta} `
+        newPath += `${graphData.xOffset + pointIndex * graphData.xDelta} `
         newPath +=
           graphData.yOffset -
-          (newData.points[i].value - lowerLimit) * scaleFactor
+          (newData.points[pointIndex].value - lowerLimit) * scaleFactor
       }
 
-      points[i].point.animate(
+      point.point.animate(
         {
           cy:
             graphData.yOffset -
-            (newData.points[i].value - lowerLimit) * scaleFactor,
+            (newData.points[pointIndex].value - lowerLimit) * scaleFactor,
         },
         800,
         &quot;ease-in-out&quot;
       )
-      points[i].point.node.childNodes[0].remove()
-      points[i].point.attr(&quot;title&quot;, `Value: ${newData.points[i].value}`)
-      i += 1
-    }
+      points[pointIndex].point.node.childNodes[0].remove()
+      points[pointIndex].point.attr(
+        &quot;title&quot;,
+        `Value: ${newData.points[pointIndex].value}`
+      )
+    })
 
     graphData.line.animate(
       {
@@ -178,17 +166,17 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) =&gt; {
 }
 
 const main = async () =&gt; {
-  const data = await fetchData()
+  const graphData = await fetchGraphData()
 
   renderChart({
-    graphData: data,
+    graphData,
     rootElId: &quot;chart&quot;,
   })
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:7,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:25,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:18,&quot;text&quot;:&quot;className&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:71,&quot;character&quot;:28,&quot;text&quot;:&quot;baseVal&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:149,&quot;character&quot;:10,&quot;text&quot;:&quot;paper&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:149,&quot;character&quot;:18,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:10,&quot;text&quot;:&quot;line&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:17,&quot;text&quot;:&quot;paper&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:23,&quot;text&quot;:&quot;path&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 17:19:53 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:7,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:18,&quot;text&quot;:&quot;className&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:28,&quot;text&quot;:&quot;baseVal&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:10,&quot;text&quot;:&quot;paper&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:18,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:10,&quot;text&quot;:&quot;line&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:17,&quot;text&quot;:&quot;paper&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/moving-line/moving-line.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:23,&quot;text&quot;:&quot;path&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 23:05:07 GMT</p>
     </body>
   </html>
   

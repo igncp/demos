@@ -11,12 +11,12 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/philosophers-timeline/philosophers-timeline-chart.ts</td><td class="">99.26%</td><td class="">95%</td><td class="">946</td><td class="">939</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/philosophers-timeline/philosophers-timeline-chart.ts</td><td class="">99.48%</td><td class="">95%</td><td class="">955</td><td class="">950</td><td class="">5</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  BaseType,
   ScaleTime,
   Selection,
   axisBottom,
   brushX,
-  max as maxD3,
   min as minD3,
   scaleTime,
   select,
@@ -46,10 +46,7 @@ const margin = {
   top: 60,
 }
 
-type Action = [string, () =&gt; void]
-
 type Band = RedrawComp &amp; {
-  addActions: (actions: Action[]) =&gt; void
   g: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
   h: number
   id: string
@@ -132,6 +129,7 @@ export type ChartConfig&lt;ChartData extends ChartDataBase&gt; = {
   getSortFn: (
     sortOrder: SortOrder
   ) =&gt; (itemA: ChartData, itemB: ChartData) =&gt; number
+  onChartItemClick: (chartItem: ChartData) =&gt; void
   rootElId: string
 }
 
@@ -284,10 +282,7 @@ export class Timeline&lt;ChartData extends ChartDataBase&gt; {
       this.dataContent.chartItems,
       this.chartConfig.getItemLimitLeft
     )
-    this.dataContent.maxDate = maxD3(
-      this.dataContent.chartItems,
-      this.chartConfig.getItemLimitRight
-    )
+    this.dataContent.maxDate = new Date()
 
     return this
   }
@@ -358,13 +353,14 @@ export class Timeline&lt;ChartData extends ChartDataBase&gt; {
       .append(&quot;g&quot;)
       .attr(&quot;id&quot;, band.id)
       .attr(&quot;transform&quot;, `translate(0,${band.y})`)
+
     band.g
       .append(&quot;rect&quot;)
       .attr(&quot;class&quot;, styles.band)
       .attr(&quot;width&quot;, band.w)
       .attr(&quot;height&quot;, band.h)
 
-    const timeBandElements = band.g
+    const bandElements = band.g
       .selectAll(&quot;g&quot;)
       .data&lt;ChartData&gt;(this.dataContent.chartItems!)
       .enter()
@@ -378,14 +374,20 @@ export class Timeline&lt;ChartData extends ChartDataBase&gt; {
           `part ${chartItem.instant ? styles.instant : styles.interval}`
       )
 
-    const intervals = select(`#band${this.bandNum}`).selectAll(
-      `.${styles.interval}`
-    )
+    const intervals = select(`#band${this.bandNum}`).selectAll&lt;
+      BaseType,
+      ChartData
+    &gt;(`.${styles.interval}`)
+
+    const instants = select(`#band${this.bandNum}`).selectAll&lt;
+      BaseType,
+      ChartData
+    &gt;(`.${styles.instant}`)
 
     intervals
       .append(&quot;rect&quot;)
-      .attr(&quot;height&quot;, &quot;80%&quot;)
-      .attr(&quot;width&quot;, &quot;80%&quot;)
+      .attr(&quot;height&quot;, &quot;100%&quot;)
+      .attr(&quot;width&quot;, &quot;100%&quot;)
       .attr(&quot;x&quot;, &quot;1px&quot;)
       .attr(&quot;y&quot;, &quot;.5px&quot;)
       .style(&quot;filter&quot;, &quot;url(#drop-shadow-intervals)&quot;)
@@ -396,31 +398,33 @@ export class Timeline&lt;ChartData extends ChartDataBase&gt; {
       .attr(&quot;x&quot;, 3)
       .attr(&quot;y&quot;, 9.5)
 
-    const instants = select(`#band${this.bandNum}`).selectAll(
-      `.${styles.instant}`
-    )
-
     instants
       .append(&quot;circle&quot;)
       .attr(&quot;cx&quot;, band.itemHeight / 2)
       .attr(&quot;cy&quot;, band.itemHeight / 2)
       .attr(&quot;r&quot;, 5)
+
     instants
       .append(&quot;text&quot;)
       .attr(&quot;class&quot;, styles.instantLabel)
       .attr(&quot;x&quot;, 15)
       .attr(&quot;y&quot;, 10)
 
-    band.addActions = (actions: Action[]) =&gt; {
-      actions.forEach((action) =&gt; timeBandElements.on(action[0], action[1]))
-    }
+    const itemsSelections = [intervals, instants]
+
+    itemsSelections.forEach((selection) =&gt; {
+      selection.on(&quot;click&quot;, (...[, chartItem]) =&gt;
+        this.chartConfig.onChartItemClick(chartItem)
+      )
+      selection.style(&quot;cursor&quot;, &quot;pointer&quot;)
+    })
 
     const {
       chartConfig: { getItemLimitLeft, getItemLimitRight },
     } = this
 
     band.redraw = () =&gt; {
-      timeBandElements
+      bandElements
         .attr(&quot;x&quot;, (chartItem: ChartData) =&gt;
           band.xScale!(getItemLimitLeft(chartItem))
         )
@@ -541,44 +545,47 @@ export class Timeline&lt;ChartData extends ChartDataBase&gt; {
   }
 
   public addBrush({
-    bandName,
-    targetNames,
+    brushBandName,
+    targetBandName,
   }: {
-    bandName: string
-    targetNames: string[]
+    brushBandName: string
+    targetBandName: string
   }) {
     const {
-      bands: { [bandName]: band },
+      bands: { [brushBandName]: brushBand },
     } = this
     const brush = brushX()
 
+    const {
+      dataContent: { maxDate, minDate },
+    } = this
+    const totalRange = [minDate!.getTime(), maxDate!.getTime()]
+
     const selectionScale = scaleTime&lt;number, Date&gt;()
-      .domain([0, 1000])
-      .range([
-        this.dataContent.minDate!.getTime(),
-        this.dataContent.maxDate!.getTime(),
-      ])
+      .domain([0, this.width])
+      .range(totalRange)
 
     brush.on(&quot;brush&quot;, (brushEvent) =&gt; {
-      let newDomain = band.xScale.domain()
+      let newDomain = brushBand.xScale.domain()
 
       if (brushEvent.selection) {
+        const {
+          selection: [selectionStart, selectionEnd],
+        } = brushEvent
+
         newDomain = [
-          selectionScale(brushEvent.selection[0]),
-          selectionScale(brushEvent.selection[1]),
+          selectionScale(Math.max(0, selectionStart)),
+          selectionScale(Math.min(this.width, selectionEnd)),
         ]
       }
 
       selectAll(`.${styles.interval} rect`).style(&quot;filter&quot;, &quot;none&quot;)
 
-      targetNames.forEach((targetName) =&gt; {
-        this.bands[targetName].xScale.domain(newDomain)
-
-        this.bands[targetName].redraw!()
-      })
+      this.bands[targetBandName].xScale.domain(newDomain)
+      this.bands[targetBandName].redraw!()
     })
 
-    const xBrush = band.g
+    const xBrush = brushBand.g
       .append(&quot;svg&quot;)
       .attr(&quot;class&quot;, `x`)
       .call(brush as any) // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -586,7 +593,7 @@ export class Timeline&lt;ChartData extends ChartDataBase&gt; {
     xBrush
       .selectAll(&quot;rect&quot;)
       .attr(&quot;y&quot;, 1)
-      .attr(&quot;height&quot;, band.h - 1)
+      .attr(&quot;height&quot;, brushBand.h - 1)
 
     return this
   }
@@ -597,8 +604,8 @@ export class Timeline&lt;ChartData extends ChartDataBase&gt; {
     return this
   }
 }
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:548,&quot;character&quot;:23,&quot;text&quot;:&quot;brushEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:551,&quot;character&quot;:10,&quot;text&quot;:&quot;brushEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:551,&quot;character&quot;:21,&quot;text&quot;:&quot;selection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:553,&quot;character&quot;:25,&quot;text&quot;:&quot;brushEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:553,&quot;character&quot;:36,&quot;text&quot;:&quot;selection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:554,&quot;character&quot;:25,&quot;text&quot;:&quot;brushEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:554,&quot;character&quot;:36,&quot;text&quot;:&quot;selection&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 17:19:53 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:554,&quot;character&quot;:23,&quot;text&quot;:&quot;brushEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:557,&quot;character&quot;:10,&quot;text&quot;:&quot;brushEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:557,&quot;character&quot;:21,&quot;text&quot;:&quot;selection&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:559,&quot;character&quot;:22,&quot;text&quot;:&quot;selectionStart&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/philosophers-timeline/philosophers-timeline-chart.ts&quot;,&quot;line&quot;:559,&quot;character&quot;:38,&quot;text&quot;:&quot;selectionEnd&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 23:05:07 GMT</p>
     </body>
   </html>
   
