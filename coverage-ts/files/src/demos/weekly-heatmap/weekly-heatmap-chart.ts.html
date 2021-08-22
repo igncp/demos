@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/weekly-heatmap/weekly-heatmap-chart.ts</td><td class="">98.60%</td><td class="">95%</td><td class="">285</td><td class="">281</td><td class="">4</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { max as maxD3, scaleQuantile, select } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/weekly-heatmap/weekly-heatmap-chart.ts</td><td class="">99.64%</td><td class="">95%</td><td class="">280</td><td class="">279</td><td class="">1</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { max as maxD3, scaleQuantile, select } from &quot;d3&quot;
 
 import * as styles from &quot;./weekly-heatmap.module.css&quot;
 
@@ -94,7 +94,7 @@ export const renderChart = &lt;ChartData&gt;(chartConfig: ChartConfig&lt;ChartDa
     .text((label) =&gt; label)
     .attr(
       &quot;class&quot;,
-      (label, labelIndex) =&gt;
+      (...[label, labelIndex]) =&gt;
         `verticalLabel ${styles.mono} axis${
           chartConfig.getIsVerticalLabelBold(label, labelIndex)
             ? ` ${styles.axisBold}`
@@ -103,7 +103,7 @@ export const renderChart = &lt;ChartData&gt;(chartConfig: ChartConfig&lt;ChartDa
     )
     .attr(&quot;transform&quot;, `translate(${axisOffset},${cellSize / 1.5})`)
     .attr(&quot;x&quot;, 0)
-    .attr(&quot;y&quot;, (_label, labelIndex) =&gt; labelIndex * cellSize)
+    .attr(&quot;y&quot;, (...[, labelIndex]) =&gt; labelIndex * cellSize)
     .style(&quot;text-anchor&quot;, &quot;end&quot;)
 
   svg
@@ -114,7 +114,7 @@ export const renderChart = &lt;ChartData&gt;(chartConfig: ChartConfig&lt;ChartDa
     .text((label) =&gt; label)
     .attr(
       &quot;class&quot;,
-      (label, labelIndex) =&gt;
+      (...[label, labelIndex]) =&gt;
         `horizontalLabel ${styles.mono} axis${
           chartConfig.getIsHorizontalLabelBold(label, labelIndex)
             ? ` ${styles.axisBold}`
@@ -122,7 +122,7 @@ export const renderChart = &lt;ChartData&gt;(chartConfig: ChartConfig&lt;ChartDa
         }`
     )
     .attr(&quot;transform&quot;, `translate(${cellSize / 2}, ${axisOffset})`)
-    .attr(&quot;x&quot;, (_label, labelIndex) =&gt; labelIndex * cellSize)
+    .attr(&quot;x&quot;, (...[, labelIndex]) =&gt; labelIndex * cellSize)
     .attr(&quot;y&quot;, 0)
     .style(&quot;text-anchor&quot;, &quot;middle&quot;)
 
@@ -163,11 +163,11 @@ export const renderChart = &lt;ChartData&gt;(chartConfig: ChartConfig&lt;ChartDa
 
   legend
     .append(&quot;rect&quot;)
-    .attr(&quot;x&quot;, (_value, valueIndex) =&gt; legendElementWidth * valueIndex)
+    .attr(&quot;x&quot;, (...[, valueIndex]) =&gt; legendElementWidth * valueIndex)
     .attr(&quot;y&quot;, height)
     .attr(&quot;width&quot;, legendElementWidth)
     .attr(&quot;height&quot;, cellSize / 2)
-    .style(&quot;fill&quot;, (_value, valueIndex) =&gt; colors[valueIndex])
+    .style(&quot;fill&quot;, (...[, valueIndex]) =&gt; colors[valueIndex])
     .style(&quot;stroke&quot;, legendStroke)
 
   legend
@@ -177,13 +177,13 @@ export const renderChart = &lt;ChartData&gt;(chartConfig: ChartConfig&lt;ChartDa
     .style(&quot;text-anchor&quot;, &quot;middle&quot;)
     .attr(
       &quot;x&quot;,
-      (_value, valueIndex) =&gt;
+      (...[, valueIndex]) =&gt;
         legendElementWidth * valueIndex + legendElementWidth / 2
     )
     .attr(&quot;y&quot;, height + cellSize)
 }
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-chart.ts&quot;,&quot;line&quot;:145,&quot;character&quot;:52,&quot;text&quot;:&quot;legendValue&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-chart.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:16,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-chart.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:20,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-chart.ts&quot;,&quot;line&quot;:166,&quot;character&quot;:7,&quot;text&quot;:&quot;_value&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-chart.ts&quot;,&quot;line&quot;:145,&quot;character&quot;:52,&quot;text&quot;:&quot;legendValue&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 17:19:53 GMT</p>
     </body>
   </html>
   

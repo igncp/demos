@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasOrbitParticles/CanvasOrbitParticles.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">429</td><td class="">429</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { select } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasOrbitParticles/CanvasOrbitParticles.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">445</td><td class="">445</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { select } from &quot;d3&quot;
 import React from &quot;react&quot;
 
 import { StoryInfo, TemplateType, canvasDocs } from &quot;../common&quot;
@@ -31,7 +31,8 @@ type Props = {
 
 const ROOT_ID = &quot;example&quot;
 
-const random = (min: number, max: number) =&gt; Math.random() * (max - min) + min
+const random = ({ max, min }: { max: number; min: number }) =&gt;
+  Math.random() * (max - min) + min
 const innerRadius = 300
 
 const main = ({
@@ -78,7 +79,7 @@ const main = ({
     private x: number
     private y: number
 
-    public constructor(x: number, y: number) {
+    public constructor({ x, y }: { x: number; y: number }) {
       const dx = x / scale - center.x / scale
       const dy = y / scale - center.y / scale
 
@@ -89,7 +90,7 @@ const main = ({
       this.lastAngle = this.angle
       this.radius = Math.sqrt(dx * dx + dy * dy)
       this.size = this.radius / innerRadius + 1
-      this.speed = (random(1, 10) / 300000) * this.radius + 0.015
+      this.speed = (random({ max: 10, min: 1 }) / 300000) * this.radius + 0.015
     }
 
     public update() {
@@ -104,12 +105,13 @@ const main = ({
         let radius =
           jitterRadius === 0
             ? this.radius
-            : this.radius + random(-jitterRadius, jitterRadius)
+            : this.radius + random({ max: jitterRadius, min: -jitterRadius })
 
         radius = jitterRadius !== 0 &amp;&amp; radius &lt; 0 ? 0.001 : radius
 
         ctx.strokeStyle = `hsla(${[
-          (this.angle + 90) / (Math.PI / 180) + random(-jitterHue, jitterHue),
+          (this.angle + 90) / (Math.PI / 180) +
+            random({ max: jitterHue, min: -jitterHue }),
           &quot;100%&quot;,
           &quot;50%&quot;,
           orbitalAlpha / 100,
@@ -130,7 +132,8 @@ const main = ({
       if (displayLight) {
         ctx.lineWidth = 0.5
         ctx.strokeStyle = `hsla(${[
-          (this.angle + 90) / (Math.PI / 180) + random(-jitterHue, jitterHue),
+          (this.angle + 90) / (Math.PI / 180) +
+            random({ max: jitterHue, min: -jitterHue }),
           &quot;100%&quot;,
           &quot;70%&quot;,
           lightAlpha / 100,
@@ -149,38 +152,38 @@ const main = ({
     const x = config?.x ? config.x : 0
     const y = config?.y ? config.y : 0
 
-    orbs.push(new Orb(x, y))
+    orbs.push(new Orb({ x, y }))
   }
 
   let isMouseDown = false
 
-  const createMouseOrb = (e: MouseEvent) =&gt; {
+  const createMouseOrb = (mouseEvent: MouseEvent) =&gt; {
     const rect = canvasEl.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+    const x = mouseEvent.clientX - rect.left
+    const y = mouseEvent.clientY - rect.top
 
     createOrb({ x, y })
   }
 
-  canvasEl.addEventListener(&quot;mouseup&quot;, (e: MouseEvent) =&gt; {
+  canvasEl.addEventListener(&quot;mouseup&quot;, (mouseEvent: MouseEvent) =&gt; {
     isMouseDown = false
 
-    e.stopPropagation()
-    e.preventDefault()
+    mouseEvent.stopPropagation()
+    mouseEvent.preventDefault()
   })
 
-  canvasEl.addEventListener(&quot;mousedown&quot;, (e: MouseEvent) =&gt; {
+  canvasEl.addEventListener(&quot;mousedown&quot;, (mouseEvent: MouseEvent) =&gt; {
     isMouseDown = true
 
-    createMouseOrb(e)
+    createMouseOrb(mouseEvent)
 
-    e.stopPropagation()
-    e.preventDefault()
+    mouseEvent.stopPropagation()
+    mouseEvent.preventDefault()
   })
 
-  canvasEl.addEventListener(&quot;mousemove&quot;, (e: MouseEvent) =&gt; {
+  canvasEl.addEventListener(&quot;mousemove&quot;, (mouseEvent: MouseEvent) =&gt; {
     if (isMouseDown) {
-      createMouseOrb(e)
+      createMouseOrb(mouseEvent)
     }
   })
 
@@ -188,8 +191,11 @@ const main = ({
 
   while (total) {
     createOrb({
-      x: random(width / 2 - innerRadius, width / 2 + innerRadius),
-      y: random(height / 2 - innerRadius, height / 2 + innerRadius),
+      x: random({ max: width / 2 + innerRadius, min: width / 2 - innerRadius }),
+      y: random({
+        max: height / 2 + innerRadius,
+        min: height / 2 - innerRadius,
+      }),
     })
 
     total -= 1
@@ -295,7 +301,7 @@ export default {
   title: &quot;Canvas/OrbitParticles&quot;,
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 17:19:53 GMT</p>
     </body>
   </html>
   

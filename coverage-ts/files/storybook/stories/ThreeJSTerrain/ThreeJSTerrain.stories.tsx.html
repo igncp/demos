@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSTerrain/ThreeJSTerrain.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">597</td><td class="">597</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSTerrain/ThreeJSTerrain.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">625</td><td class="">625</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
 import {
   CanvasTexture,
   ClampToEdgeWrapping,
@@ -56,26 +56,31 @@ type Props = {
 
 const ROOT_ID = &quot;example&quot;
 
-const generateHeight = (
-  width: number,
-  height: number,
+const generateHeight = ({
+  depth,
+  mountainHeight,
+  width,
+}: {
+  depth: number
   mountainHeight: number
-) =&gt; {
-  const size = width * height
+  width: number
+}) =&gt; {
+  const size = width * depth
   const heightData = new Uint8Array(size)
+
   const perlin = new ImprovedNoise()
   const z = Math.random() * 100
 
   let quality = 1
 
   Array.from({ length: 4 }).forEach(() =&gt; {
-    Array.from({ length: size }).forEach((_, arrIdx) =&gt; {
-      const x = arrIdx % width
-      const y = Math.floor(arrIdx / width)
+    Array.from({ length: size }).forEach((...[, cellIndex]) =&gt; {
+      const x = cellIndex % width
+      const y = Math.floor(cellIndex / width)
 
       const noiseResult = perlin.noise(x / quality, y / quality, z)
 
-      heightData[arrIdx] += Math.abs(noiseResult * quality * mountainHeight)
+      heightData[cellIndex] += Math.abs(noiseResult * quality * mountainHeight)
     })
 
     quality *= 5
@@ -84,12 +89,19 @@ const generateHeight = (
   return heightData
 }
 
-const generateTexture = (
-  heightData: Uint8Array,
-  width: number,
-  height: number,
+type GenerateTexture = (o: {
+  depth: number
+  heightData: Uint8Array
   lightLevel: number
-) =&gt; {
+  width: number
+}) =&gt; HTMLCanvasElement
+
+const generateTexture: GenerateTexture = ({
+  depth,
+  heightData,
+  lightLevel,
+  width,
+}) =&gt; {
   const shadeVector = new Vector3(0, 0, 0)
 
   const sun = new Vector3(1, 1, 1)
@@ -99,12 +111,12 @@ const generateTexture = (
   const canvas = document.createElement(&quot;canvas&quot;)
 
   canvas.width = width
-  canvas.height = height
+  canvas.height = depth
 
   const context = canvas.getContext(&quot;2d&quot;) as CanvasRenderingContext2D
 
   context.fillStyle = &quot;#000&quot;
-  context.fillRect(0, 0, width, height)
+  context.fillRect(0, 0, width, depth)
 
   const image = context.getImageData(0, 0, canvas.width, canvas.height)
   const { data: imageData } = image
@@ -136,7 +148,7 @@ const generateTexture = (
   const canvasScaled = document.createElement(&quot;canvas&quot;)
 
   canvasScaled.width = width * scaleFactor
-  canvasScaled.height = height * scaleFactor
+  canvasScaled.height = depth * scaleFactor
 
   const contextScaled = canvasScaled.getContext(
     &quot;2d&quot;
@@ -155,7 +167,7 @@ const generateTexture = (
   const { data: imageDataScaled } = imageScaled
 
   Array.from({ length: imageDataScaled.length / scaleFactor }).forEach(
-    (_, imageIndexBase: number) =&gt; {
+    (...[, imageIndexBase]) =&gt; {
       const imageAddition = Math.floor(Math.random() * 5)
       const imageIndex = imageIndexBase * scaleFactor
 
@@ -177,15 +189,23 @@ type Simulation = {
   stop: () =&gt; void
 }
 
-const main = (
-  props: Props,
+const createDemo = ({
+  previousSimulation,
+  props,
+}: {
   previousSimulation: Simulation | null
-): Simulation =&gt; {
+  props: Props
+}): Simulation =&gt; {
   const { lightLevel, mountainHeight, worldDepth, worldWidth } = props
 
   const createTexture = (heightData: Simulation[&quot;heightData&quot;]) =&gt; {
     const texture = new CanvasTexture(
-      generateTexture(heightData, worldWidth, worldDepth, lightLevel)
+      generateTexture({
+        depth: worldDepth,
+        heightData,
+        lightLevel,
+        width: worldWidth,
+      })
     )
 
     texture.wrapS = ClampToEdgeWrapping
@@ -238,7 +258,11 @@ const main = (
     20000
   )
 
-  const newHeightData = generateHeight(worldWidth, worldDepth, mountainHeight)
+  const newHeightData = generateHeight({
+    depth: worldDepth,
+    mountainHeight,
+    width: worldWidth,
+  })
 
   const createMaterial = () =&gt;
     new MeshBasicMaterial({
@@ -367,7 +391,7 @@ const ThreeJSTerrain = (props: Props) =&gt; {
   )
 
   React.useEffect(() =&gt; {
-    const newSimulation = main(props, previousSimulation)
+    const newSimulation = createDemo({ previousSimulation, props })
 
     setSimulation(newSimulation)
   }, [props])
@@ -398,15 +422,27 @@ const Template = ((props: Props) =&gt; (
 
 export const Common = Template.bind({})
 
-const [lightLevelArg, lightLevelControl] = createRangeControl(50, 1, 50)
-const [mountainHeightArg, mountainHeightControl] = createRangeControl(
-  1.75,
-  0.05,
-  1.75,
-  1.25
-)
-const [worldWidthArg, worldWidthControl] = createRangeControl(250, 1, 100)
-const [worldDepthArg, worldDepthControl] = createRangeControl(250, 1, 100)
+const [lightLevelArg, lightLevelControl] = createRangeControl({
+  diffMin: 50,
+  initialValue: 50,
+  step: 1,
+})
+const [mountainHeightArg, mountainHeightControl] = createRangeControl({
+  diffMax: 1.25,
+  diffMin: 1.75,
+  initialValue: 1.75,
+  step: 0.05,
+})
+const [worldWidthArg, worldWidthControl] = createRangeControl({
+  diffMin: 100,
+  initialValue: 250,
+  step: 1,
+})
+const [worldDepthArg, worldDepthControl] = createRangeControl({
+  diffMin: 100,
+  initialValue: 250,
+  step: 1,
+})
 
 const args: Props = {
   lightLevel: lightLevelArg,
@@ -428,7 +464,7 @@ export default {
   title: &quot;ThreeJS/Terrain&quot;,
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 17:19:53 GMT</p>
     </body>
   </html>
   

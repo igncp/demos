@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/spain-map/spain-map-chart.ts</td><td class="">97.79%</td><td class="">95%</td><td class="">271</td><td class="">265</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/spain-map/spain-map-chart.ts</td><td class="">97.89%</td><td class="">95%</td><td class="">285</td><td class="">279</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   BaseType,
   GeoPath,
   GeoPermissibleObjects,
@@ -38,12 +38,17 @@ const strokeWidth = 0.4
 
 type SVG = Selection&lt;BaseType, unknown, HTMLElement, unknown&gt;
 
-const addDropShadowFilter = function (
-  id: number,
-  svg: SVG,
-  deviation: number,
+const addDropShadowFilter = ({
+  deviation,
+  id,
+  slope,
+  svg,
+}: {
+  deviation: number
+  id: number
   slope: number
-) {
+  svg: SVG
+}) =&gt; {
   const defs = svg.append(&quot;defs&quot;)
   const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, `drop-shadow-${id}`)
 
@@ -70,7 +75,7 @@ export type AreasData = Topology&lt;Objects&lt;GeoJsonProperties&gt;&gt;
 
 export type ChartConfig&lt;Properties&gt; = {
   areasData: AreasData
-  getTitleText: (p: Properties) =&gt; string
+  getTitleText: (o: Properties) =&gt; string
   getWidths: (chartWidth: number) =&gt; number[]
   projectionsCenters: Array&lt;[number, number]&gt;
   rootElId: string
@@ -93,16 +98,19 @@ export const renderChart = &lt;Properties&gt;(
   const {
     objects: { data1: dataRoot },
   } = areasData
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { features: dataGeo } = feature(areasData, dataRoot) as any
 
   const dataGeoParsed = dataGeo.map(
-    (areaData: DataShape, areaIndex: number) =&gt; ({
+    (...[areaData, areaIndex]: [DataShape, number]) =&gt; ({
       ...areaData,
       areaIndex,
     })
   )
 
   const colorScale = scaleLinear()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .domain([0, (dataRoot as any).geometries.length])
     .range([0, 1])
   const colorScaleConversion = scaleLinear&lt;string&gt;()
@@ -134,11 +142,15 @@ export const renderChart = &lt;Properties&gt;(
 
   const regionClass = `region-${uuidv1().slice(0, 6)}`
 
-  const generateAreas = (
-    svgComp: SVG,
-    path: GeoPath&lt;SVGPathElement&gt;,
+  const generateAreas = ({
+    filterId,
+    path,
+    svgComp,
+  }: {
     filterId: number
-  ) =&gt; {
+    path: GeoPath&lt;SVGPathElement&gt;
+    svgComp: SVG
+  }) =&gt; {
     svgComp
       .selectAll(&quot;.area&quot;)
       .data&lt;DataShape&gt;(dataGeoParsed)
@@ -167,7 +179,9 @@ export const renderChart = &lt;Properties&gt;(
 
   const widths = chartConfig.getWidths(chartWidth)
 
-  const generateProjection = (center: [number, number], centerIndex: number) =&gt;
+  const generateProjection = (
+    ...[center, centerIndex]: [[number, number], number]
+  ) =&gt;
     geoMercator()
       .center(center)
       .scale(2650)
@@ -175,23 +189,32 @@ export const renderChart = &lt;Properties&gt;(
 
   const svgs = widths.map(generateSvg)
 
-  svgs.forEach((svgItem, idx) =&gt; {
-    addDropShadowFilter(idx + 1, svgItem, 2, 0.3)
+  svgs.forEach((...[svgItem, svgItemIndex]) =&gt; {
+    addDropShadowFilter({
+      deviation: 2,
+      id: svgItemIndex + 1,
+      slope: 0.3,
+      svg: svgItem,
+    })
   })
 
   const projections = chartConfig.projectionsCenters.map(generateProjection)
   const paths = projections.map(generatePath)
 
-  svgs.forEach((svgItem, svgIndex) =&gt; {
-    generateAreas(svgItem, paths[svgIndex], svgIndex + 1)
+  svgs.forEach((...[svgItem, svgItemIndex]) =&gt; {
+    generateAreas({
+      filterId: svgItemIndex + 1,
+      path: paths[svgItemIndex],
+      svgComp: svgItem,
+    })
   })
 
   $(`.${regionClass}`).tooltip({
     track: true,
   })
 }
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:82,&quot;character&quot;:20,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:8,&quot;text&quot;:&quot;dataGeoParsed&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:24,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:84,&quot;character&quot;:32,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:92,&quot;character&quot;:34,&quot;text&quot;:&quot;geometries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:92,&quot;character&quot;:45,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:89,&quot;character&quot;:20,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:8,&quot;text&quot;:&quot;dataGeoParsed&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:24,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:32,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:34,&quot;text&quot;:&quot;geometries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/spain-map-chart.ts&quot;,&quot;line&quot;:100,&quot;character&quot;:45,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 17:19:53 GMT</p>
     </body>
   </html>
   

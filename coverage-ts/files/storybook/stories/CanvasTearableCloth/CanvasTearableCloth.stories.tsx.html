@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasTearableCloth/CanvasTearableCloth.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">706</td><td class="">706</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { select } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/CanvasTearableCloth/CanvasTearableCloth.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">736</td><td class="">736</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { select } from &quot;d3&quot;
 import React from &quot;react&quot;
 
 import {
@@ -38,11 +38,12 @@ const ROOT_ID = &quot;example&quot;
 const pointDelta = 0.016
 const pointDeltaSquare = pointDelta * pointDelta
 
-const loopReversed = &lt;A extends unknown[]&gt;(
-  arr: A,
-  fn: (a: A[0]) =&gt; void
+const loopReversed = &lt;ArrayLike extends unknown[]&gt;(
+  itemsList: ArrayLike,
+  fn: (listItem: ArrayLike[0]) =&gt; void
+  // eslint-disable-next-line max-params
 ): void =&gt; {
-  arr.slice().reverse().forEach(fn)
+  itemsList.slice().reverse().forEach(fn)
 }
 
 type MouseState = {
@@ -71,7 +72,7 @@ class Point&lt;PointConstraint extends IConstraint&gt; {
   private vx: number
   private vy: number
 
-  public constructor(x: number, y: number) {
+  public constructor({ x, y }: { x: number; y: number }) {
     this.x = x
     this.y = y
     this.px = x
@@ -110,7 +111,7 @@ class Point&lt;PointConstraint extends IConstraint&gt; {
       }
     }
 
-    this.addForce(0, gravity)
+    this.addForce({ x: 0, y: gravity })
 
     const newX =
       this.x + (this.x - this.px) * 0.99 + (this.vx / 2) * pointDeltaSquare
@@ -178,17 +179,17 @@ class Point&lt;PointConstraint extends IConstraint&gt; {
     this.constraints.splice(this.constraints.indexOf(constraint), 1)
   }
 
-  public addForce(x: number, y: number) {
+  public addForce({ x, y }: { x: number; y: number }) {
     this.vx += x
     this.vy += y
 
     const round = 400
 
-    this.vx = ~~(this.vx * round) / round
-    this.vy = ~~(this.vy * round) / round
+    this.vx = Math.floor(this.vx * round) / round
+    this.vy = Math.floor(this.vy * round) / round
   }
 
-  public pin(pinX: number, pinY: number) {
+  public pin({ pinX, pinY }: { pinX: number; pinY: number }) {
     this.pinX = pinX
     this.pinY = pinY
   }
@@ -199,11 +200,15 @@ class Constraint {
   private readonly p2: Point&lt;Constraint&gt;
   private readonly length: number
 
-  public constructor(
-    p1: Point&lt;Constraint&gt;,
-    p2: Point&lt;Constraint&gt;,
+  public constructor({
+    p1,
+    p2,
+    spacing,
+  }: {
+    p1: Point&lt;Constraint&gt;
+    p2: Point&lt;Constraint&gt;
     spacing: number
-  ) {
+  }) {
     this.p1 = p1
     this.p2 = p2
     this.length = spacing
@@ -327,29 +332,37 @@ const main = ({
 
       for (let y = 0; y &lt;= clothHeight; y += 1) {
         for (let x = 0; x &lt;= clothWidth; x += 1) {
-          const newPoint = new Point&lt;Constraint&gt;(
-            startX + x * spacing,
-            startY + y * spacing
-          )
+          const newPoint = new Point&lt;Constraint&gt;({
+            x: startX + x * spacing,
+            y: startY + y * spacing,
+          })
 
           if (x !== 0) {
             const {
               points: { [this.points.length - 1]: pointLeft },
             } = this
 
-            const constraint = new Constraint(newPoint, pointLeft, spacing)
+            const constraint = new Constraint({
+              p1: newPoint,
+              p2: pointLeft,
+              spacing,
+            })
 
             newPoint.attach(constraint)
           }
 
           if (y === 0) {
-            newPoint.pin(newPoint.x, newPoint.y)
+            newPoint.pin({ pinX: newPoint.x, pinY: newPoint.y })
           } else {
             const {
               points: { [x + (y - 1) * (clothWidth + 1)]: pointAbove },
             } = this
 
-            const constraint = new Constraint(newPoint, pointAbove, spacing)
+            const constraint = new Constraint({
+              p1: newPoint,
+              p2: pointAbove,
+              spacing,
+            })
 
             newPoint.attach(constraint)
           }
@@ -362,39 +375,39 @@ const main = ({
 
   const cloth = new Cloth()
 
-  canvasEl.onmousedown = (e) =&gt; {
-    e.preventDefault()
+  canvasEl.onmousedown = (mouseEvent) =&gt; {
+    mouseEvent.preventDefault()
 
-    mouseState.button = e.which
+    mouseState.button = mouseEvent.which
     mouseState.px = mouseState.x
     mouseState.py = mouseState.y
 
     const rect = canvasEl.getBoundingClientRect()
 
-    mouseState.x = e.clientX - rect.left
-    mouseState.y = e.clientY - rect.top
+    mouseState.x = mouseEvent.clientX - rect.left
+    mouseState.y = mouseEvent.clientY - rect.top
     mouseState.down = true
   }
 
-  canvasEl.onmouseup = (e) =&gt; {
-    e.preventDefault()
+  canvasEl.onmouseup = (mouseEvent) =&gt; {
+    mouseEvent.preventDefault()
     mouseState.down = false
   }
 
-  canvasEl.onmousemove = (e) =&gt; {
-    e.preventDefault()
+  canvasEl.onmousemove = (mouseEvent) =&gt; {
+    mouseEvent.preventDefault()
 
     mouseState.px = mouseState.x
     mouseState.py = mouseState.y
 
     const rect = canvasEl.getBoundingClientRect()
 
-    mouseState.x = e.clientX - rect.left
-    mouseState.y = e.clientY - rect.top
+    mouseState.x = mouseEvent.clientX - rect.left
+    mouseState.y = mouseEvent.clientY - rect.top
   }
 
-  canvasEl.oncontextmenu = (e) =&gt; {
-    e.preventDefault()
+  canvasEl.oncontextmenu = (mouseEvent) =&gt; {
+    mouseEvent.preventDefault()
   }
 
   const loop = () =&gt; {
@@ -451,8 +464,17 @@ const Template = ((props: Props) =&gt; (
 
 export const Common = Template.bind({})
 
-const [clothHeightArgs, clothHeightControls] = createRangeControl(30, 1, 25)
-const [clothWidthArgs, clothWidthControls] = createRangeControl(50, 1, 49, 150)
+const [clothHeightArgs, clothHeightControls] = createRangeControl({
+  diffMin: 25,
+  initialValue: 30,
+  step: 1,
+})
+const [clothWidthArgs, clothWidthControls] = createRangeControl({
+  diffMax: 150,
+  diffMin: 49,
+  initialValue: 50,
+  step: 1,
+})
 
 const args: Props = {
   clothHeight: clothHeightArgs,
@@ -477,7 +499,7 @@ export default {
   title: &quot;Canvas/Cloth&quot;,
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 17:19:53 GMT</p>
     </body>
   </html>
   

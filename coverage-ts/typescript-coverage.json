@@ -892,56 +892,56 @@
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 126,
+      "line": 128,
       "character": 2,
       "text": "Raphael",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 126,
+      "line": 128,
       "character": 10,
       "text": "fn",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 126,
+      "line": 128,
       "character": 13,
       "text": "circularArc",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 127,
+      "line": 129,
       "character": 2,
       "text": "Raphael",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 127,
+      "line": 129,
       "character": 10,
       "text": "fn",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 127,
+      "line": 129,
       "character": 13,
       "text": "arc",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 129,
+      "line": 131,
       "character": 8,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 129,
+      "line": 131,
       "character": 16,
       "text": "Raphael",
       "kind": 1
@@ -1105,20 +1105,6 @@
       "line": 308,
       "character": 41,
       "text": "ev",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/force/force.ts",
-      "line": 139,
-      "character": 28,
-      "text": "_ev",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/force/force.ts",
-      "line": 142,
-      "character": 29,
-      "text": "_ev",
       "kind": 1
     },
     {
@@ -1304,24 +1290,52 @@
       "kind": 1
     },
     {
-      "file": "src/demos/pie/pie.ts",
-      "line": 16,
-      "character": 8,
-      "text": "pieJsonData",
+      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
+      "line": 548,
+      "character": 23,
+      "text": "brushEvent",
       "kind": 1
     },
     {
-      "file": "src/demos/pie/pie.ts",
-      "line": 18,
-      "character": 9,
-      "text": "pieJsonData",
+      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
+      "line": 551,
+      "character": 10,
+      "text": "brushEvent",
       "kind": 1
     },
     {
-      "file": "src/demos/pie/pie.ts",
-      "line": 156,
-      "character": 8,
-      "text": "pieJsonData",
+      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
+      "line": 551,
+      "character": 21,
+      "text": "selection",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
+      "line": 553,
+      "character": 25,
+      "text": "brushEvent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
+      "line": 553,
+      "character": 36,
+      "text": "selection",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
+      "line": 554,
+      "character": 25,
+      "text": "brushEvent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
+      "line": 554,
+      "character": 36,
+      "text": "selection",
       "kind": 1
     },
     {
@@ -1354,849 +1368,44 @@
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 82,
+      "line": 89,
       "character": 20,
       "text": "dataGeo",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 84,
+      "line": 91,
       "character": 8,
       "text": "dataGeoParsed",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 84,
+      "line": 91,
       "character": 24,
       "text": "dataGeo",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 84,
+      "line": 91,
       "character": 32,
       "text": "map",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 92,
+      "line": 100,
       "character": 34,
       "text": "geometries",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 92,
+      "line": 100,
       "character": 45,
       "text": "length",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 53,
-      "character": 2,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 55,
-      "character": 2,
-      "text": "yScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 56,
-      "character": 2,
-      "text": "yearsScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 213,
-      "character": 39,
-      "text": "item1",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 213,
-      "character": 51,
-      "text": "item2",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 214,
-      "character": 19,
-      "text": "item1",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 214,
-      "character": 25,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 214,
-      "character": 33,
-      "text": "item2",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 214,
-      "character": 39,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 224,
-      "character": 15,
-      "text": "item2",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 224,
-      "character": 21,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 224,
-      "character": 27,
-      "text": "item1",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 224,
-      "character": 33,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 237,
-      "character": 40,
-      "text": "item1",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 237,
-      "character": 52,
-      "text": "item2",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 238,
-      "character": 19,
-      "text": "item1",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 238,
-      "character": 25,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 238,
-      "character": 33,
-      "text": "item2",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 238,
-      "character": 39,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 248,
-      "character": 15,
-      "text": "item2",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 248,
-      "character": 21,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 248,
-      "character": 27,
-      "text": "item1",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 248,
-      "character": 33,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 262,
-      "character": 6,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 270,
-      "character": 8,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 270,
-      "character": 14,
-      "text": "forEach",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 270,
-      "character": 23,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 278,
-      "character": 16,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 278,
-      "character": 21,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 285,
-      "character": 10,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 285,
-      "character": 15,
-      "text": "track",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 287,
-      "character": 26,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 287,
-      "character": 31,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
-      "character": 15,
-      "text": "items",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
-      "character": 21,
-      "text": "forEach",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 291,
-      "character": 30,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 299,
-      "character": 16,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 299,
-      "character": 21,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 306,
-      "character": 10,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 306,
-      "character": 15,
-      "text": "track",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 308,
-      "character": 26,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 308,
-      "character": 31,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 325,
-      "character": 36,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
-      "character": 6,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
-      "character": 11,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
-      "character": 29,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 326,
-      "character": 34,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 328,
-      "character": 10,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 328,
-      "character": 15,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
-      "character": 8,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
-      "character": 13,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
-      "character": 28,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
-      "character": 33,
-      "text": "start",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 329,
-      "character": 39,
-      "text": "getTime",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 330,
-      "character": 8,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 330,
-      "character": 13,
-      "text": "instant",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 332,
-      "character": 8,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 332,
-      "character": 13,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 332,
-      "character": 29,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 332,
-      "character": 34,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 333,
-      "character": 8,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 333,
-      "character": 13,
-      "text": "instant",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
-      "character": 10,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 336,
-      "character": 15,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 337,
-      "character": 8,
-      "text": "item",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 337,
-      "character": 13,
-      "text": "end",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 358,
-      "character": 39,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 402,
-      "character": 9,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 406,
-      "character": 9,
-      "text": "yScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 406,
-      "character": 19,
-      "text": "track",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 406,
-      "character": 54,
-      "text": "track",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 408,
-      "character": 9,
-      "text": "yearsScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 426,
-      "character": 39,
-      "text": "yScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 482,
-      "character": 41,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 485,
-      "character": 32,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 485,
-      "character": 53,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 489,
-      "character": 29,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 489,
-      "character": 50,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 570,
-      "character": 18,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 570,
-      "character": 29,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 578,
-      "character": 22,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 578,
-      "character": 33,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 579,
-      "character": 19,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 579,
-      "character": 30,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 580,
-      "character": 18,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 580,
-      "character": 29,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 582,
-      "character": 28,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 582,
-      "character": 39,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 585,
-      "character": 12,
-      "text": "min",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 585,
-      "character": 23,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 585,
-      "character": 30,
-      "text": "domain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 586,
-      "character": 12,
-      "text": "max",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 586,
-      "character": 23,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 586,
-      "character": 30,
-      "text": "domain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 588,
-      "character": 26,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 588,
-      "character": 37,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 588,
-      "character": 42,
-      "text": "min",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 588,
-      "character": 47,
-      "text": "max",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 610,
-      "character": 23,
-      "text": "e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 611,
-      "character": 10,
-      "text": "newDomain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 611,
-      "character": 27,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 611,
-      "character": 34,
-      "text": "domain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 613,
-      "character": 10,
-      "text": "e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 613,
-      "character": 12,
-      "text": "selection",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 614,
-      "character": 8,
-      "text": "newDomain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 615,
-      "character": 25,
-      "text": "e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 615,
-      "character": 27,
-      "text": "selection",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 616,
-      "character": 25,
-      "text": "e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 616,
-      "character": 27,
-      "text": "selection",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 622,
-      "character": 27,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 623,
-      "character": 19,
-      "text": "d",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 623,
-      "character": 22,
-      "text": "xScale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 623,
-      "character": 29,
-      "text": "domain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 623,
-      "character": 36,
-      "text": "newDomain",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/timeline/timeline.ts",
-      "line": 625,
-      "character": 19,
-      "text": "d",
       "kind": 1
     },
     {
@@ -2389,99 +1598,15 @@
       "kind": 1
     },
     {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-chart.ts",
-      "line": 152,
-      "character": 16,
-      "text": "_value",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-chart.ts",
-      "line": 156,
-      "character": 20,
-      "text": "_value",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-chart.ts",
-      "line": 166,
-      "character": 7,
-      "text": "_value",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
-      "line": 24,
-      "character": 8,
-      "text": "weeklyTSVData",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
-      "line": 28,
-      "character": 9,
-      "text": "weeklyTSVData",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
-      "line": 28,
-      "character": 23,
-      "text": "map",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
-      "line": 28,
-      "character": 28,
-      "text": "timeItem",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
-      "line": 29,
-      "character": 22,
-      "text": "timeItem",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
-      "line": 29,
-      "character": 31,
-      "text": "value",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
-      "line": 30,
-      "character": 10,
-      "text": "timeItem",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
-      "line": 30,
-      "character": 19,
-      "text": "day",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
-      "line": 31,
-      "character": 11,
-      "text": "timeItem",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-data.ts",
-      "line": 31,
-      "character": 20,
-      "text": "hour",
+      "file": "src/demos/world-map/world-map.ts",
+      "line": 19,
+      "character": 5,
+      "text": "WorldData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 19,
+      "line": 21,
       "character": 43,
       "text": "world",
       "kind": 1
@@ -2489,461 +1614,454 @@
     {
       "file": "src/demos/world-map/world-map.ts",
       "line": 21,
+      "character": 50,
+      "text": "WorldData",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/world-map/world-map.ts",
+      "line": 23,
       "character": 46,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 28,
+      "line": 30,
       "character": 20,
       "text": "featuresData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 30,
+      "line": 32,
       "character": 4,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 30,
+      "line": 32,
       "character": 10,
       "text": "objects",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 30,
+      "line": 32,
       "character": 18,
       "text": "countries",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 34,
+      "line": 36,
       "character": 16,
       "text": "featuresData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 34,
+      "line": 36,
       "character": 29,
       "text": "length",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 6,
+      "line": 15,
       "character": 5,
       "text": "OIMOBody",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 7,
+      "line": 16,
       "character": 5,
       "text": "OIMOGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 8,
+      "line": 17,
       "character": 5,
       "text": "THREEGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 74,
+      "line": 83,
       "character": 4,
       "text": "oimoGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 74,
+      "line": 83,
       "character": 18,
       "text": "OIMOGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 77,
+      "line": 86,
       "character": 48,
       "text": "oimoGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 107,
+      "line": 115,
       "character": 4,
       "text": "oimoGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 107,
+      "line": 115,
       "character": 18,
       "text": "OIMOGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 113,
+      "line": 121,
       "character": 4,
       "text": "oimoGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 119,
+      "line": 127,
       "character": 18,
       "text": "OIMOBody",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 153,
+      "line": 161,
       "character": 27,
       "text": "geometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 153,
+      "line": 161,
       "character": 37,
       "text": "THREEGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 154,
+      "line": 162,
       "character": 12,
       "text": "parameters",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 156,
+      "line": 164,
       "character": 8,
       "text": "geometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 156,
+      "line": 164,
       "character": 17,
       "text": "type",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 157,
+      "line": 165,
       "character": 17,
       "text": "parameters",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 157,
+      "line": 165,
       "character": 28,
       "text": "width",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 157,
+      "line": 165,
       "character": 50,
       "text": "parameters",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 157,
+      "line": 165,
       "character": 61,
       "text": "width",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 158,
+      "line": 166,
       "character": 17,
       "text": "parameters",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 158,
+      "line": 166,
       "character": 28,
       "text": "height",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 158,
+      "line": 166,
       "character": 51,
       "text": "parameters",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 158,
+      "line": 166,
       "character": 62,
       "text": "height",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 159,
+      "line": 167,
       "character": 17,
       "text": "parameters",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 159,
+      "line": 167,
       "character": 28,
       "text": "depth",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 159,
+      "line": 167,
       "character": 50,
       "text": "parameters",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 159,
+      "line": 167,
       "character": 61,
       "text": "depth",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 164,
+      "line": 172,
       "character": 10,
       "text": "radius",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 164,
+      "line": 172,
       "character": 19,
       "text": "parameters",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 164,
+      "line": 172,
       "character": 30,
       "text": "radius",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 164,
+      "line": 172,
       "character": 53,
       "text": "parameters",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 164,
+      "line": 172,
       "character": 64,
       "text": "radius",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 166,
-      "character": 36,
+      "line": 174,
+      "character": 31,
       "text": "radius",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 153,
+      "line": 161,
       "character": 53,
       "text": "OIMOGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 172,
+      "line": 180,
       "character": 10,
       "text": "oimoGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 174,
+      "line": 182,
       "character": 8,
       "text": "oimoGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 176,
+      "line": 184,
       "character": 42,
       "text": "oimoGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 178,
+      "line": 186,
       "character": 33,
       "text": "oimoGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 195,
+      "line": 203,
       "character": 12,
       "text": "bodies",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 196,
+      "line": 204,
       "character": 27,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 198,
+      "line": 206,
       "character": 6,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 198,
+      "line": 206,
       "character": 11,
       "text": "setPosition",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 200,
+      "line": 208,
       "character": 12,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 202,
+      "line": 210,
       "character": 6,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 202,
+      "line": 210,
       "character": 11,
       "text": "setPosition",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 220,
+      "line": 228,
       "character": 22,
       "text": "OIMOBody",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 223,
+      "line": 231,
       "character": 17,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 228,
+      "line": 236,
       "character": 22,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 228,
+      "line": 236,
       "character": 27,
       "text": "getPosition",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 229,
+      "line": 237,
       "character": 24,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 229,
+      "line": 237,
       "character": 29,
       "text": "getOrientation",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 235,
+      "line": 243,
       "character": 14,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 237,
+      "line": 245,
       "character": 27,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 237,
+      "line": 245,
       "character": 32,
       "text": "getPosition",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 238,
+      "line": 246,
       "character": 29,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
-      "line": 238,
+      "line": 246,
       "character": 34,
       "text": "getOrientation",
       "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 229,
-      "character": 34,
-      "text": "fontsData",
-      "kind": 1
-    },
-    {
-      "file": "storybook/stories/ThreeJSText/ThreeJSText.stories.tsx",
-      "line": 232,
-      "character": 20,
-      "text": "fontsData",
-      "kind": 1
     }
   ],
-  "percentage": 97.9956094301804,
-  "total": 20954,
-  "covered": 20534,
-  "uncovered": 420
+  "percentage": 98.61471045563775,
+  "total": 21223,
+  "covered": 20929,
+  "uncovered": 294
 }

@@ -11,7 +11,7 @@
 <link href="../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">gatsby/info/d3js.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">295</td><td class="">295</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { DemoBase } from &quot;@/common&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">gatsby/info/d3js.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">285</td><td class="">285</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { DemoBase } from &quot;@/common&quot;
 
 import {
   animeItems,
@@ -62,35 +62,35 @@ const d3DelaunayItems = [
 ]
 
 export type D3JS = {
-  area: DemoBase
-  bars: DemoBase
-  bubbles: DemoBase
-  chord: DemoBase
+  &quot;area&quot;: DemoBase
+  &quot;bars&quot;: DemoBase
+  &quot;bubbles&quot;: DemoBase
+  &quot;chord&quot;: DemoBase
   &quot;collapsible-tree&quot;: DemoBase
   &quot;concentric-circles&quot;: DemoBase
   &quot;energy-sankey&quot;: DemoBase
   &quot;expenses-chord&quot;: DemoBase
   &quot;fish-eye&quot;: DemoBase
-  force: DemoBase
-  icosahedron: DemoBase
+  &quot;force&quot;: DemoBase
+  &quot;icosahedron&quot;: DemoBase
   &quot;map-distorsions&quot;: DemoBase
   &quot;mareys-schedule&quot;: DemoBase
   &quot;meteorites-map&quot;: DemoBase
   &quot;multiline-voronoi&quot;: DemoBase
-  partition: DemoBase
-  pie: DemoBase
+  &quot;partition&quot;: DemoBase
+  &quot;philosophers-timeline&quot;: DemoBase
+  &quot;pie&quot;: DemoBase
   &quot;population-circles&quot;: DemoBase
   &quot;spain-map&quot;: DemoBase
-  timeline: DemoBase
   &quot;trend-line&quot;: DemoBase
-  vectors: DemoBase
+  &quot;vectors&quot;: DemoBase
   &quot;weekly-heatmap&quot;: DemoBase
   &quot;world-map&quot;: DemoBase
 }
 
 const d3js: D3JS = {
   &quot;area&quot;: {
-    data: [&quot;data.csv&quot;],
+    dataFiles: [&quot;data.csv&quot;],
     docs: [
       ...d3SelectionItems,
       ...d3ShapeItems,
@@ -110,7 +110,7 @@ const d3js: D3JS = {
     ],
   },
   &quot;bars&quot;: {
-    data: [&quot;data.json&quot;],
+    dataFiles: [&quot;data.json&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;Bars&quot;,
@@ -124,7 +124,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;bubbles&quot;: {
-    data: [&quot;data.json&quot;],
+    dataFiles: [&quot;data.json&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;Bubbles&quot;,
@@ -137,7 +137,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;chord&quot;: {
-    data: [&quot;data.csv&quot;],
+    dataFiles: [&quot;data.csv&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;Chord&quot;,
@@ -149,7 +149,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;collapsible-tree&quot;: {
-    data: [&quot;data.json&quot;],
+    dataFiles: [&quot;data.json&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;Collapsible Tree&quot;,
@@ -161,7 +161,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;concentric-circles&quot;: {
-    data: [],
+    dataFiles: [],
     docs: [],
     isCompleted: true,
     name: &quot;Concentric Circles&quot;,
@@ -178,7 +178,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;energy-sankey&quot;: {
-    data: [&quot;data.json&quot;],
+    dataFiles: [&quot;data.json&quot;],
     docs: [
       ...d3SankeyItems,
       mixBlendModeCSS,
@@ -201,7 +201,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;expenses-chord&quot;: {
-    data: [&quot;data.json&quot;],
+    dataFiles: [&quot;data.json&quot;],
     docs: [] as DemoBase[&quot;docs&quot;],
     isCompleted: false,
     name: &quot;Expenses Chord&quot;,
@@ -217,7 +217,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;fish-eye&quot;: {
-    data: [&quot;data.json&quot;],
+    dataFiles: [&quot;data.json&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;Fish Eye&quot;,
@@ -231,7 +231,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;force&quot;: {
-    data: [&quot;links.json&quot;, &quot;nodes.json&quot;],
+    dataFiles: [&quot;links.json&quot;, &quot;nodes.json&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;Force&quot;,
@@ -240,7 +240,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;icosahedron&quot;: {
-    data: [],
+    dataFiles: [],
     docs: [],
     isCompleted: true,
     name: &quot;Icosahedron&quot;,
@@ -253,7 +253,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;map-distorsions&quot;: {
-    data: [&quot;data.tsv&quot;],
+    dataFiles: [&quot;data.tsv&quot;],
     docs: [
       ...d3ShapeItems,
       ...d3AxisItems,
@@ -275,7 +275,7 @@ const d3js: D3JS = {
     ],
   },
   &quot;mareys-schedule&quot;: {
-    data: [&quot;data.tsv&quot;],
+    dataFiles: [&quot;data.tsv&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;Marey&#x27;s Schedule&quot;,
@@ -288,7 +288,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;meteorites-map&quot;: {
-    data: [&quot;meteorites.json&quot;, &quot;world_countries.json&quot;],
+    dataFiles: [&quot;meteorites.json&quot;, &quot;world_countries.json&quot;],
     docs: [...animeItems, ...d3ZoomItems] as DemoBase[&quot;docs&quot;],
     isCompleted: true,
     name: &quot;Meteorites Map&quot;,
@@ -303,7 +303,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;multiline-voronoi&quot;: {
-    data: [&quot;data.tsv&quot;],
+    dataFiles: [&quot;data.tsv&quot;],
     docs: [
       ...d3AxisItems,
       ...d3ShapeItems,
@@ -324,7 +324,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;partition&quot;: {
-    data: [&quot;flare.json&quot;],
+    dataFiles: [&quot;flare.json&quot;],
     docs: [
       ...d3EaseItems,
       ...d3FetchItems,
@@ -347,8 +347,21 @@ const d3js: D3JS = {
       &quot;The chart displays the common flow for updating elements bound to data. Removing exited elements, adding new elements and applying the tween function to the selection.&quot;,
     ],
   },
+  &quot;philosophers-timeline&quot;: {
+    dataFiles: [&quot;data.csv&quot;],
+    docs: [],
+    isCompleted: true,
+    name: &quot;Philosophers Timeline&quot;,
+    notes: [
+      &quot;Change to bootstrap tooltip&quot;,
+      &quot;Add dynamic text lengths (adding two dots)&quot;,
+      &quot;Improve performance (a lot) removing the drop-shadow while brushing&quot;,
+    ],
+    sources: [&quot;http://bl.ocks.org/rengel-de/5603464&quot;],
+    summary: [],
+  },
   &quot;pie&quot;: {
-    data: [&quot;data.json&quot;],
+    dataFiles: [&quot;data.json&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;Pie&quot;,
@@ -359,7 +372,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;population-circles&quot;: {
-    data: [&quot;data.json&quot;],
+    dataFiles: [&quot;data.json&quot;],
     docs: [
       ...d3ScaleItems,
       ...d3HierarchyItems,
@@ -387,7 +400,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;spain-map&quot;: {
-    data: [&quot;data.json&quot;],
+    dataFiles: [&quot;data.json&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;Spanish Map&quot;,
@@ -398,21 +411,8 @@ const d3js: D3JS = {
     sources: [&quot;http://www.diva-gis.org/datadown&quot;],
     summary: [],
   },
-  &quot;timeline&quot;: {
-    data: [&quot;data.csv&quot;],
-    docs: [],
-    isCompleted: true,
-    name: &quot;Timeline&quot;,
-    notes: [
-      &quot;Change to bootstrap tooltip&quot;,
-      &quot;Add dynamic text lengths (adding two dots)&quot;,
-      &quot;Improve performance (a lot) removing the drop-shadow while brushing&quot;,
-    ],
-    sources: [&quot;http://bl.ocks.org/rengel-de/5603464&quot;],
-    summary: [],
-  },
   &quot;trend-line&quot;: {
-    data: [&quot;data.tsv&quot;],
+    dataFiles: [&quot;data.tsv&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;Trend line&quot;,
@@ -424,7 +424,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;vectors&quot;: {
-    data: [],
+    dataFiles: [],
     docs: [
       [
         &quot;d3-force API reference&quot;,
@@ -441,7 +441,7 @@ const d3js: D3JS = {
     summary: [],
   },
   &quot;weekly-heatmap&quot;: {
-    data: [&quot;data.tsv&quot;],
+    dataFiles: [&quot;data.tsv&quot;],
     docs: [...d3SelectionItems, ...d3ScaleItems, ...d3FetchItems],
     isCompleted: true,
     name: &quot;Weekly Heatmap&quot;,
@@ -452,7 +452,7 @@ const d3js: D3JS = {
     ],
   },
   &quot;world-map&quot;: {
-    data: [&quot;world.json&quot;],
+    dataFiles: [&quot;world.json&quot;],
     docs: [],
     isCompleted: true,
     name: &quot;World Map&quot;,
@@ -471,7 +471,7 @@ const d3js: D3JS = {
 
 export default d3js
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 17:19:53 GMT</p>
     </body>
   </html>
   

@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">src/demos/weekly-heatmap/weekly-heatmap-data.ts</td><td class="">90.20%</td><td class="">95%</td><td class="">102</td><td class="">92</td><td class="">10</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { tsv } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/weekly-heatmap/weekly-heatmap-data.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">104</td><td class="">104</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { tsv } from &quot;d3&quot;
 
 import { ChartConfig } from &quot;./weekly-heatmap-chart&quot;
 
@@ -21,13 +21,23 @@ export type TimeItem = {
   hour: number
 }
 
+type TimeItemOriginal = {
+  day: number
+  hour: number
+  value: number // eslint-disable-line id-denylist
+}
+
 const days = [&quot;Mo&quot;, &quot;Tu&quot;, &quot;We&quot;, &quot;Th&quot;, &quot;Fr&quot;, &quot;Sa&quot;, &quot;Su&quot;]
 
-const hours = Array.from({ length: 24 }).map((_, hourIndex: number) =&gt; {
-  const num = hourIndex % 12
+const hours = Array.from({ length: 24 }).map(
+  (...[, hourIndex]: [unknown, number]) =&gt; {
+    const normalizedHour = hourIndex % 12
 
-  return `${num + 1} ${hourIndex &gt;= 11 &amp;&amp; hourIndex !== 23 ? &quot;pm&quot; : &quot;am&quot;}`
-})
+    return `${normalizedHour + 1} ${
+      hourIndex &gt;= 11 &amp;&amp; hourIndex !== 23 ? &quot;pm&quot; : &quot;am&quot;
+    }`
+  }
+)
 
 const workingHourMin = 7
 const workingHourMax = 16
@@ -35,11 +45,11 @@ const workingDayMin = 0
 const workingDayMax = 4
 
 export const fetchData = async (): Promise&lt;TimeItem[]&gt; =&gt; {
-  const weeklyTSVData: any = await tsv(
+  const weeklyTSVData = ((await tsv(
     `${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`
-  )
+  )) as unknown) as TimeItemOriginal[]
 
-  return weeklyTSVData.map((timeItem: any) =&gt; ({
+  return weeklyTSVData.map((timeItem) =&gt; ({
     arbitraryMetric: +timeItem.value,
     day: +timeItem.day,
     hour: +timeItem.hour,
@@ -57,13 +67,11 @@ const getItemHorizontalIndex: Config[&quot;getItemHorizontalIndex&quot;] = (time
 const getItemVerticalIndex: Config[&quot;getItemVerticalIndex&quot;] = (timeItem) =&gt;
   timeItem.day - 1
 const getIsHorizontalLabelBold: Config[&quot;getIsHorizontalLabelBold&quot;] = (
-  _hour,
-  hourIndex
+  ...[, hourIndex]
 ) =&gt; hourIndex &gt;= workingHourMin &amp;&amp; hourIndex &lt;= workingHourMax
 
 const getIsVerticalLabelBold: Config[&quot;getIsVerticalLabelBold&quot;] = (
-  _day,
-  dayIndex
+  ...[, dayIndex]
 ) =&gt; dayIndex &gt;= workingDayMin &amp;&amp; dayIndex &lt;= workingDayMax
 
 const getLegendText: Config[&quot;getLegendText&quot;] = (arbitraryMetric) =&gt;
@@ -82,8 +90,8 @@ export const createChartConfig = (weeklyData: TimeItem[]): Config =&gt; ({
   verticalLabels: days,
   weeklyData,
 })
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-data.ts&quot;,&quot;line&quot;:24,&quot;character&quot;:8,&quot;text&quot;:&quot;weeklyTSVData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-data.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:9,&quot;text&quot;:&quot;weeklyTSVData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-data.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:23,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-data.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:28,&quot;text&quot;:&quot;timeItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-data.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:22,&quot;text&quot;:&quot;timeItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-data.ts&quot;,&quot;line&quot;:29,&quot;character&quot;:31,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-data.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:10,&quot;text&quot;:&quot;timeItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-data.ts&quot;,&quot;line&quot;:30,&quot;character&quot;:19,&quot;text&quot;:&quot;day&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-data.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:11,&quot;text&quot;:&quot;timeItem&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/weekly-heatmap/weekly-heatmap-data.ts&quot;,&quot;line&quot;:31,&quot;character&quot;:20,&quot;text&quot;:&quot;hour&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 21 Aug 2021 11:53:34 GMT</p>
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 17:19:53 GMT</p>
     </body>
   </html>
   
