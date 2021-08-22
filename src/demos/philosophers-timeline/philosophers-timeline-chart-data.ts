@@ -1,4 +1,5 @@
 import { csv, timeParse } from "d3"
+import qs from "query-string"
 
 import { ChartConfig, SortOrder } from "./philosophers-timeline-chart"
 
@@ -76,10 +77,13 @@ export const fetchData = async (): Promise<TimeBandItem[]> => {
 
 type Config = ChartConfig<TimeBandItem>
 
-const getItemLimitLeft = (timeBandItem: TimeBandItem) => timeBandItem.start
-const getItemLimitRight = (timeBandItem: TimeBandItem) => timeBandItem.end
+const getItemLimitLeft: Config["getItemLimitLeft"] = (timeBandItem) =>
+  timeBandItem.start
 
-const getSortFn = (sortOrder: SortOrder) => (
+const getItemLimitRight: Config["getItemLimitRight"] = (timeBandItem) =>
+  timeBandItem.end
+
+const getSortFn: Config["getSortFn"] = (sortOrder) => (
   ...[timeBandItemA, timeBandItemB]: [TimeBandItem, TimeBandItem]
 ) => {
   const factor = sortOrder === SortOrder.Ascending ? 1 : -1
@@ -92,13 +96,10 @@ const getSortFn = (sortOrder: SortOrder) => (
   return (Number(timeBandItemB.end) - Number(timeBandItemA.end)) * factor
 }
 
-const getItemText = ({
+const getItemText: Config["getItemText"] = ({
   chartItem: timeBandItem,
   maxLetters,
-}: {
-  chartItem: TimeBandItem
-  maxLetters: number
-}): string => {
+}) => {
   if (timeBandItem.label.length > maxLetters) {
     return `${timeBandItem.label.substr(0, maxLetters - 1)}..`
   }
@@ -106,7 +107,7 @@ const getItemText = ({
   return timeBandItem.label
 }
 
-const getItemTitle = (timeBandItem: TimeBandItem): string => {
+const getItemTitle: Config["getItemTitle"] = (timeBandItem) => {
   if (timeBandItem.instant) {
     return `${timeBandItem.label}: ${toYear(timeBandItem.start)}`
   }
@@ -116,11 +117,26 @@ const getItemTitle = (timeBandItem: TimeBandItem): string => {
   )}`
 }
 
+const onChartItemClick: Config["onChartItemClick"] = (timelineChart) => {
+  const query = !timelineChart.instant
+    ? `Philosopher ${timelineChart.label}${
+        (timelineChart.end as unknown) ? timelineChart.end.getFullYear() : ""
+      }`
+    : timelineChart.label
+
+  window.open(
+    `https://www.google.com/search?${qs.stringify({
+      q: query,
+    })}`
+  )
+}
+
 export const getChartConfig = (): Config => ({
   getItemLimitLeft,
   getItemLimitRight,
   getItemText,
   getItemTitle,
   getSortFn,
+  onChartItemClick,
   rootElId: "chart",
 })

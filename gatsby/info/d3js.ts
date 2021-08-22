@@ -343,6 +343,8 @@ const d3js: D3JS = {
       "Change to bootstrap tooltip",
       "Add dynamic text lengths (adding two dots)",
       "Improve performance (a lot) removing the drop-shadow while brushing",
+      "Click item to search",
+      "Window resize is not supported",
     ],
     sources: ["http://bl.ocks.org/rengel-de/5603464"],
     summary: [],

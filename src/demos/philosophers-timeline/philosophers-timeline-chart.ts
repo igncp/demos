@@ -1,9 +1,9 @@
 import {
+  BaseType,
   ScaleTime,
   Selection,
   axisBottom,
   brushX,
-  max as maxD3,
   min as minD3,
   scaleTime,
   select,
@@ -33,10 +33,7 @@ const margin = {
   top: 60,
 }
 
-type Action = [string, () => void]
-
 type Band = RedrawComp & {
-  addActions: (actions: Action[]) => void
   g: Selection<SVGGElement, unknown, HTMLElement, unknown>
   h: number
   id: string
@@ -119,6 +116,7 @@ export type ChartConfig<ChartData extends ChartDataBase> = {
   getSortFn: (
     sortOrder: SortOrder
   ) => (itemA: ChartData, itemB: ChartData) => number
+  onChartItemClick: (chartItem: ChartData) => void
   rootElId: string
 }
 
@@ -271,10 +269,7 @@ export class Timeline<ChartData extends ChartDataBase> {
       this.dataContent.chartItems,
       this.chartConfig.getItemLimitLeft
     )
-    this.dataContent.maxDate = maxD3(
-      this.dataContent.chartItems,
-      this.chartConfig.getItemLimitRight
-    )
+    this.dataContent.maxDate = new Date()
 
     return this
   }
@@ -345,13 +340,14 @@ export class Timeline<ChartData extends ChartDataBase> {
       .append("g")
       .attr("id", band.id)
       .attr("transform", `translate(0,${band.y})`)
+
     band.g
       .append("rect")
       .attr("class", styles.band)
       .attr("width", band.w)
       .attr("height", band.h)
 
-    const timeBandElements = band.g
+    const bandElements = band.g
       .selectAll("g")
       .data<ChartData>(this.dataContent.chartItems!)
       .enter()
@@ -365,14 +361,20 @@ export class Timeline<ChartData extends ChartDataBase> {
           `part ${chartItem.instant ? styles.instant : styles.interval}`
       )
 
-    const intervals = select(`#band${this.bandNum}`).selectAll(
-      `.${styles.interval}`
-    )
+    const intervals = select(`#band${this.bandNum}`).selectAll<
+      BaseType,
+      ChartData
+    >(`.${styles.interval}`)
+
+    const instants = select(`#band${this.bandNum}`).selectAll<
+      BaseType,
+      ChartData
+    >(`.${styles.instant}`)
 
     intervals
       .append("rect")
-      .attr("height", "80%")
-      .attr("width", "80%")
+      .attr("height", "100%")
+      .attr("width", "100%")
       .attr("x", "1px")
       .attr("y", ".5px")
       .style("filter", "url(#drop-shadow-intervals)")
@@ -383,31 +385,33 @@ export class Timeline<ChartData extends ChartDataBase> {
       .attr("x", 3)
       .attr("y", 9.5)
 
-    const instants = select(`#band${this.bandNum}`).selectAll(
-      `.${styles.instant}`
-    )
-
     instants
       .append("circle")
       .attr("cx", band.itemHeight / 2)
       .attr("cy", band.itemHeight / 2)
       .attr("r", 5)
+
     instants
       .append("text")
       .attr("class", styles.instantLabel)
       .attr("x", 15)
       .attr("y", 10)
 
-    band.addActions = (actions: Action[]) => {
-      actions.forEach((action) => timeBandElements.on(action[0], action[1]))
-    }
+    const itemsSelections = [intervals, instants]
+
+    itemsSelections.forEach((selection) => {
+      selection.on("click", (...[, chartItem]) =>
+        this.chartConfig.onChartItemClick(chartItem)
+      )
+      selection.style("cursor", "pointer")
+    })
 
     const {
       chartConfig: { getItemLimitLeft, getItemLimitRight },
     } = this
 
     band.redraw = () => {
-      timeBandElements
+      bandElements
         .attr("x", (chartItem: ChartData) =>
           band.xScale!(getItemLimitLeft(chartItem))
         )
@@ -528,44 +532,47 @@ export class Timeline<ChartData extends ChartDataBase> {
   }
 
   public addBrush({
-    bandName,
-    targetNames,
+    brushBandName,
+    targetBandName,
   }: {
-    bandName: string
-    targetNames: string[]
+    brushBandName: string
+    targetBandName: string
   }) {
     const {
-      bands: { [bandName]: band },
+      bands: { [brushBandName]: brushBand },
     } = this
     const brush = brushX()
 
+    const {
+      dataContent: { maxDate, minDate },
+    } = this
+    const totalRange = [minDate!.getTime(), maxDate!.getTime()]
+
     const selectionScale = scaleTime<number, Date>()
-      .domain([0, 1000])
-      .range([
-        this.dataContent.minDate!.getTime(),
-        this.dataContent.maxDate!.getTime(),
-      ])
+      .domain([0, this.width])
+      .range(totalRange)
 
     brush.on("brush", (brushEvent) => {
-      let newDomain = band.xScale.domain()
+      let newDomain = brushBand.xScale.domain()
 
       if (brushEvent.selection) {
+        const {
+          selection: [selectionStart, selectionEnd],
+        } = brushEvent
+
         newDomain = [
-          selectionScale(brushEvent.selection[0]),
-          selectionScale(brushEvent.selection[1]),
+          selectionScale(Math.max(0, selectionStart)),
+          selectionScale(Math.min(this.width, selectionEnd)),
         ]
       }
 
       selectAll(`.${styles.interval} rect`).style("filter", "none")
 
-      targetNames.forEach((targetName) => {
-        this.bands[targetName].xScale.domain(newDomain)
-
-        this.bands[targetName].redraw!()
-      })
+      this.bands[targetBandName].xScale.domain(newDomain)
+      this.bands[targetBandName].redraw!()
     })
 
-    const xBrush = band.g
+    const xBrush = brushBand.g
       .append("svg")
       .attr("class", `x`)
       .call(brush as any) // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -573,7 +580,7 @@ export class Timeline<ChartData extends ChartDataBase> {
     xBrush
       .selectAll("rect")
       .attr("y", 1)
-      .attr("height", band.h - 1)
+      .attr("height", brushBand.h - 1)
 
     return this
   }

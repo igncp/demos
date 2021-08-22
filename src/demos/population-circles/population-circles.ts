@@ -15,7 +15,7 @@ const main = async () => {
   const municipalities = await fetchData()
 
   const state = createState()
-  const chartConfig = createChartConfig(municipalities, state)
+  const chartConfig = createChartConfig({ municipalities, state })
 
   const { updateChart } = renderChart<Municipality>(chartConfig)
 
@@ -37,7 +37,7 @@ const main = async () => {
     values: [0, 100], // eslint-disable-line id-denylist
   })
 
-  const max = municipalities[0].values.total.length - 1
+  const max = municipalities[0].metrics.total.length - 1
 
   $(".time-slider").slider({
     change: (...[, { value: timeRangeIndex }]) => {

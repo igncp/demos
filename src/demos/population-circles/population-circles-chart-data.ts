@@ -10,15 +10,15 @@ type PopulationRecord = {
 }
 
 export type Municipality = {
-  name: string
-  values: {
+  metrics: {
     females: PopulationRecord[]
     males: PopulationRecord[]
     total: PopulationRecord[]
   }
+  name: string
 }
 
-type PopulationType = keyof Municipality["values"]
+type PopulationType = keyof Municipality["metrics"]
 
 type State = {
   populationRange: [number, number]
@@ -32,10 +32,24 @@ export const createState = (): State => ({
   timeRangeIndex: 0,
 })
 
-export const fetchData = () =>
-  (json(
+export const fetchData = async () => {
+  type OriginalMunicipality = {
+    [key in keyof Omit<Municipality, "metrics">]: Municipality[key]
+  } & {
+    values: Municipality["metrics"] // eslint-disable-line id-denylist
+  }
+
+  const originalMunicipalities = (await (json(
     `${ROOT_PATH}data/d3js/population-circles/data.json`
-  ) as unknown) as Promise<Municipality[]>
+  ) as unknown)) as OriginalMunicipality[]
+
+  /* eslint-disable id-denylist */
+  return originalMunicipalities.map(({ values, ...otherProps }) => ({
+    ...otherProps,
+    metrics: values,
+  }))
+  /* eslint-enable id-denylist */
+}
 
 const formatPopulation = (populationNum: number) =>
   Number(populationNum.toFixed(0)).toLocaleString(undefined, {
@@ -51,33 +65,36 @@ const typeNouns: Record<string, string> = {
 
 const getYearStr = (dateStr: string) => new Date(dateStr).getFullYear()
 
-export const createChartConfig = (
-  municipalities: Municipality[],
+export const createChartConfig = ({
+  municipalities,
+  state,
+}: {
+  municipalities: Municipality[]
   state: State
-): ChartConfig<Municipality> => {
+}): ChartConfig<Municipality> => {
   type Config = ChartConfig<Municipality>
 
   const colorDomain = municipalities.map((municipality) => municipality.name)
   const getStringForColor = (municipality: Municipality) => municipality.name
 
   const getEmptyItem = (): Municipality => ({
-    name: "",
-    values: {
+    metrics: {
       females: [],
       males: [],
       total: [],
     },
+    name: "",
   })
 
   const getItemMetric: Config["getItemMetric"] = (
     municipality: Municipality
   ) => {
-    if (!(municipality.values as unknown)) {
+    if (!(municipality.metrics as unknown)) {
       return 1
     }
 
     const {
-      values: {
+      metrics: {
         [state.populationType]: { [state.timeRangeIndex]: valueItem },
       },
     } = municipality
@@ -89,7 +106,7 @@ export const createChartConfig = (
     const { populationRange, populationType, timeRangeIndex } = state
     const itemsWithCount = municipalities.filter((municipality) => {
       const {
-        values: {
+        metrics: {
           [populationType]: { [timeRangeIndex]: valueItem },
         },
       } = municipality
@@ -99,7 +116,7 @@ export const createChartConfig = (
 
     const dataValues = itemsWithCount.map((municipality) => {
       const {
-        values: {
+        metrics: {
           [populationType]: { [timeRangeIndex]: dataItem },
         },
       } = municipality
@@ -107,31 +124,34 @@ export const createChartConfig = (
       return dataItem.count
     })
 
-    const valueToIdx = dataValues.reduce((acc, val, idx) => {
-      acc[val] = acc[val] ?? []
-      acc[val]!.push(idx)
+    const valueToIdx = dataValues.reduce((...[acc, valueItem, valueIndex]) => {
+      acc[valueItem] = acc[valueIndex] ?? []
+      acc[valueItem]!.push(valueIndex)
 
       return acc
     }, {} as Record<string, number[] | undefined>)
 
     const sortedDataValues = dataValues.sort(
-      (municipalityAValue, municipalityBValue) =>
+      (...[municipalityAValue, municipalityBValue]) =>
         municipalityAValue - municipalityBValue
     )
 
-    const percentiles = sortedDataValues.reduce((acc, val, idx) => {
-      const percentile = idx / sortedDataValues.length
-      const { [val]: unsortedIndexes } = valueToIdx
+    const percentiles = sortedDataValues.reduce(
+      (...[percentilesAcc, valueItem, valueIndex]) => {
+        const percentile = valueIndex / sortedDataValues.length
+        const { [valueItem]: unsortedIndexes } = valueToIdx
 
-      unsortedIndexes!.forEach((idx2: number) => {
-        acc[idx2] = percentile
-      })
+        unsortedIndexes!.forEach((unsortedValueIndex: number) => {
+          percentilesAcc[unsortedValueIndex] = percentile
+        })
 
-      return acc
-    }, [] as number[])
+        return percentilesAcc
+      },
+      [] as number[]
+    )
 
-    const filteredData = itemsWithCount.filter((_municipality, idx) => {
-      const { [idx]: percentile } = percentiles
+    return itemsWithCount.filter((...[, percentileIndex]) => {
+      const { [percentileIndex]: percentile } = percentiles
 
       return (
         typeof percentile === "number" &&
@@ -139,13 +159,11 @@ export const createChartConfig = (
         percentile <= populationRange[1]
       )
     })
-
-    return filteredData
   }
 
   const getHeaderText: Config["getHeaderText"] = ({ chartItems }) => {
     const {
-      values: {
+      metrics: {
         [state.populationType]: {
           [state.timeRangeIndex]: { date },
         },
@@ -155,9 +173,9 @@ export const createChartConfig = (
     const year = getYearStr(date)
 
     const populationTotal = chartItems.reduce(
-      (acc, circleData) =>
+      (...[acc, circleData]) =>
         acc +
-        circleData.values[state.populationType][state.timeRangeIndex].count,
+        circleData.metrics[state.populationType][state.timeRangeIndex].count,
       0
     )
 
@@ -167,7 +185,7 @@ export const createChartConfig = (
 
     const { length: totalNum } = chartItems.filter(
       (chartItem) =>
-        chartItem.values[state.populationType].length >=
+        chartItem.metrics[state.populationType].length >=
         state.timeRangeIndex + 1
     )
 
@@ -186,7 +204,7 @@ export const createChartConfig = (
 
   const getItemTitle: Config["getItemTitle"] = ({ circleData }) => {
     const {
-      values: {
+      metrics: {
         [state.populationType]: { [state.timeRangeIndex]: valueItem },
       },
     } = circleData

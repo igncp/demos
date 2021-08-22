@@ -29,7 +29,12 @@ const raphael: Raphael = {
   },
   "moving-line": {
     dataFiles: ["data.json"],
-    docs: [],
+    docs: [
+      [
+        "SVG Line Commands",
+        "https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#line_commands",
+      ],
+    ],
     isCompleted: true,
     name: "Moving Line",
     notes: [

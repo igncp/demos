@@ -1,4 +1,6 @@
 /* global d3 */
+
+/* eslint-disable id-denylist */
 import { rgb, select } from "d3"
 
 const colors = () => "#fff"
@@ -467,3 +469,4 @@ const main = () => {
 }
 
 export default main
+/* eslint-enable id-denylist */
