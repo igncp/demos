@@ -25,12 +25,17 @@ const strokeWidth = 0.4
 
 type SVG = Selection<BaseType, unknown, HTMLElement, unknown>
 
-const addDropShadowFilter = function (
-  id: number,
-  svg: SVG,
-  deviation: number,
+const addDropShadowFilter = ({
+  deviation,
+  id,
+  slope,
+  svg,
+}: {
+  deviation: number
+  id: number
   slope: number
-) {
+  svg: SVG
+}) => {
   const defs = svg.append("defs")
   const filter = defs.append("filter").attr("id", `drop-shadow-${id}`)
 
@@ -57,7 +62,7 @@ export type AreasData = Topology<Objects<GeoJsonProperties>>
 
 export type ChartConfig<Properties> = {
   areasData: AreasData
-  getTitleText: (p: Properties) => string
+  getTitleText: (o: Properties) => string
   getWidths: (chartWidth: number) => number[]
   projectionsCenters: Array<[number, number]>
   rootElId: string
@@ -80,16 +85,19 @@ export const renderChart = <Properties>(
   const {
     objects: { data1: dataRoot },
   } = areasData
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { features: dataGeo } = feature(areasData, dataRoot) as any
 
   const dataGeoParsed = dataGeo.map(
-    (areaData: DataShape, areaIndex: number) => ({
+    (...[areaData, areaIndex]: [DataShape, number]) => ({
       ...areaData,
       areaIndex,
     })
   )
 
   const colorScale = scaleLinear()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .domain([0, (dataRoot as any).geometries.length])
     .range([0, 1])
   const colorScaleConversion = scaleLinear<string>()
@@ -121,11 +129,15 @@ export const renderChart = <Properties>(
 
   const regionClass = `region-${uuidv1().slice(0, 6)}`
 
-  const generateAreas = (
-    svgComp: SVG,
-    path: GeoPath<SVGPathElement>,
+  const generateAreas = ({
+    filterId,
+    path,
+    svgComp,
+  }: {
     filterId: number
-  ) => {
+    path: GeoPath<SVGPathElement>
+    svgComp: SVG
+  }) => {
     svgComp
       .selectAll(".area")
       .data<DataShape>(dataGeoParsed)
@@ -154,7 +166,9 @@ export const renderChart = <Properties>(
 
   const widths = chartConfig.getWidths(chartWidth)
 
-  const generateProjection = (center: [number, number], centerIndex: number) =>
+  const generateProjection = (
+    ...[center, centerIndex]: [[number, number], number]
+  ) =>
     geoMercator()
       .center(center)
       .scale(2650)
@@ -162,15 +176,24 @@ export const renderChart = <Properties>(
 
   const svgs = widths.map(generateSvg)
 
-  svgs.forEach((svgItem, idx) => {
-    addDropShadowFilter(idx + 1, svgItem, 2, 0.3)
+  svgs.forEach((...[svgItem, svgItemIndex]) => {
+    addDropShadowFilter({
+      deviation: 2,
+      id: svgItemIndex + 1,
+      slope: 0.3,
+      svg: svgItem,
+    })
   })
 
   const projections = chartConfig.projectionsCenters.map(generateProjection)
   const paths = projections.map(generatePath)
 
-  svgs.forEach((svgItem, svgIndex) => {
-    generateAreas(svgItem, paths[svgIndex], svgIndex + 1)
+  svgs.forEach((...[svgItem, svgItemIndex]) => {
+    generateAreas({
+      filterId: svgItemIndex + 1,
+      path: paths[svgItemIndex],
+      svgComp: svgItem,
+    })
   })
 
   $(`.${regionClass}`).tooltip({

@@ -52,8 +52,8 @@ const FilesDetails = ({ demoInfo }: Props) => {
             <strong>Notes:</strong>
           </p>
           <ul>
-            {demoInfo.notes.map((note, idx) => (
-              <li dangerouslySetInnerHTML={{ __html: note }} key={idx} />
+            {demoInfo.notes.map((...[note, noteIndex]) => (
+              <li dangerouslySetInnerHTML={{ __html: note }} key={noteIndex} />
             ))}
           </ul>
         </div>
@@ -64,8 +64,11 @@ const FilesDetails = ({ demoInfo }: Props) => {
             <strong>Implementation Summary:</strong>
           </p>
           <ul>
-            {demoInfo.summary.map((note, idx) => (
-              <p dangerouslySetInnerHTML={{ __html: note }} key={idx} />
+            {demoInfo.summary.map((...[summaryLine, summaryIndex]) => (
+              <p
+                dangerouslySetInnerHTML={{ __html: summaryLine }}
+                key={summaryIndex}
+              />
             ))}
           </ul>
         </div>
@@ -75,9 +78,9 @@ const FilesDetails = ({ demoInfo }: Props) => {
           <strong>Sources:</strong>
         </p>
         <ul>
-          {demoInfo.sources.map((source, index) => (
-            <li key={index}>
-              <span className="source-number">[{index + 1}]</span>:{" "}
+          {demoInfo.sources.map((...[source, sourceIndex]) => (
+            <li key={sourceIndex}>
+              <span className="source-number">[{sourceIndex + 1}]</span>:{" "}
               <a href={source}>{source}</a>
             </li>
           ))}
@@ -108,14 +111,14 @@ const FilesDetails = ({ demoInfo }: Props) => {
           </ul>
         </div>
       )}
-      {!!demoInfo.data.length && (
+      {!!demoInfo.dataFiles.length && (
         <div className="bs-callout bs-callout-warning" id="data-list">
           <p>
-            <strong>Data: </strong>
-            {demoInfo.data.map((file, index) => (
+            <strong>Data files: </strong>
+            {demoInfo.dataFiles.map((...[file, fileIndex]) => (
               <a
                 href={`${ROOT_PATH}data/${demoInfo.category}/${demoInfo.key}/${file}`}
-                key={index}
+                key={fileIndex}
               >
                 {file}
               </a>

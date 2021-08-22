@@ -47,24 +47,30 @@ const getDemoFiles = (demoName: string) => {
         fileName,
       }))
     )
-    .filter((d) => !!d.content)
+    .filter((file) => !!file.content)
 }
 
-const getPage = (demoName: string, category: string) => ({
+const getPage = ({
+  category,
+  demoName,
+}: {
+  category: Category
+  demoName: string
+}) => ({
   content: readIfExists(`src/pages/${category}/${demoName}.tsx`),
   type: "tsx",
 })
 
 const getDemoInfo = (slugs: string[]) => {
-  const [category, demoName] = slugs
-  const { [category as Category]: categoryData } = categoryToData
+  const [category, demoName] = slugs as [Category, string]
+  const { [category]: categoryData } = categoryToData
 
   if (!(categoryData as unknown) || !demoName) {
     return null
   }
 
   const demoFiles = getDemoFiles(demoName)
-  const page = getPage(demoName, category)
+  const page = getPage({ category, demoName })
 
   type DemoKey = keyof typeof categoryData
 
@@ -85,23 +91,23 @@ const getDemoInfo = (slugs: string[]) => {
 const d3jsDemosSummaries: DemoSummary[] = []
 const raphaelDemosSummaries: DemoSummary[] = []
 
-for (const item in d3Data) {
+for (const d3DemoName in d3Data) {
   const demoSummary: DemoSummary = {
-    ...d3Data[item as keyof typeof d3Data],
+    ...d3Data[d3DemoName as keyof typeof d3Data],
     category: "d3js",
-    key: item,
-    route: `${ROOT_PATH}d3js/${item}`,
+    key: d3DemoName,
+    route: `${ROOT_PATH}d3js/${d3DemoName}`,
   }
 
   d3jsDemosSummaries.push(demoSummary)
 }
 
-for (const item in raphaelData) {
+for (const raphaelDemoName in raphaelData) {
   const demoSummary = {
-    ...raphaelData[item as keyof typeof raphaelData],
+    ...raphaelData[raphaelDemoName as keyof typeof raphaelData],
     category: "raphael",
-    key: item,
-    route: `${ROOT_PATH}raphael/${item}`,
+    key: raphaelDemoName,
+    route: `${ROOT_PATH}raphael/${raphaelDemoName}`,
   }
 
   raphaelDemosSummaries.push(demoSummary)
@@ -109,12 +115,12 @@ for (const item in raphaelData) {
 
 const demosSummaries = d3jsDemosSummaries
   .concat(raphaelDemosSummaries)
-  .sort((a, b) => {
-    if (a.name === b.name) {
+  .sort((...[demoSummaryA, demoSummaryB]) => {
+    if (demoSummaryA.name === demoSummaryB.name) {
       return 0
     }
 
-    return a.name < b.name ? -1 : 1
+    return demoSummaryA.name < demoSummaryB.name ? -1 : 1
   })
 
 const onCreatePage: GatsbyNode["onCreatePage"] = ({ actions, page }) => {

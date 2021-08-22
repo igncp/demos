@@ -48,7 +48,7 @@ type Props = {
 
 const ROOT_ID = "example"
 
-const fontsMap: { [key in FontName]: { [key2 in FontWeight]: any } } = {
+const fontsMap: { [key in FontName]: { [key2 in FontWeight]: unknown } } = {
   [FontName.DroidSans]: {
     [FontWeight.Regular]: require("three/examples/fonts/droid/droid_sans_regular.typeface.json"),
     [FontWeight.Bold]: require("three/examples/fonts/droid/droid_sans_bold.typeface.json"),
@@ -109,10 +109,12 @@ const materials = [
   new MeshPhongMaterial({ color: 0xffffff }), // side
 ]
 
-const main = (
-  props: Props,
+type CreateDemo = (o: {
   previousSimulation: Simulation | null
-): Simulation => {
+  props: Props
+}) => Simulation
+
+const createDemo: CreateDemo = ({ previousSimulation, props }) => {
   const container = document.getElementById(ROOT_ID) as HTMLElement
   const { width } = container.getBoundingClientRect()
   const halfWidth = width / 2
@@ -155,20 +157,20 @@ const main = (
     isStopped: false,
   }
 
-  const onPointerMove = (event: PointerEvent) => {
-    if (!event.isPrimary) {
+  const onPointerMove = (pointerEvent: PointerEvent) => {
+    if (!pointerEvent.isPrimary) {
       return
     }
 
-    state.pointerX = event.clientX - halfWidth
+    state.pointerX = pointerEvent.clientX - halfWidth
 
     state.targetRotation =
       state.targetRotationOnPointerDown +
       (state.pointerX - state.pointerXOnPointerDown) * 0.02
   }
 
-  const onPointerUp = (event: PointerEvent) => {
-    if (!event.isPrimary) {
+  const onPointerUp = (pointerEvent: PointerEvent) => {
+    if (!pointerEvent.isPrimary) {
       return
     }
 
@@ -176,12 +178,12 @@ const main = (
     document.removeEventListener("pointerup", onPointerUp)
   }
 
-  const onPointerDown = (event: PointerEvent) => {
-    if (!event.isPrimary) {
+  const onPointerDown = (pointerEvent: PointerEvent) => {
+    if (!pointerEvent.isPrimary) {
       return
     }
 
-    state.pointerXOnPointerDown = event.clientX - halfWidth
+    state.pointerXOnPointerDown = pointerEvent.clientX - halfWidth
     state.targetRotationOnPointerDown = state.targetRotation
 
     document.addEventListener("pointermove", onPointerMove)
@@ -342,7 +344,7 @@ const ThreeJSText = (props: Props) => {
   ] = React.useState<Simulation | null>(null)
 
   React.useEffect(() => {
-    const newSimulation = main(props, previousSimulation)
+    const newSimulation = createDemo({ previousSimulation, props })
 
     setPreviousSimulation(newSimulation)
   }, [props])
@@ -372,7 +374,12 @@ const [fontNameArg, fontNameControl] = createSelectControl(
 const [fontWeightArg, fontWeightControl] = createSelectControl(
   Object.values(FontWeight)
 )
-const [sizeArg, sizeControls] = createRangeControl(70, 1, 20, 100)
+const [sizeArg, sizeControls] = createRangeControl({
+  diffMax: 100,
+  diffMin: 20,
+  initialValue: 70,
+  step: 1,
+})
 
 const args: Props = {
   bevelEnabled: true,

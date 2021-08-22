@@ -81,7 +81,7 @@ export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
     .text((label) => label)
     .attr(
       "class",
-      (label, labelIndex) =>
+      (...[label, labelIndex]) =>
         `verticalLabel ${styles.mono} axis${
           chartConfig.getIsVerticalLabelBold(label, labelIndex)
             ? ` ${styles.axisBold}`
@@ -90,7 +90,7 @@ export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
     )
     .attr("transform", `translate(${axisOffset},${cellSize / 1.5})`)
     .attr("x", 0)
-    .attr("y", (_label, labelIndex) => labelIndex * cellSize)
+    .attr("y", (...[, labelIndex]) => labelIndex * cellSize)
     .style("text-anchor", "end")
 
   svg
@@ -101,7 +101,7 @@ export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
     .text((label) => label)
     .attr(
       "class",
-      (label, labelIndex) =>
+      (...[label, labelIndex]) =>
         `horizontalLabel ${styles.mono} axis${
           chartConfig.getIsHorizontalLabelBold(label, labelIndex)
             ? ` ${styles.axisBold}`
@@ -109,7 +109,7 @@ export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
         }`
     )
     .attr("transform", `translate(${cellSize / 2}, ${axisOffset})`)
-    .attr("x", (_label, labelIndex) => labelIndex * cellSize)
+    .attr("x", (...[, labelIndex]) => labelIndex * cellSize)
     .attr("y", 0)
     .style("text-anchor", "middle")
 
@@ -150,11 +150,11 @@ export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
 
   legend
     .append("rect")
-    .attr("x", (_value, valueIndex) => legendElementWidth * valueIndex)
+    .attr("x", (...[, valueIndex]) => legendElementWidth * valueIndex)
     .attr("y", height)
     .attr("width", legendElementWidth)
     .attr("height", cellSize / 2)
-    .style("fill", (_value, valueIndex) => colors[valueIndex])
+    .style("fill", (...[, valueIndex]) => colors[valueIndex])
     .style("stroke", legendStroke)
 
   legend
@@ -164,7 +164,7 @@ export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
     .style("text-anchor", "middle")
     .attr(
       "x",
-      (_value, valueIndex) =>
+      (...[, valueIndex]) =>
         legendElementWidth * valueIndex + legendElementWidth / 2
     )
     .attr("y", height + cellSize)

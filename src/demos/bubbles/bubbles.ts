@@ -71,8 +71,8 @@ const margin = {
 }
 
 const fetchData = async () => {
-  const data = await fetch(`${ROOT_PATH}data/d3js/bubbles/data.json`)
-  const jsonData = await data.json()
+  const response = await fetch(`${ROOT_PATH}data/d3js/bubbles/data.json`)
+  const jsonData = await response.json()
 
   return jsonData
 }
@@ -121,7 +121,7 @@ const renderChart: RenderChart = ({ jsonData, rootElId }) => {
   chart.forceY([4.5, 6.5]).forceX([0, 135])
 
   chart.tooltipContent(
-    (_key: unknown, _x: unknown, _y: unknown, obj: { point: ChartDataItem }) =>
+    (...[, , , obj]: [unknown, unknown, unknown, { point: ChartDataItem }]) =>
       `${obj.point.size.toFixed(1)} km - ${obj.point.data.deviceType}`
   )
   chart.xAxis

@@ -15,7 +15,9 @@ const ROOT_ID = "example"
 
 const colors = ["#f35d4f", "#f36849", "#c0d988", "#6ddaf1", "#f1e85b"]
 
-const getRandomInt = (min: number, max: number) =>
+type GetRandomInt = (o: { max: number; min: number }) => number
+
+const getRandomInt: GetRandomInt = ({ max, min }) =>
   Math.floor(Math.random() * (max - min + 1)) + min
 
 type CanvasBoundaries = {
@@ -54,7 +56,7 @@ class Particle {
     this.x = x ?? Math.round(Math.random() * width)
     this.y = y ?? Math.round(Math.random() * height)
     this.radius = Math.random() * radiusBase + 1
-    this.color = colors[getRandomInt(0, colors.length)]
+    this.color = colors[getRandomInt({ max: colors.length, min: 0 })]
     this.vx = Math.random() * speedBase - speedBase / 2
     this.vy = Math.random() * speedBase - speedBase / 2
   }
@@ -76,10 +78,13 @@ class Particle {
     }
   }
 
-  public shouldInteractWithParticle(
-    otherParticle: Particle,
+  public shouldInteractWithParticle({
+    interactionDistance,
+    otherParticle,
+  }: {
     interactionDistance: number
-  ): boolean {
+    otherParticle: Particle
+  }): boolean {
     return (
       this.id !== otherParticle.id &&
       this.color === otherParticle.color &&
@@ -125,10 +130,10 @@ const main = ({
   const ctx = canvasEl.getContext("2d") as CanvasRenderingContext2D
 
   const particles: Particle[] = Array.from({ length: count }).map(
-    (_, idx) =>
+    (...[, id]) =>
       new Particle({
         ...particleArgs,
-        id: idx,
+        id,
       })
   )
 
@@ -144,7 +149,10 @@ const main = ({
 
       particles.forEach((particleB) => {
         if (
-          particleA.shouldInteractWithParticle(particleB, interactionDistance)
+          particleA.shouldInteractWithParticle({
+            interactionDistance,
+            otherParticle: particleB,
+          })
         ) {
           ctx.beginPath()
           ctx.lineWidth = interactionLineWidth
@@ -182,14 +190,14 @@ const main = ({
     })
   }
 
-  canvasEl.addEventListener("click", (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+  canvasEl.addEventListener("click", (clickEvent) => {
+    clickEvent.preventDefault()
+    clickEvent.stopPropagation()
 
     const rect = canvasEl.getBoundingClientRect()
 
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+    const x = clickEvent.clientX - rect.left
+    const y = clickEvent.clientY - rect.top
 
     particles.push(
       new Particle({

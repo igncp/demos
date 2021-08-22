@@ -1,38 +1,48 @@
-import * as d3 from "d3"
+import {
+  drag,
+  forceCenter,
+  forceLink as forceLinkD3,
+  forceManyBody,
+  forceSimulation,
+  json,
+  select,
+} from "d3"
 
 import * as styles from "./force.module.css"
 
 type Node = {
   fx: number | null
   fy: number | null
-  index: number
+  index: number // eslint-disable-line id-denylist
   name: string
   x: number
   y: number
 }
 
-type Data = {
-  links: Array<{
-    index: number
-    name: string
-    source: Node
-    target: Node
-  }>
+type Link = {
+  id: number
+  name: string
+  source: Node
+  target: Node
+}
+
+type ForceData = {
+  links: Link[]
   nodes: Node[]
 }
 
 type CustomDragEvent = DragEvent & { active: boolean }
 
-const fetchData = async (): Promise<Data> => {
+const fetchForceData = async (): Promise<ForceData> => {
   const [nodes, links] = await Promise.all([
-    d3.json(`${ROOT_PATH}data/d3js/force/nodes.json`),
-    d3.json(`${ROOT_PATH}data/d3js/force/links.json`),
+    json(`${ROOT_PATH}data/d3js/force/nodes.json`),
+    json(`${ROOT_PATH}data/d3js/force/links.json`),
   ])
 
   return {
     links,
     nodes,
-  } as Data
+  } as ForceData
 }
 
 const settings = {
@@ -44,10 +54,10 @@ const settings = {
 
 const height = 600
 
-type RenderGraph = (o: { data: Data; rootElId: string }) => void
+type RenderGraph = (o: { forceData: ForceData; rootElId: string }) => void
 
-const renderGraph: RenderGraph = ({ data, rootElId }) => {
-  const { links, nodes } = data
+const renderGraph: RenderGraph = ({ forceData, rootElId }) => {
+  const { links, nodes } = forceData
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
@@ -55,8 +65,7 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
 
   const { width } = rootEl.getBoundingClientRect()
 
-  const svg = d3
-    .select(`#${rootElId}`)
+  const svg = select(`#${rootElId}`)
     .append("svg")
     .attr("width", width)
     .attr("height", height)
@@ -68,51 +77,50 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
     /* eslint-enable @typescript-eslint/no-use-before-define */
   }
 
-  const simulation = d3
-    .forceSimulation(nodes)
-    .force("charge", d3.forceManyBody().strength(settings.strength))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("link", d3.forceLink().links(links))
+  const simulation = forceSimulation(nodes)
+    .force("charge", forceManyBody().strength(settings.strength))
+    .force("center", forceCenter(width / 2, height / 2))
+    .force("link", forceLinkD3().links(links))
     .on("tick", ticked)
 
-  const dragstarted = (event: CustomDragEvent, d: Node) => {
-    if (!event.active) {
+  const dragstarted = (...[dragEvent, forceNode]: [CustomDragEvent, Node]) => {
+    if (!dragEvent.active) {
       simulation.alphaTarget(0.3).restart()
     }
 
-    d.fx = d.x
-    d.fy = d.y
+    forceNode.fx = forceNode.x
+    forceNode.fy = forceNode.y
   }
 
-  const dragged = (event: CustomDragEvent, d: Node) => {
-    d.fx = event.x
-    d.fy = event.y
+  const dragged = (...[dragEvent, forceNode]: [CustomDragEvent, Node]) => {
+    forceNode.fx = dragEvent.x
+    forceNode.fy = dragEvent.y
   }
 
-  const dragended = (event: CustomDragEvent, d: Node) => {
-    if (!event.active) {
+  const dragended = (...[dragEvent, forceNode]: [CustomDragEvent, Node]) => {
+    if (!dragEvent.active) {
       simulation.alphaTarget(0)
     }
 
-    d.fx = null
-    d.fy = null
+    forceNode.fx = null
+    forceNode.fy = null
   }
 
   const updateLinks = () => {
     const linksEls = svg
-      .selectAll<SVGPathElement, Data["links"]>(`.${styles.linkCurved}`)
+      .selectAll<SVGPathElement, ForceData["links"]>(`.${styles.linkCurved}`)
       .data(links)
 
     linksEls
       .enter()
       .append<SVGPathElement>("path")
       .merge(linksEls)
-      .attr("d", (d) => {
-        const dx = d.target.x - d.source.x
-        const dy = d.target.y - d.source.y
+      .attr("d", (forceLink) => {
+        const dx = forceLink.target.x - forceLink.source.x
+        const dy = forceLink.target.y - forceLink.source.y
         const dr = Math.sqrt(dx * dx + dy * dy) * 1.3
 
-        return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`
+        return `M${forceLink.source.x},${forceLink.source.y}A${dr},${dr} 0 0,1 ${forceLink.target.x},${forceLink.target.y}`
       })
       .attr("class", styles.linkCurved)
 
@@ -121,35 +129,34 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
 
   const updateNodes = () => {
     const nodesEls = svg
-      .selectAll<SVGCircleElement, Data["nodes"]>("circle")
+      .selectAll<SVGCircleElement, ForceData["nodes"]>("circle")
       .data(nodes)
     const textsEls = svg
-      .selectAll<SVGTextElement, Data["nodes"]>("text")
+      .selectAll<SVGTextElement, ForceData["nodes"]>("text")
       .data(nodes)
 
     nodesEls
       .enter()
       .append("circle")
       .merge(nodesEls)
-      .attr("cx", (d) => d.x)
-      .attr("cy", (d) => d.y)
+      .attr("cx", (forceNode) => forceNode.x)
+      .attr("cy", (forceNode) => forceNode.y)
       .attr("r", () => settings.circleRadius)
       .attr("fill", "black")
       .each(function () {
-        d3.select<SVGCircleElement, Data["nodes"][0]>(this)
-          .on("mouseover", (_ev, d) => {
-            d3.select(`#node-text-${d.index}`).style("opacity", 1)
+        select<SVGCircleElement, ForceData["nodes"][0]>(this)
+          .on("mouseover", (...[, forceNode]) => {
+            select(`#node-text-${forceNode.index}`).style("opacity", 1)
           })
-          .on("mouseleave", (_ev, d) => {
-            d3.select(`#node-text-${d.index}`).style(
+          .on("mouseleave", (...[, forceNode]) => {
+            select(`#node-text-${forceNode.index}`).style(
               "opacity",
               settings.defaultTextOpacity
             )
           })
       })
       .call(
-        d3
-          .drag<SVGCircleElement, Data["nodes"][0]>()
+        drag<SVGCircleElement, ForceData["nodes"][0]>()
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended)
@@ -159,11 +166,11 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
       .enter()
       .append("text")
       .merge(textsEls)
-      .text((d) => d.name)
-      .attr("x", (d) => d.x)
-      .attr("y", (d) => d.y)
+      .text((forceNode) => forceNode.name)
+      .attr("x", (forceNode) => forceNode.x)
+      .attr("y", (forceNode) => forceNode.y)
       .attr("dy", () => settings.textDY)
-      .attr("id", (d) => `node-text-${d.index}`)
+      .attr("id", (forceNode) => `node-text-${forceNode.index}`)
       .style("opacity", settings.defaultTextOpacity)
 
     nodesEls.exit().remove()
@@ -177,14 +184,14 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
     .append("svg:path")
     .attr("class", styles.linkCurved)
     .attr("marker-end", "url(#end)")
-    .attr("id", (_d, i) => `link-${i}`)
+    .attr("id", (...[, forceLinkIndex]) => `link-${forceLinkIndex}`)
 }
 
 const main = async () => {
-  const data = await fetchData()
+  const forceData = await fetchForceData()
 
   renderGraph({
-    data,
+    forceData,
     rootElId: "chart",
   })
 }

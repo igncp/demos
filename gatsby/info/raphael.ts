@@ -8,7 +8,7 @@ export type Raphael = {
 
 const raphael: Raphael = {
   "bars-3dimensional": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [],
     isCompleted: true,
     name: "Bars 3D",
@@ -17,7 +17,7 @@ const raphael: Raphael = {
     summary: [],
   },
   "circular-arcs": {
-    data: [],
+    dataFiles: [],
     docs: [],
     isCompleted: true,
     name: "Circular Arcs",
@@ -28,7 +28,7 @@ const raphael: Raphael = {
     summary: [],
   },
   "moving-line": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [],
     isCompleted: true,
     name: "Moving Line",

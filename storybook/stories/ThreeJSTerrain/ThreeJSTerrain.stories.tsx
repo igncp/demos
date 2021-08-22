@@ -43,26 +43,31 @@ type Props = {
 
 const ROOT_ID = "example"
 
-const generateHeight = (
-  width: number,
-  height: number,
+const generateHeight = ({
+  depth,
+  mountainHeight,
+  width,
+}: {
+  depth: number
   mountainHeight: number
-) => {
-  const size = width * height
+  width: number
+}) => {
+  const size = width * depth
   const heightData = new Uint8Array(size)
+
   const perlin = new ImprovedNoise()
   const z = Math.random() * 100
 
   let quality = 1
 
   Array.from({ length: 4 }).forEach(() => {
-    Array.from({ length: size }).forEach((_, arrIdx) => {
-      const x = arrIdx % width
-      const y = Math.floor(arrIdx / width)
+    Array.from({ length: size }).forEach((...[, cellIndex]) => {
+      const x = cellIndex % width
+      const y = Math.floor(cellIndex / width)
 
       const noiseResult = perlin.noise(x / quality, y / quality, z)
 
-      heightData[arrIdx] += Math.abs(noiseResult * quality * mountainHeight)
+      heightData[cellIndex] += Math.abs(noiseResult * quality * mountainHeight)
     })
 
     quality *= 5
@@ -71,12 +76,19 @@ const generateHeight = (
   return heightData
 }
 
-const generateTexture = (
-  heightData: Uint8Array,
-  width: number,
-  height: number,
+type GenerateTexture = (o: {
+  depth: number
+  heightData: Uint8Array
   lightLevel: number
-) => {
+  width: number
+}) => HTMLCanvasElement
+
+const generateTexture: GenerateTexture = ({
+  depth,
+  heightData,
+  lightLevel,
+  width,
+}) => {
   const shadeVector = new Vector3(0, 0, 0)
 
   const sun = new Vector3(1, 1, 1)
@@ -86,12 +98,12 @@ const generateTexture = (
   const canvas = document.createElement("canvas")
 
   canvas.width = width
-  canvas.height = height
+  canvas.height = depth
 
   const context = canvas.getContext("2d") as CanvasRenderingContext2D
 
   context.fillStyle = "#000"
-  context.fillRect(0, 0, width, height)
+  context.fillRect(0, 0, width, depth)
 
   const image = context.getImageData(0, 0, canvas.width, canvas.height)
   const { data: imageData } = image
@@ -123,7 +135,7 @@ const generateTexture = (
   const canvasScaled = document.createElement("canvas")
 
   canvasScaled.width = width * scaleFactor
-  canvasScaled.height = height * scaleFactor
+  canvasScaled.height = depth * scaleFactor
 
   const contextScaled = canvasScaled.getContext(
     "2d"
@@ -142,7 +154,7 @@ const generateTexture = (
   const { data: imageDataScaled } = imageScaled
 
   Array.from({ length: imageDataScaled.length / scaleFactor }).forEach(
-    (_, imageIndexBase: number) => {
+    (...[, imageIndexBase]) => {
       const imageAddition = Math.floor(Math.random() * 5)
       const imageIndex = imageIndexBase * scaleFactor
 
@@ -164,15 +176,23 @@ type Simulation = {
   stop: () => void
 }
 
-const main = (
-  props: Props,
+const createDemo = ({
+  previousSimulation,
+  props,
+}: {
   previousSimulation: Simulation | null
-): Simulation => {
+  props: Props
+}): Simulation => {
   const { lightLevel, mountainHeight, worldDepth, worldWidth } = props
 
   const createTexture = (heightData: Simulation["heightData"]) => {
     const texture = new CanvasTexture(
-      generateTexture(heightData, worldWidth, worldDepth, lightLevel)
+      generateTexture({
+        depth: worldDepth,
+        heightData,
+        lightLevel,
+        width: worldWidth,
+      })
     )
 
     texture.wrapS = ClampToEdgeWrapping
@@ -225,7 +245,11 @@ const main = (
     20000
   )
 
-  const newHeightData = generateHeight(worldWidth, worldDepth, mountainHeight)
+  const newHeightData = generateHeight({
+    depth: worldDepth,
+    mountainHeight,
+    width: worldWidth,
+  })
 
   const createMaterial = () =>
     new MeshBasicMaterial({
@@ -354,7 +378,7 @@ const ThreeJSTerrain = (props: Props) => {
   )
 
   React.useEffect(() => {
-    const newSimulation = main(props, previousSimulation)
+    const newSimulation = createDemo({ previousSimulation, props })
 
     setSimulation(newSimulation)
   }, [props])
@@ -385,15 +409,27 @@ const Template = ((props: Props) => (
 
 export const Common = Template.bind({})
 
-const [lightLevelArg, lightLevelControl] = createRangeControl(50, 1, 50)
-const [mountainHeightArg, mountainHeightControl] = createRangeControl(
-  1.75,
-  0.05,
-  1.75,
-  1.25
-)
-const [worldWidthArg, worldWidthControl] = createRangeControl(250, 1, 100)
-const [worldDepthArg, worldDepthControl] = createRangeControl(250, 1, 100)
+const [lightLevelArg, lightLevelControl] = createRangeControl({
+  diffMin: 50,
+  initialValue: 50,
+  step: 1,
+})
+const [mountainHeightArg, mountainHeightControl] = createRangeControl({
+  diffMax: 1.25,
+  diffMin: 1.75,
+  initialValue: 1.75,
+  step: 0.05,
+})
+const [worldWidthArg, worldWidthControl] = createRangeControl({
+  diffMin: 100,
+  initialValue: 250,
+  step: 1,
+})
+const [worldDepthArg, worldDepthControl] = createRangeControl({
+  diffMin: 100,
+  initialValue: 250,
+  step: 1,
+})
 
 const args: Props = {
   lightLevel: lightLevelArg,

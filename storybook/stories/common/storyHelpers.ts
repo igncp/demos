@@ -1,15 +1,20 @@
-export const createRangeControl = (
-  val: number,
-  step: number,
-  diffMin: number,
+export const createRangeControl = ({
+  diffMax,
+  diffMin,
+  initialValue,
+  step,
+}: {
   diffMax?: number
-) =>
+  diffMin: number
+  initialValue: number
+  step: number
+}) =>
   [
-    val,
+    initialValue,
     {
       control: {
-        max: val + (diffMax ?? diffMin),
-        min: val - diffMin,
+        max: initialValue + (diffMax ?? diffMin),
+        min: initialValue - diffMin,
         step,
         type: "range",
       },

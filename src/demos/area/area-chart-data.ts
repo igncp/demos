@@ -14,10 +14,10 @@ export type IncomeItem = IncomeItemBase & {
 export const fetchData = async (): Promise<IncomeItem[]> => {
   const result = (await (csv(
     `${ROOT_PATH}data/d3js/area/data.csv`
-  ) as unknown)) as IncomeItem[]
+  ) as unknown)) as IncomeItemBase[]
 
-  return result.map((p, pointIndex) => ({
-    ...p,
+  return result.map((...[point, pointIndex]) => ({
+    ...point,
     pointIndex,
   }))
 }

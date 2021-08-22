@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 
 import Page404 from "@/components/Page404/Page404"
 

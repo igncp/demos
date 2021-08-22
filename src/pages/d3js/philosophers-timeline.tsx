@@ -4,9 +4,9 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/timeline/timeline"
+import main from "@/demos/philosophers-timeline/philosophers-timeline"
 
-const Timeline = ({ pageContext }: DemoPageProps) => (
+const PhilosophersTimeline = ({ pageContext }: DemoPageProps) => (
   <Demo
     links={["/vendors/jquery-ui/themes/base/jquery-ui.min.css"]}
     main={main}
@@ -17,4 +17,4 @@ const Timeline = ({ pageContext }: DemoPageProps) => (
   </Demo>
 )
 
-export default Timeline
+export default PhilosophersTimeline

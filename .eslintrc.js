@@ -126,6 +126,7 @@ module.exports = {
   plugins: [
     "prettier",
     "sort-destructure-keys",
+    "import",
     "typescript-sort-keys",
     "@typescript-eslint",
   ],
@@ -141,6 +142,9 @@ module.exports = {
     "eqeqeq": 2,
     "eslint-comments/no-unused-disable": isStrict ? 2 : 0,
     "id-denylist": [2, ...(isStrict ? denyList : [])],
+
+    "import/no-namespace": [2, { ignore: ["*.module.css"] }],
+
     "init-declarations": [2, "always"],
     "max-params": isStrict ? [2, 1] : 0,
     "newline-before-return": 2,

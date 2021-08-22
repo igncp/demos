@@ -364,11 +364,11 @@ const Template = ((props: Props) => (
 
 export const Common = Template.bind({})
 
-const [lightPointSpeedArg, lightPointSpeedControls] = createRangeControl(
-  50,
-  1,
-  50
-)
+const [lightPointSpeedArg, lightPointSpeedControls] = createRangeControl({
+  diffMin: 50,
+  initialValue: 50,
+  step: 1,
+})
 
 const args: Props = {
   automaticCamera: false,

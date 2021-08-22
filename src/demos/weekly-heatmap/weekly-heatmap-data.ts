@@ -8,13 +8,23 @@ export type TimeItem = {
   hour: number
 }
 
+type TimeItemOriginal = {
+  day: number
+  hour: number
+  value: number // eslint-disable-line id-denylist
+}
+
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
 
-const hours = Array.from({ length: 24 }).map((_, hourIndex: number) => {
-  const num = hourIndex % 12
+const hours = Array.from({ length: 24 }).map(
+  (...[, hourIndex]: [unknown, number]) => {
+    const normalizedHour = hourIndex % 12
 
-  return `${num + 1} ${hourIndex >= 11 && hourIndex !== 23 ? "pm" : "am"}`
-})
+    return `${normalizedHour + 1} ${
+      hourIndex >= 11 && hourIndex !== 23 ? "pm" : "am"
+    }`
+  }
+)
 
 const workingHourMin = 7
 const workingHourMax = 16
@@ -22,11 +32,11 @@ const workingDayMin = 0
 const workingDayMax = 4
 
 export const fetchData = async (): Promise<TimeItem[]> => {
-  const weeklyTSVData: any = await tsv(
+  const weeklyTSVData = ((await tsv(
     `${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`
-  )
+  )) as unknown) as TimeItemOriginal[]
 
-  return weeklyTSVData.map((timeItem: any) => ({
+  return weeklyTSVData.map((timeItem) => ({
     arbitraryMetric: +timeItem.value,
     day: +timeItem.day,
     hour: +timeItem.hour,
@@ -44,13 +54,11 @@ const getItemHorizontalIndex: Config["getItemHorizontalIndex"] = (timeItem) =>
 const getItemVerticalIndex: Config["getItemVerticalIndex"] = (timeItem) =>
   timeItem.day - 1
 const getIsHorizontalLabelBold: Config["getIsHorizontalLabelBold"] = (
-  _hour,
-  hourIndex
+  ...[, hourIndex]
 ) => hourIndex >= workingHourMin && hourIndex <= workingHourMax
 
 const getIsVerticalLabelBold: Config["getIsVerticalLabelBold"] = (
-  _day,
-  dayIndex
+  ...[, dayIndex]
 ) => dayIndex >= workingDayMin && dayIndex <= workingDayMax
 
 const getLegendText: Config["getLegendText"] = (arbitraryMetric) =>

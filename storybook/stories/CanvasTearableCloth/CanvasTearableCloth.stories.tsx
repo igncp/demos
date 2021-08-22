@@ -25,11 +25,12 @@ const ROOT_ID = "example"
 const pointDelta = 0.016
 const pointDeltaSquare = pointDelta * pointDelta
 
-const loopReversed = <A extends unknown[]>(
-  arr: A,
-  fn: (a: A[0]) => void
+const loopReversed = <ArrayLike extends unknown[]>(
+  itemsList: ArrayLike,
+  fn: (listItem: ArrayLike[0]) => void
+  // eslint-disable-next-line max-params
 ): void => {
-  arr.slice().reverse().forEach(fn)
+  itemsList.slice().reverse().forEach(fn)
 }
 
 type MouseState = {
@@ -58,7 +59,7 @@ class Point<PointConstraint extends IConstraint> {
   private vx: number
   private vy: number
 
-  public constructor(x: number, y: number) {
+  public constructor({ x, y }: { x: number; y: number }) {
     this.x = x
     this.y = y
     this.px = x
@@ -97,7 +98,7 @@ class Point<PointConstraint extends IConstraint> {
       }
     }
 
-    this.addForce(0, gravity)
+    this.addForce({ x: 0, y: gravity })
 
     const newX =
       this.x + (this.x - this.px) * 0.99 + (this.vx / 2) * pointDeltaSquare
@@ -165,17 +166,17 @@ class Point<PointConstraint extends IConstraint> {
     this.constraints.splice(this.constraints.indexOf(constraint), 1)
   }
 
-  public addForce(x: number, y: number) {
+  public addForce({ x, y }: { x: number; y: number }) {
     this.vx += x
     this.vy += y
 
     const round = 400
 
-    this.vx = ~~(this.vx * round) / round
-    this.vy = ~~(this.vy * round) / round
+    this.vx = Math.floor(this.vx * round) / round
+    this.vy = Math.floor(this.vy * round) / round
   }
 
-  public pin(pinX: number, pinY: number) {
+  public pin({ pinX, pinY }: { pinX: number; pinY: number }) {
     this.pinX = pinX
     this.pinY = pinY
   }
@@ -186,11 +187,15 @@ class Constraint {
   private readonly p2: Point<Constraint>
   private readonly length: number
 
-  public constructor(
-    p1: Point<Constraint>,
-    p2: Point<Constraint>,
+  public constructor({
+    p1,
+    p2,
+    spacing,
+  }: {
+    p1: Point<Constraint>
+    p2: Point<Constraint>
     spacing: number
-  ) {
+  }) {
     this.p1 = p1
     this.p2 = p2
     this.length = spacing
@@ -314,29 +319,37 @@ const main = ({
 
       for (let y = 0; y <= clothHeight; y += 1) {
         for (let x = 0; x <= clothWidth; x += 1) {
-          const newPoint = new Point<Constraint>(
-            startX + x * spacing,
-            startY + y * spacing
-          )
+          const newPoint = new Point<Constraint>({
+            x: startX + x * spacing,
+            y: startY + y * spacing,
+          })
 
           if (x !== 0) {
             const {
               points: { [this.points.length - 1]: pointLeft },
             } = this
 
-            const constraint = new Constraint(newPoint, pointLeft, spacing)
+            const constraint = new Constraint({
+              p1: newPoint,
+              p2: pointLeft,
+              spacing,
+            })
 
             newPoint.attach(constraint)
           }
 
           if (y === 0) {
-            newPoint.pin(newPoint.x, newPoint.y)
+            newPoint.pin({ pinX: newPoint.x, pinY: newPoint.y })
           } else {
             const {
               points: { [x + (y - 1) * (clothWidth + 1)]: pointAbove },
             } = this
 
-            const constraint = new Constraint(newPoint, pointAbove, spacing)
+            const constraint = new Constraint({
+              p1: newPoint,
+              p2: pointAbove,
+              spacing,
+            })
 
             newPoint.attach(constraint)
           }
@@ -349,39 +362,39 @@ const main = ({
 
   const cloth = new Cloth()
 
-  canvasEl.onmousedown = (e) => {
-    e.preventDefault()
+  canvasEl.onmousedown = (mouseEvent) => {
+    mouseEvent.preventDefault()
 
-    mouseState.button = e.which
+    mouseState.button = mouseEvent.which
     mouseState.px = mouseState.x
     mouseState.py = mouseState.y
 
     const rect = canvasEl.getBoundingClientRect()
 
-    mouseState.x = e.clientX - rect.left
-    mouseState.y = e.clientY - rect.top
+    mouseState.x = mouseEvent.clientX - rect.left
+    mouseState.y = mouseEvent.clientY - rect.top
     mouseState.down = true
   }
 
-  canvasEl.onmouseup = (e) => {
-    e.preventDefault()
+  canvasEl.onmouseup = (mouseEvent) => {
+    mouseEvent.preventDefault()
     mouseState.down = false
   }
 
-  canvasEl.onmousemove = (e) => {
-    e.preventDefault()
+  canvasEl.onmousemove = (mouseEvent) => {
+    mouseEvent.preventDefault()
 
     mouseState.px = mouseState.x
     mouseState.py = mouseState.y
 
     const rect = canvasEl.getBoundingClientRect()
 
-    mouseState.x = e.clientX - rect.left
-    mouseState.y = e.clientY - rect.top
+    mouseState.x = mouseEvent.clientX - rect.left
+    mouseState.y = mouseEvent.clientY - rect.top
   }
 
-  canvasEl.oncontextmenu = (e) => {
-    e.preventDefault()
+  canvasEl.oncontextmenu = (mouseEvent) => {
+    mouseEvent.preventDefault()
   }
 
   const loop = () => {
@@ -438,8 +451,17 @@ const Template = ((props: Props) => (
 
 export const Common = Template.bind({})
 
-const [clothHeightArgs, clothHeightControls] = createRangeControl(30, 1, 25)
-const [clothWidthArgs, clothWidthControls] = createRangeControl(50, 1, 49, 150)
+const [clothHeightArgs, clothHeightControls] = createRangeControl({
+  diffMin: 25,
+  initialValue: 30,
+  step: 1,
+})
+const [clothWidthArgs, clothWidthControls] = createRangeControl({
+  diffMax: 150,
+  diffMin: 49,
+  initialValue: 50,
+  step: 1,
+})
 
 const args: Props = {
   clothHeight: clothHeightArgs,

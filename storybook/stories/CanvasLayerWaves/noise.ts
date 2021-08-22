@@ -2,6 +2,8 @@
 // https://s3-us-west-2.amazonaws.com/s.cdpn.io/131442/make-noise.js
 // https://codepen.io/MadeByMike/pen/zBrpBL
 
+/* eslint-disable max-params, id-denylist */
+
 const dot = (g: number[], x: number, y: number) => g[0] * x + g[1] * y
 
 const grad3 = [
@@ -94,3 +96,5 @@ export const noise = (xin: number, yin: number) => {
 
   return 70.0 * (n0 + n1 + n2)
 }
+
+/* eslint-enable max-params, id-denylist */

@@ -49,35 +49,35 @@ const d3DelaunayItems = [
 ]
 
 export type D3JS = {
-  area: DemoBase
-  bars: DemoBase
-  bubbles: DemoBase
-  chord: DemoBase
+  "area": DemoBase
+  "bars": DemoBase
+  "bubbles": DemoBase
+  "chord": DemoBase
   "collapsible-tree": DemoBase
   "concentric-circles": DemoBase
   "energy-sankey": DemoBase
   "expenses-chord": DemoBase
   "fish-eye": DemoBase
-  force: DemoBase
-  icosahedron: DemoBase
+  "force": DemoBase
+  "icosahedron": DemoBase
   "map-distorsions": DemoBase
   "mareys-schedule": DemoBase
   "meteorites-map": DemoBase
   "multiline-voronoi": DemoBase
-  partition: DemoBase
-  pie: DemoBase
+  "partition": DemoBase
+  "philosophers-timeline": DemoBase
+  "pie": DemoBase
   "population-circles": DemoBase
   "spain-map": DemoBase
-  timeline: DemoBase
   "trend-line": DemoBase
-  vectors: DemoBase
+  "vectors": DemoBase
   "weekly-heatmap": DemoBase
   "world-map": DemoBase
 }
 
 const d3js: D3JS = {
   "area": {
-    data: ["data.csv"],
+    dataFiles: ["data.csv"],
     docs: [
       ...d3SelectionItems,
       ...d3ShapeItems,
@@ -97,7 +97,7 @@ const d3js: D3JS = {
     ],
   },
   "bars": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [],
     isCompleted: true,
     name: "Bars",
@@ -111,7 +111,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "bubbles": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [],
     isCompleted: true,
     name: "Bubbles",
@@ -124,7 +124,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "chord": {
-    data: ["data.csv"],
+    dataFiles: ["data.csv"],
     docs: [],
     isCompleted: true,
     name: "Chord",
@@ -136,7 +136,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "collapsible-tree": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [],
     isCompleted: true,
     name: "Collapsible Tree",
@@ -148,7 +148,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "concentric-circles": {
-    data: [],
+    dataFiles: [],
     docs: [],
     isCompleted: true,
     name: "Concentric Circles",
@@ -165,7 +165,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "energy-sankey": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [
       ...d3SankeyItems,
       mixBlendModeCSS,
@@ -188,7 +188,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "expenses-chord": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [] as DemoBase["docs"],
     isCompleted: false,
     name: "Expenses Chord",
@@ -204,7 +204,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "fish-eye": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [],
     isCompleted: true,
     name: "Fish Eye",
@@ -218,7 +218,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "force": {
-    data: ["links.json", "nodes.json"],
+    dataFiles: ["links.json", "nodes.json"],
     docs: [],
     isCompleted: true,
     name: "Force",
@@ -227,7 +227,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "icosahedron": {
-    data: [],
+    dataFiles: [],
     docs: [],
     isCompleted: true,
     name: "Icosahedron",
@@ -240,7 +240,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "map-distorsions": {
-    data: ["data.tsv"],
+    dataFiles: ["data.tsv"],
     docs: [
       ...d3ShapeItems,
       ...d3AxisItems,
@@ -262,7 +262,7 @@ const d3js: D3JS = {
     ],
   },
   "mareys-schedule": {
-    data: ["data.tsv"],
+    dataFiles: ["data.tsv"],
     docs: [],
     isCompleted: true,
     name: "Marey's Schedule",
@@ -275,7 +275,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "meteorites-map": {
-    data: ["meteorites.json", "world_countries.json"],
+    dataFiles: ["meteorites.json", "world_countries.json"],
     docs: [...animeItems, ...d3ZoomItems] as DemoBase["docs"],
     isCompleted: true,
     name: "Meteorites Map",
@@ -290,7 +290,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "multiline-voronoi": {
-    data: ["data.tsv"],
+    dataFiles: ["data.tsv"],
     docs: [
       ...d3AxisItems,
       ...d3ShapeItems,
@@ -311,7 +311,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "partition": {
-    data: ["flare.json"],
+    dataFiles: ["flare.json"],
     docs: [
       ...d3EaseItems,
       ...d3FetchItems,
@@ -334,8 +334,21 @@ const d3js: D3JS = {
       "The chart displays the common flow for updating elements bound to data. Removing exited elements, adding new elements and applying the tween function to the selection.",
     ],
   },
+  "philosophers-timeline": {
+    dataFiles: ["data.csv"],
+    docs: [],
+    isCompleted: true,
+    name: "Philosophers Timeline",
+    notes: [
+      "Change to bootstrap tooltip",
+      "Add dynamic text lengths (adding two dots)",
+      "Improve performance (a lot) removing the drop-shadow while brushing",
+    ],
+    sources: ["http://bl.ocks.org/rengel-de/5603464"],
+    summary: [],
+  },
   "pie": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [],
     isCompleted: true,
     name: "Pie",
@@ -346,7 +359,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "population-circles": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [
       ...d3ScaleItems,
       ...d3HierarchyItems,
@@ -374,7 +387,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "spain-map": {
-    data: ["data.json"],
+    dataFiles: ["data.json"],
     docs: [],
     isCompleted: true,
     name: "Spanish Map",
@@ -385,21 +398,8 @@ const d3js: D3JS = {
     sources: ["http://www.diva-gis.org/datadown"],
     summary: [],
   },
-  "timeline": {
-    data: ["data.csv"],
-    docs: [],
-    isCompleted: true,
-    name: "Timeline",
-    notes: [
-      "Change to bootstrap tooltip",
-      "Add dynamic text lengths (adding two dots)",
-      "Improve performance (a lot) removing the drop-shadow while brushing",
-    ],
-    sources: ["http://bl.ocks.org/rengel-de/5603464"],
-    summary: [],
-  },
   "trend-line": {
-    data: ["data.tsv"],
+    dataFiles: ["data.tsv"],
     docs: [],
     isCompleted: true,
     name: "Trend line",
@@ -411,7 +411,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "vectors": {
-    data: [],
+    dataFiles: [],
     docs: [
       [
         "d3-force API reference",
@@ -428,7 +428,7 @@ const d3js: D3JS = {
     summary: [],
   },
   "weekly-heatmap": {
-    data: ["data.tsv"],
+    dataFiles: ["data.tsv"],
     docs: [...d3SelectionItems, ...d3ScaleItems, ...d3FetchItems],
     isCompleted: true,
     name: "Weekly Heatmap",
@@ -439,7 +439,7 @@ const d3js: D3JS = {
     ],
   },
   "world-map": {
-    data: ["world.json"],
+    dataFiles: ["world.json"],
     docs: [],
     isCompleted: true,
     name: "World Map",

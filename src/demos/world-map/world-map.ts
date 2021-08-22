@@ -17,7 +17,9 @@ const fetchData = () => json(`${ROOT_PATH}data/d3js/world-map/world.json`)
 
 const transitionDuration = 1500
 
-type RenderChart = (o: { rootElId: string; world: any }) => void
+type WorldData = any // eslint-disable-line @typescript-eslint/no-explicit-any
+
+type RenderChart = (o: { rootElId: string; world: WorldData }) => void
 
 const renderChart: RenderChart = ({ rootElId, world }) => {
   const state: {
@@ -29,12 +31,12 @@ const renderChart: RenderChart = ({ rootElId, world }) => {
   const { features: featuresData } = feature(
     world,
     world.objects.countries
-  ) as any
+  ) as any // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const colorScale = scaleLinear()
     .domain([0, featuresData.length - 1])
     .range([0, 1])
-  const colorFn = (_: CountryData, countryIndex: number) =>
+  const colorFn = (...[, countryIndex]: [unknown, number]) =>
     interpolateRdYlGn(colorScale(countryIndex))
 
   const { width } = (document.getElementById(
@@ -42,7 +44,7 @@ const renderChart: RenderChart = ({ rootElId, world }) => {
   ) as HTMLElement).getBoundingClientRect()
   const height = 500
 
-  const setZoom = (_zoomEvent: unknown, countryData: CountryData) => {
+  const setZoom = (...[, countryData]: [unknown, CountryData]) => {
     if (!(countryData as unknown) || state.lastZoomId === countryData.id) {
       state.lastZoomId = null
 
@@ -85,7 +87,7 @@ const renderChart: RenderChart = ({ rootElId, world }) => {
     .attr("class", "background")
     .attr("height", height)
     .attr("width", width)
-    .on("click", setZoom as any)
+    .on("click", setZoom as any) // eslint-disable-line @typescript-eslint/no-explicit-any
     .style("fill", "#daedff")
 
   const content = svg.append("g")

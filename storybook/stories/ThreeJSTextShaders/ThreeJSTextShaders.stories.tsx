@@ -47,11 +47,13 @@ const ROOT_ID = "example"
 const FRAGMENT_SHADER_ID = "fragmentshader"
 const VERTEX_SHADER_ID = "vertexshader"
 
+/* eslint-disable id-denylist */
 type Uniforms = {
   amplitude: { value: number }
   color: { value: Color }
   opacity: { value: number }
 }
+/* eslint-enable id-denylist */
 
 type SimulationEls = {
   camera: PerspectiveCamera
@@ -74,15 +76,21 @@ type State = {
 }
 
 type Simulation = {
-  els: SimulationEls
   props: Props
+  simulationElements: SimulationEls
   state: State
   stop: () => void
 }
 
 const font = new Font(FontData)
 
-const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
+const createDemo = ({
+  prevSimulation,
+  props,
+}: {
+  prevSimulation: Simulation | null
+  props: Props
+}): Simulation => {
   const { text } = props
 
   const container = document.getElementById(ROOT_ID) as HTMLElement
@@ -95,12 +103,14 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
     isStopped: false,
   }
 
-  const els = ((): SimulationEls => {
+  const simulationElements = ((): SimulationEls => {
+    /* eslint-disable id-denylist */
     const uniforms: Uniforms = {
       amplitude: { value: 5.0 },
       color: { value: new Color(0xffffff) },
       opacity: { value: 0.3 },
     }
+    /* eslint-enable id-denylist */
 
     const shaderMaterial = new ShaderMaterial({
       blending: blendingMap[props.blending],
@@ -133,11 +143,11 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
     }
 
     if (prevSimulation) {
-      prevSimulation.els.scene.clear()
-      prevSimulation.els.scene.add(line)
+      prevSimulation.simulationElements.scene.clear()
+      prevSimulation.simulationElements.scene.add(line)
 
       return {
-        ...prevSimulation.els,
+        ...prevSimulation.simulationElements,
         ...alwaysNewEls,
       }
     }
@@ -151,15 +161,22 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
   })()
 
   const createSimulation = () => ({
-    els,
     props,
+    simulationElements,
     state,
     stop: () => {
       state.isStopped = true
     },
   })
 
-  const { camera, line, renderer, scene, textGeometry, uniforms } = els
+  const {
+    camera,
+    line,
+    renderer,
+    scene,
+    textGeometry,
+    uniforms,
+  } = simulationElements
 
   const setupNewSimulation = () => {
     camera.position.z = 400
@@ -193,9 +210,9 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
 
     const { count: customColorCount } = customColor
 
-    Array.from({ length: customColorCount }).forEach((_, index) => {
-      color.setHSL(index / customColorCount, 0.5, 0.5)
-      color.toArray(customColor.array, index * customColor.itemSize)
+    Array.from({ length: customColorCount }).forEach((...[, colorIndex]) => {
+      color.setHSL(colorIndex / customColorCount, 0.5, 0.5)
+      color.toArray(customColor.array, colorIndex * customColor.itemSize)
     })
 
     textGeometry.setAttribute("customColor", customColor)
@@ -214,7 +231,7 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
 
     line.rotation.y = state.rotationY
 
-    uniforms.amplitude.value = Math.sin(0.5 * state.rotationY)
+    uniforms.amplitude.value = Math.sin(0.5 * state.rotationY) // eslint-disable-line id-denylist
     uniforms.color.value.offsetHSL(0.0005, 0, 0)
 
     const {
@@ -222,10 +239,14 @@ const demo = (props: Props, prevSimulation: Simulation | null): Simulation => {
     } = line
     const displacementArr = lineAttributes.displacement.array as number[]
 
-    for (let i = 0, { length: l } = displacementArr; i < l; i += 3) {
-      displacementArr[i] += 0.3 * (0.5 - Math.random())
-      displacementArr[i + 1] += 0.3 * (0.5 - Math.random())
-      displacementArr[i + 2] += 0.3 * (0.5 - Math.random())
+    for (
+      let displacementIndex = 0;
+      displacementIndex < displacementArr.length;
+      displacementIndex += 3
+    ) {
+      displacementArr[displacementIndex] += 0.3 * (0.5 - Math.random())
+      displacementArr[displacementIndex + 1] += 0.3 * (0.5 - Math.random())
+      displacementArr[displacementIndex + 2] += 0.3 * (0.5 - Math.random())
     }
 
     lineAttributes.displacement.needsUpdate = true
@@ -265,7 +286,7 @@ const ThreeJSTextShaders = (props: Props) => {
   )
 
   React.useEffect(() => {
-    const newSimulation = demo(props, prevSimulation)
+    const newSimulation = createDemo({ prevSimulation, props })
 
     setPrevSimulation(newSimulation)
   }, [props])
@@ -304,7 +325,12 @@ const Template = ((props: Props) => (
 const [blendingArgs, blendingControls] = createSelectControl(
   Object.values(BlendingType)
 )
-const [speedArgs, speedControls] = createRangeControl(0.2, 0.01, 0.2, 0.8)
+const [speedArgs, speedControls] = createRangeControl({
+  diffMax: 0.8,
+  diffMin: 0.2,
+  initialValue: 0.2,
+  step: 0.01,
+})
 
 export const Common = Template.bind({})
 

@@ -1,7 +1,16 @@
 // https://github.com/mrdoob/three.js/blob/dev/examples/jsm/physics/OimoPhysics.js
 import { InstancedMesh, Mesh, Vector3 } from "three"
-// @ts-ignore
-import * as OIMO from "three/examples/jsm/libs/OimoPhysics/index.js"
+import {
+  OBoxGeometry,
+  OSphereGeometry,
+  RigidBody,
+  RigidBodyConfig,
+  RigidBodyType,
+  Shape,
+  ShapeConfig,
+  Vec3,
+  World, // @ts-ignore
+} from "three/examples/jsm/libs/OimoPhysics/index.js"
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type OIMOBody = any
@@ -64,7 +73,7 @@ const compose: Compose = ({
 }
 
 const createOimoPhysics = ({ frameRate = 90 } = {}) => {
-  const world = new OIMO.World(2, new OIMO.Vec3(0, -9.8, 0))
+  const world = new World(2, new Vec3(0, -9.8, 0))
 
   const meshes: MeshLike[] = []
   const meshMap = new WeakMap()
@@ -76,24 +85,23 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
   }) => void
 
   const handleMesh: HandleMesh = ({ mass, mesh, oimoGeometry }) => {
-    const shapeConfig = new OIMO.ShapeConfig()
+    const shapeConfig = new ShapeConfig()
 
     shapeConfig.geometry = oimoGeometry
 
-    const bodyConfig = new OIMO.RigidBodyConfig()
+    const bodyConfig = new RigidBodyConfig()
 
-    bodyConfig.type =
-      mass === 0 ? OIMO.RigidBodyType.STATIC : OIMO.RigidBodyType.DYNAMIC
+    bodyConfig.type = mass === 0 ? RigidBodyType.STATIC : RigidBodyType.DYNAMIC
 
-    bodyConfig.position = new OIMO.Vec3(
+    bodyConfig.position = new Vec3(
       mesh.position.x,
       mesh.position.y,
       mesh.position.z
     )
 
-    const body = new OIMO.RigidBody(bodyConfig)
+    const body = new RigidBody(bodyConfig)
 
-    body.addShape(new OIMO.Shape(shapeConfig))
+    body.addShape(new Shape(shapeConfig))
     world.addRigidBody(body)
 
     if (mass > 0) {
@@ -123,23 +131,23 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
       const [, meshItemIndex] = forEachArgs
       const arrayIndex = meshItemIndex * 16
 
-      const shapeConfig = new OIMO.ShapeConfig()
+      const shapeConfig = new ShapeConfig()
 
       shapeConfig.geometry = oimoGeometry
 
-      const bodyConfig = new OIMO.RigidBodyConfig()
+      const bodyConfig = new RigidBodyConfig()
 
       bodyConfig.type =
-        mass === 0 ? OIMO.RigidBodyType.STATIC : OIMO.RigidBodyType.DYNAMIC
-      bodyConfig.position = new OIMO.Vec3(
+        mass === 0 ? RigidBodyType.STATIC : RigidBodyType.DYNAMIC
+      bodyConfig.position = new Vec3(
         matrixArray[arrayIndex + 12],
         matrixArray[arrayIndex + 13],
         matrixArray[arrayIndex + 14]
       )
 
-      const body = new OIMO.RigidBody(bodyConfig)
+      const body = new RigidBody(bodyConfig)
 
-      body.addShape(new OIMO.Shape(shapeConfig))
+      body.addShape(new Shape(shapeConfig))
       world.addRigidBody(body)
 
       bodies.push(body)
@@ -159,12 +167,12 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
       const sy = parameters.height !== undefined ? parameters.height / 2 : 0.5
       const sz = parameters.depth !== undefined ? parameters.depth / 2 : 0.5
 
-      return new OIMO.OBoxGeometry(new OIMO.Vec3(sx, sy, sz))
+      return new OBoxGeometry(new Vec3(sx, sy, sz))
     }
 
     const radius = parameters.radius !== undefined ? parameters.radius : 1
 
-    return new OIMO.OSphereGeometry(radius)
+    return new OSphereGeometry(radius)
   }
 
   type AddMesh = (o: { mass?: number; mesh: MeshLike }) => void
@@ -196,11 +204,11 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
       const bodies = meshMap.get(mesh)
       const { [bodyIndex]: body } = bodies
 
-      body.setPosition(new OIMO.Vec3(position.x, position.y, position.z))
+      body.setPosition(new Vec3(position.x, position.y, position.z))
     } else if ("isMesh" in mesh) {
       const body = meshMap.get(mesh)
 
-      body.setPosition(new OIMO.Vec3(position.x, position.y, position.z))
+      body.setPosition(new Vec3(position.x, position.y, position.z))
     }
   }
 

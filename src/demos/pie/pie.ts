@@ -12,17 +12,25 @@ import {
 } from "d3"
 import cloneDeep from "lodash/cloneDeep"
 
-const fetchData = async () => {
-  const pieRawData = await fetch(`${ROOT_PATH}data/d3js/pie/data.json`)
-  const pieJsonData = await pieRawData.json()
-
-  return pieJsonData
+type SliceRaw = {
+  label: string
+  val: number // eslint-disable-line id-denylist
 }
 
 type Slice = {
   arbitraryValue: number
   ea0?: PieArcDatum<Slice>
   label: string
+}
+
+const fetchData = async (): Promise<Slice[]> => {
+  const pieRawData = await fetch(`${ROOT_PATH}data/d3js/pie/data.json`)
+  const pieJsonData = (await pieRawData.json()) as SliceRaw[]
+
+  return pieJsonData.map((sliceData) => ({
+    ...sliceData,
+    arbitraryValue: sliceData.val,
+  }))
 }
 
 type SliceArc = PieArcDatum<Slice>
@@ -136,7 +144,7 @@ class PieChart {
     this.paths = slicesEls
       .append("path")
       .attr("d", arc)
-      .attr("fill", (_slice, sliceIndex) => colorScale(sliceIndex.toString()))
+      .attr("fill", (...[, sliceIndex]) => colorScale(sliceIndex.toString()))
       .each(stashArcs)
 
     this.labels = slicesEls
@@ -149,7 +157,9 @@ class PieChart {
       .style("font", "bold 12px Arial")
       .text((slice) => slice.data.arbitraryValue)
 
-    slicesEls.append("title").text((slice) => slice.data.label)
+    slicesEls
+      .append("title")
+      .text((slice) => `${slice.data.label}: ${slice.data.arbitraryValue}`)
   }
 }
 

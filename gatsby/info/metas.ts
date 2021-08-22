@@ -74,6 +74,10 @@ const metas: Metas = {
       description:
         "Radial treemap example using D3.js, with data from a partition, where labels, mouse events and titles are added.",
     },
+    "philosophers-timeline": {
+      description:
+        "Example of historical timeline using D3.js, where a legend is place to ease the navigation, as well as a more depurated style with tooltips.",
+    },
     "pie": {
       description:
         "Pie chart example using D3.js, with an animated transition and a random change of values to show how to animate between states.",
@@ -84,10 +88,6 @@ const metas: Metas = {
     "spain-map": {
       description:
         "Example of a geographic map using D3.js, where some styles have been added to give it a 3D effect.",
-    },
-    "timeline": {
-      description:
-        "Example of historical timeline using D3.js, where a legend is place to ease the navigation, as well as a more depurated style with tooltips.",
     },
     "trend-line": {
       description: "Example of trend-line using D3.js, with extra animations.",

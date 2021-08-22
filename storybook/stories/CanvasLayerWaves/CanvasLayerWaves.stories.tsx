@@ -60,8 +60,8 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
     const gridHeight = height / rows
     const gridDepth = fov / rows
 
-    Array.from({ length: cols }).forEach((_: unknown, col: number) => {
-      Array.from({ length: rows }).forEach((__: unknown, row: number) => {
+    Array.from({ length: cols }).forEach((...[, col]) => {
+      Array.from({ length: rows }).forEach((...[, row]) => {
         mesh.push([
           {
             x: col * gridWidth,
@@ -101,15 +101,21 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
     })
   }
 
-  const clip = (fragment: number, total: number) => fragment - total / 2
+  type Clip = (o: { fragment: number; total: number }) => number
+
+  const clip: Clip = ({ fragment, total }) => fragment - total / 2
 
   const projectMesh = () => {
     mesh.forEach((triangle) => {
       triangle.forEach((point) => {
         const projectionScale = (zoom * fov) / (fov + point.z)
 
-        point.x = clip(point.x, width) * projectionScale + width / 2
-        point.y = clip(point.y, height) * projectionScale + height / 3
+        point.x =
+          clip({ fragment: point.x, total: width }) * projectionScale +
+          width / 2
+        point.y =
+          clip({ fragment: point.y, total: height }) * projectionScale +
+          height / 3
       })
     })
   }
@@ -215,10 +221,28 @@ const Template = ((props: Props) => (
 
 export const Common = Template.bind({})
 
-const [rowsArgs, rowsControls] = createRangeControl(40, 1, 20)
-const [colsArgs, colsControls] = createRangeControl(40, 1, 20)
-const [zoomArgs, zoomControls] = createRangeControl(1, 0.5, 0.5, 5)
-const [waveHeightArgs, waveHeightControls] = createRangeControl(15, 1, 15, 35)
+const [rowsArgs, rowsControls] = createRangeControl({
+  diffMin: 20,
+  initialValue: 40,
+  step: 1,
+})
+const [colsArgs, colsControls] = createRangeControl({
+  diffMin: 20,
+  initialValue: 40,
+  step: 1,
+})
+const [zoomArgs, zoomControls] = createRangeControl({
+  diffMax: 5,
+  diffMin: 0.5,
+  initialValue: 1,
+  step: 0.5,
+})
+const [waveHeightArgs, waveHeightControls] = createRangeControl({
+  diffMax: 35,
+  diffMin: 15,
+  initialValue: 15,
+  step: 1,
+})
 
 const args: Props = {
   cols: colsArgs,

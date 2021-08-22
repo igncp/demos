@@ -6,7 +6,7 @@ export type Meta = {
 }
 
 export type DemoBase = {
-  data: string[]
+  dataFiles: string[]
   docs: Array<[DocName, DocLink]>
   isCompleted: boolean
   name: string

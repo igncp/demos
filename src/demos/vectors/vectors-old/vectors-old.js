@@ -1,5 +1,5 @@
 /* global d3 */
-import * as d3next from "d3"
+import { rgb, select } from "d3"
 
 const colors = () => "#fff"
 const height = 500
@@ -200,7 +200,7 @@ const renderChart = ({ rootElId }) => {
       .selectAll("circle")
       .style("fill", (d) => {
         if (d === selectedNode) {
-          return d3next.rgb(colors(d.id)).darker().toString()
+          return rgb(colors(d.id)).darker().toString()
         }
 
         return colors(d.id)
@@ -214,26 +214,26 @@ const renderChart = ({ rootElId }) => {
       .attr("r", 12)
       .style("fill", (d) => {
         if (d === selectedNode) {
-          return d3next.rgb(colors(d.id)).brighter().toString()
+          return rgb(colors(d.id)).brighter().toString()
         }
 
         return colors(d.id)
       })
-      .style("stroke", (d) => d3next.rgb(colors(d.id)).darker().toString())
+      .style("stroke", (d) => rgb(colors(d.id)).darker().toString())
       .classed("reflexive", (d) => d.reflexive)
       .on("mouseover", function (d) {
         if (!mousedownNode || d === mousedownNode) {
           return
         }
 
-        d3next.select(this).attr("transform", "scale(1.1)")
+        select(this).attr("transform", "scale(1.1)")
       })
       .on("mouseout", function (d) {
         if (!mousedownNode || d === mousedownNode) {
           return
         }
 
-        d3next.select(this).attr("transform", "")
+        select(this).attr("transform", "")
       })
       .on("mousedown", (d) => {
         if (d3.event.ctrlKey) {
@@ -277,7 +277,7 @@ const renderChart = ({ rootElId }) => {
           return
         }
 
-        d3next.select(this).attr("transform", "")
+        select(this).attr("transform", "")
 
         if (mousedownNode.id < mouseupNode.id) {
           source = mousedownNode
@@ -455,7 +455,7 @@ const renderChart = ({ rootElId }) => {
     .on("mousemove", mousemoveSVG)
     .on("mouseup", mouseupSVG)
 
-  d3next.select(window).on("keydown", keydown).on("keyup", keyup)
+  select(window).on("keydown", keydown).on("keyup", keyup)
 
   restart()
 }

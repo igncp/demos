@@ -18,7 +18,8 @@ type Props = {
 
 const ROOT_ID = "example"
 
-const random = (min: number, max: number) => Math.random() * (max - min) + min
+const random = ({ max, min }: { max: number; min: number }) =>
+  Math.random() * (max - min) + min
 const innerRadius = 300
 
 const main = ({
@@ -65,7 +66,7 @@ const main = ({
     private x: number
     private y: number
 
-    public constructor(x: number, y: number) {
+    public constructor({ x, y }: { x: number; y: number }) {
       const dx = x / scale - center.x / scale
       const dy = y / scale - center.y / scale
 
@@ -76,7 +77,7 @@ const main = ({
       this.lastAngle = this.angle
       this.radius = Math.sqrt(dx * dx + dy * dy)
       this.size = this.radius / innerRadius + 1
-      this.speed = (random(1, 10) / 300000) * this.radius + 0.015
+      this.speed = (random({ max: 10, min: 1 }) / 300000) * this.radius + 0.015
     }
 
     public update() {
@@ -91,12 +92,13 @@ const main = ({
         let radius =
           jitterRadius === 0
             ? this.radius
-            : this.radius + random(-jitterRadius, jitterRadius)
+            : this.radius + random({ max: jitterRadius, min: -jitterRadius })
 
         radius = jitterRadius !== 0 && radius < 0 ? 0.001 : radius
 
         ctx.strokeStyle = `hsla(${[
-          (this.angle + 90) / (Math.PI / 180) + random(-jitterHue, jitterHue),
+          (this.angle + 90) / (Math.PI / 180) +
+            random({ max: jitterHue, min: -jitterHue }),
           "100%",
           "50%",
           orbitalAlpha / 100,
@@ -117,7 +119,8 @@ const main = ({
       if (displayLight) {
         ctx.lineWidth = 0.5
         ctx.strokeStyle = `hsla(${[
-          (this.angle + 90) / (Math.PI / 180) + random(-jitterHue, jitterHue),
+          (this.angle + 90) / (Math.PI / 180) +
+            random({ max: jitterHue, min: -jitterHue }),
           "100%",
           "70%",
           lightAlpha / 100,
@@ -136,38 +139,38 @@ const main = ({
     const x = config?.x ? config.x : 0
     const y = config?.y ? config.y : 0
 
-    orbs.push(new Orb(x, y))
+    orbs.push(new Orb({ x, y }))
   }
 
   let isMouseDown = false
 
-  const createMouseOrb = (e: MouseEvent) => {
+  const createMouseOrb = (mouseEvent: MouseEvent) => {
     const rect = canvasEl.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+    const x = mouseEvent.clientX - rect.left
+    const y = mouseEvent.clientY - rect.top
 
     createOrb({ x, y })
   }
 
-  canvasEl.addEventListener("mouseup", (e: MouseEvent) => {
+  canvasEl.addEventListener("mouseup", (mouseEvent: MouseEvent) => {
     isMouseDown = false
 
-    e.stopPropagation()
-    e.preventDefault()
+    mouseEvent.stopPropagation()
+    mouseEvent.preventDefault()
   })
 
-  canvasEl.addEventListener("mousedown", (e: MouseEvent) => {
+  canvasEl.addEventListener("mousedown", (mouseEvent: MouseEvent) => {
     isMouseDown = true
 
-    createMouseOrb(e)
+    createMouseOrb(mouseEvent)
 
-    e.stopPropagation()
-    e.preventDefault()
+    mouseEvent.stopPropagation()
+    mouseEvent.preventDefault()
   })
 
-  canvasEl.addEventListener("mousemove", (e: MouseEvent) => {
+  canvasEl.addEventListener("mousemove", (mouseEvent: MouseEvent) => {
     if (isMouseDown) {
-      createMouseOrb(e)
+      createMouseOrb(mouseEvent)
     }
   })
 
@@ -175,8 +178,11 @@ const main = ({
 
   while (total) {
     createOrb({
-      x: random(width / 2 - innerRadius, width / 2 + innerRadius),
-      y: random(height / 2 - innerRadius, height / 2 + innerRadius),
+      x: random({ max: width / 2 + innerRadius, min: width / 2 - innerRadius }),
+      y: random({
+        max: height / 2 + innerRadius,
+        min: height / 2 - innerRadius,
+      }),
     })
 
     total -= 1

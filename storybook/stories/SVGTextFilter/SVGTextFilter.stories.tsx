@@ -178,8 +178,17 @@ const Template = ((props: Props) => (
 export const Common = Template.bind({})
 
 const [fontsArgs, fontsControls] = createSelectControl(["sans-serif", "serif"])
-const [fontSizeArgs, fontSizeControls] = createRangeControl(170, 1, 150, 100)
-const [skewArgs, skewControls] = createRangeControl(12, 1, 12)
+const [fontSizeArgs, fontSizeControls] = createRangeControl({
+  diffMax: 100,
+  diffMin: 150,
+  initialValue: 170,
+  step: 1,
+})
+const [skewArgs, skewControls] = createRangeControl({
+  diffMin: 12,
+  initialValue: 12,
+  step: 1,
+})
 
 const args: Props = {
   fontFamily: fontsArgs,

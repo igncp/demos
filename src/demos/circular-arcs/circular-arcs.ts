@@ -16,6 +16,7 @@ type ArcFnOpts = {
   startY: number
 }
 
+// eslint-disable-next-line max-params
 function arcFn(
   this: RaphaelPaper,
   { angle, endX, endY, radius1, radius2, startX, startY }: ArcFnOpts
@@ -38,6 +39,7 @@ type ExtendedRaphael<CircularArc> = RaphaelPaper & {
   circularArc: CircularArc
 }
 
+// eslint-disable-next-line max-params
 function circularArc(
   this: ExtendedRaphael<typeof circularArc>,
   { centerX, centerY, endAngle, radius, startAngle }: CircularArcOpts
@@ -59,10 +61,10 @@ function circularArc(
   })
 }
 
-const addHoverHandlers = function (el: RaphaelPath) {
+const addHoverHandlers = function (arcSelection: RaphaelPath) {
   const widthMultiplier = 2.5
 
-  el.hover(
+  arcSelection.hover(
     function () {
       this.attr("fill-opacity", 0.3)
 

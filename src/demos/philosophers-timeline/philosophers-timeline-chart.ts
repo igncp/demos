@@ -1,34 +1,30 @@
 import {
+  ScaleTime,
   Selection,
   axisBottom,
   brushX,
-  csv,
   max as maxD3,
   min as minD3,
   scaleTime,
   select,
   selectAll,
-  timeParse,
 } from "d3"
 
-import * as styles from "./timeline.module.css"
+import * as styles from "./philosophers-timeline.module.css"
 
-type DataItem = {
-  end: Date
-  instant: boolean
-  label: string
-  start: Date
-  track: number
+export enum SortOrder {
+  Ascending = "ascending",
+  Descending = "descending",
+}
+
+enum TimeOrder {
+  Backward = "backward",
+  Forward = "forward",
 }
 
 type RedrawComp = {
   redraw?: () => void
 }
-
-const fetchData = () =>
-  (csv(`${ROOT_PATH}data/d3js/timeline/data.csv`) as unknown) as Promise<
-    DataItem[]
-  >
 
 const margin = {
   bottom: 0,
@@ -40,7 +36,7 @@ const margin = {
 type Action = [string, () => void]
 
 type Band = RedrawComp & {
-  addActions: (a: Action[]) => void
+  addActions: (actions: Action[]) => void
   g: Selection<SVGGElement, unknown, HTMLElement, unknown>
   h: number
   id: string
@@ -51,40 +47,14 @@ type Band = RedrawComp & {
   trackOffset: number
   w: number
   x: number
-  xScale: any
+  xScale: ScaleTime<number, number, number>
   y: number
-  yScale: any
-  yearsScale: any
+  yScale: (track: number) => number
 }
 
 const outerHeight = 700
 const height = outerHeight - margin.top - margin.bottom
 const bandGap = 25
-
-const parseDate = function (dateString: string) {
-  const format = timeParse("%Y-%m-%d")
-
-  let date = format(dateString)
-
-  if (date !== null) {
-    return date
-  }
-
-  const year = isNaN(Number(dateString))
-    ? -dateString.replace(/[^0-9]/g, "")
-    : +dateString
-
-  if (year < 0 || year > 99) {
-    date = new Date(year, 6, 1)
-  } else if (year === 0) {
-    date = new Date(-1, 6, 1)
-  } else {
-    date = new Date(year, 6, 1)
-    date.setUTCFullYear(year)
-  }
-
-  return date
-}
 
 const toYear = (date: Date) => {
   const bcString = " BC"
@@ -97,12 +67,17 @@ const toYear = (date: Date) => {
   return bcString + Math.abs(year)
 }
 
-const filterBlackOpacity = (
-  id: string,
-  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
-  deviation: number,
+const filterBlackOpacity = ({
+  deviation,
+  id,
+  slope,
+  svg,
+}: {
+  deviation: number
+  id: string
   slope: number
-) => {
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
+}) => {
   const defs = svg.append("defs")
   const filter = defs
     .append("filter")
@@ -131,13 +106,29 @@ const filterBlackOpacity = (
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-class Timeline {
+type ChartDataBase = {
+  instant: boolean
+  track: number
+}
+
+export type ChartConfig<ChartData extends ChartDataBase> = {
+  getItemLimitLeft: (chartItem: ChartData) => Date
+  getItemLimitRight: (chartItem: ChartData) => Date
+  getItemText: (o: { chartItem: ChartData; maxLetters: number }) => string
+  getItemTitle: (chartItem: ChartData) => string
+  getSortFn: (
+    sortOrder: SortOrder
+  ) => (itemA: ChartData, itemB: ChartData) => number
+  rootElId: string
+}
+
+export class Timeline<ChartData extends ChartDataBase> {
   private readonly chart: Selection<SVGGElement, unknown, HTMLElement, unknown>
 
   private bandY: number
   private bandNum: number
   private dataContent: {
-    items?: DataItem[]
+    chartItems?: ChartData[]
     maxDate?: Date
     minDate?: Date
     nTracks?: number
@@ -146,9 +137,12 @@ class Timeline {
   private readonly components: RedrawComp[]
   private bands: { [k: string]: Band }
   private readonly width: number
+  private readonly chartConfig: ChartConfig<ChartData>
 
-  public constructor({ rootElId }: { rootElId: string }) {
-    const rootEl = document.getElementById(rootElId) as HTMLElement
+  public constructor(chartConfig: ChartConfig<ChartData>) {
+    this.chartConfig = chartConfig
+
+    const rootEl = document.getElementById(chartConfig.rootElId) as HTMLElement
 
     rootEl.classList.add(styles.timelineChart)
 
@@ -163,7 +157,7 @@ class Timeline {
     this.components = []
     this.bands = {}
 
-    const svg = select(`#${rootElId}`)
+    const svg = select(`#${chartConfig.rootElId}`)
       .text("")
       .append("svg")
       .attr("height", outerHeight + margin.top + margin.bottom)
@@ -179,7 +173,7 @@ class Timeline {
       .text("Philosophers through History")
       .style("font-weight", "bold")
 
-    filterBlackOpacity("intervals", svg, 1, 0.2)
+    filterBlackOpacity({ deviation: 1, id: "intervals", slope: 0.2, svg })
 
     svg
       .append("clipPath")
@@ -201,151 +195,85 @@ class Timeline {
       .attr("clip-path", "url(#chart-area)")
   }
 
-  public data(timelineItems: DataItem[]) {
-    const today = new Date()
-
+  public addChartData(timelineItems: ChartData[]) {
     const tracks: Date[] = []
 
-    const yearMillis = 31622400000
-    const instantOffset = 100 * yearMillis
+    this.dataContent.chartItems = timelineItems
 
-    this.dataContent.items = timelineItems
+    const calculateTracks = ({
+      chartItems,
+      sortOrderInitial,
+      timeOrderInitial,
+    }: {
+      chartItems: ChartData[]
+      sortOrderInitial?: SortOrder
+      timeOrderInitial?: TimeOrder
+    }) => {
+      const sortOrder = sortOrderInitial ?? SortOrder.Descending
+      const timeOrder = timeOrderInitial ?? TimeOrder.Forward
 
-    const compareAscending = function (item1: any, item2: any) {
-      let result = item1.start - item2.start
+      const sortBackward = () => {
+        chartItems.forEach((chartItem) => {
+          let trackIndex = 0
 
-      if (result < 0) {
-        return -1
-      }
-
-      if (result > 0) {
-        return 1
-      }
-
-      result = item2.end - item1.end
-
-      if (result < 0) {
-        return -1
-      }
-
-      if (result > 0) {
-        return 1
-      }
-
-      return 0
-    }
-
-    const compareDescending = function (item1: any, item2: any) {
-      let result = item1.start - item2.start
-
-      if (result < 0) {
-        return 1
-      }
-
-      if (result > 0) {
-        return -1
-      }
-
-      result = item2.end - item1.end
-
-      if (result < 0) {
-        return 1
-      }
-
-      if (result > 0) {
-        return -1
-      }
-
-      return 0
-    }
-
-    const calculateTracks = (
-      items: any,
-      sortOrderInitial: string,
-      timeOrderInitial: string
-    ) => {
-      const sortOrder = sortOrderInitial || "descending"
-      const timeOrder = timeOrderInitial || "backward"
-
-      const sortBackward = () =>
-        items.forEach((item: any) => {
-          let track = 0
-
-          for (
-            let i = 0, _i = 0, { length: _ref } = tracks;
-            0 <= _ref ? _i < _ref : _i > _ref;
-            i = 0 <= _ref ? ++_i : --_i // eslint-disable-line no-plusplus
-          ) {
-            if (item.end < tracks[i]) {
+          for (trackIndex = 0; trackIndex < tracks.length; trackIndex += 1) {
+            if (
+              this.chartConfig.getItemLimitRight(chartItem) < tracks[trackIndex]
+            ) {
               break
             }
-
-            track += 1
           }
 
-          item.track = track
-
-          tracks[track] = item.start
-        })
-
-      const sortForward = function () {
-        return items.forEach((item: any) => {
-          let track = 0
-
-          for (
-            let i = 0, _i = 0, { length: _ref } = tracks;
-            0 <= _ref ? _i < _ref : _i > _ref;
-            i = 0 <= _ref ? ++_i : --_i // eslint-disable-line no-plusplus
-          ) {
-            if (item.start > tracks[i]) {
-              break
-            }
-
-            track += 1
-          }
-
-          item.track = track
-
-          tracks[track] = item.end
+          chartItem.track = trackIndex
+          tracks[trackIndex] = this.chartConfig.getItemLimitLeft(chartItem)
         })
       }
 
-      if (sortOrder === "ascending") {
-        this.dataContent.items!.sort(compareAscending)
-      } else {
-        this.dataContent.items!.sort(compareDescending)
+      const sortForward = () => {
+        chartItems.forEach((chartItem) => {
+          let trackIndex = 0
+
+          for (trackIndex = 0; trackIndex < tracks.length; trackIndex += 1) {
+            if (
+              this.chartConfig.getItemLimitLeft(chartItem) > tracks[trackIndex]
+            ) {
+              break
+            }
+          }
+
+          chartItem.track = trackIndex
+
+          tracks[trackIndex] = this.chartConfig.getItemLimitRight(chartItem)
+        })
       }
 
-      if (timeOrder === "forward") {
-        return sortForward()
+      const sortFn = this.chartConfig.getSortFn(sortOrder)
+
+      this.dataContent.chartItems!.sort(sortFn)
+
+      if (timeOrder === TimeOrder.Forward) {
+        sortForward()
+
+        return
       }
 
-      return sortBackward()
+      sortBackward()
     }
 
-    this.dataContent.items.forEach((item: any) => {
-      item.start = parseDate(item.start)
-
-      if (item.end === "") {
-        item.end = new Date(item.start.getTime() + instantOffset)
-        item.instant = true
-      } else {
-        item.end = parseDate(item.end)
-        item.instant = false
-      }
-
-      if (item.end > today) {
-        item.end = today
-      }
+    calculateTracks({
+      chartItems: this.dataContent.chartItems,
+      sortOrderInitial: SortOrder.Descending,
+      timeOrderInitial: TimeOrder.Backward,
     })
 
-    calculateTracks(this.dataContent.items, "descending", "backward")
-
     this.dataContent.nTracks = tracks.length
-    this.dataContent.minDate = minD3(this.dataContent.items, (d) => d.start)
+    this.dataContent.minDate = minD3(
+      this.dataContent.chartItems,
+      this.chartConfig.getItemLimitLeft
+    )
     this.dataContent.maxDate = maxD3(
-      this.dataContent.items,
-      (d: DataItem) => d.end
+      this.dataContent.chartItems,
+      this.chartConfig.getItemLimitRight
     )
 
     return this
@@ -358,7 +286,7 @@ class Timeline {
 
     const axis = axisBottom<Date>(band.xScale)
       .tickSize(6)
-      .tickFormat((d: Date) => toYear(d))
+      .tickFormat((axisTick) => toYear(axisTick))
 
     const xAxis: RedrawComp &
       Selection<SVGGElement, unknown, HTMLElement, unknown> = this.chart
@@ -384,7 +312,13 @@ class Timeline {
     return this
   }
 
-  public band(bandName: string, sizeFactor: number) {
+  public addBand({
+    bandName,
+    sizeFactor,
+  }: {
+    bandName: string
+    sizeFactor: number
+  }) {
     const band: Partial<Band> = {}
 
     band.id = `band${this.bandNum}`
@@ -404,11 +338,9 @@ class Timeline {
       .domain([this.dataContent.minDate!, this.dataContent.maxDate!])
       .range([0, band.w])
 
-    band.yScale = (track: any) => band.trackOffset! + track * band.trackHeight!
+    band.yScale = (track: number) =>
+      band.trackOffset! + track * band.trackHeight!
 
-    band.yearsScale =
-      this.dataContent.maxDate!.getUTCFullYear() -
-      this.dataContent.minDate!.getUTCFullYear()
     band.g = this.chart
       .append("g")
       .attr("id", band.id)
@@ -419,27 +351,19 @@ class Timeline {
       .attr("width", band.w)
       .attr("height", band.h)
 
-    const items = band.g
+    const timeBandElements = band.g
       .selectAll("g")
-      .data<DataItem>(this.dataContent.items!)
+      .data<ChartData>(this.dataContent.chartItems!)
       .enter()
       .append<SVGSVGElement>("svg")
-      .attr("y", (d: DataItem) => band.yScale(d.track))
+      .attr("y", (chartItem) => band.yScale!(chartItem.track))
       .attr("height", band.itemHeight)
-      .attr("title", (d: DataItem) => {
-        if (d.instant) {
-          return `${d.label}: ${toYear(d.start)}`
-        }
-
-        return `${d.label}: ${toYear(d.start)} - ${toYear(d.end)}`
-      })
-      .attr("class", (d: DataItem) => {
-        if (d.instant) {
-          return `part ${styles.instant}`
-        }
-
-        return `part ${styles.interval}`
-      })
+      .attr("title", this.chartConfig.getItemTitle)
+      .attr(
+        "class",
+        (chartItem) =>
+          `part ${chartItem.instant ? styles.instant : styles.interval}`
+      )
 
     const intervals = select(`#band${this.bandNum}`).selectAll(
       `.${styles.interval}`
@@ -474,27 +398,33 @@ class Timeline {
       .attr("x", 15)
       .attr("y", 10)
 
-    band.addActions = function (actions: Action[]) {
-      actions.forEach((action) => items.on(action[0], action[1]))
+    band.addActions = (actions: Action[]) => {
+      actions.forEach((action) => timeBandElements.on(action[0], action[1]))
     }
 
-    band.redraw = function () {
-      items
-        .attr("x", (d: DataItem) => band.xScale(d.start))
+    const {
+      chartConfig: { getItemLimitLeft, getItemLimitRight },
+    } = this
+
+    band.redraw = () => {
+      timeBandElements
+        .attr("x", (chartItem: ChartData) =>
+          band.xScale!(getItemLimitLeft(chartItem))
+        )
         .attr(
           "width",
-          (d: DataItem) => band.xScale(d.end) - band.xScale(d.start)
+          (chartItem: ChartData) =>
+            band.xScale!(getItemLimitRight(chartItem)) -
+            band.xScale!(getItemLimitLeft(chartItem))
         )
         .select("text")
-        .text((d: DataItem) => {
-          const scale = band.xScale(d.end) - band.xScale(d.start)
+        .text((chartItem: ChartData) => {
+          const scale =
+            band.xScale!(getItemLimitRight(chartItem)) -
+            band.xScale!(getItemLimitLeft(chartItem))
           const maxLetters = scale / 9
 
-          if (d.label.length > maxLetters) {
-            return `${d.label.substr(0, maxLetters - 1)}..`
-          }
-
-          return d.label
+          return this.chartConfig.getItemText({ chartItem, maxLetters })
         })
 
       band.parts!.forEach((part) => part.redraw!())
@@ -516,46 +446,48 @@ class Timeline {
     const labelHeight = 20
     const labelTop = band.y + band.h - 10
     const yText = 15
-    const labelDefs = [
-      [
-        "start",
-        styles.bandMinMaxLabel,
-        0,
-        4,
-        function (min: Date) {
-          return toYear(min)
-        },
-        "Start of the selected interval",
-        band.x + 30,
-        labelTop,
-      ],
-      [
-        "end",
-        styles.bandMinMaxLabel,
-        band.w - labelWidth,
-        band.w - 4,
-        function (_min: Date, max: Date) {
-          return toYear(max)
-        },
-        "End of the selected interval",
-        band.x + band.w - 152,
-        labelTop,
-      ],
-      [
-        "middle",
-        styles.bandMidLabel,
-        (band.w - labelWidth) / 2,
-        band.w / 2,
-        function (min: Date, max: Date) {
-          const result = max.getUTCFullYear() - min.getUTCFullYear()
 
-          return result
-        },
-        "Length of the selected interval",
-        band.x + band.w / 2 - 75,
-        labelTop,
-      ],
+    type LabelDef = {
+      className: string
+      getText: (min: Date, max: Date) => string
+      id: string
+      left: number
+      textAnchor: string
+      textLeft: number
+      top: number
+    }
+
+    const labelDefs: LabelDef[] = [
+      {
+        className: styles.bandMinMaxLabel,
+        getText: (min: Date) => toYear(min),
+        id: "Start of the selected interval",
+        left: 0,
+        textAnchor: "start",
+        textLeft: 4,
+        top: labelTop,
+      },
+      {
+        className: styles.bandMinMaxLabel,
+        getText: (...[, max]: [unknown, Date]) => toYear(max),
+        id: "End of the selected interval",
+        left: band.w - labelWidth,
+        textAnchor: "end",
+        textLeft: band.w - 4,
+        top: labelTop,
+      },
+      {
+        className: styles.bandMidLabel,
+        getText: (...[min, max]: [Date, Date]) =>
+          (max.getUTCFullYear() - min.getUTCFullYear()).toString(),
+        id: "Length of the selected interval",
+        left: (band.w - labelWidth) / 2,
+        textAnchor: "middle",
+        textLeft: band.w / 2,
+        top: labelTop,
+      },
     ]
+
     const bandLabels = this.chart
       .append("g")
       .attr("id", `${bandName}Labels`)
@@ -568,25 +500,25 @@ class Timeline {
     bandLabels
       .append("rect")
       .attr("class", styles.bandLabel)
-      .attr("x", (d: any) => d[2])
+      .attr("x", (label) => label.left)
       .attr("width", labelWidth)
       .attr("height", labelHeight)
       .style("opacity", 1)
 
     const labels: RedrawComp &
-      Selection<SVGTextElement, any, SVGGElement, unknown> = bandLabels
+      Selection<SVGTextElement, LabelDef, SVGGElement, unknown> = bandLabels
       .append("text")
-      .attr("class", (d: any) => d[1])
-      .attr("id", (d: any) => d[0])
-      .attr("x", (d: any) => d[3])
+      .attr("class", (label) => label.className)
+      .attr("id", (label) => label.id)
+      .attr("x", (label) => label.textLeft)
       .attr("y", yText)
-      .attr("text-anchor", (d: any) => d[0])
+      .attr("text-anchor", (label) => label.textAnchor)
 
-    labels.redraw = function () {
+    labels.redraw = () => {
       const min = band.xScale.domain()[0]
       const max = band.xScale.domain()[1]
 
-      return labels.text((d: any) => d[4](min, max))
+      labels.text((label) => label.getText(min, max))
     }
 
     band.parts.push(labels)
@@ -595,42 +527,48 @@ class Timeline {
     return this
   }
 
-  public brush(bandName: string, targetNames: string[]) {
+  public addBrush({
+    bandName,
+    targetNames,
+  }: {
+    bandName: string
+    targetNames: string[]
+  }) {
     const {
       bands: { [bandName]: band },
     } = this
     const brush = brushX()
 
-    const selectionScale = scaleTime()
+    const selectionScale = scaleTime<number, Date>()
       .domain([0, 1000])
       .range([
         this.dataContent.minDate!.getTime(),
         this.dataContent.maxDate!.getTime(),
       ])
 
-    brush.on("brush", (e) => {
+    brush.on("brush", (brushEvent) => {
       let newDomain = band.xScale.domain()
 
-      if (e.selection) {
+      if (brushEvent.selection) {
         newDomain = [
-          selectionScale(e.selection[0]),
-          selectionScale(e.selection[1]),
+          selectionScale(brushEvent.selection[0]),
+          selectionScale(brushEvent.selection[1]),
         ]
       }
 
       selectAll(`.${styles.interval} rect`).style("filter", "none")
 
-      targetNames.forEach((d: any) => {
-        this.bands[d].xScale.domain(newDomain)
+      targetNames.forEach((targetName) => {
+        this.bands[targetName].xScale.domain(newDomain)
 
-        this.bands[d].redraw!()
+        this.bands[targetName].redraw!()
       })
     })
 
     const xBrush = band.g
       .append("svg")
       .attr("class", `x`)
-      .call(brush as any)
+      .call(brush as any) // eslint-disable-line @typescript-eslint/no-explicit-any
 
     xBrush
       .selectAll("rect")
@@ -646,21 +584,3 @@ class Timeline {
     return this
   }
 }
-
-const main = async () => {
-  const dataset = await fetchData()
-
-  new Timeline({ rootElId: "chart" })
-    .data(dataset)
-    .band("mainBand", 0.82)
-    .band("naviBand", 0.08)
-    .xAxis("mainBand")
-    .xAxis("naviBand")
-    .labels("mainBand")
-    .labels("naviBand")
-    .brush("naviBand", ["mainBand"])
-    .redraw()
-    .createTooltip()
-}
-
-export default main

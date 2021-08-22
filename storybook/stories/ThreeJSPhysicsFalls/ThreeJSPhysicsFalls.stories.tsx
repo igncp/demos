@@ -304,13 +304,17 @@ const Template = ((props: Props) => (
 
 export const Common = Template.bind({})
 
-const [speedArgs, speedControls] = createRangeControl(100, 1, 100)
-const [itemsNumberArgs, itemsNumberControls] = createRangeControl(
-  100,
-  1,
-  99,
-  900
-)
+const [speedArgs, speedControls] = createRangeControl({
+  diffMin: 100,
+  initialValue: 100,
+  step: 1,
+})
+const [itemsNumberArgs, itemsNumberControls] = createRangeControl({
+  diffMax: 900,
+  diffMin: 99,
+  initialValue: 100,
+  step: 1,
+})
 
 const args: Props = {
   itemsNumber: itemsNumberArgs,

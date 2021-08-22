@@ -74,14 +74,14 @@ class Icosahedron {
       .data(Icosahedron.getIcosahedronFaces() as FaceWithPolygon[])
       .enter()
       .append("path")
-      .each((d) => {
-        d.polygon = polygonHull(d.map(this.dom.projection) as Faces[0]) as Hull
+      .each((face) => {
+        face.polygon = polygonHull(
+          face.map(this.dom.projection) as Faces[0]
+        ) as Hull
       })
-      .style("fill", (_d: unknown, index: number) => {
-        const color = this.config.color(`${index}`)
-
-        return color
-      })
+      .style("fill", (...[, faceIndex]: [unknown, number]) =>
+        this.config.color(faceIndex.toString())
+      )
 
     this.dom.faces = faces
     this.vars.velocity = this.config.defaultVelocity
@@ -149,7 +149,13 @@ class Icosahedron {
     const svg = select(`#${this.rootElId}`)
       .append("svg")
       .attr("width", this.config.width)
-      .attr("height", this.config.height) as SvgSelection
+      .attr("height", this.config.height)
+      .on("click", () => {
+        this.vars.velocity =
+          this.vars.velocity?.toString() === this.config.zeroVelocity.toString()
+            ? this.config.defaultVelocity
+            : this.config.zeroVelocity
+      }) as SvgSelection
 
     this.dom = {
       faces: null,
@@ -164,7 +170,13 @@ class Icosahedron {
     }
   }
 
-  private calcNewPosition(time: number, position: Position): Position {
+  private calcNewPosition({
+    position,
+    time,
+  }: {
+    position: Position
+    time: number
+  }): Position {
     const {
       vars: { velocity },
     } = this
@@ -185,17 +197,19 @@ class Icosahedron {
     const time = Date.now() - this.config.t0
     const originalPos = this.dom.projection.rotate()
 
-    this.dom.projection.rotate(this.calcNewPosition(time, originalPos))
+    this.dom.projection.rotate(
+      this.calcNewPosition({ position: originalPos, time })
+    )
     this.dom
-      .faces!.each((d) =>
-        d.forEach((p: [number, number], i: number) => {
-          d.polygon[i] = this.dom.projection(p) as Point2D
+      .faces!.each((face) => {
+        face.forEach((...[point, pointIndex]: [Point2D, number]) => {
+          face.polygon[pointIndex] = this.dom.projection(point) as Point2D
 
           return null
         })
-      )
-      .style("display", (d) => {
-        const area = polygonArea(d.polygon)
+      })
+      .style("display", (face) => {
+        const area = polygonArea(face.polygon)
 
         if (area > 0) {
           return null
@@ -203,18 +217,7 @@ class Icosahedron {
 
         return "none"
       })
-      .attr("d", (d) => `M${d.polygon.join("L")}Z`)
-      .on("click", () => {
-        if (
-          this.vars.velocity?.toString() === this.config.zeroVelocity.toString()
-        ) {
-          this.vars.velocity = this.config.defaultVelocity
-
-          return
-        }
-
-        this.vars.velocity = this.config.zeroVelocity
-      })
+      .attr("d", (face) => `M${face.polygon.join("L")}Z`)
 
     return null
   }

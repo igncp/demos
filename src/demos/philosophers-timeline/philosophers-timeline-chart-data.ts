@@ -1,0 +1,126 @@
+import { csv, timeParse } from "d3"
+
+import { ChartConfig, SortOrder } from "./philosophers-timeline-chart"
+
+export type TimeBandItem = {
+  end: Date
+  instant: boolean
+  label: string
+  start: Date
+  track: number
+}
+
+const toYear = (date: Date) => {
+  const bcString = " BC"
+  const year = date.getUTCFullYear()
+
+  if (year >= 0) {
+    return year.toString()
+  }
+
+  return bcString + Math.abs(year)
+}
+
+const parseDate = function (dateString: string) {
+  const format = timeParse("%Y-%m-%d")
+
+  let date = format(dateString)
+
+  if (date !== null) {
+    return date
+  }
+
+  const year = isNaN(Number(dateString))
+    ? -dateString.replace(/[^0-9]/g, "")
+    : +dateString
+
+  if (year < 0 || year > 99) {
+    date = new Date(year, 6, 1)
+  } else if (year === 0) {
+    date = new Date(-1, 6, 1)
+  } else {
+    date = new Date(year, 6, 1)
+    date.setUTCFullYear(year)
+  }
+
+  return date
+}
+
+const yearMillis = 31622400000
+
+export const fetchData = async (): Promise<TimeBandItem[]> => {
+  const timeBandItems = ((await csv(
+    `${ROOT_PATH}data/d3js/philosophers-timeline/data.csv`
+  )) as unknown) as TimeBandItem[]
+  const today = new Date()
+  const instantOffset = 100 * yearMillis
+
+  timeBandItems.forEach((timeBandItem) => {
+    timeBandItem.start = parseDate(timeBandItem.start.toString())
+
+    if ((timeBandItem.end as unknown) === "") {
+      timeBandItem.end = new Date(timeBandItem.start.getTime() + instantOffset)
+      timeBandItem.instant = true
+    } else {
+      timeBandItem.end = parseDate(timeBandItem.end.toString())
+      timeBandItem.instant = false
+    }
+
+    if (timeBandItem.end > today) {
+      timeBandItem.end = today
+    }
+  })
+
+  return timeBandItems
+}
+
+type Config = ChartConfig<TimeBandItem>
+
+const getItemLimitLeft = (timeBandItem: TimeBandItem) => timeBandItem.start
+const getItemLimitRight = (timeBandItem: TimeBandItem) => timeBandItem.end
+
+const getSortFn = (sortOrder: SortOrder) => (
+  ...[timeBandItemA, timeBandItemB]: [TimeBandItem, TimeBandItem]
+) => {
+  const factor = sortOrder === SortOrder.Ascending ? 1 : -1
+  const startDiff = Number(timeBandItemA.start) - Number(timeBandItemB.start)
+
+  if (startDiff !== 0) {
+    return startDiff * factor
+  }
+
+  return (Number(timeBandItemB.end) - Number(timeBandItemA.end)) * factor
+}
+
+const getItemText = ({
+  chartItem: timeBandItem,
+  maxLetters,
+}: {
+  chartItem: TimeBandItem
+  maxLetters: number
+}): string => {
+  if (timeBandItem.label.length > maxLetters) {
+    return `${timeBandItem.label.substr(0, maxLetters - 1)}..`
+  }
+
+  return timeBandItem.label
+}
+
+const getItemTitle = (timeBandItem: TimeBandItem): string => {
+  if (timeBandItem.instant) {
+    return `${timeBandItem.label}: ${toYear(timeBandItem.start)}`
+  }
+
+  return `${timeBandItem.label}: ${toYear(timeBandItem.start)} - ${toYear(
+    timeBandItem.end
+  )}`
+}
+
+export const getChartConfig = (): Config => ({
+  getItemLimitLeft,
+  getItemLimitRight,
+  getItemText,
+  getItemTitle,
+  getSortFn,
+  rootElId: "chart",
+})
