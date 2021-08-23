@@ -20,16 +20,15 @@ import d3Fisheye, { FishEyeScale } from "@/demos/_utils/fish-eye"
 
 import * as styles from "./fish-eye.module.css"
 
-type DataItem = {
+type IncomeMetric = {
   income: number
   lifeExpectancy: number
   name: string
   population: number
   region: string
 }
-type Data = DataItem[]
 
-const fetchData = async (): Promise<Data | undefined> =>
+const fetchData = async (): Promise<IncomeMetric[] | undefined> =>
   json(`${ROOT_PATH}data/d3js/fish-eye/data.json`)
 
 const humanizeNumber = (initialN: number): string => {
@@ -57,22 +56,22 @@ const margin = {
 const height = 700 - margin.top - margin.bottom
 
 type FishEyeChartOpts = {
-  data: Data
+  incomeMetrics: IncomeMetric[]
   rootElId: string
 }
 
 class FishEyeChart {
   private readonly rootElId: string
-  private readonly data: Data
+  private readonly incomeMetrics: IncomeMetric[]
 
   private width!: number
 
   private dom!: {
-    dot?: Selection<SVGCircleElement, DataItem, SVGGElement, unknown>
+    dot?: Selection<SVGCircleElement, IncomeMetric, SVGGElement, unknown>
     pointer?: Selection<SVGTextElement, unknown, HTMLElement, unknown>
     svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
-    xAxis?: Axis<DataItem["income"]>
-    yAxis?: Axis<DataItem["lifeExpectancy"]>
+    xAxis?: Axis<IncomeMetric["income"]>
+    yAxis?: Axis<IncomeMetric["lifeExpectancy"]>
   }
 
   private vars!: {
@@ -83,9 +82,9 @@ class FishEyeChart {
     yScale: FishEyeScale
   }
 
-  public constructor({ data, rootElId }: FishEyeChartOpts) {
+  public constructor({ incomeMetrics, rootElId }: FishEyeChartOpts) {
     this.rootElId = rootElId
-    this.data = data
+    this.incomeMetrics = incomeMetrics
 
     this.setupRootEl()
     this.setVars()
@@ -170,12 +169,12 @@ class FishEyeChart {
   }
 
   private setAxis() {
-    this.dom.xAxis = axisBottom<DataItem["population"]>(this.vars.xScale)
+    this.dom.xAxis = axisBottom<IncomeMetric["population"]>(this.vars.xScale)
       .tickFormat(format(",d"))
       .tickSize(-height)
-    this.dom.yAxis = axisLeft<DataItem["income"]>(this.vars.yScale).tickSize(
-      -this.width
-    )
+    this.dom.yAxis = axisLeft<IncomeMetric["income"]>(
+      this.vars.yScale
+    ).tickSize(-this.width)
     this.dom.svg
       .append("g")
       .attr("class", `x ${styles.axis}`)
@@ -253,9 +252,13 @@ class FishEyeChart {
 
   private position() {
     this.dom
-      .dot!.attr("cx", (d) => this.vars.xScale(d.income))
-      .attr("cy", (d) => this.vars.yScale(d.lifeExpectancy))
-      .attr("r", (d) => this.vars.radiusScale(d.population))
+      .dot!.attr("cx", (incomeMetric) => this.vars.xScale(incomeMetric.income))
+      .attr("cy", (incomeMetric) =>
+        this.vars.yScale(incomeMetric.lifeExpectancy)
+      )
+      .attr("r", (incomeMetric) =>
+        this.vars.radiusScale(incomeMetric.population)
+      )
   }
 
   private setDots() {
@@ -263,15 +266,20 @@ class FishEyeChart {
       .append("g")
       .attr("class", "dots")
       .selectAll(".dot")
-      .data<DataItem>(this.data)
+      .data<IncomeMetric>(this.incomeMetrics)
       .enter()
       .append("circle")
       .attr("class", "dot")
-      .style("fill", (d: DataItem) => this.vars.colorScale(d.region))
+      .style("fill", (incomeMetric) =>
+        this.vars.colorScale(incomeMetric.region)
+      )
       .style("filter", "url(#drop-shadow-circles)")
       .style("stroke", "black")
       .style('"stroke-width"', "1px")
-      .sort((a, b) => b.population - a.population)
+      .sort(
+        (...[incomeMetricA, incomeMetricB]) =>
+          incomeMetricB.population - incomeMetricA.population
+      )
 
     this.position()
   }
@@ -280,10 +288,12 @@ class FishEyeChart {
     this.dom
       .dot!.append("title")
       .text(
-        (d) =>
-          `${d.name}:\n- Income: ${humanizeNumber(d.income)} $/P.C.\n` +
-          `- Population: ${humanizeNumber(d.population)}\n` +
-          `- Life expectancy: ${d.lifeExpectancy} years`
+        (incomeMetric) =>
+          `${incomeMetric.name}:\n- Income: ${humanizeNumber(
+            incomeMetric.income
+          )} $/P.C.\n` +
+          `- Population: ${humanizeNumber(incomeMetric.population)}\n` +
+          `- Life expectancy: ${incomeMetric.lifeExpectancy} years`
       )
   }
 
@@ -336,10 +346,10 @@ class FishEyeChart {
 }
 
 const main = async () => {
-  const data = await fetchData()
+  const incomeMetrics = await fetchData()
 
   const chart = new FishEyeChart({
-    data: data as Data,
+    incomeMetrics: incomeMetrics as IncomeMetric[],
     rootElId: "chart",
   })
 

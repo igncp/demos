@@ -7,11 +7,13 @@ import {
   scaleLinear,
   scaleTime,
   select,
+  timeFormat,
   timeParse,
   tsv,
 } from "d3"
 import each from "lodash/each"
 import last from "lodash/last"
+import { v1 as uuid } from "uuid"
 
 import * as styles from "./mareys-schedule.module.css"
 
@@ -39,13 +41,13 @@ type Stop = {
 
 type Train = {
   direction: string
-  index: number
+  id: number
   number: string
   stops: Stop[]
   type: TrainType
 }
 
-type Data = {
+type SchedulesData = {
   stations: Station[]
   trains: Train[]
 }
@@ -61,11 +63,12 @@ const trainTypeToStyle: { [key in TrainType]: string } = {
   N: styles.tN,
 }
 
-const getFormatTime = () => timeParse("%I:%M%p")
+const timeFormatStr = "%I:%M%p"
+const getFormatTime = () => (date: Date) => timeFormat(timeFormatStr)(date)
+const getParseTime = () => timeParse(timeFormatStr)
 
 const parseTime = (timeStr: string) => {
-  const formatTime = getFormatTime()
-  const timeDate = formatTime(timeStr)
+  const timeDate = getParseTime()(timeStr)
 
   if (timeDate !== null && timeDate.getHours() < 3) {
     timeDate.setDate(timeDate.getDate() + 1)
@@ -74,14 +77,14 @@ const parseTime = (timeStr: string) => {
   return timeDate
 }
 
-const fetchData = async (): Promise<Data> => {
-  const data = ((await tsv(
+const fetchData = async (): Promise<SchedulesData> => {
+  const originalItems = ((await tsv(
     `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`
   )) as unknown) as RawDataItem[]
 
   const stations: Station[] = []
 
-  const trains: Train[] = data.map((train, trainIndex) => {
+  const trains: Train[] = originalItems.map((...[train, trainIndex]) => {
     if (trainIndex === 0) {
       for (const key in train) {
         if (/^stop\|/.test(key)) {
@@ -99,7 +102,7 @@ const fetchData = async (): Promise<Data> => {
 
     return {
       direction: train.direction,
-      index: trainIndex,
+      id: trainIndex,
       number: train.number,
       stops: stations
         .map((station) => ({
@@ -192,12 +195,17 @@ const formatAMPM = function (date: Date) {
   return `${hours}:${minutesStr} ${ampm}`
 }
 
-const filterBlackOpacity = (
-  id: string,
-  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
-  deviation: number,
+const filterBlackOpacity = ({
+  deviation,
+  id,
+  slope,
+  svg,
+}: {
+  deviation: number
+  id: string
   slope: number
-) => {
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
+}) => {
   const defs = svg.append("defs")
   const filter = defs
     .append("filter")
@@ -235,8 +243,14 @@ const margin = {
 
 const height = 600 - margin.top - margin.bottom
 
-const renderChart = ({ data, rootElId }: { data: Data; rootElId: string }) => {
-  const { stations, trains } = data
+const renderChart = ({
+  rootElId,
+  schedulesData,
+}: {
+  rootElId: string
+  schedulesData: SchedulesData
+}) => {
+  const { stations, trains } = schedulesData
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
   rootEl.classList.add(styles.mareysScheduleChart)
@@ -244,18 +258,17 @@ const renderChart = ({ data, rootElId }: { data: Data; rootElId: string }) => {
   const width =
     rootEl.getBoundingClientRect().width - margin.left - margin.right
 
+  const trainPathClass = `train-${uuid().slice(0, 6)}`
+  const stopCircleClass = `stop-${uuid().slice(0, 6)}`
+
   const redraw: Redraw = (timeRange) => {
     const x = scaleTime()
       .domain([parseTime(timeRange[0])!, parseTime(timeRange[1])!])
       .range([0, width])
     const y = scaleLinear().range([0, height])
     const formatTime = getFormatTime()
-    const xAxisTop = axisTop(x)
-      .ticks(8)
-      .tickFormat(formatTime as any)
-    const xAxisBottom = axisBottom(x)
-      .ticks(8)
-      .tickFormat(formatTime as any)
+    const xAxisTop = axisTop<Date>(x).ticks(8).tickFormat(formatTime)
+    const xAxisBottom = axisBottom<Date>(x).ticks(8).tickFormat(formatTime)
 
     const svg = select(`#${rootElId}`)
       .text("")
@@ -273,7 +286,12 @@ const renderChart = ({ data, rootElId }: { data: Data; rootElId: string }) => {
       .text("E.J. Marey’s graphical train schedule (4:30AM - 1:30AM)")
       .style("font-weight", "bold")
 
-    filterBlackOpacity("trains", svg, 2, 0.2)
+    filterBlackOpacity({
+      deviation: 2,
+      id: "trains",
+      slope: 0.2,
+      svg,
+    })
 
     svg
       .append("defs")
@@ -286,21 +304,21 @@ const renderChart = ({ data, rootElId }: { data: Data; rootElId: string }) => {
 
     y.domain(extent(stations, (station) => station.distance) as Limits)
 
-    const station = svg
+    const stationSelection = svg
       .append("g")
       .attr("class", styles.station)
       .selectAll("g")
       .data(stations)
       .enter()
       .append("g")
-      .attr("transform", (d) => `translate(0,${y(d.distance)})`)
+      .attr("transform", (station) => `translate(0,${y(station.distance)})`)
 
-    station
+    stationSelection
       .append("text")
       .attr("x", -6)
       .attr("dy", ".35em")
-      .text((d) => d.name)
-    station.append("line").attr("x2", width)
+      .text((station) => station.name)
+    stationSelection.append("line").attr("x2", width)
     svg.append("g").attr("class", `x top ${styles.axis}`).call(xAxisTop)
     svg
       .append("g")
@@ -308,54 +326,65 @@ const renderChart = ({ data, rootElId }: { data: Data; rootElId: string }) => {
       .attr("transform", `translate(0,${height})`)
       .call(xAxisBottom)
 
-    const mouseover = function (_e: unknown, d: Train) {
-      select(`.train-${d.index}`).select("path").style("stroke-width", "5px")
+    const mouseover = (...[, train]: [unknown, Train]) => {
+      select(`.train-${train.id}`).select("path").style("stroke-width", "5px")
     }
 
-    const mouseleave = function (_e: unknown, d: Train) {
-      select(`.train-${d.index}`).select("path").style("stroke-width", "2.5px")
+    const mouseleave = (...[, train]: [unknown, Train]) => {
+      select(`.train-${train.id}`).select("path").style("stroke-width", "2.5px")
     }
 
-    const train = svg
+    const trainSelection = svg
       .append("g")
       .attr("class", styles.train)
       .attr("clip-path", "url(#clip)")
       .selectAll("g")
-      .data(trains.filter((d) => /[NLB]/.test(d.type)))
+      .data(trains.filter((train) => /[NLB]/.test(train.type)))
       .enter()
       .append("g")
-      .attr("class", (d) => `${trainTypeToStyle[d.type]} train-${d.index}`)
+      .attr(
+        "class",
+        (train) => `${trainTypeToStyle[train.type]} train-${train.id}`
+      )
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave)
 
     const line = lineD3<Stop>()
-      .x((d) => x(d.time!))
-      .y((d) => y(d.station.distance))
+      .x((stop) => x(stop.time!))
+      .y((stop) => y(stop.station.distance))
 
-    train
+    trainSelection
       .append("path")
-      .attr("d", (d) => line(d.stops))
-      .append("title")
-      .text((d) => getTrainTitle(d))
+      .attr("d", (train) => line(train.stops))
+      .attr("class", trainPathClass)
+      .attr("title", getTrainTitle)
 
-    train
+    trainSelection
       .selectAll("circle")
-      .data((d) => d.stops)
+      .data((train) => train.stops)
       .enter()
       .append("circle")
       .attr(
         "transform",
-        (d) => `translate(${x(d.time!)},${y(d.station.distance)})`
+        (stop) => `translate(${x(stop.time!)},${y(stop.station.distance)})`
       )
       .style("filter", "url(#drop-shadow-trains)")
       .attr("r", "5px")
-      .append("title")
-      .text(
-        (d) =>
-          `${getTrainTitle(trains[d.trainIndex])}\n${
-            d.station.name
-          } at ${formatAMPM(d.time!)}`
+      .attr("class", stopCircleClass)
+      .attr(
+        "title",
+        (stop) =>
+          `${getTrainTitle(trains[stop.trainIndex])}\n${
+            stop.station.name
+          } at ${formatAMPM(stop.time!)}`
       )
+
+    $(`.${trainPathClass}`).tooltip({
+      track: true,
+    })
+    $(`.${stopCircleClass}`).tooltip({
+      track: true,
+    })
   }
 
   return {
@@ -371,18 +400,18 @@ const renderChart = ({ data, rootElId }: { data: Data; rootElId: string }) => {
 const main = async () => {
   const rootElId = "chart"
 
-  const data = await fetchData()
+  const schedulesData = await fetchData()
 
   const { refresh } = renderChart({
-    data,
     rootElId,
+    schedulesData,
   })
 
-  const slider: any = $(".slider")
+  const slider = $(".slider")
 
   slider.slider({
     change: () => {
-      const limits: Limits = slider.slider("values")
+      const limits = slider.slider("values") as Limits
 
       refresh(limits)
     },

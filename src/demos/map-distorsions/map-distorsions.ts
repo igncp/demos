@@ -10,21 +10,26 @@ import {
   select,
   tsv,
 } from "d3"
+import qs from "query-string"
 
 import * as styles from "./map-distorsions.module.css"
 
 type ProjectionItem = {
   "Acc. 40º 150%": string
-  Angular: string
-  Areal: string
-  Scale: string
-  name: string
+  "Angular": string
+  "Areal": string
+  "Scale": string
+  "name": string
 }
 
 const fetchData = () =>
   (tsv(`${ROOT_PATH}data/d3js/map-distorsions/data.tsv`) as unknown) as Promise<
     ProjectionItem[]
   >
+
+const maxNameLength = 20
+const getShortName = (name: string) =>
+  name.length > maxNameLength ? `${name.slice(0, maxNameLength)}...` : name
 
 const margin = {
   bottom: 20,
@@ -42,13 +47,21 @@ const texts = {
     "Comparison of 41 map projections by four different types of distortion. Lower is better.",
 }
 
-type RenderChart = (o: { data: ProjectionItem[]; rootElId: string }) => void
+type RenderChart = (o: {
+  mapsDistorsions: ProjectionItem[]
+  rootElId: string
+}) => void
 
 enum DimensionName {
   Acc40 = "Acc. 40º 150%",
   Angular = "Angular",
   Areal = "Areal",
   Scale = "Scale",
+}
+
+enum DimensionType {
+  Number = "number",
+  String = "string",
 }
 
 const tooltipText = function (projectionItem: ProjectionItem) {
@@ -68,16 +81,21 @@ const tooltipText = function (projectionItem: ProjectionItem) {
 
 type Dimension = {
   name: DimensionName | "name"
-  scale: any
-  type: any
+  scale: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  type: DimensionType
 }
 
-const filterColor = (
-  id: string,
-  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
-  deviation: number,
+const filterColor = ({
+  deviation,
+  id,
+  slope,
+  svg,
+}: {
+  deviation: number
+  id: string
   slope: number
-) => {
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
+}) => {
   const defs = svg.append("defs")
   const filter = defs.append("filter").attr("id", `drop-shadow-${id}`)
 
@@ -107,18 +125,16 @@ const filterColor = (
     .attr("type", "linear")
 }
 
-const colorsScale = <P extends number = any>(domain: [number, number]) => {
+const colorsScale = <P extends number>(domain: [number, number]) => {
   const c = scaleLinear().domain(domain).range([0, 1])
   const colorScale = scaleLinear<string>()
     .domain(range(0, 1, 1.0 / colors.length))
     .range(colors)
 
-  return function (p: P) {
-    return colorScale(c(p))
-  }
+  return (color: P) => colorScale(c(color))
 }
 
-const renderChart: RenderChart = ({ data, rootElId }) => {
+const renderChart: RenderChart = ({ mapsDistorsions, rootElId }) => {
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
   rootEl.classList.add(styles.mapDistorsionsChart)
@@ -130,27 +146,27 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     {
       name: "name",
       scale: scalePoint().range([0, height]),
-      type: String,
+      type: DimensionType.String,
     },
     {
       name: DimensionName.Acc40,
       scale: scaleLinear().range([0, height]),
-      type: Number,
+      type: DimensionType.Number,
     },
     {
       name: DimensionName.Scale,
       scale: scaleLinear().range([height, 0]),
-      type: Number,
+      type: DimensionType.Number,
     },
     {
       name: DimensionName.Areal,
       scale: scaleSqrt().range([height, 0]),
-      type: Number,
+      type: DimensionType.Number,
     },
     {
       name: DimensionName.Angular,
       scale: scaleLinear().range([height, 0]),
-      type: Number,
+      type: DimensionType.Number,
     },
   ]
 
@@ -170,24 +186,24 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .style("font-weight", "bold")
 
   const x = scalePoint()
-    .domain(dimensions.map((d) => d.name))
+    .domain(dimensions.map((dimension) => dimension.name))
     .range([0, width])
 
-  const line = lineD3().defined((d) => !isNaN(d[1]))
+  const line = lineD3().defined((lineData) => !isNaN(lineData[1]))
 
-  const dimension = svg
+  const dimensionSelection = svg
     .selectAll(".dimension")
     .data(dimensions)
     .enter()
     .append("g")
     .attr("class", "dimension")
-    .attr("transform", (d) => `translate(${x(d.name)})`)
+    .attr("transform", (dimension) => `translate(${x(dimension.name)})`)
 
-  filterColor("lines", svg, 2, 0.4)
+  filterColor({ deviation: 2, id: "lines", slope: 0.4, svg })
 
-  const sortedData: ProjectionItem[] = data
+  const sortedData: ProjectionItem[] = mapsDistorsions
     .slice(0)
-    .sort(({ name: nameA }, { name: nameB }) => {
+    .sort((...[{ name: nameA }, { name: nameB }]) => {
       if (nameA === nameB) {
         return 0
       }
@@ -199,22 +215,39 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
 
   dimensions.forEach((dimItem: Dimension) =>
     dimItem.scale.domain(
-      dimItem.type === Number
+      dimItem.type === DimensionType.Number
         ? extent(
             sortedData,
-            (d: ProjectionItem) => +d[dimItem.name as keyof ProjectionItem]
+            (projection: ProjectionItem) =>
+              +projection[dimItem.name as keyof ProjectionItem]
           )
         : sortedData
-            .map((d: ProjectionItem) => d[dimItem.name as keyof ProjectionItem])
+            .map((projection: ProjectionItem) => {
+              const {
+                [dimItem.name as keyof ProjectionItem]: name,
+              } = projection
+
+              return getShortName(name)
+            })
             .sort()
     )
   )
 
   const draw = (projectionItem: ProjectionItem) => {
-    const allPoints: Array<[number, number]> = dimensions.map((dimItem) => [
-      x(dimItem.name) as number,
-      dimItem.scale(projectionItem[dimItem.name as keyof ProjectionItem]),
-    ])
+    const allPoints: Array<[number, number]> = dimensions.map((dimItem) => {
+      const {
+        [dimItem.name as keyof ProjectionItem]: projectionValue,
+      } = projectionItem
+
+      return [
+        x(dimItem.name) as number,
+        dimItem.scale(
+          typeof projectionValue === "string"
+            ? getShortName(projectionValue)
+            : projectionValue
+        ),
+      ]
+    })
 
     return line(allPoints)
   }
@@ -227,7 +260,16 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .enter()
     .append("path")
     .attr("d", draw)
+    .style("cursor", "pointer")
     .attr("title", tooltipText)
+    .on("click", (...[, projectionItem]) => {
+      window.open(
+        `https://www.google.com/search?${qs.stringify({
+          q: `${projectionItem.name} map projection`,
+          tbm: "isch", // Google Images
+        })}`
+      )
+    })
 
   svg
     .append("g")
@@ -239,7 +281,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .attr("d", draw)
     .attr("data-title", tooltipText)
 
-  dimension
+  dimensionSelection
     .append("g")
     .attr("class", styles.axis)
     .each(function (dimensionItem: Dimension) {
@@ -258,19 +300,21 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .selectAll<SVGElement, ProjectionItem>(`text:not(.${styles.title})`)
     .attr("class", styles.label)
     .data(sortedData, (projectionItem: ProjectionItem) => projectionItem.name)
-    .style("fill", (_d, projectionIndex) => colorFn(projectionIndex))
+    .style("fill", (...[, projectionIndex]: [unknown, number]) =>
+      colorFn(projectionIndex)
+    )
 
   const moveToFront = function (this: SVGElement) {
-    const el = this.parentNode as HTMLElement
+    const parentNode = this.parentNode as HTMLElement
 
-    el.appendChild(this)
+    parentNode.appendChild(this)
   }
 
   const projection = svg.selectAll<SVGElement, ProjectionItem>(
     `.${styles.axis} text,.${styles.background} path,.${styles.foreground} path`
   )
 
-  const mouseover = (_e: unknown, overProjection: ProjectionItem) => {
+  const mouseover = (...[, overProjection]: [unknown, ProjectionItem]) => {
     svg.selectAll(`.${styles.foreground} path`).style("filter", "none")
     svg.classed(styles.active, true)
     projection.classed(
@@ -298,7 +342,9 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   svg
     .selectAll(`.${styles.foreground} path`)
     .style("filter", "url(#drop-shadow-lines)")
-    .style("stroke", (_d, projectionItemIndex) => colorFn(projectionItemIndex))
+    .style("stroke", (...[, projectionItemIndex]) =>
+      colorFn(projectionItemIndex)
+    )
 
   projection.on("mouseover", mouseover).on("mouseout", mouseout)
 
@@ -308,10 +354,10 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
 }
 
 const main = async () => {
-  const data = await fetchData()
+  const mapsDistorsions = await fetchData()
   const rootElId = "chart"
 
-  renderChart({ data, rootElId })
+  renderChart({ mapsDistorsions, rootElId })
 }
 
 export default main

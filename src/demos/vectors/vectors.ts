@@ -29,12 +29,12 @@ type Link = {
   target: Node
 }
 
-type Data = {
+type VectorsData = {
   links: Link[]
   nodes: Node[]
 }
 
-const getInitialData = (): Data => {
+const getInitialData = (): VectorsData => {
   const nodes = [
     {
       id: "A",
@@ -111,10 +111,10 @@ const settings = {
 
 const height = 600
 
-type RenderGraph = (o: { data: Data; rootElId: string }) => void
+type RenderGraph = (o: { rootElId: string; vectorsData: VectorsData }) => void
 
-const renderGraph: RenderGraph = ({ data, rootElId }) => {
-  const { links, nodes } = data
+const renderGraph: RenderGraph = ({ rootElId, vectorsData }) => {
+  const { links, nodes } = vectorsData
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
@@ -133,25 +133,25 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
 
   const updateLinks = () => {
     const linksEls = svg
-      .selectAll<SVGPathElement, Data["links"]>(`.${styles.link}`)
+      .selectAll<SVGPathElement, VectorsData["links"]>(`.${styles.link}`)
       .data(links)
 
     linksEls
       .enter()
       .append<SVGPathElement>("path")
       .merge(linksEls)
-      .attr("d", (d) => {
-        const deltaX = d.target.x! - d.source.x!
-        const deltaY = d.target.y! - d.source.y!
+      .attr("d", (link) => {
+        const deltaX = link.target.x! - link.source.x!
+        const deltaY = link.target.y! - link.source.y!
         const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
         const normX = deltaX / dist
         const normY = deltaY / dist
-        const sourcePadding = d.left ? 17 : 12
-        const targetPadding = d.right ? 17 : 12
-        const sourceX = d.source.x! + sourcePadding * normX
-        const sourceY = d.source.y! + sourcePadding * normY
-        const targetX = d.target.x! - targetPadding * normX
-        const targetY = d.target.y! - targetPadding * normY
+        const sourcePadding = link.left ? 17 : 12
+        const targetPadding = link.right ? 17 : 12
+        const sourceX = link.source.x! + sourcePadding * normX
+        const sourceY = link.source.y! + sourcePadding * normY
+        const targetX = link.target.x! - targetPadding * normX
+        const targetY = link.target.y! - targetPadding * normY
 
         return `M${sourceX},${sourceY}L${targetX},${targetY}`
       })
@@ -171,59 +171,59 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
     .force("link", forceLink().links(links).distance(100))
     .on("tick", ticked)
 
-  const dragstarted = (event: CustomDragEvent, d: Node) => {
-    if (!event.active) {
+  const dragstarted = (...[dragEvent, node]: [CustomDragEvent, Node]) => {
+    if (!dragEvent.active) {
       simulation.alphaTarget(0.3).restart()
     }
 
-    d.fx = d.x
-    d.fy = d.y
+    node.fx = node.x
+    node.fy = node.y
   }
 
-  const dragged = (event: CustomDragEvent, d: Node) => {
-    d.fx = event.x
-    d.fy = event.y
+  const dragged = (...[dragEvent, node]: [CustomDragEvent, Node]) => {
+    node.fx = dragEvent.x
+    node.fy = dragEvent.y
   }
 
-  const dragended = (event: CustomDragEvent, d: Node) => {
-    if (!event.active) {
+  const dragended = (...[dragEvent, node]: [CustomDragEvent, Node]) => {
+    if (!dragEvent.active) {
       simulation.alphaTarget(0)
     }
 
-    d.fx = null
-    d.fy = null
+    node.fx = null
+    node.fy = null
   }
 
   const updateNodes = () => {
     const nodesEls = svg
-      .selectAll<SVGCircleElement, Data["nodes"]>("circle")
+      .selectAll<SVGCircleElement, VectorsData["nodes"]>("circle")
       .data(nodes)
     const textsEls = svg
-      .selectAll<SVGTextElement, Data["nodes"]>("text")
+      .selectAll<SVGTextElement, VectorsData["nodes"]>("text")
       .data(nodes)
 
     nodesEls
       .enter()
       .append("circle")
       .merge(nodesEls)
-      .attr("cx", (d) => d.x!)
-      .attr("cy", (d) => d.y!)
+      .attr("cx", (node) => node.x!)
+      .attr("cy", (node) => node.y!)
       .attr("r", () => settings.circleRadius)
       .attr("fill", "#fff")
       .each(function () {
-        select<SVGCircleElement, Data["nodes"][0]>(this)
-          .on("mouseover", (_ev, d) => {
-            select(`#node-text-${d.index}`).style("opacity", 1)
+        select<SVGCircleElement, VectorsData["nodes"][0]>(this)
+          .on("mouseover", (...[, node]: [unknown, Node]) => {
+            select(`#node-text-${node.index}`).style("opacity", 1)
           })
-          .on("mouseleave", (_ev, d) => {
-            select(`#node-text-${d.index}`).style(
+          .on("mouseleave", (...[, node]: [unknown, Node]) => {
+            select(`#node-text-${node.index}`).style(
               "opacity",
               settings.defaultTextOpacity
             )
           })
       })
       .call(
-        drag<SVGCircleElement, Data["nodes"][0]>()
+        drag<SVGCircleElement, VectorsData["nodes"][0]>()
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended)
@@ -233,23 +233,13 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
       .enter()
       .append("text")
       .merge(textsEls)
-      .text((d) => d.id)
-      .attr("x", (d) => d.x!)
-      .attr("y", (d) => d.y!)
+      .text((node) => node.id)
+      .attr("x", (node) => node.x!)
+      .attr("y", (node) => node.y!)
       .attr("class", styles.id)
 
     nodesEls.exit().remove()
     textsEls.exit().remove()
-  }
-
-  let mousedownLink: any = null
-  let mousedownNode: any = null
-  let mouseupNode: any = null
-
-  const resetMouseVars = () => {
-    mousedownNode = null
-    mouseupNode = null
-    mousedownLink = null
   }
 
   svg
@@ -259,7 +249,7 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
     .append("svg:path")
     .attr("class", styles.link)
     .attr("marker-end", "url(#end)")
-    .attr("id", (_d, i) => `link-${i}`)
+    .attr("id", (...[, linkIndex]: [unknown, number]) => `link-${linkIndex}`)
 
   const keydown = function () {
     console.log("keydown") // eslint-disable-line no-console
@@ -269,24 +259,24 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
     console.log("keyup") // eslint-disable-line no-console
   }
 
-  const mousedownSVG = (evt: any) => {
+  const mousedownSVG = (mouseEvent: MouseEvent) => {
     svg.classed(styles.active, true)
 
-    if (evt.ctrlKey || mousedownNode || mousedownLink) {
+    if (mouseEvent.ctrlKey) {
       return
     }
 
-    const { target: e } = evt
+    const eventTarget = mouseEvent.target as HTMLElement
 
-    const dim = e.getBoundingClientRect()
-    const x = evt.clientX - dim.left
-    const y = evt.clientY - dim.top
+    const dim = eventTarget.getBoundingClientRect()
+    const x = mouseEvent.clientX - dim.left
+    const y = mouseEvent.clientY - dim.top
 
     lastNodeId += 1
 
     const node = {
       id: String.fromCharCode(lastNodeId),
-      index: nodes.length,
+      index: nodes.length, // eslint-disable-line id-denylist
       reflexive: false,
       vx: 0,
       vy: 0,
@@ -304,10 +294,7 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
     console.log("mousemoveSVG") // eslint-disable-line no-console
   }
 
-  const mouseupSVG = () => {
-    console.log("mouseupSVG", mouseupNode) // eslint-disable-line no-console
-    resetMouseVars()
-  }
+  const mouseupSVG = () => {}
 
   svg
     .on("mousedown", mousedownSVG)
@@ -319,11 +306,11 @@ const renderGraph: RenderGraph = ({ data, rootElId }) => {
 }
 
 const main = () => {
-  const data = getInitialData()
+  const vectorsData = getInitialData()
 
   renderGraph({
-    data,
     rootElId: "chart",
+    vectorsData,
   })
 
   return Promise.resolve()

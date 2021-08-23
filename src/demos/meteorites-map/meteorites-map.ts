@@ -15,7 +15,7 @@ import { v1 as uuidv1 } from "uuid"
 import * as styles from "./meteorites-map.module.css"
 
 // @TODO:
-// - review the checklist for the rest of refactors
+// refactor by separating main controller, UI and data
 
 type Point = [number, number]
 
@@ -153,9 +153,11 @@ const getNearMeteoritessWithVectors = ({
       ] as [number, number],
     }))
 
-  const nearMeteoritesSet = new Set(nearMeteorites.map((a) => a.id))
+  const nearMeteoritesSet = new Set(
+    nearMeteorites.map((nearMeteorite) => nearMeteorite.id)
+  )
 
-  const vectorsMap = nearMeteorites.reduce((acc, nearMeteorite) => {
+  const vectorsMap = nearMeteorites.reduce((...[acc, nearMeteorite]) => {
     acc[nearMeteorite.id] = nearMeteorite.vectorNormalized
 
     return acc
@@ -227,8 +229,8 @@ const meteoriteClickHandler = ({
     targetMeteorite: clickedMeteorite,
   })
 
-  const getShouldSet0 = (idx: number) => {
-    const { [idx]: animatedMeteorite } = meteoritesGeo
+  const getShouldSet0 = (geometryIndex: number) => {
+    const { [geometryIndex]: animatedMeteorite } = meteoritesGeo
 
     return (
       animatedMeteorite.id === clickedMeteorite.id ||
@@ -246,12 +248,14 @@ const meteoriteClickHandler = ({
       : styles.meteorite
   })
 
-  const getTranslateFn = (coordIdx: number) => (_el: unknown, idx: number) => {
-    if (getShouldSet0(idx)) {
+  const getTranslateFn = (coordIdx: number) => (
+    ...[, geometryIndex]: [unknown, number]
+  ) => {
+    if (getShouldSet0(geometryIndex)) {
       return 0
     }
 
-    const { [idx]: animatedMeteorite } = meteoritesGeo
+    const { [geometryIndex]: animatedMeteorite } = meteoritesGeo
     const { [animatedMeteorite.id]: vectorNormalized } = vectorsMap
 
     return vectorNormalized[coordIdx] * clickedMeteoriteDistortion
@@ -323,8 +327,9 @@ const addInfo = ({
   }
 }
 
-const zoomed = function (this: SVGSVGElement, e: any) {
-  select(this).transition().duration(500).attr("transform", e.transform)
+// eslint-disable-next-line max-params,@typescript-eslint/no-explicit-any
+const zoomed = function (this: SVGSVGElement, zoomEvent: any) {
+  select(this).transition().duration(500).attr("transform", zoomEvent.transform)
 }
 
 type RenderChart = (o: {
@@ -338,7 +343,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
   const width =
     rootEl.getBoundingClientRect().width - margin.left - margin.right
   const projectionFn = geoMercator().translate([width / 2, height / 2])
-  const path = geoPath().projection(projectionFn)
+  const geometryPath: any = geoPath().projection(projectionFn) // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const state: State = {
     isDuringAnimation: false,
@@ -350,9 +355,9 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     .attr("class", styles.modal)
     .style("top", `${-modalHiddenTop}px`)
 
-  const meteoritesGeo: MeteoriteGeo[] = meteorites.map((a) => ({
-    ...a,
-    geometry: a.geolocation,
+  const meteoritesGeo: MeteoriteGeo[] = meteorites.map((meteoriteGeo) => ({
+    ...meteoriteGeo,
+    geometry: meteoriteGeo.geolocation,
     type: "Feature",
   }))
 
@@ -365,8 +370,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
   }
 
   const meteoritessClickHandlerFn = (
-    clickEvent: MouseEvent,
-    clickedMeteorite: MeteoriteGeo
+    ...[clickEvent, clickedMeteorite]: [MouseEvent, MeteoriteGeo]
   ) => {
     clickEvent.stopPropagation()
     meteoriteClickHandler({
@@ -420,7 +424,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     .data(countries.features)
     .enter()
     .append("path")
-    .attr("d", path as any)
+    .attr("d", geometryPath)
     .attr("fill", "#ccc")
     .style("stroke", "white")
     .style("stroke-width", 1.5)
@@ -437,13 +441,13 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
     .data(meteoritesGeo)
     .enter()
     .append("path")
-    .attr("d", path as any)
+    .attr("d", geometryPath)
     .attr("class", styles.meteorite)
     .style("stroke", "white")
     .style("cursor", "pointer")
     .style("stroke-width", 1.5)
     .style("opacity", 0.8)
-    .attr("title", (d) => d.name)
+    .attr("title", (meteoriteGeo) => meteoriteGeo.name)
     .on("click", meteoritessClickHandlerFn)
 
   $(`.${styles.meteorite}`).tooltip({

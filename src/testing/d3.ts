@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, id-denylist */
 import {
   Selection,
   arc as arcD3,
@@ -93,7 +94,7 @@ const d3Tests = (QUnit: QUnitType) => {
 
   QUnit.test("d3.max", (assert) => {
     assert.deepEqual(
-      max([{ foo: 1 }, { foo: 2 }, { foo: -1 }], (d) => d.foo),
+      max([{ foo: 1 }, { foo: 2 }, { foo: -1 }], (itemObj) => itemObj.foo),
       2
     )
   })
@@ -172,7 +173,7 @@ const d3Tests = (QUnit: QUnitType) => {
   QUnit.test("d3.scaleQuantize", (assert) => {
     const scale = scaleQuantize()
       .domain([0, 100])
-      .range(Array.from({ length: 11 }).map((_, i) => i))
+      .range(Array.from({ length: 11 }).map((...[, scaleItem]) => scaleItem))
 
     assert.deepEqual(scale(0), 0)
     assert.deepEqual(scale(19), 2)
@@ -202,3 +203,4 @@ const d3Tests = (QUnit: QUnitType) => {
 }
 
 export default d3Tests
+/* eslint-enable @typescript-eslint/no-explicit-any, id-denylist */

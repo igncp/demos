@@ -27,7 +27,7 @@ type InitialDataItem = {
 type CityMetric = {
   cityName: string
   date: Date
-  value: number
+  employmentRate: number
 }
 
 type City = {
@@ -60,7 +60,7 @@ const texts = {
       monthNames[cityMetric.date.getMonth()]
     } of ${cityMetric.date.getFullYear()}`
 
-    return ` ${(cityMetric.value * 100).toFixed(2)}% - ${date}`
+    return ` ${(cityMetric.employmentRate * 100).toFixed(2)}% - ${date}`
   },
 }
 
@@ -85,12 +85,12 @@ const fetchData = async () => {
       metrics: months.map((date: Date) => {
         const itemKey = monthFormat(date) as string
         const { [itemKey as keyof InitialDataItem]: itemValue } = initialCity
-        const value: number = Number(itemValue) / 100
+        const employmentRate: number = Number(itemValue) / 100
 
         return {
           cityName: name,
           date,
-          value,
+          employmentRate,
         }
       }),
       name,
@@ -163,7 +163,8 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
   const yScale = scaleLinear().range([height, 0])
 
   const lineXTransformer = (cityMetric: CityMetric) => xScale(cityMetric.date)
-  const lineYTransformer = (cityMetric: CityMetric) => yScale(cityMetric.value)
+  const lineYTransformer = (cityMetric: CityMetric) =>
+    yScale(cityMetric.employmentRate)
 
   const cityNameToLine: { [cityName: string]: SVGPathElement } = {}
 
@@ -179,7 +180,7 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
     .domain([
       0,
       max(cities, (city: City) =>
-        max(city.metrics, (cityMetric: CityMetric) => cityMetric.value)
+        max(city.metrics, (cityMetric: CityMetric) => cityMetric.employmentRate)
       ) as number,
     ])
     .nice()
@@ -222,14 +223,14 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
 
         return line(city.metrics)
       })
-      .style("stroke", (_city, index) => color(index.toString()))
+      .style("stroke", (...[, cityIndex]) => color(cityIndex.toString()))
       .style("filter", () => "url(#drop-shadow)")
 
     generateVoronoi(usedCities) // eslint-disable-line @typescript-eslint/no-use-before-define
   }
 
   const generateVoronoi = (usedCities: City[]) => {
-    const mouseover = (_e: unknown, cityMetric: CityMetric) => {
+    const mouseover = (...[, cityMetric]: [unknown, CityMetric]) => {
       const { [cityMetric.cityName]: linePath } = cityNameToLine
 
       select(linePath).classed(styles.cityHover, true)
@@ -246,15 +247,15 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
       focus.select(".text2").text(texts.tooltipPart2(cityMetric))
     }
 
-    const mouseout = (_e: unknown, d: CityMetric) => {
-      const { [d.cityName]: linePath } = cityNameToLine
+    const mouseout = (...[, cityMetric]: [unknown, CityMetric]) => {
+      const { [cityMetric.cityName]: linePath } = cityNameToLine
 
       select(linePath).classed(styles.cityHover, false)
 
       return focus.attr("transform", "translate(-100,-100)")
     }
 
-    const clicked = (_e: unknown, d: CityMetric) => {
+    const clicked = (...[, cityMetric]: [unknown, CityMetric]) => {
       state.clickToggle = !state.clickToggle
 
       selectAll(`.${styles.cities}`).remove()
@@ -262,7 +263,9 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
 
       const inputData: City[] = (() => {
         if (state.clickToggle) {
-          const city = cities.find((c) => c.name === d.cityName) as City
+          const city = cities.find(
+            (c) => c.name === cityMetric.cityName
+          ) as City
 
           return [city]
         }
@@ -277,7 +280,7 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
     focus.append("text").attr("class", "text1").attr("y", -30)
     focus.append("text").attr("class", "text2").attr("y", -10)
 
-    const flatCityMetrics = usedCities.reduce((acc, city) => {
+    const flatCityMetrics = usedCities.reduce((...[acc, city]) => {
       city.metrics.forEach((cityMetric) => {
         acc.push(cityMetric)
       })
@@ -303,7 +306,7 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
       .data(flatCityMetrics)
       .enter()
       .append("path")
-      .attr("d", (_cityMetric: CityMetric, index) => voronoi.renderCell(index))
+      .attr("d", (...[, cityIndex]) => voronoi.renderCell(cityIndex))
       .on("mouseover", mouseover)
       .on("mouseout", mouseout)
       .on("click", clicked)
@@ -336,8 +339,8 @@ const main = async () => {
 
   select("#show-voronoi")
     .property("disabled", false)
-    .on("change", (e: MouseEvent) => {
-      setVoronoi((e.target as HTMLInputElement).checked || false)
+    .on("change", (mouseEvent: MouseEvent) => {
+      setVoronoi((mouseEvent.target as HTMLInputElement).checked || false)
     })
 }
 

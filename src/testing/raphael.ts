@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import QUnitType from "qunit"
 
 const Raphael = typeof window === "undefined" ? null : require("raphael")
@@ -16,3 +17,4 @@ const raphaelTests = (QUnit: QUnitType) => {
 }
 
 export default raphaelTests
+/* eslint-enable @typescript-eslint/no-explicit-any */

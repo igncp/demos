@@ -31,8 +31,8 @@ const overColor = "#de7c03"
 const transitionDuration = 2000
 const easeFn = easeBounce
 
-const addTitle = <A extends SVGElement, B extends SVGElement>(
-  selector: Selection<A, HierarchyRectNode, B, unknown>
+const addTitle = <SVGComp extends SVGElement, SVGParent extends SVGElement>(
+  selector: Selection<SVGComp, HierarchyRectNode, SVGParent, unknown>
 ) => {
   selector.append("title").text((node) => `${node.data.name}\n${node.value}`)
 }
@@ -55,13 +55,17 @@ type RenderChart = (o: {
   updatePartition: (partitionType: PartitionType) => void
 }
 
-const getDataHierarchy = (
-  rootData: DataNode,
-  partitionType: PartitionType,
+const getDataHierarchy = ({
+  partitionType,
+  radius,
+  rootData,
+}: {
+  partitionType: PartitionType
   radius: number
-) => {
+  rootData: DataNode
+}) => {
   const dataHierarchySize = hierarchy(rootData).sum(
-    (d: DataNode) => d.size ?? 0
+    (node: DataNode) => node.size ?? 0
   )
   const dataHierarchyCount = hierarchy(rootData).sum(() => 1)
   const partition = partitionD3<DataNode>().size([2 * Math.PI, radius])
@@ -81,10 +85,13 @@ const extractTweenObj = (node: HierarchyRectNode) => ({
   y1: node.y1,
 })
 
-const getInterpolatorFn = (
-  initialData: HierarchyRectNode[],
+const getInterpolatorFn = ({
+  fn,
+  initialData,
+}: {
   fn: (n: HierarchyRectNode) => string | null
-) => (finalNode: HierarchyRectNode, nodeIndex: number) => {
+  initialData: HierarchyRectNode[]
+}) => (...[finalNode, nodeIndex]: [HierarchyRectNode, number]) => {
   const { [nodeIndex]: initialNode } = initialData
 
   const interpolateFn = interpolate(
@@ -145,7 +152,11 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
 
   addFilter(svg)
 
-  const descendants = getDataHierarchy(rootData, partitionType, radius)
+  const descendants = getDataHierarchy({
+    partitionType,
+    radius,
+    rootData,
+  })
 
   const arc = arcD3<HierarchyRectNode>()
     .startAngle((node) => node.x0)
@@ -185,14 +196,14 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
       .enter()
       .append("path")
       .attr("display", (node) => (node.depth ? null : "none"))
-      .attr("data-index", (_d, i: number) => i)
+      .attr("data-index", (...[, nodeIndex]) => nodeIndex)
       .style("stroke", "#000")
       .style("stroke-width", "0.5px")
       .style("stroke-dasharray", "1,3")
       .style("fill", color)
-      .style("filter", (_node, index) =>
+      .style("filter", (...[, nodeIndex]) =>
         // not adding drop-shadow in all to avoid too much saturation
-        index % 3 !== 0 ? "url(#drop-shadow)" : null
+        nodeIndex % 3 !== 0 ? "url(#drop-shadow)" : null
       )
       .attr("d", arc)
 
@@ -200,7 +211,10 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
       .transition()
       .duration(transitionDuration)
       .ease(easeFn)
-      .attrTween("d", getInterpolatorFn(pathInitialData, arc))
+      .attrTween(
+        "d",
+        getInterpolatorFn({ fn: arc, initialData: pathInitialData })
+      )
 
     const textsSel = svg.selectAll<SVGTextElement, HierarchyRectNode>("text")
     const textsInitialData = textsSel.data()
@@ -213,7 +227,7 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
       .append("text")
       .text(getNodeText)
       .attr("transform", textsTransform)
-      .attr("data-index", (_d, index) => index)
+      .attr("data-index", (...[, nodeIndex]) => nodeIndex)
       .style("fill", "#333")
       .attr("text-anchor", "middle")
       .style("font", "bold 12px Arial")
@@ -226,26 +240,26 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
       .ease(easeFn)
       .attrTween(
         "transform",
-        getInterpolatorFn(textsInitialData, textsTransform)
+        getInterpolatorFn({ fn: textsTransform, initialData: textsInitialData })
       )
 
     const updatedGroups = [pathEnter, textsEnter]
 
     updatedGroups.forEach((set) => {
       set.on("mouseover", function () {
-        const index = select(this).attr("data-index")
+        const nodeIndex = select(this).attr("data-index")
 
-        select(`path[data-index="${index}"]`).style("fill", overColor)
-        select(`text[data-index="${index}"]`).style("fill", "white")
+        select(`path[data-index="${nodeIndex}"]`).style("fill", overColor)
+        select(`text[data-index="${nodeIndex}"]`).style("fill", "white")
       })
 
       set.on("mouseout", function () {
-        const index = select(this).attr("data-index")
+        const nodeIndex = select(this).attr("data-index")
 
         select<SVGPathElement, HierarchyRectNode>(
-          `path[data-index="${index}"]`
+          `path[data-index="${nodeIndex}"]`
         ).style("fill", color)
-        select(`text[data-index="${index}"]`).style("fill", "#000")
+        select(`text[data-index="${nodeIndex}"]`).style("fill", "#000")
       })
     })
 
@@ -257,11 +271,11 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
 
   return {
     updatePartition: (newPartitionType: PartitionType) => {
-      const newDescendants = getDataHierarchy(
+      const newDescendants = getDataHierarchy({
+        partitionType: newPartitionType,
+        radius,
         rootData,
-        newPartitionType,
-        radius
-      )
+      })
 
       renderDescendants(newDescendants)
     },
@@ -274,21 +288,11 @@ const main = async () => {
   const formEl = document.getElementById("type-form") as HTMLFormElement
 
   const getCurrentSelectedRadio = (): PartitionType => {
-    const result = Array.from(
+    const selectedRadio = Array.from(
       (formEl.elements as unknown) as HTMLInputElement[]
-    ).reduce((acc, el: HTMLInputElement) => {
-      if (acc) {
-        return acc
-      }
+    ).find((formElement: HTMLInputElement) => formElement.checked)
 
-      if (el.checked) {
-        return el.value
-      }
-
-      return ""
-    }, "")
-
-    return result as PartitionType
+    return selectedRadio!.value as PartitionType
   }
 
   const partitionType = getCurrentSelectedRadio()

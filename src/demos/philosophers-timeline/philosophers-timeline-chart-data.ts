@@ -119,9 +119,9 @@ const getItemTitle: Config["getItemTitle"] = (timeBandItem) => {
 
 const onChartItemClick: Config["onChartItemClick"] = (timelineChart) => {
   const query = !timelineChart.instant
-    ? `Philosopher ${timelineChart.label}${
+    ? `Philosopher ${timelineChart.label} ${
         (timelineChart.end as unknown) ? timelineChart.end.getFullYear() : ""
-      }`
+      }`.trim()
     : timelineChart.label
 
   window.open(
