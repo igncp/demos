@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/multiline-voronoi/multiline-voronoi.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">534</td><td class="">534</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/multiline-voronoi/multiline-voronoi.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">528</td><td class="">528</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Selection,
   axisBottom,
   axisLeft,
@@ -40,7 +40,7 @@ type InitialDataItem = {
 type CityMetric = {
   cityName: string
   date: Date
-  value: number
+  employmentRate: number
 }
 
 type City = {
@@ -73,7 +73,7 @@ const texts = {
       monthNames[cityMetric.date.getMonth()]
     } of ${cityMetric.date.getFullYear()}`
 
-    return ` ${(cityMetric.value * 100).toFixed(2)}% - ${date}`
+    return ` ${(cityMetric.employmentRate * 100).toFixed(2)}% - ${date}`
   },
 }
 
@@ -98,12 +98,12 @@ const fetchData = async () =&gt; {
       metrics: months.map((date: Date) =&gt; {
         const itemKey = monthFormat(date) as string
         const { [itemKey as keyof InitialDataItem]: itemValue } = initialCity
-        const value: number = Number(itemValue) / 100
+        const employmentRate: number = Number(itemValue) / 100
 
         return {
           cityName: name,
           date,
-          value,
+          employmentRate,
         }
       }),
       name,
@@ -176,7 +176,8 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
   const yScale = scaleLinear().range([height, 0])
 
   const lineXTransformer = (cityMetric: CityMetric) =&gt; xScale(cityMetric.date)
-  const lineYTransformer = (cityMetric: CityMetric) =&gt; yScale(cityMetric.value)
+  const lineYTransformer = (cityMetric: CityMetric) =&gt;
+    yScale(cityMetric.employmentRate)
 
   const cityNameToLine: { [cityName: string]: SVGPathElement } = {}
 
@@ -192,7 +193,7 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
     .domain([
       0,
       max(cities, (city: City) =&gt;
-        max(city.metrics, (cityMetric: CityMetric) =&gt; cityMetric.value)
+        max(city.metrics, (cityMetric: CityMetric) =&gt; cityMetric.employmentRate)
       ) as number,
     ])
     .nice()
@@ -235,14 +236,14 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
 
         return line(city.metrics)
       })
-      .style(&quot;stroke&quot;, (_city, index) =&gt; color(index.toString()))
+      .style(&quot;stroke&quot;, (...[, cityIndex]) =&gt; color(cityIndex.toString()))
       .style(&quot;filter&quot;, () =&gt; &quot;url(#drop-shadow)&quot;)
 
     generateVoronoi(usedCities) // eslint-disable-line @typescript-eslint/no-use-before-define
   }
 
   const generateVoronoi = (usedCities: City[]) =&gt; {
-    const mouseover = (_e: unknown, cityMetric: CityMetric) =&gt; {
+    const mouseover = (...[, cityMetric]: [unknown, CityMetric]) =&gt; {
       const { [cityMetric.cityName]: linePath } = cityNameToLine
 
       select(linePath).classed(styles.cityHover, true)
@@ -259,15 +260,15 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
       focus.select(&quot;.text2&quot;).text(texts.tooltipPart2(cityMetric))
     }
 
-    const mouseout = (_e: unknown, d: CityMetric) =&gt; {
-      const { [d.cityName]: linePath } = cityNameToLine
+    const mouseout = (...[, cityMetric]: [unknown, CityMetric]) =&gt; {
+      const { [cityMetric.cityName]: linePath } = cityNameToLine
 
       select(linePath).classed(styles.cityHover, false)
 
       return focus.attr(&quot;transform&quot;, &quot;translate(-100,-100)&quot;)
     }
 
-    const clicked = (_e: unknown, d: CityMetric) =&gt; {
+    const clicked = (...[, cityMetric]: [unknown, CityMetric]) =&gt; {
       state.clickToggle = !state.clickToggle
 
       selectAll(`.${styles.cities}`).remove()
@@ -275,7 +276,9 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
 
       const inputData: City[] = (() =&gt; {
         if (state.clickToggle) {
-          const city = cities.find((c) =&gt; c.name === d.cityName) as City
+          const city = cities.find(
+            (c) =&gt; c.name === cityMetric.cityName
+          ) as City
 
           return [city]
         }
@@ -290,7 +293,7 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
     focus.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;text1&quot;).attr(&quot;y&quot;, -30)
     focus.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;text2&quot;).attr(&quot;y&quot;, -10)
 
-    const flatCityMetrics = usedCities.reduce((acc, city) =&gt; {
+    const flatCityMetrics = usedCities.reduce((...[acc, city]) =&gt; {
       city.metrics.forEach((cityMetric) =&gt; {
         acc.push(cityMetric)
       })
@@ -316,7 +319,7 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
       .data(flatCityMetrics)
       .enter()
       .append(&quot;path&quot;)
-      .attr(&quot;d&quot;, (_cityMetric: CityMetric, index) =&gt; voronoi.renderCell(index))
+      .attr(&quot;d&quot;, (...[, cityIndex]) =&gt; voronoi.renderCell(cityIndex))
       .on(&quot;mouseover&quot;, mouseover)
       .on(&quot;mouseout&quot;, mouseout)
       .on(&quot;click&quot;, clicked)
@@ -349,14 +352,14 @@ const main = async () =&gt; {
 
   select(&quot;#show-voronoi&quot;)
     .property(&quot;disabled&quot;, false)
-    .on(&quot;change&quot;, (e: MouseEvent) =&gt; {
-      setVoronoi((e.target as HTMLInputElement).checked || false)
+    .on(&quot;change&quot;, (mouseEvent: MouseEvent) =&gt; {
+      setVoronoi((mouseEvent.target as HTMLInputElement).checked || false)
     })
 }
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 23:05:07 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 23 Aug 2021 23:33:41 GMT</p>
     </body>
   </html>
   

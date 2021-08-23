@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/meteorites-map/meteorites-map.ts</td><td class="">99.51%</td><td class="">95%</td><td class="">617</td><td class="">614</td><td class="">3</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import anime from &quot;animejs&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/meteorites-map/meteorites-map.ts</td><td class="">99.35%</td><td class="">95%</td><td class="">616</td><td class="">612</td><td class="">4</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import anime from &quot;animejs&quot;
 import {
   GeoProjection,
   Selection,
@@ -28,7 +28,7 @@ import { v1 as uuidv1 } from &quot;uuid&quot;
 import * as styles from &quot;./meteorites-map.module.css&quot;
 
 // @TODO:
-// - review the checklist for the rest of refactors
+// refactor by separating main controller, UI and data
 
 type Point = [number, number]
 
@@ -166,9 +166,11 @@ const getNearMeteoritessWithVectors = ({
       ] as [number, number],
     }))
 
-  const nearMeteoritesSet = new Set(nearMeteorites.map((a) =&gt; a.id))
+  const nearMeteoritesSet = new Set(
+    nearMeteorites.map((nearMeteorite) =&gt; nearMeteorite.id)
+  )
 
-  const vectorsMap = nearMeteorites.reduce((acc, nearMeteorite) =&gt; {
+  const vectorsMap = nearMeteorites.reduce((...[acc, nearMeteorite]) =&gt; {
     acc[nearMeteorite.id] = nearMeteorite.vectorNormalized
 
     return acc
@@ -240,8 +242,8 @@ const meteoriteClickHandler = ({
     targetMeteorite: clickedMeteorite,
   })
 
-  const getShouldSet0 = (idx: number) =&gt; {
-    const { [idx]: animatedMeteorite } = meteoritesGeo
+  const getShouldSet0 = (geometryIndex: number) =&gt; {
+    const { [geometryIndex]: animatedMeteorite } = meteoritesGeo
 
     return (
       animatedMeteorite.id === clickedMeteorite.id ||
@@ -259,12 +261,14 @@ const meteoriteClickHandler = ({
       : styles.meteorite
   })
 
-  const getTranslateFn = (coordIdx: number) =&gt; (_el: unknown, idx: number) =&gt; {
-    if (getShouldSet0(idx)) {
+  const getTranslateFn = (coordIdx: number) =&gt; (
+    ...[, geometryIndex]: [unknown, number]
+  ) =&gt; {
+    if (getShouldSet0(geometryIndex)) {
       return 0
     }
 
-    const { [idx]: animatedMeteorite } = meteoritesGeo
+    const { [geometryIndex]: animatedMeteorite } = meteoritesGeo
     const { [animatedMeteorite.id]: vectorNormalized } = vectorsMap
 
     return vectorNormalized[coordIdx] * clickedMeteoriteDistortion
@@ -336,8 +340,9 @@ const addInfo = ({
   }
 }
 
-const zoomed = function (this: SVGSVGElement, e: any) {
-  select(this).transition().duration(500).attr(&quot;transform&quot;, e.transform)
+// eslint-disable-next-line max-params,@typescript-eslint/no-explicit-any
+const zoomed = function (this: SVGSVGElement, zoomEvent: any) {
+  select(this).transition().duration(500).attr(&quot;transform&quot;, zoomEvent.transform)
 }
 
 type RenderChart = (o: {
@@ -351,7 +356,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
   const width =
     rootEl.getBoundingClientRect().width - margin.left - margin.right
   const projectionFn = geoMercator().translate([width / 2, height / 2])
-  const path = geoPath().projection(projectionFn)
+  const geometryPath: any = geoPath().projection(projectionFn) // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const state: State = {
     isDuringAnimation: false,
@@ -363,9 +368,9 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
     .attr(&quot;class&quot;, styles.modal)
     .style(&quot;top&quot;, `${-modalHiddenTop}px`)
 
-  const meteoritesGeo: MeteoriteGeo[] = meteorites.map((a) =&gt; ({
-    ...a,
-    geometry: a.geolocation,
+  const meteoritesGeo: MeteoriteGeo[] = meteorites.map((meteoriteGeo) =&gt; ({
+    ...meteoriteGeo,
+    geometry: meteoriteGeo.geolocation,
     type: &quot;Feature&quot;,
   }))
 
@@ -378,8 +383,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
   }
 
   const meteoritessClickHandlerFn = (
-    clickEvent: MouseEvent,
-    clickedMeteorite: MeteoriteGeo
+    ...[clickEvent, clickedMeteorite]: [MouseEvent, MeteoriteGeo]
   ) =&gt; {
     clickEvent.stopPropagation()
     meteoriteClickHandler({
@@ -433,7 +437,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
     .data(countries.features)
     .enter()
     .append(&quot;path&quot;)
-    .attr(&quot;d&quot;, path as any)
+    .attr(&quot;d&quot;, geometryPath)
     .attr(&quot;fill&quot;, &quot;#ccc&quot;)
     .style(&quot;stroke&quot;, &quot;white&quot;)
     .style(&quot;stroke-width&quot;, 1.5)
@@ -450,13 +454,13 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) =&gt; {
     .data(meteoritesGeo)
     .enter()
     .append(&quot;path&quot;)
-    .attr(&quot;d&quot;, path as any)
+    .attr(&quot;d&quot;, geometryPath)
     .attr(&quot;class&quot;, styles.meteorite)
     .style(&quot;stroke&quot;, &quot;white&quot;)
     .style(&quot;cursor&quot;, &quot;pointer&quot;)
     .style(&quot;stroke-width&quot;, 1.5)
     .style(&quot;opacity&quot;, 0.8)
-    .attr(&quot;title&quot;, (d) =&gt; d.name)
+    .attr(&quot;title&quot;, (meteoriteGeo) =&gt; meteoriteGeo.name)
     .on(&quot;click&quot;, meteoritessClickHandlerFn)
 
   $(`.${styles.meteorite}`).tooltip({
@@ -480,8 +484,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:325,&quot;character&quot;:46,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:326,&quot;character&quot;:60,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:326,&quot;character&quot;:62,&quot;text&quot;:&quot;transform&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 23:05:07 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:330,&quot;character&quot;:46,&quot;text&quot;:&quot;zoomEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:331,&quot;character&quot;:60,&quot;text&quot;:&quot;zoomEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:331,&quot;character&quot;:70,&quot;text&quot;:&quot;transform&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/meteorites-map.ts&quot;,&quot;line&quot;:345,&quot;character&quot;:8,&quot;text&quot;:&quot;geometryPath&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 23 Aug 2021 23:33:41 GMT</p>
     </body>
   </html>
   

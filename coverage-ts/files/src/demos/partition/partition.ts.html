@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/partition/partition.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">477</td><td class="">477</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/partition/partition.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">480</td><td class="">480</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   HierarchyRectangularNode,
   Selection,
   arc as arcD3,
@@ -44,8 +44,8 @@ const overColor = &quot;#de7c03&quot;
 const transitionDuration = 2000
 const easeFn = easeBounce
 
-const addTitle = &lt;A extends SVGElement, B extends SVGElement&gt;(
-  selector: Selection&lt;A, HierarchyRectNode, B, unknown&gt;
+const addTitle = &lt;SVGComp extends SVGElement, SVGParent extends SVGElement&gt;(
+  selector: Selection&lt;SVGComp, HierarchyRectNode, SVGParent, unknown&gt;
 ) =&gt; {
   selector.append(&quot;title&quot;).text((node) =&gt; `${node.data.name}\n${node.value}`)
 }
@@ -68,13 +68,17 @@ type RenderChart = (o: {
   updatePartition: (partitionType: PartitionType) =&gt; void
 }
 
-const getDataHierarchy = (
-  rootData: DataNode,
-  partitionType: PartitionType,
+const getDataHierarchy = ({
+  partitionType,
+  radius,
+  rootData,
+}: {
+  partitionType: PartitionType
   radius: number
-) =&gt; {
+  rootData: DataNode
+}) =&gt; {
   const dataHierarchySize = hierarchy(rootData).sum(
-    (d: DataNode) =&gt; d.size ?? 0
+    (node: DataNode) =&gt; node.size ?? 0
   )
   const dataHierarchyCount = hierarchy(rootData).sum(() =&gt; 1)
   const partition = partitionD3&lt;DataNode&gt;().size([2 * Math.PI, radius])
@@ -94,10 +98,13 @@ const extractTweenObj = (node: HierarchyRectNode) =&gt; ({
   y1: node.y1,
 })
 
-const getInterpolatorFn = (
-  initialData: HierarchyRectNode[],
+const getInterpolatorFn = ({
+  fn,
+  initialData,
+}: {
   fn: (n: HierarchyRectNode) =&gt; string | null
-) =&gt; (finalNode: HierarchyRectNode, nodeIndex: number) =&gt; {
+  initialData: HierarchyRectNode[]
+}) =&gt; (...[finalNode, nodeIndex]: [HierarchyRectNode, number]) =&gt; {
   const { [nodeIndex]: initialNode } = initialData
 
   const interpolateFn = interpolate(
@@ -158,7 +165,11 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) =&gt; {
 
   addFilter(svg)
 
-  const descendants = getDataHierarchy(rootData, partitionType, radius)
+  const descendants = getDataHierarchy({
+    partitionType,
+    radius,
+    rootData,
+  })
 
   const arc = arcD3&lt;HierarchyRectNode&gt;()
     .startAngle((node) =&gt; node.x0)
@@ -198,14 +209,14 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) =&gt; {
       .enter()
       .append(&quot;path&quot;)
       .attr(&quot;display&quot;, (node) =&gt; (node.depth ? null : &quot;none&quot;))
-      .attr(&quot;data-index&quot;, (_d, i: number) =&gt; i)
+      .attr(&quot;data-index&quot;, (...[, nodeIndex]) =&gt; nodeIndex)
       .style(&quot;stroke&quot;, &quot;#000&quot;)
       .style(&quot;stroke-width&quot;, &quot;0.5px&quot;)
       .style(&quot;stroke-dasharray&quot;, &quot;1,3&quot;)
       .style(&quot;fill&quot;, color)
-      .style(&quot;filter&quot;, (_node, index) =&gt;
+      .style(&quot;filter&quot;, (...[, nodeIndex]) =&gt;
         // not adding drop-shadow in all to avoid too much saturation
-        index % 3 !== 0 ? &quot;url(#drop-shadow)&quot; : null
+        nodeIndex % 3 !== 0 ? &quot;url(#drop-shadow)&quot; : null
       )
       .attr(&quot;d&quot;, arc)
 
@@ -213,7 +224,10 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) =&gt; {
       .transition()
       .duration(transitionDuration)
       .ease(easeFn)
-      .attrTween(&quot;d&quot;, getInterpolatorFn(pathInitialData, arc))
+      .attrTween(
+        &quot;d&quot;,
+        getInterpolatorFn({ fn: arc, initialData: pathInitialData })
+      )
 
     const textsSel = svg.selectAll&lt;SVGTextElement, HierarchyRectNode&gt;(&quot;text&quot;)
     const textsInitialData = textsSel.data()
@@ -226,7 +240,7 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) =&gt; {
       .append(&quot;text&quot;)
       .text(getNodeText)
       .attr(&quot;transform&quot;, textsTransform)
-      .attr(&quot;data-index&quot;, (_d, index) =&gt; index)
+      .attr(&quot;data-index&quot;, (...[, nodeIndex]) =&gt; nodeIndex)
       .style(&quot;fill&quot;, &quot;#333&quot;)
       .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
       .style(&quot;font&quot;, &quot;bold 12px Arial&quot;)
@@ -239,26 +253,26 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) =&gt; {
       .ease(easeFn)
       .attrTween(
         &quot;transform&quot;,
-        getInterpolatorFn(textsInitialData, textsTransform)
+        getInterpolatorFn({ fn: textsTransform, initialData: textsInitialData })
       )
 
     const updatedGroups = [pathEnter, textsEnter]
 
     updatedGroups.forEach((set) =&gt; {
       set.on(&quot;mouseover&quot;, function () {
-        const index = select(this).attr(&quot;data-index&quot;)
+        const nodeIndex = select(this).attr(&quot;data-index&quot;)
 
-        select(`path[data-index=&quot;${index}&quot;]`).style(&quot;fill&quot;, overColor)
-        select(`text[data-index=&quot;${index}&quot;]`).style(&quot;fill&quot;, &quot;white&quot;)
+        select(`path[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, overColor)
+        select(`text[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, &quot;white&quot;)
       })
 
       set.on(&quot;mouseout&quot;, function () {
-        const index = select(this).attr(&quot;data-index&quot;)
+        const nodeIndex = select(this).attr(&quot;data-index&quot;)
 
         select&lt;SVGPathElement, HierarchyRectNode&gt;(
-          `path[data-index=&quot;${index}&quot;]`
+          `path[data-index=&quot;${nodeIndex}&quot;]`
         ).style(&quot;fill&quot;, color)
-        select(`text[data-index=&quot;${index}&quot;]`).style(&quot;fill&quot;, &quot;#000&quot;)
+        select(`text[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, &quot;#000&quot;)
       })
     })
 
@@ -270,11 +284,11 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) =&gt; {
 
   return {
     updatePartition: (newPartitionType: PartitionType) =&gt; {
-      const newDescendants = getDataHierarchy(
+      const newDescendants = getDataHierarchy({
+        partitionType: newPartitionType,
+        radius,
         rootData,
-        newPartitionType,
-        radius
-      )
+      })
 
       renderDescendants(newDescendants)
     },
@@ -287,21 +301,11 @@ const main = async () =&gt; {
   const formEl = document.getElementById(&quot;type-form&quot;) as HTMLFormElement
 
   const getCurrentSelectedRadio = (): PartitionType =&gt; {
-    const result = Array.from(
+    const selectedRadio = Array.from(
       (formEl.elements as unknown) as HTMLInputElement[]
-    ).reduce((acc, el: HTMLInputElement) =&gt; {
-      if (acc) {
-        return acc
-      }
+    ).find((formElement: HTMLInputElement) =&gt; formElement.checked)
 
-      if (el.checked) {
-        return el.value
-      }
-
-      return &quot;&quot;
-    }, &quot;&quot;)
-
-    return result as PartitionType
+    return selectedRadio!.value as PartitionType
   }
 
   const partitionType = getCurrentSelectedRadio()
@@ -321,7 +325,7 @@ const main = async () =&gt; {
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 23:05:07 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 23 Aug 2021 23:33:41 GMT</p>
     </body>
   </html>
   

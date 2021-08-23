@@ -24,91 +24,91 @@
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 2,
+      "line": 3,
       "character": 6,
       "text": "Raphael",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 7,
+      "line": 8,
       "character": 10,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 7,
+      "line": 8,
       "character": 18,
       "text": "Raphael",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 9,
+      "line": 10,
       "character": 21,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 9,
+      "line": 10,
       "character": 38,
       "text": "Raphael",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 10,
+      "line": 11,
       "character": 21,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 10,
+      "line": 11,
       "character": 27,
       "text": "canvas",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 11,
+      "line": 12,
       "character": 21,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 11,
+      "line": 12,
       "character": 27,
       "text": "width",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 12,
+      "line": 13,
       "character": 21,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 12,
+      "line": 13,
       "character": 27,
       "text": "height",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 13,
+      "line": 14,
       "character": 22,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 13,
+      "line": 14,
       "character": 36,
       "text": "getSize",
       "kind": 1
@@ -1074,156 +1074,100 @@
     },
     {
       "file": "src/demos/fish-eye/fish-eye.ts",
-      "line": 153,
+      "line": 152,
       "character": 10,
       "text": "xScale",
       "kind": 1
     },
     {
       "file": "src/demos/fish-eye/fish-eye.ts",
-      "line": 156,
+      "line": 155,
       "character": 7,
       "text": "range",
       "kind": 1
     },
     {
       "file": "src/demos/fish-eye/fish-eye.ts",
-      "line": 157,
+      "line": 156,
       "character": 10,
       "text": "yScale",
       "kind": 1
     },
     {
       "file": "src/demos/fish-eye/fish-eye.ts",
-      "line": 160,
+      "line": 159,
       "character": 7,
       "text": "range",
       "kind": 1
     },
     {
       "file": "src/demos/fish-eye/fish-eye.ts",
-      "line": 308,
+      "line": 318,
       "character": 41,
       "text": "ev",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 70,
+      "line": 83,
       "character": 2,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 71,
-      "character": 2,
-      "text": "type",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 200,
+      "line": 216,
       "character": 12,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 200,
+      "line": 216,
       "character": 18,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 201,
-      "character": 14,
-      "text": "type",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 215,
-      "character": 14,
+      "line": 243,
+      "character": 16,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 245,
+      "line": 287,
       "character": 43,
       "text": "scale",
       "kind": 1
     },
     {
-      "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 380,
-      "character": 8,
-      "text": "slider",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 382,
-      "character": 2,
-      "text": "slider",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 382,
-      "character": 9,
-      "text": "slider",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 384,
-      "character": 29,
-      "text": "slider",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 384,
-      "character": 36,
-      "text": "slider",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 391,
-      "character": 2,
-      "text": "slider",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/mareys-schedule/mareys-schedule.ts",
-      "line": 391,
-      "character": 9,
-      "text": "slider",
-      "kind": 1
-    },
-    {
       "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 325,
+      "line": 330,
       "character": 46,
-      "text": "e",
+      "text": "zoomEvent",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 326,
+      "line": 331,
       "character": 60,
-      "text": "e",
+      "text": "zoomEvent",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 326,
-      "character": 62,
+      "line": 331,
+      "character": 70,
       "text": "transform",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/meteorites-map.ts",
+      "line": 345,
+      "character": 8,
+      "text": "geometryPath",
       "kind": 1
     },
     {
@@ -1385,188 +1329,6 @@
       "line": 100,
       "character": 45,
       "text": "length",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 214,
-      "character": 28,
-      "text": "_ev",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 217,
-      "character": 29,
-      "text": "_ev",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 244,
-      "character": 6,
-      "text": "mousedownLink",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 245,
-      "character": 6,
-      "text": "mousedownNode",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 246,
-      "character": 6,
-      "text": "mouseupNode",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 249,
-      "character": 4,
-      "text": "mousedownNode",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 250,
-      "character": 4,
-      "text": "mouseupNode",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 251,
-      "character": 4,
-      "text": "mousedownLink",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 271,
-      "character": 24,
-      "text": "evt",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 274,
-      "character": 8,
-      "text": "evt",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 274,
-      "character": 12,
-      "text": "ctrlKey",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 274,
-      "character": 23,
-      "text": "mousedownNode",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 274,
-      "character": 40,
-      "text": "mousedownLink",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 278,
-      "character": 20,
-      "text": "e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 280,
-      "character": 10,
-      "text": "dim",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 280,
-      "character": 16,
-      "text": "e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 280,
-      "character": 18,
-      "text": "getBoundingClientRect",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 281,
-      "character": 14,
-      "text": "evt",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 281,
-      "character": 18,
-      "text": "clientX",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 281,
-      "character": 28,
-      "text": "dim",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 281,
-      "character": 32,
-      "text": "left",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 282,
-      "character": 14,
-      "text": "evt",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 282,
-      "character": 18,
-      "text": "clientY",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 282,
-      "character": 28,
-      "text": "dim",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 282,
-      "character": 32,
-      "text": "top",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/vectors/vectors.ts",
-      "line": 307,
-      "character": 30,
-      "text": "mouseupNode",
       "kind": 1
     },
     {
@@ -2039,8 +1801,8 @@
       "kind": 1
     }
   ],
-  "percentage": 98.6320045129748,
-  "total": 21272,
-  "covered": 20981,
-  "uncovered": 291
+  "percentage": 98.79461563716524,
+  "total": 21321,
+  "covered": 21064,
+  "uncovered": 257
 }

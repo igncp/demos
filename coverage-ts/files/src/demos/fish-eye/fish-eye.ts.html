@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye.ts</td><td class="">99.07%</td><td class="">95%</td><td class="">535</td><td class="">530</td><td class="">5</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye.ts</td><td class="">99.06%</td><td class="">95%</td><td class="">532</td><td class="">527</td><td class="">5</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Axis,
   ScaleOrdinal,
   ScalePower,
@@ -33,16 +33,15 @@ import d3Fisheye, { FishEyeScale } from &quot;@/demos/_utils/fish-eye&quot;
 
 import * as styles from &quot;./fish-eye.module.css&quot;
 
-type DataItem = {
+type IncomeMetric = {
   income: number
   lifeExpectancy: number
   name: string
   population: number
   region: string
 }
-type Data = DataItem[]
 
-const fetchData = async (): Promise&lt;Data | undefined&gt; =&gt;
+const fetchData = async (): Promise&lt;IncomeMetric[] | undefined&gt; =&gt;
   json(`${ROOT_PATH}data/d3js/fish-eye/data.json`)
 
 const humanizeNumber = (initialN: number): string =&gt; {
@@ -70,22 +69,22 @@ const margin = {
 const height = 700 - margin.top - margin.bottom
 
 type FishEyeChartOpts = {
-  data: Data
+  incomeMetrics: IncomeMetric[]
   rootElId: string
 }
 
 class FishEyeChart {
   private readonly rootElId: string
-  private readonly data: Data
+  private readonly incomeMetrics: IncomeMetric[]
 
   private width!: number
 
   private dom!: {
-    dot?: Selection&lt;SVGCircleElement, DataItem, SVGGElement, unknown&gt;
+    dot?: Selection&lt;SVGCircleElement, IncomeMetric, SVGGElement, unknown&gt;
     pointer?: Selection&lt;SVGTextElement, unknown, HTMLElement, unknown&gt;
     svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
-    xAxis?: Axis&lt;DataItem[&quot;income&quot;]&gt;
-    yAxis?: Axis&lt;DataItem[&quot;lifeExpectancy&quot;]&gt;
+    xAxis?: Axis&lt;IncomeMetric[&quot;income&quot;]&gt;
+    yAxis?: Axis&lt;IncomeMetric[&quot;lifeExpectancy&quot;]&gt;
   }
 
   private vars!: {
@@ -96,9 +95,9 @@ class FishEyeChart {
     yScale: FishEyeScale
   }
 
-  public constructor({ data, rootElId }: FishEyeChartOpts) {
+  public constructor({ incomeMetrics, rootElId }: FishEyeChartOpts) {
     this.rootElId = rootElId
-    this.data = data
+    this.incomeMetrics = incomeMetrics
 
     this.setupRootEl()
     this.setVars()
@@ -183,12 +182,12 @@ class FishEyeChart {
   }
 
   private setAxis() {
-    this.dom.xAxis = axisBottom&lt;DataItem[&quot;population&quot;]&gt;(this.vars.xScale)
+    this.dom.xAxis = axisBottom&lt;IncomeMetric[&quot;population&quot;]&gt;(this.vars.xScale)
       .tickFormat(format(&quot;,d&quot;))
       .tickSize(-height)
-    this.dom.yAxis = axisLeft&lt;DataItem[&quot;income&quot;]&gt;(this.vars.yScale).tickSize(
-      -this.width
-    )
+    this.dom.yAxis = axisLeft&lt;IncomeMetric[&quot;income&quot;]&gt;(
+      this.vars.yScale
+    ).tickSize(-this.width)
     this.dom.svg
       .append(&quot;g&quot;)
       .attr(&quot;class&quot;, `x ${styles.axis}`)
@@ -266,9 +265,13 @@ class FishEyeChart {
 
   private position() {
     this.dom
-      .dot!.attr(&quot;cx&quot;, (d) =&gt; this.vars.xScale(d.income))
-      .attr(&quot;cy&quot;, (d) =&gt; this.vars.yScale(d.lifeExpectancy))
-      .attr(&quot;r&quot;, (d) =&gt; this.vars.radiusScale(d.population))
+      .dot!.attr(&quot;cx&quot;, (incomeMetric) =&gt; this.vars.xScale(incomeMetric.income))
+      .attr(&quot;cy&quot;, (incomeMetric) =&gt;
+        this.vars.yScale(incomeMetric.lifeExpectancy)
+      )
+      .attr(&quot;r&quot;, (incomeMetric) =&gt;
+        this.vars.radiusScale(incomeMetric.population)
+      )
   }
 
   private setDots() {
@@ -276,15 +279,20 @@ class FishEyeChart {
       .append(&quot;g&quot;)
       .attr(&quot;class&quot;, &quot;dots&quot;)
       .selectAll(&quot;.dot&quot;)
-      .data&lt;DataItem&gt;(this.data)
+      .data&lt;IncomeMetric&gt;(this.incomeMetrics)
       .enter()
       .append(&quot;circle&quot;)
       .attr(&quot;class&quot;, &quot;dot&quot;)
-      .style(&quot;fill&quot;, (d: DataItem) =&gt; this.vars.colorScale(d.region))
+      .style(&quot;fill&quot;, (incomeMetric) =&gt;
+        this.vars.colorScale(incomeMetric.region)
+      )
       .style(&quot;filter&quot;, &quot;url(#drop-shadow-circles)&quot;)
       .style(&quot;stroke&quot;, &quot;black&quot;)
       .style(&#x27;&quot;stroke-width&quot;&#x27;, &quot;1px&quot;)
-      .sort((a, b) =&gt; b.population - a.population)
+      .sort(
+        (...[incomeMetricA, incomeMetricB]) =&gt;
+          incomeMetricB.population - incomeMetricA.population
+      )
 
     this.position()
   }
@@ -293,10 +301,12 @@ class FishEyeChart {
     this.dom
       .dot!.append(&quot;title&quot;)
       .text(
-        (d) =&gt;
-          `${d.name}:\n- Income: ${humanizeNumber(d.income)} $/P.C.\n` +
-          `- Population: ${humanizeNumber(d.population)}\n` +
-          `- Life expectancy: ${d.lifeExpectancy} years`
+        (incomeMetric) =&gt;
+          `${incomeMetric.name}:\n- Income: ${humanizeNumber(
+            incomeMetric.income
+          )} $/P.C.\n` +
+          `- Population: ${humanizeNumber(incomeMetric.population)}\n` +
+          `- Life expectancy: ${incomeMetric.lifeExpectancy} years`
       )
   }
 
@@ -349,10 +359,10 @@ class FishEyeChart {
 }
 
 const main = async () =&gt; {
-  const data = await fetchData()
+  const incomeMetrics = await fetchData()
 
   const chart = new FishEyeChart({
-    data: data as Data,
+    incomeMetrics: incomeMetrics as IncomeMetric[],
     rootElId: &quot;chart&quot;,
   })
 
@@ -360,8 +370,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:10,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:157,&quot;character&quot;:10,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:160,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:308,&quot;character&quot;:41,&quot;text&quot;:&quot;ev&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 22 Aug 2021 23:05:07 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:10,&quot;text&quot;:&quot;xScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:156,&quot;character&quot;:10,&quot;text&quot;:&quot;yScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:159,&quot;character&quot;:7,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye.ts&quot;,&quot;line&quot;:318,&quot;character&quot;:41,&quot;text&quot;:&quot;ev&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 23 Aug 2021 23:33:41 GMT</p>
     </body>
   </html>
   
