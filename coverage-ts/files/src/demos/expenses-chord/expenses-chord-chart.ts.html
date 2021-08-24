@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/expenses-chord/expenses-chord-chart.ts</td><td class="">97.08%</td><td class="">95%</td><td class="">583</td><td class="">566</td><td class="">17</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/expenses-chord/expenses-chord-chart.ts</td><td class="">97.41%</td><td class="">95%</td><td class="">579</td><td class="">564</td><td class="">15</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Chord,
   ChordGroup,
   arc as arcD3,
@@ -53,6 +53,7 @@ const durations = {
 
 const easingFn = easeCircle
 
+// eslint-disable-next-line max-params,@typescript-eslint/no-explicit-any
 const zoomed = function (this: Element, zoomEvent: any) {
   select(this)
     .transition()
@@ -97,6 +98,7 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
   const innerRadius = Math.min(width, height) * 0.5 - 20
   const outerRadius = innerRadius + 20
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ribbonCommon = (r: any) =&gt;
     r.radius(innerRadius - 0.5).padAngle(1 / innerRadius)
 
@@ -120,7 +122,7 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
     .append(&quot;g&quot;)
     .attr(&quot;transform&quot;, `translate(${width / 2}, ${totalHeight / 2})`)
     .append(&quot;g&quot;)
-    .call(zoomBehavior as any)
+    .call(zoomBehavior as any) // eslint-disable-line @typescript-eslint/no-explicit-any
     .on(&quot;dblclick.zoom&quot;, null)
 
   // this rect is to allow zooming
@@ -172,7 +174,7 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
     const initialRibbonsData = ribbonContainer
       .selectAll&lt;SVGPathElement, Chord&gt;(`.${styles.ribbon}`)
       .data()
-      .reduce((acc, ribbonNode) =&gt; {
+      .reduce((...[acc, ribbonNode]) =&gt; {
         acc[
           `${ribbonNode.source.index}_${ribbonNode.target.index}`
         ] = ribbonNode
@@ -180,20 +182,23 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
         return acc
       }, {} as { [k: string]: Chord | undefined })
 
-    const fillRibbon = (d: Chord) =&gt;
+    const fillRibbon = (chordItem: Chord) =&gt;
       color(
         chartConfig.getRibbonGroupIdColor(
-          chordGroupsIds[d.source.index],
-          chordGroupsIds[d.target.index]
+          chordGroupsIds[chordItem.source.index],
+          chordGroupsIds[chordItem.target.index]
         )
       )
 
     const ribbons = ribbonContainer
       .selectAll&lt;SVGPathElement, Chord&gt;(`.${styles.ribbon}`)
-      .data&lt;Chord&gt;(chords, (d) =&gt; `${d.source.index}_${d.target.index}`)
+      .data&lt;Chord&gt;(
+        chords,
+        (chordItem) =&gt; `${chordItem.source.index}_${chordItem.target.index}`
+      )
       .join(
-        (enter) =&gt; {
-          const el = enter
+        (enter) =&gt;
+          enter
             .append(&quot;path&quot;)
             .attr(&quot;class&quot;, styles.ribbon)
             .attr(&quot;fill&quot;, fillRibbon)
@@ -227,10 +232,7 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
 
                 return usedRibbon(interpolated)
               }
-            })
-
-          return el
-        },
+            }),
         (update) =&gt; {
           update
             .transition()
@@ -269,18 +271,18 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
       )
 
     ribbons
-      .attr(&quot;title&quot;, (d) =&gt;
+      .attr(&quot;title&quot;, (chordItem) =&gt;
         chartConfig.getChordTitle(
-          d.source.index,
-          d.target.index,
-          d.source.value,
-          d.target.value
+          chordItem.source.index,
+          chordItem.target.index,
+          chordItem.source.value,
+          chordItem.target.value
         )
       )
-      .on(&quot;click&quot;, function (_e, d) {
-        const el = select(this)
-        const chordGroupId = `${chordGroupsIds[d.source.index]}_${
-          chordGroupsIds[d.target.index]
+      .on(&quot;click&quot;, function (...[, chordItem]) {
+        const chordSelection = select(this)
+        const chordGroupId = `${chordGroupsIds[chordItem.source.index]}_${
+          chordGroupsIds[chordItem.target.index]
         }`
 
         if (chartState.lastFocused === chordGroupId) {
@@ -288,7 +290,7 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
           chartState.lastFocused = null
         } else {
           ribbons.attr(&quot;display&quot;, &quot;none&quot;)
-          el.attr(&quot;display&quot;, &quot;block&quot;)
+          chordSelection.attr(&quot;display&quot;, &quot;block&quot;)
           chartState.lastFocused = chordGroupId
         }
       })
@@ -297,12 +299,12 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
       track: true,
     })
 
-    const getGroupText = (d: ChordGroup) =&gt; {
-      if (d.endAngle - d.startAngle &lt; 0.07) {
+    const getGroupText = (chordItem: ChordGroup) =&gt; {
+      if (chordItem.endAngle - chordItem.startAngle &lt; 0.07) {
         return &quot;&quot;
       }
 
-      return chartConfig.getChordGroupTitle(chordGroupsIds[d.index])
+      return chartConfig.getChordGroupTitle(chordGroupsIds[chordItem.index])
     }
 
     const initialGroupData = groupContainer
@@ -314,14 +316,15 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
       .data&lt;ChordGroup&gt;(chords.groups, (chordGroup) =&gt; chordGroup.index)
       .join(
         (enter) =&gt; {
-          const el = enter
+          const groupSelection = enter
             .append(&quot;g&quot;)
             .attr(&quot;class&quot;, styles.chordGroup)
-            .attr(&quot;title&quot;, (d) =&gt;
-              chartConfig.getChordGroupTitle(chordGroupsIds[d.index])
+            .attr(&quot;title&quot;, (groupItem) =&gt;
+              chartConfig.getChordGroupTitle(chordGroupsIds[groupItem.index])
             )
 
-          el.append(&quot;path&quot;)
+          groupSelection
+            .append(&quot;path&quot;)
             .attr(&quot;class&quot;, &quot;group-path&quot;)
             .transition()
             .duration(durations.ribbonAnimation)
@@ -338,10 +341,11 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
 
               return (t) =&gt; arc(interpolateFn(t))!
             })
-            .attr(&quot;fill&quot;, (d) =&gt; color(chordGroupsIds[d.index]))
+            .attr(&quot;fill&quot;, (groupItem) =&gt; color(chordGroupsIds[groupItem.index]))
             .attr(&quot;stroke&quot;, &quot;#fff&quot;)
 
-          el.append(&quot;text&quot;)
+          groupSelection
+            .append(&quot;text&quot;)
             .attr(&quot;dy&quot;, -3)
             .append(&quot;textPath&quot;)
             .attr(&quot;xlink:href&quot;, `#${textId}`)
@@ -350,10 +354,13 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
             .transition()
             .duration(durations.ribbonAnimation)
             .ease(easingFn)
-            .attr(&quot;startOffset&quot;, (d) =&gt; d.startAngle * outerRadius)
+            .attr(
+              &quot;startOffset&quot;,
+              (groupItem) =&gt; groupItem.startAngle * outerRadius
+            )
 
-          el.on(&quot;click&quot;, (_e, d) =&gt; {
-            const { [d.index]: chordGroupId } = chordGroupsIds
+          groupSelection.on(&quot;click&quot;, (...[, groupItem]) =&gt; {
+            const { [groupItem.index]: chordGroupId } = chordGroupsIds
             const latestRibbons = ribbonContainer.selectAll&lt;
               SVGPathElement,
               Chord
@@ -372,15 +379,17 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
               chartConfig.getDisplayTypeOnGroupClick(chordGroupId) ===
               DisplayType.Source
             ) {
-              latestRibbons.attr(&quot;display&quot;, (d2) =&gt;
-                d2.source.index === d.index ? &quot;block&quot; : &quot;none&quot;
+              latestRibbons.attr(&quot;display&quot;, (otherGroupItem) =&gt;
+                otherGroupItem.source.index === groupItem.index
+                  ? &quot;block&quot;
+                  : &quot;none&quot;
               )
 
               return
             }
 
-            latestRibbons.attr(&quot;display&quot;, (d2) =&gt;
-              d2.target.index === d.index ? &quot;block&quot; : &quot;none&quot;
+            latestRibbons.attr(&quot;display&quot;, (otherGroupItem) =&gt;
+              otherGroupItem.target.index === groupItem.index ? &quot;block&quot; : &quot;none&quot;
             )
           })
 
@@ -388,15 +397,15 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
             track: true,
           })
 
-          return el
+          return groupSelection
         },
         (update) =&gt; {
           update
             .select(&quot;.group-path&quot;)
             .transition()
             .duration(durations.ribbonAnimation)
-            .attrTween(&quot;d&quot;, (finalGroup, idx) =&gt; {
-              const { [idx]: initialGroup } = initialGroupData
+            .attrTween(&quot;d&quot;, (...[finalGroup, finalGroupIndex]) =&gt; {
+              const { [finalGroupIndex]: initialGroup } = initialGroupData
               const interpolateFn = interpolate(initialGroup, finalGroup)
 
               return (t) =&gt; arc(interpolateFn(t)) as string
@@ -407,7 +416,10 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
             .text(getGroupText)
             .transition()
             .duration(durations.ribbonAnimation)
-            .attr(&quot;startOffset&quot;, (d) =&gt; d.startAngle * outerRadius)
+            .attr(
+              &quot;startOffset&quot;,
+              (groupItem) =&gt; groupItem.startAngle * outerRadius
+            )
 
           return update
         },
@@ -422,8 +434,8 @@ export const renderChart = (chartConfig: ChartConfig) =&gt; {
     renderItems,
   }
 }
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:40,&quot;text&quot;:&quot;zoomEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:23,&quot;text&quot;:&quot;zoomEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:46,&quot;character&quot;:33,&quot;text&quot;:&quot;transform&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:86,&quot;character&quot;:24,&quot;text&quot;:&quot;r&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:4,&quot;text&quot;:&quot;r&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:6,&quot;text&quot;:&quot;radius&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:87,&quot;character&quot;:32,&quot;text&quot;:&quot;padAngle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:89,&quot;character&quot;:8,&quot;text&quot;:&quot;ribbonArrow&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:90,&quot;character&quot;:8,&quot;text&quot;:&quot;ribbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:152,&quot;character&quot;:10,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:58,&quot;text&quot;:&quot;ribbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:153,&quot;character&quot;:67,&quot;text&quot;:&quot;ribbonArrow&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:214,&quot;character&quot;:23,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:231,&quot;character&quot;:29,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:249,&quot;character&quot;:23,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:266,&quot;character&quot;:29,&quot;text&quot;:&quot;_e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:341,&quot;character&quot;:26,&quot;text&quot;:&quot;_e&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 23 Aug 2021 23:33:41 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:43,&quot;character&quot;:40,&quot;text&quot;:&quot;zoomEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:23,&quot;text&quot;:&quot;zoomEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:47,&quot;character&quot;:33,&quot;text&quot;:&quot;transform&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:88,&quot;character&quot;:24,&quot;text&quot;:&quot;r&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:89,&quot;character&quot;:4,&quot;text&quot;:&quot;r&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:89,&quot;character&quot;:6,&quot;text&quot;:&quot;radius&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:89,&quot;character&quot;:32,&quot;text&quot;:&quot;padAngle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:91,&quot;character&quot;:8,&quot;text&quot;:&quot;ribbonArrow&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:92,&quot;character&quot;:8,&quot;text&quot;:&quot;ribbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:154,&quot;character&quot;:10,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:58,&quot;text&quot;:&quot;ribbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:155,&quot;character&quot;:67,&quot;text&quot;:&quot;ribbonArrow&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:23,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:233,&quot;character&quot;:29,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:251,&quot;character&quot;:23,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 24 Aug 2021 23:20:02 GMT</p>
     </body>
   </html>
   

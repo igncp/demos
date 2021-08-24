@@ -129,240 +129,261 @@
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 3,
+      "line": 5,
       "character": 2,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 10,
-      "character": 24,
-      "text": "val",
+      "line": 9,
+      "character": 2,
+      "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 11,
+      "line": 15,
+      "character": 24,
+      "text": "xValue",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 16,
       "character": 10,
       "text": "x",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 11,
+      "line": 16,
       "character": 14,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 11,
+      "line": 16,
       "character": 20,
-      "text": "val",
+      "text": "xValue",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 12,
+      "line": 17,
       "character": 19,
       "text": "x",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 13,
+      "line": 18,
       "character": 33,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 13,
+      "line": 18,
       "character": 39,
       "text": "range",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 22,
+      "line": 27,
       "character": 35,
       "text": "x",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 40,
-      "character": 47,
+      "line": 48,
+      "character": 6,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 40,
-      "character": 53,
+      "line": 48,
+      "character": 13,
+      "text": "scale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 48,
+      "character": 19,
       "text": "copy",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 43,
+      "line": 52,
       "character": 10,
-      "text": "result",
+      "text": "domainResult",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 43,
-      "character": 19,
+      "line": 52,
+      "character": 25,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 43,
-      "character": 25,
+      "line": 52,
+      "character": 31,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 45,
-      "character": 11,
-      "text": "result",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/_utils/fish-eye.ts",
-      "line": 45,
-      "character": 22,
-      "text": "scale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/_utils/fish-eye.ts",
-      "line": 45,
-      "character": 45,
-      "text": "result",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/_utils/fish-eye.ts",
-      "line": 49,
-      "character": 10,
-      "text": "result",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/_utils/fish-eye.ts",
-      "line": 49,
-      "character": 19,
-      "text": "scale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/_utils/fish-eye.ts",
-      "line": 49,
-      "character": 25,
-      "text": "range",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/_utils/fish-eye.ts",
-      "line": 51,
-      "character": 11,
-      "text": "result",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/_utils/fish-eye.ts",
-      "line": 51,
-      "character": 22,
-      "text": "scale",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/_utils/fish-eye.ts",
-      "line": 51,
-      "character": 45,
-      "text": "result",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/_utils/fish-eye.ts",
       "line": 54,
-      "character": 15,
-      "text": "nice",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/_utils/fish-eye.ts",
-      "line": 54,
-      "character": 22,
-      "text": "scale",
+      "character": 11,
+      "text": "domainResult",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
       "line": 54,
       "character": 28,
+      "text": "scale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 54,
+      "character": 51,
+      "text": "domainResult",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 58,
+      "character": 10,
+      "text": "rangeResult",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 58,
+      "character": 24,
+      "text": "scale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 58,
+      "character": 30,
+      "text": "range",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 60,
+      "character": 11,
+      "text": "rangeResult",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 60,
+      "character": 27,
+      "text": "scale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 60,
+      "character": 50,
+      "text": "rangeResult",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 63,
+      "character": 15,
       "text": "nice",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 55,
+      "line": 63,
+      "character": 22,
+      "text": "scale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 63,
+      "character": 28,
+      "text": "nice",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 64,
       "character": 15,
       "text": "ticks",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 55,
+      "line": 64,
       "character": 23,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 55,
+      "line": 64,
       "character": 29,
       "text": "ticks",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 56,
+      "line": 65,
       "character": 15,
       "text": "tickFormat",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 56,
+      "line": 65,
       "character": 28,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 56,
+      "line": 65,
       "character": 34,
       "text": "tickFormat",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 65,
+      "line": 75,
       "character": 8,
-      "text": "scaleType",
+      "text": "createScale",
       "kind": 1
     },
     {
       "file": "src/demos/_utils/fish-eye.ts",
-      "line": 66,
-      "character": 30,
-      "text": "scaleType",
+      "line": 79,
+      "character": 6,
+      "text": "scale",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/_utils/fish-eye.ts",
+      "line": 79,
+      "character": 13,
+      "text": "createScale",
       "kind": 1
     },
     {
@@ -549,336 +570,343 @@
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 74,
+      "line": 72,
       "character": 8,
       "text": "jsonData",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 76,
+      "line": 74,
       "character": 9,
       "text": "jsonData",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 82,
+      "line": 74,
+      "character": 18,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bubbles/bubbles.ts",
+      "line": 80,
       "character": 10,
       "text": "d3",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 82,
+      "line": 80,
       "character": 14,
       "text": "nv",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 90,
+      "line": 88,
       "character": 8,
       "text": "color",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 90,
+      "line": 88,
       "character": 16,
       "text": "d3",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 90,
+      "line": 88,
       "character": 19,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 90,
+      "line": 88,
       "character": 25,
       "text": "category20b",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 101,
+      "line": 100,
       "character": 10,
       "text": "color",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 101,
+      "line": 100,
       "character": 17,
       "text": "color",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 114,
+      "line": 113,
       "character": 8,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 114,
+      "line": 113,
       "character": 16,
       "text": "nv",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 114,
+      "line": 113,
       "character": 19,
       "text": "models",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 114,
+      "line": 113,
       "character": 26,
       "text": "scatterChart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 116,
+      "line": 115,
       "character": 2,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 116,
+      "line": 115,
       "character": 8,
       "text": "margin",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 118,
+      "line": 117,
       "character": 2,
       "text": "nv",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 118,
+      "line": 117,
       "character": 5,
       "text": "utils",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 118,
+      "line": 117,
       "character": 11,
       "text": "windowResize",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 118,
+      "line": 117,
       "character": 24,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 118,
+      "line": 117,
       "character": 30,
       "text": "update",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 120,
+      "line": 119,
       "character": 2,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 120,
+      "line": 119,
       "character": 8,
       "text": "forceY",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 120,
+      "line": 119,
       "character": 27,
       "text": "forceX",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 122,
+      "line": 121,
       "character": 2,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 122,
+      "line": 121,
       "character": 8,
       "text": "tooltipContent",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 126,
+      "line": 125,
       "character": 2,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 126,
+      "line": 125,
       "character": 8,
       "text": "xAxis",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 127,
+      "line": 126,
       "character": 5,
       "text": "axisLabelDistance",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 128,
+      "line": 127,
       "character": 5,
       "text": "tickFormat",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 128,
+      "line": 127,
       "character": 16,
       "text": "d3",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 128,
+      "line": 127,
       "character": 19,
       "text": "format",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 129,
+      "line": 128,
       "character": 5,
       "text": "axisLabel",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 130,
+      "line": 129,
       "character": 2,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 130,
+      "line": 129,
       "character": 8,
       "text": "yAxis",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 131,
+      "line": 130,
       "character": 5,
       "text": "tickFormat",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 131,
+      "line": 130,
       "character": 16,
       "text": "d3",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 131,
+      "line": 130,
       "character": 19,
       "text": "format",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 132,
+      "line": 131,
       "character": 5,
       "text": "axisLabelDistance",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 133,
+      "line": 132,
       "character": 5,
       "text": "axisLabel",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 135,
+      "line": 134,
       "character": 2,
       "text": "d3",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 135,
+      "line": 134,
       "character": 5,
       "text": "select",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 136,
+      "line": 135,
       "character": 5,
       "text": "append",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 137,
+      "line": 136,
       "character": 5,
       "text": "attr",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 138,
+      "line": 137,
       "character": 5,
       "text": "datum",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 139,
+      "line": 138,
       "character": 5,
       "text": "call",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 139,
+      "line": 138,
       "character": 10,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 143,
+      "line": 142,
       "character": 9,
       "text": "jsonData",
       "kind": 1
@@ -955,121 +983,107 @@
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 42,
+      "line": 43,
       "character": 40,
       "text": "zoomEvent",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 46,
+      "line": 47,
       "character": 23,
       "text": "zoomEvent",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 46,
+      "line": 47,
       "character": 33,
       "text": "transform",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 86,
+      "line": 88,
       "character": 24,
       "text": "r",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 87,
+      "line": 89,
       "character": 4,
       "text": "r",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 87,
+      "line": 89,
       "character": 6,
       "text": "radius",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 87,
+      "line": 89,
       "character": 32,
       "text": "padAngle",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 89,
+      "line": 91,
       "character": 8,
       "text": "ribbonArrow",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 90,
+      "line": 92,
       "character": 8,
       "text": "ribbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 152,
+      "line": 154,
       "character": 10,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 153,
+      "line": 155,
       "character": 58,
       "text": "ribbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 153,
+      "line": 155,
       "character": 67,
       "text": "ribbonArrow",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 214,
+      "line": 219,
       "character": 23,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 231,
+      "line": 233,
       "character": 29,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 249,
+      "line": 251,
       "character": 23,
       "text": "usedRibbon",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 266,
-      "character": 29,
-      "text": "_e",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 341,
-      "character": 26,
-      "text": "_e",
       "kind": 1
     },
     {
@@ -1406,6 +1420,76 @@
       "line": 36,
       "character": 29,
       "text": "length",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
+      "line": 171,
+      "character": 35,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
+      "line": 210,
+      "character": 29,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
+      "line": 211,
+      "character": 28,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
+      "line": 212,
+      "character": 34,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
+      "line": 213,
+      "character": 35,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
+      "line": 228,
+      "character": 43,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
+      "line": 228,
+      "character": 49,
+      "text": "copy",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
+      "line": 229,
+      "character": 73,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
+      "line": 230,
+      "character": 9,
+      "text": "copy",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
+      "line": 231,
+      "character": 9,
+      "text": "normalize",
       "kind": 1
     },
     {
@@ -1801,8 +1885,8 @@
       "kind": 1
     }
   ],
-  "percentage": 98.79461563716524,
-  "total": 21321,
-  "covered": 21064,
-  "uncovered": 257
+  "percentage": 98.76219399963188,
+  "total": 21732,
+  "covered": 21463,
+  "uncovered": 269
 }
