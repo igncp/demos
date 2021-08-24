@@ -40,6 +40,7 @@ const durations = {
 
 const easingFn = easeCircle
 
+// eslint-disable-next-line max-params,@typescript-eslint/no-explicit-any
 const zoomed = function (this: Element, zoomEvent: any) {
   select(this)
     .transition()
@@ -84,6 +85,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
   const innerRadius = Math.min(width, height) * 0.5 - 20
   const outerRadius = innerRadius + 20
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ribbonCommon = (r: any) =>
     r.radius(innerRadius - 0.5).padAngle(1 / innerRadius)
 
@@ -107,7 +109,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
     .append("g")
     .attr("transform", `translate(${width / 2}, ${totalHeight / 2})`)
     .append("g")
-    .call(zoomBehavior as any)
+    .call(zoomBehavior as any) // eslint-disable-line @typescript-eslint/no-explicit-any
     .on("dblclick.zoom", null)
 
   // this rect is to allow zooming
@@ -159,7 +161,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
     const initialRibbonsData = ribbonContainer
       .selectAll<SVGPathElement, Chord>(`.${styles.ribbon}`)
       .data()
-      .reduce((acc, ribbonNode) => {
+      .reduce((...[acc, ribbonNode]) => {
         acc[
           `${ribbonNode.source.index}_${ribbonNode.target.index}`
         ] = ribbonNode
@@ -167,20 +169,23 @@ export const renderChart = (chartConfig: ChartConfig) => {
         return acc
       }, {} as { [k: string]: Chord | undefined })
 
-    const fillRibbon = (d: Chord) =>
+    const fillRibbon = (chordItem: Chord) =>
       color(
         chartConfig.getRibbonGroupIdColor(
-          chordGroupsIds[d.source.index],
-          chordGroupsIds[d.target.index]
+          chordGroupsIds[chordItem.source.index],
+          chordGroupsIds[chordItem.target.index]
         )
       )
 
     const ribbons = ribbonContainer
       .selectAll<SVGPathElement, Chord>(`.${styles.ribbon}`)
-      .data<Chord>(chords, (d) => `${d.source.index}_${d.target.index}`)
+      .data<Chord>(
+        chords,
+        (chordItem) => `${chordItem.source.index}_${chordItem.target.index}`
+      )
       .join(
-        (enter) => {
-          const el = enter
+        (enter) =>
+          enter
             .append("path")
             .attr("class", styles.ribbon)
             .attr("fill", fillRibbon)
@@ -214,10 +219,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
 
                 return usedRibbon(interpolated)
               }
-            })
-
-          return el
-        },
+            }),
         (update) => {
           update
             .transition()
@@ -256,18 +258,18 @@ export const renderChart = (chartConfig: ChartConfig) => {
       )
 
     ribbons
-      .attr("title", (d) =>
+      .attr("title", (chordItem) =>
         chartConfig.getChordTitle(
-          d.source.index,
-          d.target.index,
-          d.source.value,
-          d.target.value
+          chordItem.source.index,
+          chordItem.target.index,
+          chordItem.source.value,
+          chordItem.target.value
         )
       )
-      .on("click", function (_e, d) {
-        const el = select(this)
-        const chordGroupId = `${chordGroupsIds[d.source.index]}_${
-          chordGroupsIds[d.target.index]
+      .on("click", function (...[, chordItem]) {
+        const chordSelection = select(this)
+        const chordGroupId = `${chordGroupsIds[chordItem.source.index]}_${
+          chordGroupsIds[chordItem.target.index]
         }`
 
         if (chartState.lastFocused === chordGroupId) {
@@ -275,7 +277,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
           chartState.lastFocused = null
         } else {
           ribbons.attr("display", "none")
-          el.attr("display", "block")
+          chordSelection.attr("display", "block")
           chartState.lastFocused = chordGroupId
         }
       })
@@ -284,12 +286,12 @@ export const renderChart = (chartConfig: ChartConfig) => {
       track: true,
     })
 
-    const getGroupText = (d: ChordGroup) => {
-      if (d.endAngle - d.startAngle < 0.07) {
+    const getGroupText = (chordItem: ChordGroup) => {
+      if (chordItem.endAngle - chordItem.startAngle < 0.07) {
         return ""
       }
 
-      return chartConfig.getChordGroupTitle(chordGroupsIds[d.index])
+      return chartConfig.getChordGroupTitle(chordGroupsIds[chordItem.index])
     }
 
     const initialGroupData = groupContainer
@@ -301,14 +303,15 @@ export const renderChart = (chartConfig: ChartConfig) => {
       .data<ChordGroup>(chords.groups, (chordGroup) => chordGroup.index)
       .join(
         (enter) => {
-          const el = enter
+          const groupSelection = enter
             .append("g")
             .attr("class", styles.chordGroup)
-            .attr("title", (d) =>
-              chartConfig.getChordGroupTitle(chordGroupsIds[d.index])
+            .attr("title", (groupItem) =>
+              chartConfig.getChordGroupTitle(chordGroupsIds[groupItem.index])
             )
 
-          el.append("path")
+          groupSelection
+            .append("path")
             .attr("class", "group-path")
             .transition()
             .duration(durations.ribbonAnimation)
@@ -325,10 +328,11 @@ export const renderChart = (chartConfig: ChartConfig) => {
 
               return (t) => arc(interpolateFn(t))!
             })
-            .attr("fill", (d) => color(chordGroupsIds[d.index]))
+            .attr("fill", (groupItem) => color(chordGroupsIds[groupItem.index]))
             .attr("stroke", "#fff")
 
-          el.append("text")
+          groupSelection
+            .append("text")
             .attr("dy", -3)
             .append("textPath")
             .attr("xlink:href", `#${textId}`)
@@ -337,10 +341,13 @@ export const renderChart = (chartConfig: ChartConfig) => {
             .transition()
             .duration(durations.ribbonAnimation)
             .ease(easingFn)
-            .attr("startOffset", (d) => d.startAngle * outerRadius)
+            .attr(
+              "startOffset",
+              (groupItem) => groupItem.startAngle * outerRadius
+            )
 
-          el.on("click", (_e, d) => {
-            const { [d.index]: chordGroupId } = chordGroupsIds
+          groupSelection.on("click", (...[, groupItem]) => {
+            const { [groupItem.index]: chordGroupId } = chordGroupsIds
             const latestRibbons = ribbonContainer.selectAll<
               SVGPathElement,
               Chord
@@ -359,15 +366,17 @@ export const renderChart = (chartConfig: ChartConfig) => {
               chartConfig.getDisplayTypeOnGroupClick(chordGroupId) ===
               DisplayType.Source
             ) {
-              latestRibbons.attr("display", (d2) =>
-                d2.source.index === d.index ? "block" : "none"
+              latestRibbons.attr("display", (otherGroupItem) =>
+                otherGroupItem.source.index === groupItem.index
+                  ? "block"
+                  : "none"
               )
 
               return
             }
 
-            latestRibbons.attr("display", (d2) =>
-              d2.target.index === d.index ? "block" : "none"
+            latestRibbons.attr("display", (otherGroupItem) =>
+              otherGroupItem.target.index === groupItem.index ? "block" : "none"
             )
           })
 
@@ -375,15 +384,15 @@ export const renderChart = (chartConfig: ChartConfig) => {
             track: true,
           })
 
-          return el
+          return groupSelection
         },
         (update) => {
           update
             .select(".group-path")
             .transition()
             .duration(durations.ribbonAnimation)
-            .attrTween("d", (finalGroup, idx) => {
-              const { [idx]: initialGroup } = initialGroupData
+            .attrTween("d", (...[finalGroup, finalGroupIndex]) => {
+              const { [finalGroupIndex]: initialGroup } = initialGroupData
               const interpolateFn = interpolate(initialGroup, finalGroup)
 
               return (t) => arc(interpolateFn(t)) as string
@@ -394,7 +403,10 @@ export const renderChart = (chartConfig: ChartConfig) => {
             .text(getGroupText)
             .transition()
             .duration(durations.ribbonAnimation)
-            .attr("startOffset", (d) => d.startAngle * outerRadius)
+            .attr(
+              "startOffset",
+              (groupItem) => groupItem.startAngle * outerRadius
+            )
 
           return update
         },

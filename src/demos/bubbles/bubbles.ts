@@ -34,26 +34,24 @@ const fetchDependencies = async () => {
   ])
 }
 
-type JsonData = {
-  data: Array<{
-    activityId: string
-    activityTimeZone: string
-    activityType: string
-    deviceType: string
-    links: unknown
-    metricSummary: {
-      calories: string
-      distance: string
-      duration: string
-      fuel: string
-      steps: string
-    }
-    metrics: unknown
-    startTime: string
-    status: string
-    tags: unknown
-  }>
-}
+type JsonData = Array<{
+  activityId: string
+  activityTimeZone: string
+  activityType: string
+  deviceType: string
+  links: unknown
+  metricSummary: {
+    calories: string
+    distance: string
+    duration: string
+    fuel: string
+    steps: string
+  }
+  metrics: unknown
+  startTime: string
+  status: string
+  tags: unknown
+}>
 
 const durationToMinutes = (str: string) => {
   const strParts = str.split(":")
@@ -74,13 +72,13 @@ const fetchData = async () => {
   const response = await fetch(`${ROOT_PATH}data/d3js/bubbles/data.json`)
   const jsonData = await response.json()
 
-  return jsonData
+  return jsonData.data
 }
 
 type RenderChart = (o: { jsonData: JsonData; rootElId: string }) => void
 
 const renderChart: RenderChart = ({ jsonData, rootElId }) => {
-  const { d3, nv } = window as any
+  const { d3, nv } = window as any // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
@@ -93,16 +91,17 @@ const renderChart: RenderChart = ({ jsonData, rootElId }) => {
   const chartData = [
     {
       key: "Data",
-      values: jsonData.data.map((d, i, arr) => {
-        const distance = +d.metricSummary.distance
-        const time = durationToMinutes(d.metricSummary.duration)
+      // eslint-disable-next-line id-denylist
+      values: jsonData.map((...[jsonItem, jsonItemIndex]) => {
+        const distance = +jsonItem.metricSummary.distance
+        const time = durationToMinutes(jsonItem.metricSummary.duration)
         const pace = time / distance
 
         return {
           color: color(distance),
-          data: d,
+          jsonItem,
           size: distance,
-          x: arr.length - i,
+          x: jsonData.length - jsonItemIndex,
           y: pace,
         }
       }),
@@ -122,7 +121,7 @@ const renderChart: RenderChart = ({ jsonData, rootElId }) => {
 
   chart.tooltipContent(
     (...[, , , obj]: [unknown, unknown, unknown, { point: ChartDataItem }]) =>
-      `${obj.point.size.toFixed(1)} km - ${obj.point.data.deviceType}`
+      `${obj.point.size.toFixed(1)} km - ${obj.point.jsonItem.deviceType}`
   )
   chart.xAxis
     .axisLabelDistance(45)

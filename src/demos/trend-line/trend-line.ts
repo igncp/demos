@@ -20,27 +20,25 @@ import * as styles from "./trend-line.module.css"
 
 type InitialDataItem = {
   occurred: string
-  value: string
+  value: string // eslint-disable-line id-denylist
 }
 
 type DataItem = {
+  arbitraryValue: number
   occurred: Date
-  value: number
 }
 
 const fetchData = async (): Promise<DataItem[]> => {
-  const result = (await tsv(
+  const response = (await tsv(
     `${ROOT_PATH}data/d3js/trend-line/data.tsv`
   )) as InitialDataItem[]
 
   const timeFormat = timeParse("%Y-%m-%d")
 
-  const data = result.map((d) => ({
-    occurred: timeFormat(d.occurred) as Date,
-    value: +d.value,
+  return response.map((responseItem) => ({
+    arbitraryValue: +responseItem.value,
+    occurred: timeFormat(responseItem.occurred)!,
   }))
-
-  return data
 }
 
 const margin = {
@@ -54,21 +52,31 @@ const height = 500 - margin.top - margin.bottom
 
 const animationTime = 2000
 
-const getInterpolation = (data: DataItem[], line: Line<DataItem>) => {
+const getInterpolation = ({
+  line,
+  lineData,
+}: {
+  line: Line<DataItem>
+  lineData: DataItem[]
+}) => () => {
   const interpolate = scaleQuantile()
     .domain([0, 1])
-    .range(range(1, data.length + 1))
+    .range(range(1, lineData.length + 1))
 
   return (t: number): string => {
-    const interpolatedLine = data.slice(0, interpolate(t))
+    const interpolatedLine = lineData.slice(0, interpolate(t))
 
     return line(interpolatedLine)!
   }
 }
 
-const linearRegression = (data: DataItem[]) => {
-  const lr: { intercept?: number; r2?: number; slope?: number } = {}
-  const { length: n } = data
+const createLinearRegression = (lineData: DataItem[]) => {
+  const linearRegression: {
+    intercept?: number
+    r2?: number
+    slope?: number
+  } = {}
+  const { length: itemsNum } = lineData
 
   let sumX = 0
   let sumY = 0
@@ -76,38 +84,44 @@ const linearRegression = (data: DataItem[]) => {
   let sumXX = 0
   let sumYY = 0
 
-  data.forEach((d) => {
-    sumX += d.occurred.getTime()
-    sumY += d.value
-    sumXX += d.occurred.getTime() * d.occurred.getTime()
-    sumYY += d.value * d.value
-    sumXY += d.occurred.getTime() * d.value
+  lineData.forEach((lineItem) => {
+    sumY += lineItem.arbitraryValue
+    sumYY += lineItem.arbitraryValue * lineItem.arbitraryValue
+    sumXY += lineItem.occurred.getTime() * lineItem.arbitraryValue
+
+    sumX += lineItem.occurred.getTime()
+    sumXX += lineItem.occurred.getTime() * lineItem.occurred.getTime()
   })
-  lr.slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX)
-  lr.intercept = (sumY - lr.slope * sumX) / n
-  lr.r2 = Math.pow(
-    (n * sumXY - sumX * sumY) /
-      Math.sqrt((n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY)),
+
+  linearRegression.slope =
+    (itemsNum * sumXY - sumX * sumY) / (itemsNum * sumXX - sumX * sumX)
+  linearRegression.intercept = (sumY - linearRegression.slope * sumX) / itemsNum
+  linearRegression.r2 = Math.pow(
+    (itemsNum * sumXY - sumX * sumY) /
+      Math.sqrt(
+        (itemsNum * sumXX - sumX * sumX) * (itemsNum * sumYY - sumY * sumY)
+      ),
     2
   )
 
-  return lr
+  return linearRegression
 }
 
 const renderGraph = ({
-  data,
   initialZoomed,
+  lineData,
   rootElId,
 }: {
-  data: DataItem[]
   initialZoomed: boolean
+  lineData: DataItem[]
   rootElId: string
 }) => {
-  const el = document.getElementById(rootElId) as HTMLElement
+  const container = document.getElementById(rootElId) as HTMLElement
 
-  el.classList.add(styles.trendLineChart)
+  container.classList.add(styles.trendLineChart)
 
-  const width = el.getBoundingClientRect().width - margin.left - margin.right
+  const width =
+    container.getBoundingClientRect().width - margin.left - margin.right
 
   const renderContent = (isZoomed: boolean) => {
     const svg = select(`#${rootElId}`)
@@ -124,13 +138,15 @@ const renderGraph = ({
     const yAxis = axisLeft(y)
 
     const line = d3Line<DataItem>()
-      .x((d) => x(d.occurred))
-      .y((d) => y(d.value))
+      .x((lineItem) => x(lineItem.occurred))
+      .y((lineItem) => y(lineItem.arbitraryValue))
 
-    x.domain(extent(data, (d) => d.occurred) as [Date, Date])
+    x.domain(extent(lineData, (lineItem) => lineItem.occurred) as [Date, Date])
     y.domain([
-      isZoomed ? (min(data, (d) => d.value) as number) : 0,
-      max(data, (d) => d.value) as number,
+      isZoomed
+        ? (min(lineData, (lineItem) => lineItem.arbitraryValue) as number)
+        : 0,
+      max(lineData, (lineItem) => lineItem.arbitraryValue) as number,
     ])
 
     svg
@@ -142,29 +158,42 @@ const renderGraph = ({
 
     svg
       .append("path")
-      .datum(data)
+      .datum(lineData)
       .transition()
       .duration(animationTime)
-      .attrTween("d", () => getInterpolation(data, line))
+      .attrTween(
+        "d",
+        getInterpolation({
+          line,
+          lineData,
+        })
+      )
       .attr("class", styles.line)
 
-    const lr = linearRegression(data)
+    const linearRegression = createLinearRegression(lineData)
 
     const regressionLine = d3Line<DataItem>()
-      .x((d) => x(d.occurred))
-      .y((d) => {
-        const tmp = lr.intercept! + lr.slope! * +d.occurred
-
-        return y(tmp)
-      })
+      .x((lineItem) => x(lineItem.occurred))
+      .y((lineItem) =>
+        y(
+          linearRegression.intercept! +
+            linearRegression.slope! * +lineItem.occurred
+        )
+      )
 
     svg
       .append("path")
-      .datum(data)
+      .datum(lineData)
       .transition()
       .delay(animationTime)
       .duration(animationTime)
-      .attrTween("d", () => getInterpolation(data, regressionLine))
+      .attrTween(
+        "d",
+        getInterpolation({
+          line: regressionLine,
+          lineData,
+        })
+      )
       .attr("class", styles.rline)
 
     svg
@@ -173,7 +202,7 @@ const renderGraph = ({
       .style("opacity", 0)
       .transition()
       .delay(animationTime * 2)
-      .text(`Slope: ${lr.slope!.toExponential(3)}`)
+      .text(`Slope: ${linearRegression.slope!.toExponential(3)}`)
       .style("opacity", 1)
   }
 
@@ -186,14 +215,14 @@ const renderGraph = ({
 
 const main = async () => {
   const rootElId = "chart"
-  const data = await fetchData()
+  const lineData = await fetchData()
 
   const getIsZoomed = () =>
     (document.querySelector('input[value="zoom"]') as HTMLInputElement).checked
 
   const { renderContent } = renderGraph({
-    data,
     initialZoomed: getIsZoomed(),
+    lineData,
     rootElId,
   })
 

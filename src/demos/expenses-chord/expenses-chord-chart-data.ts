@@ -11,11 +11,11 @@ type State = {
 }
 
 type DataItem = {
-  value: number | null
+  value: number | null // eslint-disable-line id-denylist
   year: number
 }
 
-type Data = {
+type ChordData = {
   [country: string]: {
     [region: string]: DataItem[]
   }
@@ -27,9 +27,9 @@ export const createInitialState = (): State => ({
   timeIndex: 0,
 })
 
-export const getAreas = (data: Data) => {
-  const countries = Object.keys(data).sort()
-  const regions = Object.keys(data[countries[0]]).sort()
+export const getAreas = (chordData: ChordData) => {
+  const countries = Object.keys(chordData).sort()
+  const regions = Object.keys(chordData[countries[0]]).sort()
 
   return { countries, regions }
 }
@@ -37,16 +37,16 @@ export const getAreas = (data: Data) => {
 export const fetchData = () =>
   (json(
     `${ROOT_PATH}data/d3js/expenses-chord/data.json`
-  ) as unknown) as Promise<Data>
+  ) as unknown) as Promise<ChordData>
 
 export const createChartConfig = ({
+  chordData,
   countries,
-  data,
   regions,
   state,
 }: {
+  chordData: ChordData
   countries: string[]
-  data: Data
   regions: string[]
   state: State
 }): ChartConfig => {
@@ -54,7 +54,7 @@ export const createChartConfig = ({
 
   const getChordMatrix: ChartConfig["getChordMatrix"] = () => {
     const matrix = names.map((maybeCountry) => {
-      if (!data[maybeCountry] as unknown) {
+      if (!chordData[maybeCountry] as unknown) {
         return names.map(() => 0)
       }
 
@@ -65,7 +65,7 @@ export const createChartConfig = ({
       return names.map((maybeRegion) => {
         const {
           [maybeCountry]: { [maybeRegion]: dataItem },
-        } = data
+        } = chordData
 
         if (!dataItem as unknown) {
           return 0
@@ -84,17 +84,16 @@ export const createChartConfig = ({
 
   // @TODO: confirm title
   const getChordTitle: ChartConfig["getChordTitle"] = (
-    sourceIndex,
-    targetIndex,
-    sourceValue
+    ...[sourceIndex, targetIndex, sourceValue]
   ) =>
     `People from "${names[sourceIndex]}" spend into "${names[targetIndex]}": ${sourceValue}`
 
-  const getChordGroupTitle: ChartConfig["getChordGroupTitle"] = (d) => d
+  const getChordGroupTitle: ChartConfig["getChordGroupTitle"] = (
+    chordItemLabel
+  ) => chordItemLabel
 
   const getRibbonGroupIdColor: ChartConfig["getRibbonGroupIdColor"] = (
-    sourceGroupId,
-    targetGroupId
+    ...[sourceGroupId, targetGroupId]
   ) => (state.selectedRegion === ALL_ID ? targetGroupId : sourceGroupId)
 
   const getDisplayTypeOnGroupClick: ChartConfig["getDisplayTypeOnGroupClick"] = (

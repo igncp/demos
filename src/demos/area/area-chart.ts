@@ -15,12 +15,17 @@ import { Delaunay } from "d3-delaunay"
 
 import * as styles from "./area.module.css"
 
-const filterBlackOpacity = (
-  id: string,
-  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>,
-  deviation: number,
+const filterBlackOpacity = ({
+  deviation,
+  id,
+  slope,
+  svg,
+}: {
+  deviation: number
+  id: string
   slope: number
-) => {
+  svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
+}) => {
   const defs = svg.append("defs")
   const filter = defs
     .append("filter")
@@ -101,7 +106,12 @@ export const renderChart = <AreaPoint>(
     .text(chartConfig.getChartTitle())
     .style("font-weight", "bold")
 
-  filterBlackOpacity("points", svg, 2, 0.5)
+  filterBlackOpacity({
+    deviation: 2,
+    id: "points",
+    slope: 0.5,
+    svg,
+  })
 
   const xMax = max(areaPoints, chartConfig.getItemXValue) as number
   const xMin = min(areaPoints, chartConfig.getItemXValue) as number
@@ -122,7 +132,7 @@ export const renderChart = <AreaPoint>(
   const getSmallDeviceTicksScale = () =>
     scaleQuantize()
       .domain([0, 500])
-      .range(Array.from({ length: 6 }).map((_, rangeIndex) => rangeIndex))
+      .range(Array.from({ length: 6 }).map((...[, rangeIndex]) => rangeIndex))
 
   const ticks = isSmallDevice ? getSmallDeviceTicksScale()(elWidth) : null
 
@@ -181,14 +191,14 @@ export const renderChart = <AreaPoint>(
     height + margin.bottom,
   ])
 
-  const mouseover = (_e: unknown, areaPoint: AreaPoint) => {
+  const mouseover = (...[, areaPoint]: [unknown, AreaPoint]) => {
     select(`.point-${chartConfig.getItemId(areaPoint)}`).style(
       "display",
       "block"
     )
   }
 
-  const mouseleave = (_mouseEvent: unknown, areaPoint: AreaPoint) => {
+  const mouseleave = (...[, areaPoint]: [unknown, AreaPoint]) => {
     select(`.point-${chartConfig.getItemId(areaPoint)}`).style(
       "display",
       "none"

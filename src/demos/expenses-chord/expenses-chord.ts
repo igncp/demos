@@ -8,12 +8,12 @@ import {
 } from "./expenses-chord-chart-data"
 
 const main = async () => {
-  const data = await fetchData()
+  const chordData = await fetchData()
   const state = createInitialState()
-  const { countries, regions } = getAreas(data)
+  const { countries, regions } = getAreas(chordData)
   const chartConfig = createChartConfig({
+    chordData,
     countries,
-    data,
     regions,
     state,
   })
@@ -21,31 +21,35 @@ const main = async () => {
   const { renderItems } = renderChart(chartConfig)
 
   $("#slider-time").slider({
-    change: (_e, { value }) => {
-      if (value === 3) {
+    change: (...[, { value: timeValue }]) => {
+      if (timeValue === 3) {
         // @TODO: error in this case, find why
         return
       }
 
-      state.timeIndex = value!
+      state.timeIndex = timeValue!
       renderItems()
     },
-    max: data[countries[0]][regions[0]].length - 1,
+    max: chordData[countries[0]][regions[0]].length - 1,
     min: 0,
   })
 
-  const setupSelect = (
-    vals: string[],
-    id: string,
+  const setupSelect = ({
+    id,
+    onChange,
+    selectOptions,
+  }: {
+    id: string
     onChange: (v: string) => void
-  ) => {
+    selectOptions: string[]
+  }) => {
     const selectEl = document.getElementById(id) as HTMLSelectElement
 
-    ;[ALL_ID].concat(vals).forEach((val) => {
+    ;[ALL_ID].concat(selectOptions).forEach((selectOption) => {
       const option = document.createElement("option")
 
-      option.setAttribute("value", val)
-      option.innerText = val
+      option.setAttribute("value", selectOption)
+      option.innerText = selectOption
 
       selectEl.appendChild(option)
     })
@@ -55,13 +59,21 @@ const main = async () => {
     })
   }
 
-  setupSelect(countries, "countries-select", (newSelected: string) => {
-    state.selectedCountry = newSelected
-    renderItems()
+  setupSelect({
+    id: "countries-select",
+    onChange: (newSelected: string) => {
+      state.selectedCountry = newSelected
+      renderItems()
+    },
+    selectOptions: countries,
   })
-  setupSelect(regions, "regions-select", (newSelected: string) => {
-    state.selectedRegion = newSelected
-    renderItems()
+  setupSelect({
+    id: "regions-select",
+    onChange: (newSelected: string) => {
+      state.selectedRegion = newSelected
+      renderItems()
+    },
+    selectOptions: regions,
   })
 }
 

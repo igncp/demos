@@ -1,15 +1,20 @@
 import { extent } from "d3"
 
-function createFishEyeScale(
-  scale: any,
-  initialDistortion: number,
+function createFishEyeScale({
+  initialDistortion,
+  initialFocus,
+  scale,
+}: {
+  initialDistortion: number
   initialFocus: number
-) {
+  scale: any // eslint-disable-line @typescript-eslint/no-explicit-any
+}) {
   let distortion = initialDistortion
   let focus = initialFocus
 
-  const fishEyeScale = (val: any): number => {
-    const x = scale(val)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fishEyeScale = (xValue: any): number => {
+    const x = scale(xValue)
     const isLeft = x < focus
     const range = extent<number>(scale.range()) as [number, number]
     const min = range[0]
@@ -18,38 +23,42 @@ function createFishEyeScale(
     const m = isLeft ? focus - min : max - focus
     const n = m === 0 ? max - min : m
 
-    const result =
+    return (
       ((isLeft ? -1 : 1) * n * (distortion + 1)) /
         (distortion + n / Math.abs(x - focus)) +
       focus
-
-    return result
+    )
   }
 
-  fishEyeScale.distortion = (val: number) => {
-    distortion = val
+  fishEyeScale.distortion = (newDistortion: number) => {
+    distortion = newDistortion
 
     return fishEyeScale
   }
 
-  fishEyeScale.focus = (val: number) => {
-    focus = val
+  fishEyeScale.focus = (newFocus: number) => {
+    focus = newFocus
 
     return fishEyeScale
   }
 
-  fishEyeScale.copy = () => createFishEyeScale(scale.copy(), distortion, focus)
+  fishEyeScale.copy = () =>
+    createFishEyeScale({
+      initialDistortion,
+      initialFocus,
+      scale: scale.copy(),
+    })
 
-  fishEyeScale.domain = (...args: any[]) => {
-    const result = scale.domain(...args)
+  fishEyeScale.domain = (...args: [[number, number]] | []) => {
+    const domainResult = scale.domain(...args)
 
-    return result === scale ? fishEyeScale : result
+    return domainResult === scale ? fishEyeScale : domainResult
   }
 
-  fishEyeScale.range = (...args: any[]) => {
-    const result = scale.range(...args)
+  fishEyeScale.range = (...args: [[number, number]] | []) => {
+    const rangeResult = scale.range(...args)
 
-    return result === scale ? fishEyeScale : result
+    return rangeResult === scale ? fishEyeScale : rangeResult
   }
 
   fishEyeScale.nice = scale.nice
@@ -63,8 +72,13 @@ export type FishEyeScale = ReturnType<typeof createFishEyeScale>
 
 // https://github.com/d3/d3-plugins/blob/master/fisheye/fisheye.js
 const d3Fisheye = {
-  scale(scaleType: any): FishEyeScale {
-    return createFishEyeScale(scaleType(), 3, 0)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  scale(createScale: any): FishEyeScale {
+    return createFishEyeScale({
+      initialDistortion: 3,
+      initialFocus: 0,
+      scale: createScale(),
+    })
   },
 }
 
