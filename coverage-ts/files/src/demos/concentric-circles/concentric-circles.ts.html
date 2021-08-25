@@ -22,19 +22,21 @@
   select,
 } from &quot;d3&quot;
 
-type DataItem = {
+type NamesMetric = {
   count: string
   name: string
   sex: string
   year: string
 }
-type Data = DataItem[]
+type NamesMetrics = NamesMetric[]
 type SVG = Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
 
-const fetchData = async (): Promise&lt;Data&gt; =&gt; {
-  const data = await csv(`${ROOT_PATH}data/d3js/concentric-circles/data.csv`)
+const fetchData = async (): Promise&lt;NamesMetrics&gt; =&gt; {
+  const response = await csv(
+    `${ROOT_PATH}data/d3js/concentric-circles/data.csv`
+  )
 
-  return (data as unknown) as Data
+  return (response as unknown) as NamesMetrics
 }
 
 const colours = [&quot;#7C7CC9&quot;, &quot;#52D552&quot;, &quot;#337233&quot;, &quot;#323247&quot;]
@@ -81,19 +83,24 @@ const addDescription: AddDescription = ({ height, svg, width }) =&gt; {
     .attr(&quot;width&quot;, &quot;20px&quot;)
 }
 
-type RenderChart = (o: { data: Data; rootElId: string }) =&gt; void
+type RenderChart = (o: { namesMetrics: NamesMetrics; rootElId: string }) =&gt; void
 
-const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
+const renderChart: RenderChart = ({ namesMetrics, rootElId }) =&gt; {
   const c = scaleLinear()
-    .domain(extent(data, (d) =&gt; +d.count) as [number, number])
+    .domain(
+      extent(namesMetrics, (namesMetric) =&gt; +namesMetric.count) as [
+        number,
+        number
+      ]
+    )
     .range([0, 1])
 
   const heatmapColour = scaleLinear&lt;string&gt;()
     .domain(range(0, 1, 1.0 / colours.length))
     .range(colours)
 
-  const colorize = (d: Data[number]) =&gt; {
-    const colorNormalized = c(+d.count)
+  const colorize = (namesMetric: NamesMetric) =&gt; {
+    const colorNormalized = c(+namesMetric.count)
 
     return heatmapColour(colorNormalized)
   }
@@ -102,7 +109,8 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   const { width: elWidth } = rootEl.getBoundingClientRect()
 
   const width = elWidth - margin.left - margin.right
-  const height = (max(data, (d) =&gt; +d.count) as number) * 2.5
+  const height =
+    (max(namesMetrics, (namesMetric) =&gt; +namesMetric.count) as number) * 2.5
 
   const svg: SVG = select(`#${rootElId}`)
     .append(&quot;svg&quot;)
@@ -113,8 +121,8 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   addFilter(svg)
 
   const circleGroup = svg
-    .selectAll&lt;SVGGElement, DataItem&gt;(&quot;g&quot;)
-    .data(data, (d: DataItem) =&gt; d.name)
+    .selectAll&lt;SVGGElement, NamesMetric&gt;(&quot;g&quot;)
+    .data(namesMetrics, (namesMetric: NamesMetric) =&gt; namesMetric.name)
     .enter()
     .append(&quot;g&quot;)
 
@@ -122,22 +130,31 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   const rScale = scalePow()
     .exponent(0.9)
     .range([5, 300])
-    .domain(extent(data, (d) =&gt; +d.count) as [number, number])
+    .domain(
+      extent(namesMetrics, (namesMetric) =&gt; +namesMetric.count) as [
+        number,
+        number
+      ]
+    )
 
-  const getTitle = (d: Data[number]) =&gt; `${d.name}: ${d.count}`
-  const dataMax = max(data, (d) =&gt; +d.count) as number
+  const getTitle = (namesMetric: NamesMetrics[number]) =&gt;
+    `${namesMetric.name}: ${namesMetric.count}`
+  const dataMax = max(
+    namesMetrics,
+    (namesMetric) =&gt; +namesMetric.count
+  ) as number
 
   circles
     .attr(&quot;cx&quot;, width / 2)
     .attr(&quot;cy&quot;, height / 2)
-    .attr(&quot;r&quot;, (d) =&gt; rScale(+d.count))
+    .attr(&quot;r&quot;, (namesMetric) =&gt; rScale(+namesMetric.count))
     .attr(&quot;class&quot;, &quot;name-circle&quot;)
     .attr(&quot;title&quot;, getTitle)
     .style(&quot;fill&quot;, &quot;#fff&quot;)
-    .style(&quot;stroke&quot;, (d) =&gt; colorize(d))
+    .style(&quot;stroke&quot;, (namesMetric) =&gt; colorize(namesMetric))
     .style(&quot;stroke-width&quot;, strokeWidth)
-    .style(&quot;filter&quot;, (d) =&gt; {
-      if (+d.count &gt; dataMax / 2.5) {
+    .style(&quot;filter&quot;, (namesMetric) =&gt; {
+      if (+namesMetric.count &gt; dataMax / 2.5) {
         return &quot;url(#drop-shadow)&quot;
       }
 
@@ -147,8 +164,8 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
       select(this).style(&quot;stroke&quot;, &quot;#D88021&quot;).style(&quot;stroke-width&quot;, &quot;10px&quot;)
     })
     .on(&quot;mouseleave&quot;, function () {
-      select&lt;SVGCircleElement, DataItem&gt;(this)
-        .style(&quot;stroke&quot;, (d) =&gt; colorize(d))
+      select&lt;SVGCircleElement, NamesMetric&gt;(this)
+        .style(&quot;stroke&quot;, (namesMetric) =&gt; colorize(namesMetric))
         .style(&quot;stroke-width&quot;, strokeWidth)
     })
 
@@ -164,17 +181,17 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
 }
 
 const main = async () =&gt; {
-  const data = await fetchData()
+  const namesMetrics = await fetchData()
 
   renderChart({
-    data,
+    namesMetrics,
     rootElId: &quot;chart&quot;,
   })
 }
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 24 Aug 2021 23:20:02 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 25 Aug 2021 23:26:40 GMT</p>
     </body>
   </html>
   
