@@ -9,19 +9,21 @@ import {
   select,
 } from "d3"
 
-type DataItem = {
+type NamesMetric = {
   count: string
   name: string
   sex: string
   year: string
 }
-type Data = DataItem[]
+type NamesMetrics = NamesMetric[]
 type SVG = Selection<SVGGElement, unknown, HTMLElement, unknown>
 
-const fetchData = async (): Promise<Data> => {
-  const data = await csv(`${ROOT_PATH}data/d3js/concentric-circles/data.csv`)
+const fetchData = async (): Promise<NamesMetrics> => {
+  const response = await csv(
+    `${ROOT_PATH}data/d3js/concentric-circles/data.csv`
+  )
 
-  return (data as unknown) as Data
+  return (response as unknown) as NamesMetrics
 }
 
 const colours = ["#7C7CC9", "#52D552", "#337233", "#323247"]
@@ -68,19 +70,24 @@ const addDescription: AddDescription = ({ height, svg, width }) => {
     .attr("width", "20px")
 }
 
-type RenderChart = (o: { data: Data; rootElId: string }) => void
+type RenderChart = (o: { namesMetrics: NamesMetrics; rootElId: string }) => void
 
-const renderChart: RenderChart = ({ data, rootElId }) => {
+const renderChart: RenderChart = ({ namesMetrics, rootElId }) => {
   const c = scaleLinear()
-    .domain(extent(data, (d) => +d.count) as [number, number])
+    .domain(
+      extent(namesMetrics, (namesMetric) => +namesMetric.count) as [
+        number,
+        number
+      ]
+    )
     .range([0, 1])
 
   const heatmapColour = scaleLinear<string>()
     .domain(range(0, 1, 1.0 / colours.length))
     .range(colours)
 
-  const colorize = (d: Data[number]) => {
-    const colorNormalized = c(+d.count)
+  const colorize = (namesMetric: NamesMetric) => {
+    const colorNormalized = c(+namesMetric.count)
 
     return heatmapColour(colorNormalized)
   }
@@ -89,7 +96,8 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   const { width: elWidth } = rootEl.getBoundingClientRect()
 
   const width = elWidth - margin.left - margin.right
-  const height = (max(data, (d) => +d.count) as number) * 2.5
+  const height =
+    (max(namesMetrics, (namesMetric) => +namesMetric.count) as number) * 2.5
 
   const svg: SVG = select(`#${rootElId}`)
     .append("svg")
@@ -100,8 +108,8 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   addFilter(svg)
 
   const circleGroup = svg
-    .selectAll<SVGGElement, DataItem>("g")
-    .data(data, (d: DataItem) => d.name)
+    .selectAll<SVGGElement, NamesMetric>("g")
+    .data(namesMetrics, (namesMetric: NamesMetric) => namesMetric.name)
     .enter()
     .append("g")
 
@@ -109,22 +117,31 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   const rScale = scalePow()
     .exponent(0.9)
     .range([5, 300])
-    .domain(extent(data, (d) => +d.count) as [number, number])
+    .domain(
+      extent(namesMetrics, (namesMetric) => +namesMetric.count) as [
+        number,
+        number
+      ]
+    )
 
-  const getTitle = (d: Data[number]) => `${d.name}: ${d.count}`
-  const dataMax = max(data, (d) => +d.count) as number
+  const getTitle = (namesMetric: NamesMetrics[number]) =>
+    `${namesMetric.name}: ${namesMetric.count}`
+  const dataMax = max(
+    namesMetrics,
+    (namesMetric) => +namesMetric.count
+  ) as number
 
   circles
     .attr("cx", width / 2)
     .attr("cy", height / 2)
-    .attr("r", (d) => rScale(+d.count))
+    .attr("r", (namesMetric) => rScale(+namesMetric.count))
     .attr("class", "name-circle")
     .attr("title", getTitle)
     .style("fill", "#fff")
-    .style("stroke", (d) => colorize(d))
+    .style("stroke", (namesMetric) => colorize(namesMetric))
     .style("stroke-width", strokeWidth)
-    .style("filter", (d) => {
-      if (+d.count > dataMax / 2.5) {
+    .style("filter", (namesMetric) => {
+      if (+namesMetric.count > dataMax / 2.5) {
         return "url(#drop-shadow)"
       }
 
@@ -134,8 +151,8 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
       select(this).style("stroke", "#D88021").style("stroke-width", "10px")
     })
     .on("mouseleave", function () {
-      select<SVGCircleElement, DataItem>(this)
-        .style("stroke", (d) => colorize(d))
+      select<SVGCircleElement, NamesMetric>(this)
+        .style("stroke", (namesMetric) => colorize(namesMetric))
         .style("stroke-width", strokeWidth)
     })
 
@@ -151,10 +168,10 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
 }
 
 const main = async () => {
-  const data = await fetchData()
+  const namesMetrics = await fetchData()
 
   renderChart({
-    data,
+    namesMetrics,
     rootElId: "chart",
   })
 }

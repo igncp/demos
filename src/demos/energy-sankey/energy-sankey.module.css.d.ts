@@ -1,6 +1,6 @@
 declare const styles: {
-  readonly "energyLink": string
-  readonly "energyLinkG": string
-  readonly "energyNode": string
+  readonly "chartLink": string
+  readonly "chartLinkG": string
+  readonly "chartNode": string
 }
 export = styles

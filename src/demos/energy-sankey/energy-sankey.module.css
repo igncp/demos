@@ -1,12 +1,12 @@
-.energyNode {
+.chartNode {
   cursor: pointer;
 }
 
-.energyLinkG {
+.chartLinkG {
   mix-blend-mode: multiply;
 }
 
-.energyLink {
+.chartLink {
   cursor: pointer;
   stroke-opacity: 0.7;
 
