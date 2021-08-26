@@ -143,7 +143,10 @@ export const renderChart = <ChartData>(chartConfig: ChartConfig<ChartData>) => {
 
   const legend = svg
     .selectAll(".legend")
-    .data<any>([0].concat(colorScale.quantiles()), (legendValue) => legendValue)
+    .data(
+      [0].concat(colorScale.quantiles()) as number[],
+      (legendValue) => legendValue as number
+    )
     .enter()
     .append("g")
     .attr("class", "legend")

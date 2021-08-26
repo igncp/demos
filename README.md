@@ -10,6 +10,8 @@ Showcase of some client-side demos.
 - Frontend: The main library used is [D3](https://d3js.org/), using TypeScript and PostCSS
 - New version: https://igncp.github.io/demos/
 - [TypeScript coverage report](https://igncp.github.io/demos/coverage-ts)
+    - The coverage is relatively high
+    - There are no TypeScript errors but in some cases `any` is used
 - There are also smaller examples regarding SVG and others in a storybook:
     - https://igncp.github.io/demos/storybook
 - Some in-browser unit tests using [QUnit](https://qunitjs.com/) for learning the usage of third-party dependencies better:

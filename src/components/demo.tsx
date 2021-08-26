@@ -33,9 +33,9 @@ const Demo = ({
       return
     }
 
-    main().catch((e) => {
+    main().catch((mainError) => {
       // eslint-disable-next-line no-console
-      console.error("error:", e)
+      console.error("error:", mainError)
     })
   }, [])
 

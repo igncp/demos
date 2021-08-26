@@ -1,13 +1,11 @@
 const denyList = require("./scripts/restrictedNames")
 
 const isFindRules = process.env.FIND_RULES === "true"
-const isStrict = process.env.IS_CI !== "true"
 
 const disabledRules = {
   "@typescript-eslint/ban-ts-comment": 0,
   "@typescript-eslint/explicit-module-boundary-types": 0,
   "@typescript-eslint/no-empty-function": 0,
-  "@typescript-eslint/no-explicit-any": isStrict ? 2 : 0, // too many at the moment to have this
   "@typescript-eslint/no-non-null-assertion": 0,
   "@typescript-eslint/no-unnecessary-type-assertion": 0,
   "@typescript-eslint/no-unsafe-assignment": 0,
@@ -33,6 +31,7 @@ const tsRules = {
   "@typescript-eslint/member-ordering": 2,
   "@typescript-eslint/method-signature-style": 2,
   "@typescript-eslint/no-duplicate-imports": 2,
+  "@typescript-eslint/no-explicit-any": 2,
   "@typescript-eslint/no-redeclare": 2,
   "@typescript-eslint/no-shadow": 2,
   "@typescript-eslint/no-unnecessary-boolean-literal-compare": 2,
@@ -140,13 +139,13 @@ module.exports = {
     "class-methods-use-this": 2,
     "consistent-return": 2,
     "eqeqeq": 2,
-    "eslint-comments/no-unused-disable": isStrict ? 2 : 0,
-    "id-denylist": [2, ...(isStrict ? denyList : [])],
+    "eslint-comments/no-unused-disable": 2,
+    "id-denylist": [2, ...denyList],
 
     "import/no-namespace": [2, { ignore: ["*.module.css"] }],
 
     "init-declarations": [2, "always"],
-    "max-params": isStrict ? [2, 1] : 0,
+    "max-params": [2, 1],
     "newline-before-return": 2,
     "no-console": 2,
     "no-constant-condition": [2, { checkLoops: false }],

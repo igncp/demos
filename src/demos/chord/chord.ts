@@ -41,14 +41,14 @@ type CSVParsedItem = {
 type Debits = Array<Array<CSVParsedItem | null>>
 type Credits = Array<Array<CSVParsedItem | null>>
 
-type Data = {
+type FinancialData = {
   credits: Credits
   debits: Debits
   fullList: Country[]
 }
 
 const fetchData = async () => {
-  const list = (await csv(
+  const originalCSVItems = (await csv(
     `${ROOT_PATH}data/d3js/chord/data.csv`
   )) as CSVDataItem[]
 
@@ -59,7 +59,7 @@ const fetchData = async () => {
 
   let id = 0
 
-  const country = function (countryName: string): Country {
+  const country = (countryName: string): Country => {
     if (!(countryName in countries)) {
       countries[countryName] = {
         id,
@@ -72,30 +72,32 @@ const fetchData = async () => {
     return countries[countryName]
   }
 
-  const parsedList: CSVParsedItem[] = list.map((d) => ({
-    ...d,
-    creditor: country(d.creditor),
-    debtor: {
-      ...country(d.debtor),
-      risk: d.risk,
-    },
-  }))
+  const parsedList: CSVParsedItem[] = originalCSVItems.map(
+    (originalCSVItem) => ({
+      ...originalCSVItem,
+      creditor: country(originalCSVItem.creditor),
+      debtor: {
+        ...country(originalCSVItem.debtor),
+        risk: originalCSVItem.risk,
+      },
+    })
+  )
 
-  Array.from({ length: id }).forEach((_, idx) => {
-    debits[idx] = []
-    credits[idx] = []
+  Array.from({ length: id }).forEach((...[, sourceIndex]) => {
+    debits[sourceIndex] = []
+    credits[sourceIndex] = []
 
-    Array.from({ length: id }).forEach((_2, idx2) => {
-      debits[idx][idx2] = null
-      credits[idx][idx2] = null
+    Array.from({ length: id }).forEach((...[, targetIndex]) => {
+      debits[sourceIndex][targetIndex] = null
+      credits[sourceIndex][targetIndex] = null
     })
   })
 
-  parsedList.forEach((d) => {
-    debits[d.creditor.id][d.debtor.id] = d
-    credits[d.debtor.id][d.creditor.id] = d
-    fullList[d.creditor.id] = d.creditor
-    fullList[d.debtor.id] = d.debtor
+  parsedList.forEach((financialItem) => {
+    debits[financialItem.creditor.id][financialItem.debtor.id] = financialItem
+    credits[financialItem.debtor.id][financialItem.creditor.id] = financialItem
+    fullList[financialItem.creditor.id] = financialItem.creditor
+    fullList[financialItem.debtor.id] = financialItem.debtor
   })
 
   return {
@@ -105,12 +107,17 @@ const fetchData = async () => {
   }
 }
 
-const addDropShadowFilter = function <A>(
-  charts: Selection<BaseType, A, BaseType, unknown>,
-  name: string,
-  deviation: number,
+const addDropShadowFilter = <SVGData>({
+  charts,
+  deviation,
+  name,
+  slope,
+}: {
+  charts: Selection<BaseType, SVGData, BaseType, unknown>
+  deviation: number
+  name: string
   slope: number
-) {
+}) => {
   const defs = charts.append("defs")
   const filter = defs.append("filter").attr("id", `drop-shadow-${name}`)
 
@@ -155,9 +162,12 @@ const margin = {
 }
 const height = 500
 
-type RenderChart = (o: { data: Data; rootElId: string }) => void
+type RenderChart = (o: {
+  financialData: FinancialData
+  rootElId: string
+}) => void
 
-const renderChart: RenderChart = ({ data, rootElId }) => {
+const renderChart: RenderChart = ({ financialData, rootElId }) => {
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
   rootEl.classList.add(styles.chordChart)
@@ -171,7 +181,7 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
   const arc = arcD3().innerRadius(r0).outerRadius(r1)
   const svg = select(`#${rootElId}`)
 
-  const { credits, debits, fullList } = data
+  const { credits, debits, fullList } = financialData
 
   const charts = svg
     .selectAll("div")
@@ -187,26 +197,38 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .append("svg:g")
     .attr("transform", `translate(${width / 2},${height / 2 + margin.top})`)
 
-  const leftChart = charts.filter((_d, i) => i === 0)
-  const rightChart = charts.filter((_d, i) => i === 1)
+  const leftChart = charts.filter((...[, chartIndex]) => chartIndex === 0)
+  const rightChart = charts.filter((...[, chartIndex]) => chartIndex === 1)
 
-  const setLabel = function (
-    chart: Selection<BaseType, Debits, BaseType, unknown>,
+  const setLabel = ({
+    chart,
+    label,
+  }: {
+    chart: Selection<BaseType, Debits, BaseType, unknown>
     label: string
-  ) {
-    return chart
+  }) =>
+    chart
       .append("text")
       .text(label)
       .attr("transform", `translate(0,${(-1 * height) / 2 - 10})`)
       .attr("class", styles.chartTitle)
       .attr("text-anchor", "middle")
-  }
 
-  setLabel(leftChart, "Debits")
-  setLabel(rightChart, "Credits")
+  setLabel({ chart: leftChart, label: "Debits" })
+  setLabel({ chart: rightChart, label: "Credits" })
 
-  addDropShadowFilter(charts, "chords", 2, 0.4)
-  addDropShadowFilter(charts, "headings", 3, 0.5)
+  addDropShadowFilter({
+    charts,
+    deviation: 2,
+    name: "chords",
+    slope: 0.4,
+  })
+  addDropShadowFilter({
+    charts,
+    deviation: 3,
+    name: "headings",
+    slope: 0.5,
+  })
 
   const colorDomain = scaleLinear()
     .domain(extent([0, fullList.length - 1]) as [number, number])
@@ -216,14 +238,13 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
     .domain(range(0, 1, 1.0 / colours.length))
     .range(colours)
 
-  const fill = function (d: number) {
-    return heatmapColour(colorDomain(d))
-  }
+  const fill = (chordItemIndex: number) =>
+    heatmapColour(colorDomain(chordItemIndex))
 
-  charts.each(function (dataMatrix, chartIndex) {
+  charts.each(function (...[dataMatrix, chartIndex]) {
     const svgComp = select(this)
     const numberMatrix = dataMatrix.map((row) =>
-      row.map((item) => (item ? +item.amount : 0))
+      row.map((cell) => (cell ? +cell.amount : 0))
     )
 
     const chordData = chord()
@@ -239,23 +260,25 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
       .enter()
       .append("svg:path")
       .attr("class", styles.chord)
-      .style("fill", (d) => fill(d.target.index))
+      .style("fill", (chordItem) => fill(chordItem.target.index))
       .style("filter", "url(#drop-shadow-chords)")
-      .style("stroke", (d) => {
-        const originalColor = fill(d.target.index)
+      .style("stroke", (chordItem) => {
+        const originalColor = fill(chordItem.target.index)
         const newColor = rgb(originalColor).darker()
 
         return newColor.formatHex()
       })
       .style("stroke-width", 2)
-      .attr("d", ribbonLayout as any)
+      .attr("d", ribbonLayout as any) // eslint-disable-line @typescript-eslint/no-explicit-any
       .append("svg:title")
-      .text((d) => {
-        const { [d.source.index]: sourceData } = fullList
-        const { [d.target.index]: targetData } = fullList
+      .text((chordItem) => {
+        const {
+          [chordItem.source.index]: sourceData,
+          [chordItem.target.index]: targetData,
+        } = fullList
 
         return `${sourceData.name} owes ${targetData.name} $${formatCurrency(
-          d.source.value
+          chordItem.source.value
         )}B.`
       })
 
@@ -267,34 +290,37 @@ const renderChart: RenderChart = ({ data, rootElId }) => {
       .attr("class", styles.group)
 
     g.append("svg:path")
-      .style("fill", (d) => fill(d.index))
-      .attr("id", (d) => `group${d.index}-${chartIndex}`)
-      .attr("d", arc as any)
+      .style("fill", (chordGroup) => fill(chordGroup.index))
+      .attr("id", (chordGroup) => `group${chordGroup.index}-${chartIndex}`)
+      .attr("d", arc as any) // eslint-disable-line @typescript-eslint/no-explicit-any
       .style("filter", () => "url(#drop-shadow-headings)")
       .append("svg:title")
       .text(
-        (d) =>
-          `${fullList[d.index].name} ${
+        (chordGroup) =>
+          `${fullList[chordGroup.index].name} ${
             chartIndex ? "owes" : "is owed"
-          } $${formatCurrency(d.value)}B.`
+          } $${formatCurrency(chordGroup.value)}B.`
       )
 
     g.append("svg:text")
       .attr("x", 6)
       .attr("dy", 15)
-      .filter((d) => d.value > 150)
+      .filter((chordGroup) => chordGroup.value > 150)
       .append("svg:textPath")
-      .attr("xlink:href", (d) => `#group${d.index}-${chartIndex}`)
-      .text((d) => fullList[d.index].name)
+      .attr(
+        "xlink:href",
+        (chordGroup) => `#group${chordGroup.index}-${chartIndex}`
+      )
+      .text((chordGroup) => fullList[chordGroup.index].name)
       .attr("class", styles.headingTitle)
   })
 }
 
 const main = async () => {
-  const data = await fetchData()
+  const financialData = await fetchData()
 
   renderChart({
-    data,
+    financialData,
     rootElId: "chart",
   })
 }

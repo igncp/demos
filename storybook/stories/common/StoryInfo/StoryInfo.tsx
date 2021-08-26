@@ -11,11 +11,15 @@ type Props = {
   docs?: Doc[]
   source: string
   sourceText?: string
-  storyName: string
+  storyName: string[] | string
 }
 
 const StoryInfo = ({ docs, source, sourceText, storyName }: Props) => {
   const [isDocsBlockExpanded, setIsDocsBlockExpanded] = React.useState(false)
+
+  const storyPath = Array.isArray(storyName)
+    ? storyName.join("/")
+    : `${storyName}/${storyName}`
 
   return (
     <>
@@ -25,7 +29,7 @@ const StoryInfo = ({ docs, source, sourceText, storyName }: Props) => {
         </a>
         <span> | </span>
         <a
-          href={`https://github.com/igncp/demos/blob/main/storybook/stories/${storyName}/${storyName}.stories.tsx`}
+          href={`https://github.com/igncp/demos/blob/main/storybook/stories/${storyPath}.stories.tsx`}
           rel="noreferrer"
           target="_blank"
         >
@@ -33,7 +37,7 @@ const StoryInfo = ({ docs, source, sourceText, storyName }: Props) => {
         </a>
         <span> | </span>
         <a
-          href={`https://igncp.github.io/demos/coverage-ts/files/storybook/stories/${storyName}/${storyName}.stories.tsx.html`}
+          href={`https://igncp.github.io/demos/coverage-ts/files/storybook/stories/${storyPath}.stories.tsx.html`}
           rel="noreferrer"
           target="_blank"
         >

@@ -19,6 +19,7 @@ declare const styles: {
   readonly "demos-lists": string
   readonly "gh-buttons": string
   readonly "hide-mobile": string
+  readonly "highlight": string
   readonly "home-demo-name-link": string
   readonly "home-demo-number": string
   readonly "main-source": string
@@ -28,6 +29,7 @@ declare const styles: {
   readonly "row": string
   readonly "source-number": string
   readonly "sources-list": string
+  readonly "storybook": string
   readonly "ui-tooltip": string
 }
 export = styles

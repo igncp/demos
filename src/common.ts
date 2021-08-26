@@ -52,3 +52,5 @@ export type DemoPageProps = {
     meta: Meta
   }
 }
+
+export const STORYBOOK_DEMO_KEY = "storybook"

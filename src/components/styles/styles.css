@@ -45,6 +45,10 @@ ul {
   &.raphael {
     color: orange;
   }
+
+  &.storybook {
+    color: purple;
+  }
 }
 
 .home-demo-name-link {
@@ -147,11 +151,19 @@ ul {
   a {
     background-color: rgba(145, 145, 145, 0.08);
     padding-left: 20px;
-    transition: 0.5s linear all;
+    transition: 0.5s linear background-color;
+
+    &.highlight {
+      background-color: #fff4fe;
+
+      &:hover {
+        background-color: #ffe2f9;
+      }
+    }
 
     &:hover {
       background-color: rgba(145, 172, 196, 0.3);
-      padding-left: 25px;
+      font-weight: bold;
     }
 
     .bullet {

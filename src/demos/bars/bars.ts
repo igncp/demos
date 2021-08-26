@@ -11,7 +11,7 @@ import {
 
 import * as styles from "./bars.module.css"
 
-type Data = number[]
+type BarData = number
 
 const height = 500
 const margin = { left: 160, top: 100 }
@@ -21,34 +21,33 @@ const barWidth = 30
 const barHeight = 7
 
 const colours = ["#323247", "#7C7CC9", "#72B66C", "#429742"]
-const barYFn = (d: Data[number]) => floor - barHeight * d
-const barHeightFn = (d: Data[number]) => d * barHeight
+const barYFn = (barItem: BarData) => floor - barHeight * barItem
+const barHeightFn = (barItem: BarData) => barItem * barHeight
 
-const fetchData = async (): Promise<Data> => {
+const fetchData = async (): Promise<BarData[]> => {
   const rawData = await fetch(`${ROOT_PATH}data/d3js/bars/data.json`)
-  const data = await rawData.json()
 
-  return data
+  return rawData.json()
 }
 
 type BarsChartOpts = {
-  data: Data
+  bars: BarData[]
   rootElId: string
 }
 
 type Interval = ReturnType<typeof setInterval>
 type Chart = Selection<SVGGElement, unknown, HTMLElement, unknown>
-type ColorFn = (c: Data[number]) => string
+type ColorFn = (c: BarData) => string
 
 class BarsChart {
-  private readonly data: Data
+  private readonly bars: BarData[]
   private readonly rootElId: string
   private interval: Interval | null
   private chart: Chart | null
   private color: ColorFn | null
 
-  public constructor({ data, rootElId }: BarsChartOpts) {
-    this.data = data
+  public constructor({ bars, rootElId }: BarsChartOpts) {
+    this.bars = bars
     this.rootElId = rootElId
 
     this.interval = null
@@ -57,19 +56,19 @@ class BarsChart {
   }
 
   public render() {
-    const { data, rootElId } = this
+    const { bars, rootElId } = this
     const { width } = (document.getElementById(
       rootElId
     ) as HTMLElement).getBoundingClientRect()
 
-    const c = scaleLinear()
-      .domain(extent(data) as [number, number])
+    const colorScale = scaleLinear()
+      .domain(extent(bars) as [BarData, BarData])
       .range([0, 1])
     const heatmapColour: ColorFn = scaleLinear<string>()
       .domain(range(0, 1, 1.0 / colours.length))
       .range(colours)
 
-    const color = (d: Data[number]) => heatmapColour(c(d))
+    const color = (barItem: BarData) => heatmapColour(colorScale(barItem))
 
     this.color = color as ColorFn
 
@@ -89,12 +88,12 @@ class BarsChart {
     this.interval = setInterval(this.getIntervalFn(), 1000)
 
     const x = scaleLinear()
-      .domain([0.5, data.length + 0.5])
-      .range([1, barWidth * data.length])
+      .domain([0.5, bars.length + 0.5])
+      .range([1, barWidth * bars.length])
 
     const y = scaleLinear()
-      .domain([0, max(data) as number])
-      .rangeRound([0, -1 * barHeight * (max(data) as number)])
+      .domain([0, max(bars) as number])
+      .rangeRound([0, -1 * barHeight * (max(bars) as number)])
 
     const xAxisG = chart.append("g")
 
@@ -105,7 +104,7 @@ class BarsChart {
 
     xAxisG
       .append("text")
-      .attr("transform", `translate(${(barWidth * data.length) / 2} ,0)`)
+      .attr("transform", `translate(${(barWidth * bars.length) / 2} ,0)`)
       .attr("class", "xAxisLabel")
       .attr("y", 40)
       .attr("font-size", "1.3em")
@@ -144,18 +143,18 @@ class BarsChart {
   }
 
   private drawRectangles() {
-    const { chart, color, data } = this
+    const { bars, chart, color } = this
 
     ;(chart as Chart)
       .selectAll("rect")
-      .data(data)
+      .data(bars)
       .enter()
       .append("rect")
-      .attr("x", (_d: unknown, i: number) => barWidth * i)
+      .attr("x", (...[, barIndex]) => barWidth * barIndex)
       .attr("y", barYFn)
       .attr("width", barWidth)
       .attr("height", barHeightFn)
-      .attr("fill", (d: Data[number]) => (color as ColorFn)(d))
+      .attr("fill", (barItem) => color!(barItem))
       .on("mouseover", () => {
         this.clearInterval()
       })
@@ -164,28 +163,29 @@ class BarsChart {
         this.interval = setInterval(this.getIntervalFn(), 1000)
       })
       .append("title")
-      .text((d: Data[number]) => d)
+      .text((barItem) => barItem)
   }
 
   private getIntervalFn() {
     return () => {
-      const { data } = this
+      const { bars } = this
 
-      data.unshift(data.pop() as Data[0])
+      bars.unshift(bars.pop() as BarData)
+
       this.redraw()
     }
   }
 
   private redraw() {
-    const { chart, color, data } = this
+    const { bars, chart, color } = this
 
     if (!chart) {
       return
     }
 
     const newX = scaleLinear()
-      .domain([0.5, data.length + 0.5])
-      .range([1, barWidth * data.length])
+      .domain([0.5, bars.length + 0.5])
+      .range([1, barWidth * bars.length])
 
     const newAxis = axisBottom(newX)
 
@@ -195,26 +195,26 @@ class BarsChart {
       .select(".xAxisLabel")
       .transition()
       .duration(500)
-      .attr("transform", `translate(${(barWidth * data.length) / 2} ,0)`)
+      .attr("transform", `translate(${(barWidth * bars.length) / 2} ,0)`)
 
     chart
       .selectAll("rect")
-      .data(data)
+      .data(bars)
       .transition()
       .duration(500)
       .attr("y", barYFn)
       .attr("height", barHeightFn)
       .attr("fill", color as ColorFn)
       .select("title")
-      .text((d: Data[number]) => d)
+      .text((barItem) => barItem)
   }
 }
 
 const main = async () => {
-  const data = await fetchData()
+  const bars = await fetchData()
 
   const barsChart = new BarsChart({
-    data,
+    bars,
     rootElId: "chart",
   })
 
@@ -223,8 +223,8 @@ const main = async () => {
   const addItemEl = document.getElementById("add-item") as HTMLElement
 
   addItemEl.addEventListener("click", () => {
-    if (data.length < 20) {
-      data.push(Math.floor(Math.random() * (max(data) as number)) + 1)
+    if (bars.length < 20) {
+      bars.push(Math.floor(Math.random() * (max(bars) as number)) + 1)
       barsChart.refresh()
     } else {
       addItemEl.setAttribute("disabled", "disabled")

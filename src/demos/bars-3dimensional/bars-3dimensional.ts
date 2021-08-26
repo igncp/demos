@@ -1,4 +1,4 @@
-import { RaphaelPaper } from "raphael"
+import { RaphaelPaper, RaphaelPath, RaphaelSet } from "raphael"
 
 import Raphael from "@/demos/_utils/browserRaphael"
 
@@ -8,13 +8,13 @@ const fetchData = async () => {
   const response = await fetch(
     `${ROOT_PATH}data/raphael/bars-3dimensional/data.json`
   )
-  const data = await response.json()
+  const jsonResponse = await response.json()
 
-  return data.results
+  return jsonResponse.results
 }
 
-type Data = {
-  [key: string]: number[]
+type CountriesMetrics = {
+  [countryName: string]: number[]
 } & {
   keys: string[]
   keysLength: number
@@ -33,12 +33,23 @@ type Config = {
 }
 
 type Dom = {
-  els: { [k: string]: any }
+  elements: {
+    [k: string]: {
+      inner?: RaphaelPath
+      outer?: RaphaelPath
+      paperSet?: RaphaelSet
+    }
+  }
   paper: RaphaelPaper
 }
 
+type CalcArgs = {
+  countryName: string
+  serieIndex: number
+}
+
 type ChartOpts = {
-  data: Data
+  countriesMetrics: CountriesMetrics
   rootElId: string
 }
 
@@ -46,34 +57,34 @@ class Chart {
   private readonly rootElId: string
   private cg!: Config
   private dom!: Dom
-  private data!: Data
+  private countriesMetrics!: CountriesMetrics
 
-  public constructor({ data, rootElId }: ChartOpts) {
+  public constructor({ countriesMetrics, rootElId }: ChartOpts) {
     this.rootElId = rootElId
 
     this.setCg()
     this.setDom()
-    this.setData(data)
+    this.setData(countriesMetrics)
   }
 
   public render() {
     this.drawAxis()
-    this.data.keys.forEach((item) => {
-      this.dom.els[item].el = this.dom.paper.set()
+    this.countriesMetrics.keys.forEach((countryName) => {
+      this.dom.elements[countryName].paperSet = this.dom.paper.set()
     })
 
-    this.createCountries(this.data.seriesDisplayed)
+    this.createCountries(this.countriesMetrics.seriesDisplayed)
   }
 
   public displayNextSeries() {
-    const { data } = this
+    const { countriesMetrics } = this
 
-    data.seriesDisplayed =
-      data.seriesDisplayed + 1 === data.seriesLength
+    countriesMetrics.seriesDisplayed =
+      countriesMetrics.seriesDisplayed + 1 === countriesMetrics.seriesLength
         ? 0
-        : data.seriesDisplayed + 1
+        : countriesMetrics.seriesDisplayed + 1
 
-    this.animateCountries(data.seriesDisplayed)
+    this.animateCountries(countriesMetrics.seriesDisplayed)
   }
 
   private setCg() {
@@ -82,7 +93,7 @@ class Chart {
     ) as HTMLElement).getBoundingClientRect()
 
     this.cg = {
-      colorScheme: ["#C1252D", "#5F3A5F", "#51A8D0"],
+      colorScheme: ["#c1252d", "#5f3a5f", "#51a8d0"],
       deep: 5,
       easing: "bounce",
       heightOffset: 100,
@@ -94,7 +105,7 @@ class Chart {
 
   private setDom() {
     this.dom = {
-      els: {},
+      elements: {},
       paper: Raphael(this.rootElId, this.cg.width, 245),
     }
     ;(document.getElementById(this.rootElId) as HTMLElement).classList.add(
@@ -102,41 +113,42 @@ class Chart {
     )
   }
 
-  private setData(data: Data) {
-    data.keys = Object.keys(data)
-    data.seriesDisplayed = 0
-    data.seriesLength = data[data.keys[0]].length
-    data.keysLength = data.keys.length
+  private setData(countriesMetrics: CountriesMetrics) {
+    countriesMetrics.keys = Object.keys(countriesMetrics)
+    countriesMetrics.seriesDisplayed = 0
+    countriesMetrics.seriesLength =
+      countriesMetrics[countriesMetrics.keys[0]].length
+    countriesMetrics.keysLength = countriesMetrics.keys.length
 
-    this.data = data
+    this.countriesMetrics = countriesMetrics
 
-    data.keys.forEach((item: string) => {
-      this.dom.els[item] = {}
+    countriesMetrics.keys.forEach((countryName: string) => {
+      this.dom.elements[countryName] = {}
     })
   }
 
-  private animateCountries(i: number) {
-    const { data } = this
+  private animateCountries(serieIndex: number) {
+    const { countriesMetrics } = this
 
-    data.keys.forEach((item) => {
-      this.dom.els[item].inner.animate(
+    countriesMetrics.keys.forEach((countryName) => {
+      this.dom.elements[countryName].inner!.animate(
         {
-          path: this.calcInnerPath(item, i),
+          path: this.calcInnerPath({ countryName, serieIndex }),
         },
         this.cg.speed,
         this.cg.easing
       )
-      this.dom.els[item].outer.animate(
+      this.dom.elements[countryName].outer!.animate(
         {
-          path: this.calcOuterPath(item, i),
+          path: this.calcOuterPath({ countryName, serieIndex }),
         },
         this.cg.speed,
         this.cg.easing
       )
 
-      return this.dom.els[item].el.animate(
+      return this.dom.elements[countryName].paperSet!.animate(
         {
-          fill: this.cg.colorScheme[i],
+          fill: this.cg.colorScheme[serieIndex],
         },
         this.cg.speed
       )
@@ -151,13 +163,14 @@ class Chart {
       cg: { deep },
     } = this
 
-    for (let i = 0, _i = 0; _i <= 3; _i += 1, i = _i) {
-      const path = `M5,${25 * i} ${this.cg.width},${
-        this.cg.heightOffset + i * 25
+    Array.from({ length: 4 }).forEach((...[, pathIndex]) => {
+      const horizontalLineHeight = 25 * pathIndex
+      const path = `M5,${horizontalLineHeight} ${this.cg.width},${
+        this.cg.heightOffset + horizontalLineHeight
       }`
 
       paper.path(path).attr("stroke-dasharray", ". ")
-    }
+    })
 
     return paper
       .path(
@@ -169,79 +182,90 @@ class Chart {
       .attr("stroke", "none")
   }
 
-  private calcH0(it: string, se: number): number {
-    return 100 - this.data[it]![se]!
+  private calcH0({ countryName, serieIndex }: CalcArgs): number {
+    return 100 - this.countriesMetrics[countryName]![serieIndex]!
   }
 
-  private calcH5(it: string, se: number) {
-    return 100 - this.data[it][se] + 5 * this.cg.ratio
-  }
-
-  private calcH10(it: string, se: number) {
-    return 100 - this.data[it][se] + 10 * this.cg.ratio
-  }
-
-  private calcInnerPath(it: string, se: number) {
+  private calcH5({ countryName, serieIndex }: CalcArgs) {
     return (
-      `M0,${this.calcH5(it, se)} 15,${this.calcH10(it, se)} ` +
-      `15,${100 + 10 * this.cg.ratio} 0,${100 + 5 * this.cg.ratio}Z`
+      100 - this.countriesMetrics[countryName][serieIndex] + 5 * this.cg.ratio
     )
   }
 
-  private calcOuterPath(it: string, se: number) {
-    return `M0,${this.calcH5(it, se)} 5,${this.calcH0(it, se)} 20,${this.calcH5(
-      it,
-      se
-    )} 20,${100 + 5 * this.cg.ratio} 15,${100 + 10 * this.cg.ratio} 0,${
-      100 + 5 * this.cg.ratio
-    }Z`
+  private calcH10({ countryName, serieIndex }: CalcArgs) {
+    return (
+      100 - this.countriesMetrics[countryName][serieIndex] + 10 * this.cg.ratio
+    )
   }
 
-  private createCountries(i: number) {
-    const { data } = this
+  private calcInnerPath({ countryName, serieIndex }: CalcArgs) {
+    return `M0,${this.calcH5({ countryName, serieIndex })} 15,${this.calcH10({
+      countryName,
+      serieIndex,
+    })} 15,${100 + 10 * this.cg.ratio} 0,${100 + 5 * this.cg.ratio}Z`
+  }
+
+  private calcOuterPath({ countryName, serieIndex }: CalcArgs) {
+    return `M0,${this.calcH5({ countryName, serieIndex })} 5,${this.calcH0({
+      countryName,
+      serieIndex,
+    })} 20,${this.calcH5({ countryName, serieIndex })} 20,${
+      100 + 5 * this.cg.ratio
+    } 15,${100 + 10 * this.cg.ratio} 0,${100 + 5 * this.cg.ratio}Z`
+  }
+
+  private createCountries(serieIndex: number) {
+    const { countriesMetrics } = this
     const {
       dom: { paper },
     } = this
 
-    return data.keys.forEach((item, index) => {
-      this.dom.els[item].inner = paper.path(this.calcInnerPath(item, i))
-      this.dom.els[item].outer = paper
-        .path(this.calcOuterPath(item, i))
-        .attr("opacity", 0.5)
-      this.dom.els[item].el.push(
-        this.dom.els[item].inner,
-        this.dom.els[item].outer
+    return countriesMetrics.keys.forEach((...[countryName, countryIndex]) => {
+      this.dom.elements[countryName].inner = paper.path(
+        this.calcInnerPath({ countryName, serieIndex })
       )
-      this.dom.els[item].el.transform(
-        `T ${(this.cg.width / data.keysLength) * index},` +
-          `${(this.cg.heightOffset / data.keysLength) * index}`
+      this.dom.elements[countryName].outer = paper
+        .path(this.calcOuterPath({ countryName, serieIndex }))
+        .attr("opacity", 0.5)
+      this.dom.elements[countryName].paperSet!.push(
+        this.dom.elements[countryName].inner!,
+        this.dom.elements[countryName].outer!
+      )
+      this.dom.elements[countryName].paperSet!.transform(
+        `T ${(this.cg.width / countriesMetrics.keysLength) * countryIndex},` +
+          `${
+            (this.cg.heightOffset / countriesMetrics.keysLength) * countryIndex
+          }`
       )
 
-      return this.dom.els[item].el
-        .attr("fill", "#C1252D")
+      return this.dom.elements[countryName]
+        .paperSet!.attr("fill", "#c1252d")
         .attr("stroke", "none")
-        .attr("title", `${item}: ${data[item][i]}`)
+        .attr(
+          "title",
+          `${countryName}: ${countriesMetrics[countryName][serieIndex]}`
+        )
     })
   }
 }
 
 const main = async () => {
-  const data = await fetchData()
+  const countriesMetrics = await fetchData()
 
   const chart = new Chart({
-    data,
+    countriesMetrics,
     rootElId: "chart",
   })
 
   chart.render()
-  ;(document.querySelector(".animate-bars") as HTMLElement).addEventListener(
-    "click",
-    (e) => {
-      e.preventDefault()
 
-      chart.displayNextSeries()
-    }
-  )
+  const animateButton = document.querySelector(".animate-bars") as HTMLElement
+
+  animateButton.addEventListener("click", (clickEvent) => {
+    clickEvent.preventDefault()
+
+    chart.displayNextSeries()
+  })
 }
 
 export default main

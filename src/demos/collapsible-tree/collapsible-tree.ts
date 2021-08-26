@@ -28,13 +28,8 @@ type TreeLink = HierarchyPointLink<DataNode>
 type DiagonalNode = { x: number; y: number }
 type DiagonalLink = { source: DiagonalNode; target: DiagonalNode }
 
-const fetchData = async (): Promise<DataNode> => {
-  const data = (await json(
-    `${ROOT_PATH}data/d3js/collapsible-tree/data.json`
-  )) as DataNode
-
-  return data
-}
+const fetchData = async (): Promise<DataNode> =>
+  json(`${ROOT_PATH}data/d3js/collapsible-tree/data.json`) as Promise<DataNode>
 
 const margin = {
   bottom: 20,
@@ -65,18 +60,20 @@ const renderChart: RenderChart = ({ rootData, rootElId }) => {
 
   const rootTree = tree(root)
 
-  rootTree.descendants().forEach((d: TreeNode, i: number) => {
-    d.data.id = i
-    d.data._children = d.children
+  rootTree
+    .descendants()
+    .forEach((...[treeNode, treeNodeIndex]: [TreeNode, number]) => {
+      treeNode.data.id = treeNodeIndex
+      treeNode.data._children = treeNode.children
 
-    if (d.depth) {
-      d.children = undefined
-    }
-  })
+      if (treeNode.depth) {
+        treeNode.children = undefined
+      }
+    })
 
   const diagonal = linkHorizontal<DiagonalLink, DiagonalNode>()
-    .x((d: DiagonalNode) => d.y)
-    .y((d: DiagonalNode) => d.x)
+    .x((diagonalNode) => diagonalNode.y)
+    .y((diagonalNode) => diagonalNode.x)
 
   const svg = select<SVGElement, TreeNode>(`#${rootElId}`)
     .append("svg")
@@ -116,21 +113,9 @@ const renderChart: RenderChart = ({ rootData, rootElId }) => {
       }
     })
 
-    const toggleFn = () => {
-      svg.dispatch("toggle")
-    }
-
-    const transition = svg
-      .transition()
-      .duration(duration)
-      .tween(
-        "resize",
-        (window.ResizeObserver as unknown) ? null : ((() => toggleFn) as any)
-      )
-
     const node = gNode
-      .selectAll<SVGElement, TreeNode>("g")
-      .data(nodes, (d: TreeNode) => d.data.id)
+      .selectAll<SVGGElement, TreeNode>("g")
+      .data(nodes, (treeNode) => treeNode.data.id)
 
     const nodeEnter = node
       .enter()
@@ -138,26 +123,28 @@ const renderChart: RenderChart = ({ rootData, rootElId }) => {
       .attr("transform", () => `translate(${source.data.y0},${source.data.x0})`)
       .attr("fill-opacity", 0)
       .attr("stroke-opacity", 0)
-      .on("click", (_event, d: TreeNode) => {
-        d.children = d.children ? undefined : d.data._children
+      .on("click", (...[, treeNode]) => {
+        treeNode.children = treeNode.children
+          ? undefined
+          : treeNode.data._children
 
-        update(d)
+        update(treeNode)
       })
 
     nodeEnter
       .append("circle")
       .attr("r", 2.5)
-      .attr("fill", (d: TreeNode) => (d.data._children ? "#555" : "#999"))
+      .attr("fill", (treeNode) => (treeNode.data._children ? "#555" : "#999"))
       .attr("stroke-width", 10)
 
     nodeEnter
       .append("text")
       .attr("dy", "0.31em")
-      .attr("x", (d: TreeNode) => (d.data._children ? -6 : 6))
-      .attr("text-anchor", (d: TreeNode) =>
-        d.data._children ? "end" : "start"
+      .attr("x", (treeNode) => (treeNode.data._children ? -6 : 6))
+      .attr("text-anchor", (treeNode) =>
+        treeNode.data._children ? "end" : "start"
       )
-      .text((d: TreeNode) => d.data.name)
+      .text((treeNode) => treeNode.data.name)
       .clone(true)
       .lower()
       .attr("stroke-linejoin", "round")
@@ -165,15 +152,17 @@ const renderChart: RenderChart = ({ rootData, rootElId }) => {
       .attr("stroke", "white")
 
     node
-      .merge(nodeEnter as any)
-      .transition(transition as any)
-      .attr("transform", (d: TreeNode) => `translate(${d.y},${d.x})`)
+      .merge(nodeEnter)
+      .transition()
+      .duration(duration)
+      .attr("transform", (treeNode) => `translate(${treeNode.y},${treeNode.x})`)
       .attr("fill-opacity", 1)
       .attr("stroke-opacity", 1)
 
     node
       .exit()
-      .transition(transition as any)
+      .transition()
+      .duration(duration)
       .remove()
       .attr("transform", () => `translate(${source.y},${source.x})`)
       .attr("fill-opacity", 0)
@@ -181,7 +170,7 @@ const renderChart: RenderChart = ({ rootData, rootElId }) => {
 
     const link = gLink
       .selectAll<SVGPathElement, TreeLink>("path")
-      .data(links, (d: TreeLink) => d.target.data.id)
+      .data(links, (treeLink) => treeLink.target.data.id)
 
     const linkEnter = link
       .enter()
@@ -195,14 +184,12 @@ const renderChart: RenderChart = ({ rootData, rootElId }) => {
         return diagonal({ source: o, target: o })
       })
 
-    link
-      .merge(linkEnter as any)
-      .transition(transition as any)
-      .attr("d", diagonal)
+    link.merge(linkEnter).transition().duration(duration).attr("d", diagonal)
 
     link
       .exit()
-      .transition(transition as any)
+      .transition()
+      .duration(duration)
       .remove()
       .attr("d", () => {
         const o = { x: source.x, y: source.y }
@@ -210,9 +197,9 @@ const renderChart: RenderChart = ({ rootData, rootElId }) => {
         return diagonal({ source: o, target: o })
       })
 
-    rootTree.eachBefore((d: TreeNode) => {
-      d.data.x0 = d.x
-      d.data.y0 = d.y
+    rootTree.eachBefore((treeNode) => {
+      treeNode.data.x0 = treeNode.x
+      treeNode.data.y0 = treeNode.y
     })
   }
 
