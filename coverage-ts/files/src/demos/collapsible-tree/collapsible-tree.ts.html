@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/collapsible-tree/collapsible-tree.ts</td><td class="">99.75%</td><td class="">95%</td><td class="">403</td><td class="">402</td><td class="">1</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/collapsible-tree/collapsible-tree.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">382</td><td class="">382</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   HierarchyNode,
   HierarchyPointLink,
   HierarchyPointNode,
@@ -41,13 +41,8 @@ type TreeLink = HierarchyPointLink&lt;DataNode&gt;
 type DiagonalNode = { x: number; y: number }
 type DiagonalLink = { source: DiagonalNode; target: DiagonalNode }
 
-const fetchData = async (): Promise&lt;DataNode&gt; =&gt; {
-  const data = (await json(
-    `${ROOT_PATH}data/d3js/collapsible-tree/data.json`
-  )) as DataNode
-
-  return data
-}
+const fetchData = async (): Promise&lt;DataNode&gt; =&gt;
+  json(`${ROOT_PATH}data/d3js/collapsible-tree/data.json`) as Promise&lt;DataNode&gt;
 
 const margin = {
   bottom: 20,
@@ -78,18 +73,20 @@ const renderChart: RenderChart = ({ rootData, rootElId }) =&gt; {
 
   const rootTree = tree(root)
 
-  rootTree.descendants().forEach((d: TreeNode, i: number) =&gt; {
-    d.data.id = i
-    d.data._children = d.children
+  rootTree
+    .descendants()
+    .forEach((...[treeNode, treeNodeIndex]: [TreeNode, number]) =&gt; {
+      treeNode.data.id = treeNodeIndex
+      treeNode.data._children = treeNode.children
 
-    if (d.depth) {
-      d.children = undefined
-    }
-  })
+      if (treeNode.depth) {
+        treeNode.children = undefined
+      }
+    })
 
   const diagonal = linkHorizontal&lt;DiagonalLink, DiagonalNode&gt;()
-    .x((d: DiagonalNode) =&gt; d.y)
-    .y((d: DiagonalNode) =&gt; d.x)
+    .x((diagonalNode) =&gt; diagonalNode.y)
+    .y((diagonalNode) =&gt; diagonalNode.x)
 
   const svg = select&lt;SVGElement, TreeNode&gt;(`#${rootElId}`)
     .append(&quot;svg&quot;)
@@ -129,21 +126,9 @@ const renderChart: RenderChart = ({ rootData, rootElId }) =&gt; {
       }
     })
 
-    const toggleFn = () =&gt; {
-      svg.dispatch(&quot;toggle&quot;)
-    }
-
-    const transition = svg
-      .transition()
-      .duration(duration)
-      .tween(
-        &quot;resize&quot;,
-        (window.ResizeObserver as unknown) ? null : ((() =&gt; toggleFn) as any)
-      )
-
     const node = gNode
-      .selectAll&lt;SVGElement, TreeNode&gt;(&quot;g&quot;)
-      .data(nodes, (d: TreeNode) =&gt; d.data.id)
+      .selectAll&lt;SVGGElement, TreeNode&gt;(&quot;g&quot;)
+      .data(nodes, (treeNode) =&gt; treeNode.data.id)
 
     const nodeEnter = node
       .enter()
@@ -151,26 +136,28 @@ const renderChart: RenderChart = ({ rootData, rootElId }) =&gt; {
       .attr(&quot;transform&quot;, () =&gt; `translate(${source.data.y0},${source.data.x0})`)
       .attr(&quot;fill-opacity&quot;, 0)
       .attr(&quot;stroke-opacity&quot;, 0)
-      .on(&quot;click&quot;, (_event, d: TreeNode) =&gt; {
-        d.children = d.children ? undefined : d.data._children
+      .on(&quot;click&quot;, (...[, treeNode]) =&gt; {
+        treeNode.children = treeNode.children
+          ? undefined
+          : treeNode.data._children
 
-        update(d)
+        update(treeNode)
       })
 
     nodeEnter
       .append(&quot;circle&quot;)
       .attr(&quot;r&quot;, 2.5)
-      .attr(&quot;fill&quot;, (d: TreeNode) =&gt; (d.data._children ? &quot;#555&quot; : &quot;#999&quot;))
+      .attr(&quot;fill&quot;, (treeNode) =&gt; (treeNode.data._children ? &quot;#555&quot; : &quot;#999&quot;))
       .attr(&quot;stroke-width&quot;, 10)
 
     nodeEnter
       .append(&quot;text&quot;)
       .attr(&quot;dy&quot;, &quot;0.31em&quot;)
-      .attr(&quot;x&quot;, (d: TreeNode) =&gt; (d.data._children ? -6 : 6))
-      .attr(&quot;text-anchor&quot;, (d: TreeNode) =&gt;
-        d.data._children ? &quot;end&quot; : &quot;start&quot;
+      .attr(&quot;x&quot;, (treeNode) =&gt; (treeNode.data._children ? -6 : 6))
+      .attr(&quot;text-anchor&quot;, (treeNode) =&gt;
+        treeNode.data._children ? &quot;end&quot; : &quot;start&quot;
       )
-      .text((d: TreeNode) =&gt; d.data.name)
+      .text((treeNode) =&gt; treeNode.data.name)
       .clone(true)
       .lower()
       .attr(&quot;stroke-linejoin&quot;, &quot;round&quot;)
@@ -178,15 +165,17 @@ const renderChart: RenderChart = ({ rootData, rootElId }) =&gt; {
       .attr(&quot;stroke&quot;, &quot;white&quot;)
 
     node
-      .merge(nodeEnter as any)
-      .transition(transition as any)
-      .attr(&quot;transform&quot;, (d: TreeNode) =&gt; `translate(${d.y},${d.x})`)
+      .merge(nodeEnter)
+      .transition()
+      .duration(duration)
+      .attr(&quot;transform&quot;, (treeNode) =&gt; `translate(${treeNode.y},${treeNode.x})`)
       .attr(&quot;fill-opacity&quot;, 1)
       .attr(&quot;stroke-opacity&quot;, 1)
 
     node
       .exit()
-      .transition(transition as any)
+      .transition()
+      .duration(duration)
       .remove()
       .attr(&quot;transform&quot;, () =&gt; `translate(${source.y},${source.x})`)
       .attr(&quot;fill-opacity&quot;, 0)
@@ -194,7 +183,7 @@ const renderChart: RenderChart = ({ rootData, rootElId }) =&gt; {
 
     const link = gLink
       .selectAll&lt;SVGPathElement, TreeLink&gt;(&quot;path&quot;)
-      .data(links, (d: TreeLink) =&gt; d.target.data.id)
+      .data(links, (treeLink) =&gt; treeLink.target.data.id)
 
     const linkEnter = link
       .enter()
@@ -208,14 +197,12 @@ const renderChart: RenderChart = ({ rootData, rootElId }) =&gt; {
         return diagonal({ source: o, target: o })
       })
 
-    link
-      .merge(linkEnter as any)
-      .transition(transition as any)
-      .attr(&quot;d&quot;, diagonal)
+    link.merge(linkEnter).transition().duration(duration).attr(&quot;d&quot;, diagonal)
 
     link
       .exit()
-      .transition(transition as any)
+      .transition()
+      .duration(duration)
       .remove()
       .attr(&quot;d&quot;, () =&gt; {
         const o = { x: source.x, y: source.y }
@@ -223,9 +210,9 @@ const renderChart: RenderChart = ({ rootData, rootElId }) =&gt; {
         return diagonal({ source: o, target: o })
       })
 
-    rootTree.eachBefore((d: TreeNode) =&gt; {
-      d.data.x0 = d.x
-      d.data.y0 = d.y
+    rootTree.eachBefore((treeNode) =&gt; {
+      treeNode.data.x0 = treeNode.x
+      treeNode.data.y0 = treeNode.y
     })
   }
 
@@ -244,8 +231,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/collapsible-tree/collapsible-tree.ts&quot;,&quot;line&quot;:140,&quot;character&quot;:20,&quot;text&quot;:&quot;_event&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 25 Aug 2021 23:26:40 GMT</p>
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 26 Aug 2021 22:14:37 GMT</p>
     </body>
   </html>
   

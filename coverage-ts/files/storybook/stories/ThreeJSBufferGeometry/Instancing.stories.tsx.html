@@ -1,0 +1,411 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Instancing.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSBufferGeometry/Instancing.stories.tsx</td><td class="">99.33%</td><td class="">95%</td><td class="">447</td><td class="">444</td><td class="">3</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+import {
+  Color,
+  DoubleSide,
+  Float32BufferAttribute,
+  InstancedBufferAttribute,
+  InstancedBufferGeometry,
+  Mesh,
+  PerspectiveCamera,
+  RawShaderMaterial,
+  Scene,
+  Vector4,
+  WebGLRenderer,
+} from &quot;three&quot;
+
+import { StoryInfo, TemplateType, createRangeControl } from &quot;../common&quot;
+
+const ROOT_ID = &quot;example&quot;
+
+type Props = {
+  colorAnimation: boolean
+  expansionAnimation: boolean
+  instancesCount: number
+  speed: number
+}
+
+const FRAGMENT_SHADER_COLOR_SIN_ID = &quot;fragmentshadercolorsin&quot;
+const FRAGMENT_SHADER_COLOR_PLAIN = &quot;fragmentshadercolorplain&quot;
+const VERTEX_SHADER_ID = &quot;vertexshader&quot;
+
+const vertexShaderCode = `
+precision highp float;
+
+uniform float sineTime;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+attribute vec3 position;
+attribute vec3 offset;
+attribute vec4 color;
+attribute vec4 orientationStart;
+attribute vec4 orientationEnd;
+
+varying vec3 vPosition;
+varying vec4 vColor;
+
+void main(){
+  vPosition = offset * max( abs( sineTime * 2.0 + 1.0 ), 0.5 ) + position;
+  vec4 orientation = normalize( mix( orientationStart, orientationEnd, sineTime ) );
+  vec3 vcV = cross( orientation.xyz, vPosition );
+  vPosition = vcV * ( 2.0 * orientation.w ) + ( cross( orientation.xyz, vcV ) * 2.0 + vPosition );
+
+  vColor = color;
+
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );
+}
+`
+
+const createFragmentShader = ({
+  withColorAnimation,
+}: {
+  withColorAnimation: boolean
+}) =&gt; `
+  precision highp float;
+
+  uniform float time;
+
+  varying vec3 vPosition;
+  varying vec4 vColor;
+
+  void main() {
+    vec4 color = vec4(vColor);
+    ${
+      withColorAnimation
+        ? &quot;color.r += sin( vPosition.x * 10.0 + time ) * 0.5;&quot;
+        : &quot;&quot;
+    }
+
+    gl_FragColor = color;
+  }
+`
+
+const fragmentShaderColorSinCode = createFragmentShader({
+  withColorAnimation: true,
+})
+const fragmentShaderColorPlainCode = createFragmentShader({
+  withColorAnimation: false,
+})
+
+type State = {
+  expansionTime: number
+  isStopped: boolean
+  rotationTime: number
+}
+
+type SimulationElements = {
+  camera: PerspectiveCamera
+  geometry: InstancedBufferGeometry
+  mesh: Mesh
+  renderer: WebGLRenderer
+  scene: Scene
+}
+
+type Simulation = {
+  elements: SimulationElements
+  props: Props
+  state: State
+  stop: () =&gt; void
+}
+
+const demo = ({
+  prevSimulation,
+  props,
+}: {
+  prevSimulation: Simulation | null
+  props: Props
+}): Simulation =&gt; {
+  const state: State = {
+    expansionTime: 0,
+    rotationTime: 0,
+    ...(prevSimulation?.state ?? {}),
+    isStopped: false,
+  }
+  const container = document.getElementById(ROOT_ID) as HTMLElement
+  const { width } = container.getBoundingClientRect()
+  const height = 500
+
+  const getShaders = () =&gt; {
+    const fragmentShaderColorSinText = (document.getElementById(
+      FRAGMENT_SHADER_COLOR_SIN_ID
+    ) as HTMLElement).textContent!
+    const fragmentShaderColorPlainText = (document.getElementById(
+      FRAGMENT_SHADER_COLOR_PLAIN
+    ) as HTMLElement).textContent!
+    const vertexShaderText = (document.getElementById(
+      VERTEX_SHADER_ID
+    ) as HTMLElement).textContent!
+
+    return {
+      fragmentShader: props.colorAnimation
+        ? fragmentShaderColorSinText
+        : fragmentShaderColorPlainText,
+      vertexShader: vertexShaderText,
+    }
+  }
+
+  const elements = ((): SimulationElements =&gt; {
+    if (prevSimulation) {
+      return prevSimulation.elements
+    }
+
+    const camera = new PerspectiveCamera(50, width / height, 1, 10)
+    const renderer = new WebGLRenderer()
+    const scene = new Scene()
+
+    scene.background = new Color(0xffffff)
+
+    const { fragmentShader, vertexShader } = getShaders()
+
+    const material = new RawShaderMaterial({
+      fragmentShader,
+      side: DoubleSide,
+      transparent: true,
+      uniforms: {
+        /* eslint-disable id-denylist */
+        sineTime: { value: 1.0 },
+        time: { value: 1.0 },
+        /* eslint-enable id-denylist */
+      },
+      vertexShader,
+    })
+
+    const geometry = new InstancedBufferGeometry()
+    const mesh = new Mesh(geometry, material)
+
+    scene.add(mesh)
+
+    return {
+      camera,
+      geometry,
+      mesh,
+      renderer,
+      scene,
+    }
+  })()
+
+  const { camera, geometry, mesh, renderer, scene } = elements
+
+  const createSimulation = (): Simulation =&gt; ({
+    elements,
+    props,
+    state,
+    stop: () =&gt; {
+      state.isStopped = true
+    },
+  })
+
+  const initSimulation = () =&gt; {
+    camera.position.z = 2
+
+    const vector = new Vector4()
+
+    const positions = []
+    const offsets: number[] = []
+    const colors: number[] = []
+    const orientationsStart: number[] = []
+    const orientationsEnd: number[] = []
+
+    const positionBase = 0.025
+
+    positions.push(positionBase, -positionBase, 0)
+    positions.push(-positionBase, positionBase, 0)
+    positions.push(0, 0, positionBase)
+
+    Array.from({ length: props.instancesCount }).forEach(() =&gt; {
+      offsets.push(
+        Math.random() - 0.5,
+        Math.random() - 0.5,
+        Math.random() - 0.5
+      )
+
+      colors.push(Math.random(), Math.random(), Math.random(), Math.random())
+
+      vector.set(
+        Math.random() * 2 - 1,
+        Math.random() * 2 - 1,
+        Math.random() * 2 - 1,
+        Math.random() * 2 - 1
+      )
+      vector.normalize()
+
+      orientationsStart.push(vector.x, vector.y, vector.z, vector.w)
+
+      vector.set(
+        Math.random() * 2 - 1,
+        Math.random() * 2 - 1,
+        Math.random() * 2 - 1,
+        Math.random() * 2 - 1
+      )
+      vector.normalize()
+
+      orientationsEnd.push(vector.x, vector.y, vector.z, vector.w)
+    })
+
+    geometry.setAttribute(&quot;position&quot;, new Float32BufferAttribute(positions, 3))
+
+    geometry.setAttribute(
+      &quot;offset&quot;,
+      new InstancedBufferAttribute(new Float32Array(offsets), 3)
+    )
+    geometry.setAttribute(
+      &quot;color&quot;,
+      new InstancedBufferAttribute(new Float32Array(colors), 4)
+    )
+    geometry.setAttribute(
+      &quot;orientationStart&quot;,
+      new InstancedBufferAttribute(new Float32Array(orientationsStart), 4)
+    )
+    geometry.setAttribute(
+      &quot;orientationEnd&quot;,
+      new InstancedBufferAttribute(new Float32Array(orientationsEnd), 4)
+    )
+
+    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setSize(width, height)
+
+    container.appendChild(renderer.domElement)
+  }
+
+  const render = () =&gt; {
+    state.rotationTime += props.speed * 0.1
+    mesh.rotation.y = state.rotationTime * 0.0005
+
+    if (props.expansionAnimation) {
+      const material = mesh.material as RawShaderMaterial
+
+      state.expansionTime += props.speed * 0.1
+      /* eslint-disable id-denylist */
+      material.uniforms[&quot;time&quot;].value = state.expansionTime * 0.005
+      material.uniforms[&quot;sineTime&quot;].value = Math.sin(
+        material.uniforms[&quot;time&quot;].value * 0.05
+      )
+      /* eslint-enable id-denylist */
+    }
+
+    geometry.instanceCount = props.instancesCount
+
+    renderer.render(scene, camera)
+  }
+
+  const animate = () =&gt; {
+    if (state.isStopped) {
+      return
+    }
+
+    requestAnimationFrame(animate)
+
+    render()
+  }
+
+  if (prevSimulation) {
+    prevSimulation.stop()
+
+    const { fragmentShader } = getShaders()
+    const material = mesh.material as RawShaderMaterial
+
+    material.fragmentShader = fragmentShader
+
+    animate()
+
+    return createSimulation()
+  }
+
+  initSimulation()
+  animate()
+
+  return createSimulation()
+}
+
+const Instancing = (props: Props) =&gt; {
+  const simulationRef = React.useRef&lt;Simulation | null&gt;(null)
+
+  React.useEffect(() =&gt; {
+    simulationRef.current = demo({
+      prevSimulation: simulationRef.current,
+      props,
+    })
+  }, [props])
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[]}
+        source=&quot;https://github.com/mrdoob/three.js/blob/dev/examples/webgl_buffergeometry_instancing.html&quot;
+        sourceText=&quot;Source (official example, ported to TS)&quot;
+        storyName={[&quot;ThreeJSBufferGeometry&quot;, &quot;Instancing&quot;]}
+      /&gt;
+      &lt;div id={ROOT_ID} /&gt;
+      &lt;script
+        dangerouslySetInnerHTML={{ __html: vertexShaderCode }}
+        id={VERTEX_SHADER_ID}
+        type=&quot;x-shader/x-vertex&quot;
+      /&gt;
+      &lt;script
+        dangerouslySetInnerHTML={{ __html: fragmentShaderColorSinCode }}
+        id={FRAGMENT_SHADER_COLOR_SIN_ID}
+        type=&quot;x-shader/x-fragment&quot;
+      /&gt;
+      &lt;script
+        dangerouslySetInnerHTML={{ __html: fragmentShaderColorPlainCode }}
+        id={FRAGMENT_SHADER_COLOR_PLAIN}
+        type=&quot;x-shader/x-fragment&quot;
+      /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;Instancing {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const [speedArg, speedControls] = createRangeControl({
+  diffMin: 100,
+  initialValue: 100,
+  step: 1,
+})
+
+const [instancesArg, instancesControls] = createRangeControl({
+  diffMin: 50_000,
+  initialValue: 50_000,
+  step: 1000,
+})
+
+const args: Props = {
+  colorAnimation: true,
+  expansionAnimation: true,
+  instancesCount: instancesArg,
+  speed: speedArg,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {
+    instancesCount: instancesControls,
+    speed: speedControls,
+  },
+  component: Instancing,
+  title: &quot;ThreeJS/BufferGeometry/Instancing&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;storybook/stories/ThreeJSBufferGeometry/Instancing.stories.tsx&quot;,&quot;line&quot;:279,&quot;character&quot;:32,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSBufferGeometry/Instancing.stories.tsx&quot;,&quot;line&quot;:280,&quot;character&quot;:36,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;storybook/stories/ThreeJSBufferGeometry/Instancing.stories.tsx&quot;,&quot;line&quot;:281,&quot;character&quot;:34,&quot;text&quot;:&quot;value&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 26 Aug 2021 22:14:37 GMT</p>
+    </body>
+  </html>
+  

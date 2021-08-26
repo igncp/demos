@@ -3,7 +3,7 @@
   "anys": [
     {
       "file": "gatsby/onCreatePage.ts",
-      "line": 25,
+      "line": 26,
       "character": 11,
       "text": "_",
       "kind": 1
@@ -12,14 +12,14 @@
       "file": "src/components/demo.tsx",
       "line": 35,
       "character": 18,
-      "text": "e",
+      "text": "mainError",
       "kind": 1
     },
     {
       "file": "src/components/demo.tsx",
       "line": 37,
       "character": 30,
-      "text": "e",
+      "text": "mainError",
       "kind": 1
     },
     {
@@ -387,13 +387,6 @@
       "kind": 1
     },
     {
-      "file": "src/demos/bars/bars.ts",
-      "line": 28,
-      "character": 8,
-      "text": "data",
-      "kind": 1
-    },
-    {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
       "line": 2,
       "character": 7,
@@ -404,168 +397,35 @@
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
       "line": 10,
       "character": 8,
-      "text": "data",
+      "text": "jsonResponse",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
       "line": 12,
       "character": 9,
-      "text": "data",
+      "text": "jsonResponse",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
       "line": 12,
-      "character": 14,
+      "character": 22,
       "text": "results",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 61,
-      "character": 25,
-      "text": "el",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 97,
+      "line": 108,
       "character": 13,
       "text": "Raphael",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 121,
-      "character": 25,
-      "text": "inner",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 121,
-      "character": 31,
-      "text": "animate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 128,
-      "character": 25,
-      "text": "outer",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 128,
-      "character": 31,
-      "text": "animate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 136,
-      "character": 32,
-      "text": "el",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 136,
-      "character": 35,
-      "text": "animate",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 206,
-      "character": 25,
-      "text": "inner",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 207,
-      "character": 25,
-      "text": "outer",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 210,
-      "character": 25,
-      "text": "el",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 210,
-      "character": 28,
-      "text": "push",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 211,
-      "character": 27,
-      "text": "inner",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 212,
-      "character": 27,
-      "text": "outer",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 214,
-      "character": 25,
-      "text": "el",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 214,
-      "character": 28,
-      "text": "transform",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 219,
-      "character": 32,
-      "text": "el",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 220,
-      "character": 9,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 221,
-      "character": 9,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 222,
-      "character": 9,
-      "text": "attr",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 228,
+      "line": 252,
       "character": 8,
-      "text": "data",
+      "text": "countriesMetrics",
       "kind": 1
     },
     {
@@ -975,13 +835,6 @@
       "kind": 1
     },
     {
-      "file": "src/demos/collapsible-tree/collapsible-tree.ts",
-      "line": 140,
-      "character": 20,
-      "text": "_event",
-      "kind": 1
-    },
-    {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
       "line": 43,
       "character": 40,
@@ -1346,13 +1199,6 @@
       "kind": 1
     },
     {
-      "file": "src/demos/weekly-heatmap/weekly-heatmap-chart.ts",
-      "line": 145,
-      "character": 52,
-      "text": "legendValue",
-      "kind": 1
-    },
-    {
       "file": "src/demos/world-map/world-map.ts",
       "line": 19,
       "character": 5,
@@ -1420,6 +1266,27 @@
       "line": 36,
       "character": 29,
       "text": "length",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSBufferGeometry/Instancing.stories.tsx",
+      "line": 279,
+      "character": 32,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSBufferGeometry/Instancing.stories.tsx",
+      "line": 280,
+      "character": 36,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSBufferGeometry/Instancing.stories.tsx",
+      "line": 281,
+      "character": 34,
+      "text": "value",
       "kind": 1
     },
     {
@@ -1885,8 +1752,8 @@
       "kind": 1
     }
   ],
-  "percentage": 98.76718606782768,
-  "total": 21820,
-  "covered": 21551,
-  "uncovered": 269
+  "percentage": 98.8785717489795,
+  "total": 22293,
+  "covered": 22043,
+  "uncovered": 250
 }

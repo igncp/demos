@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars/bars.ts</td><td class="">99.72%</td><td class="">95%</td><td class="">357</td><td class="">356</td><td class="">1</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars/bars.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">352</td><td class="">352</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Selection,
   axisBottom,
   axisLeft,
@@ -24,7 +24,7 @@
 
 import * as styles from &quot;./bars.module.css&quot;
 
-type Data = number[]
+type BarData = number
 
 const height = 500
 const margin = { left: 160, top: 100 }
@@ -34,34 +34,33 @@ const barWidth = 30
 const barHeight = 7
 
 const colours = [&quot;#323247&quot;, &quot;#7C7CC9&quot;, &quot;#72B66C&quot;, &quot;#429742&quot;]
-const barYFn = (d: Data[number]) =&gt; floor - barHeight * d
-const barHeightFn = (d: Data[number]) =&gt; d * barHeight
+const barYFn = (barItem: BarData) =&gt; floor - barHeight * barItem
+const barHeightFn = (barItem: BarData) =&gt; barItem * barHeight
 
-const fetchData = async (): Promise&lt;Data&gt; =&gt; {
+const fetchData = async (): Promise&lt;BarData[]&gt; =&gt; {
   const rawData = await fetch(`${ROOT_PATH}data/d3js/bars/data.json`)
-  const data = await rawData.json()
 
-  return data
+  return rawData.json()
 }
 
 type BarsChartOpts = {
-  data: Data
+  bars: BarData[]
   rootElId: string
 }
 
 type Interval = ReturnType&lt;typeof setInterval&gt;
 type Chart = Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
-type ColorFn = (c: Data[number]) =&gt; string
+type ColorFn = (c: BarData) =&gt; string
 
 class BarsChart {
-  private readonly data: Data
+  private readonly bars: BarData[]
   private readonly rootElId: string
   private interval: Interval | null
   private chart: Chart | null
   private color: ColorFn | null
 
-  public constructor({ data, rootElId }: BarsChartOpts) {
-    this.data = data
+  public constructor({ bars, rootElId }: BarsChartOpts) {
+    this.bars = bars
     this.rootElId = rootElId
 
     this.interval = null
@@ -70,19 +69,19 @@ class BarsChart {
   }
 
   public render() {
-    const { data, rootElId } = this
+    const { bars, rootElId } = this
     const { width } = (document.getElementById(
       rootElId
     ) as HTMLElement).getBoundingClientRect()
 
-    const c = scaleLinear()
-      .domain(extent(data) as [number, number])
+    const colorScale = scaleLinear()
+      .domain(extent(bars) as [BarData, BarData])
       .range([0, 1])
     const heatmapColour: ColorFn = scaleLinear&lt;string&gt;()
       .domain(range(0, 1, 1.0 / colours.length))
       .range(colours)
 
-    const color = (d: Data[number]) =&gt; heatmapColour(c(d))
+    const color = (barItem: BarData) =&gt; heatmapColour(colorScale(barItem))
 
     this.color = color as ColorFn
 
@@ -102,12 +101,12 @@ class BarsChart {
     this.interval = setInterval(this.getIntervalFn(), 1000)
 
     const x = scaleLinear()
-      .domain([0.5, data.length + 0.5])
-      .range([1, barWidth * data.length])
+      .domain([0.5, bars.length + 0.5])
+      .range([1, barWidth * bars.length])
 
     const y = scaleLinear()
-      .domain([0, max(data) as number])
-      .rangeRound([0, -1 * barHeight * (max(data) as number)])
+      .domain([0, max(bars) as number])
+      .rangeRound([0, -1 * barHeight * (max(bars) as number)])
 
     const xAxisG = chart.append(&quot;g&quot;)
 
@@ -118,7 +117,7 @@ class BarsChart {
 
     xAxisG
       .append(&quot;text&quot;)
-      .attr(&quot;transform&quot;, `translate(${(barWidth * data.length) / 2} ,0)`)
+      .attr(&quot;transform&quot;, `translate(${(barWidth * bars.length) / 2} ,0)`)
       .attr(&quot;class&quot;, &quot;xAxisLabel&quot;)
       .attr(&quot;y&quot;, 40)
       .attr(&quot;font-size&quot;, &quot;1.3em&quot;)
@@ -157,18 +156,18 @@ class BarsChart {
   }
 
   private drawRectangles() {
-    const { chart, color, data } = this
+    const { bars, chart, color } = this
 
     ;(chart as Chart)
       .selectAll(&quot;rect&quot;)
-      .data(data)
+      .data(bars)
       .enter()
       .append(&quot;rect&quot;)
-      .attr(&quot;x&quot;, (_d: unknown, i: number) =&gt; barWidth * i)
+      .attr(&quot;x&quot;, (...[, barIndex]) =&gt; barWidth * barIndex)
       .attr(&quot;y&quot;, barYFn)
       .attr(&quot;width&quot;, barWidth)
       .attr(&quot;height&quot;, barHeightFn)
-      .attr(&quot;fill&quot;, (d: Data[number]) =&gt; (color as ColorFn)(d))
+      .attr(&quot;fill&quot;, (barItem) =&gt; color!(barItem))
       .on(&quot;mouseover&quot;, () =&gt; {
         this.clearInterval()
       })
@@ -177,28 +176,29 @@ class BarsChart {
         this.interval = setInterval(this.getIntervalFn(), 1000)
       })
       .append(&quot;title&quot;)
-      .text((d: Data[number]) =&gt; d)
+      .text((barItem) =&gt; barItem)
   }
 
   private getIntervalFn() {
     return () =&gt; {
-      const { data } = this
+      const { bars } = this
 
-      data.unshift(data.pop() as Data[0])
+      bars.unshift(bars.pop() as BarData)
+
       this.redraw()
     }
   }
 
   private redraw() {
-    const { chart, color, data } = this
+    const { bars, chart, color } = this
 
     if (!chart) {
       return
     }
 
     const newX = scaleLinear()
-      .domain([0.5, data.length + 0.5])
-      .range([1, barWidth * data.length])
+      .domain([0.5, bars.length + 0.5])
+      .range([1, barWidth * bars.length])
 
     const newAxis = axisBottom(newX)
 
@@ -208,26 +208,26 @@ class BarsChart {
       .select(&quot;.xAxisLabel&quot;)
       .transition()
       .duration(500)
-      .attr(&quot;transform&quot;, `translate(${(barWidth * data.length) / 2} ,0)`)
+      .attr(&quot;transform&quot;, `translate(${(barWidth * bars.length) / 2} ,0)`)
 
     chart
       .selectAll(&quot;rect&quot;)
-      .data(data)
+      .data(bars)
       .transition()
       .duration(500)
       .attr(&quot;y&quot;, barYFn)
       .attr(&quot;height&quot;, barHeightFn)
       .attr(&quot;fill&quot;, color as ColorFn)
       .select(&quot;title&quot;)
-      .text((d: Data[number]) =&gt; d)
+      .text((barItem) =&gt; barItem)
   }
 }
 
 const main = async () =&gt; {
-  const data = await fetchData()
+  const bars = await fetchData()
 
   const barsChart = new BarsChart({
-    data,
+    bars,
     rootElId: &quot;chart&quot;,
   })
 
@@ -236,8 +236,8 @@ const main = async () =&gt; {
   const addItemEl = document.getElementById(&quot;add-item&quot;) as HTMLElement
 
   addItemEl.addEventListener(&quot;click&quot;, () =&gt; {
-    if (data.length &lt; 20) {
-      data.push(Math.floor(Math.random() * (max(data) as number)) + 1)
+    if (bars.length &lt; 20) {
+      bars.push(Math.floor(Math.random() * (max(bars) as number)) + 1)
       barsChart.refresh()
     } else {
       addItemEl.setAttribute(&quot;disabled&quot;, &quot;disabled&quot;)
@@ -246,8 +246,8 @@ const main = async () =&gt; {
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/bars/bars.ts&quot;,&quot;line&quot;:28,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 25 Aug 2021 23:26:40 GMT</p>
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 26 Aug 2021 22:14:37 GMT</p>
     </body>
   </html>
   

@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/chord/chord.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">487</td><td class="">487</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/chord/chord.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">498</td><td class="">498</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   BaseType,
   Selection,
   arc as arcD3,
@@ -54,14 +54,14 @@ type CSVParsedItem = {
 type Debits = Array&lt;Array&lt;CSVParsedItem | null&gt;&gt;
 type Credits = Array&lt;Array&lt;CSVParsedItem | null&gt;&gt;
 
-type Data = {
+type FinancialData = {
   credits: Credits
   debits: Debits
   fullList: Country[]
 }
 
 const fetchData = async () =&gt; {
-  const list = (await csv(
+  const originalCSVItems = (await csv(
     `${ROOT_PATH}data/d3js/chord/data.csv`
   )) as CSVDataItem[]
 
@@ -72,7 +72,7 @@ const fetchData = async () =&gt; {
 
   let id = 0
 
-  const country = function (countryName: string): Country {
+  const country = (countryName: string): Country =&gt; {
     if (!(countryName in countries)) {
       countries[countryName] = {
         id,
@@ -85,30 +85,32 @@ const fetchData = async () =&gt; {
     return countries[countryName]
   }
 
-  const parsedList: CSVParsedItem[] = list.map((d) =&gt; ({
-    ...d,
-    creditor: country(d.creditor),
-    debtor: {
-      ...country(d.debtor),
-      risk: d.risk,
-    },
-  }))
+  const parsedList: CSVParsedItem[] = originalCSVItems.map(
+    (originalCSVItem) =&gt; ({
+      ...originalCSVItem,
+      creditor: country(originalCSVItem.creditor),
+      debtor: {
+        ...country(originalCSVItem.debtor),
+        risk: originalCSVItem.risk,
+      },
+    })
+  )
 
-  Array.from({ length: id }).forEach((_, idx) =&gt; {
-    debits[idx] = []
-    credits[idx] = []
+  Array.from({ length: id }).forEach((...[, sourceIndex]) =&gt; {
+    debits[sourceIndex] = []
+    credits[sourceIndex] = []
 
-    Array.from({ length: id }).forEach((_2, idx2) =&gt; {
-      debits[idx][idx2] = null
-      credits[idx][idx2] = null
+    Array.from({ length: id }).forEach((...[, targetIndex]) =&gt; {
+      debits[sourceIndex][targetIndex] = null
+      credits[sourceIndex][targetIndex] = null
     })
   })
 
-  parsedList.forEach((d) =&gt; {
-    debits[d.creditor.id][d.debtor.id] = d
-    credits[d.debtor.id][d.creditor.id] = d
-    fullList[d.creditor.id] = d.creditor
-    fullList[d.debtor.id] = d.debtor
+  parsedList.forEach((financialItem) =&gt; {
+    debits[financialItem.creditor.id][financialItem.debtor.id] = financialItem
+    credits[financialItem.debtor.id][financialItem.creditor.id] = financialItem
+    fullList[financialItem.creditor.id] = financialItem.creditor
+    fullList[financialItem.debtor.id] = financialItem.debtor
   })
 
   return {
@@ -118,12 +120,17 @@ const fetchData = async () =&gt; {
   }
 }
 
-const addDropShadowFilter = function &lt;A&gt;(
-  charts: Selection&lt;BaseType, A, BaseType, unknown&gt;,
-  name: string,
-  deviation: number,
+const addDropShadowFilter = &lt;SVGData&gt;({
+  charts,
+  deviation,
+  name,
+  slope,
+}: {
+  charts: Selection&lt;BaseType, SVGData, BaseType, unknown&gt;
+  deviation: number
+  name: string
   slope: number
-) {
+}) =&gt; {
   const defs = charts.append(&quot;defs&quot;)
   const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, `drop-shadow-${name}`)
 
@@ -168,9 +175,12 @@ const margin = {
 }
 const height = 500
 
-type RenderChart = (o: { data: Data; rootElId: string }) =&gt; void
+type RenderChart = (o: {
+  financialData: FinancialData
+  rootElId: string
+}) =&gt; void
 
-const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
+const renderChart: RenderChart = ({ financialData, rootElId }) =&gt; {
   const rootEl = document.getElementById(rootElId) as HTMLElement
 
   rootEl.classList.add(styles.chordChart)
@@ -184,7 +194,7 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
   const arc = arcD3().innerRadius(r0).outerRadius(r1)
   const svg = select(`#${rootElId}`)
 
-  const { credits, debits, fullList } = data
+  const { credits, debits, fullList } = financialData
 
   const charts = svg
     .selectAll(&quot;div&quot;)
@@ -200,26 +210,38 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
     .append(&quot;svg:g&quot;)
     .attr(&quot;transform&quot;, `translate(${width / 2},${height / 2 + margin.top})`)
 
-  const leftChart = charts.filter((_d, i) =&gt; i === 0)
-  const rightChart = charts.filter((_d, i) =&gt; i === 1)
+  const leftChart = charts.filter((...[, chartIndex]) =&gt; chartIndex === 0)
+  const rightChart = charts.filter((...[, chartIndex]) =&gt; chartIndex === 1)
 
-  const setLabel = function (
-    chart: Selection&lt;BaseType, Debits, BaseType, unknown&gt;,
+  const setLabel = ({
+    chart,
+    label,
+  }: {
+    chart: Selection&lt;BaseType, Debits, BaseType, unknown&gt;
     label: string
-  ) {
-    return chart
+  }) =&gt;
+    chart
       .append(&quot;text&quot;)
       .text(label)
       .attr(&quot;transform&quot;, `translate(0,${(-1 * height) / 2 - 10})`)
       .attr(&quot;class&quot;, styles.chartTitle)
       .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-  }
 
-  setLabel(leftChart, &quot;Debits&quot;)
-  setLabel(rightChart, &quot;Credits&quot;)
+  setLabel({ chart: leftChart, label: &quot;Debits&quot; })
+  setLabel({ chart: rightChart, label: &quot;Credits&quot; })
 
-  addDropShadowFilter(charts, &quot;chords&quot;, 2, 0.4)
-  addDropShadowFilter(charts, &quot;headings&quot;, 3, 0.5)
+  addDropShadowFilter({
+    charts,
+    deviation: 2,
+    name: &quot;chords&quot;,
+    slope: 0.4,
+  })
+  addDropShadowFilter({
+    charts,
+    deviation: 3,
+    name: &quot;headings&quot;,
+    slope: 0.5,
+  })
 
   const colorDomain = scaleLinear()
     .domain(extent([0, fullList.length - 1]) as [number, number])
@@ -229,14 +251,13 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
     .domain(range(0, 1, 1.0 / colours.length))
     .range(colours)
 
-  const fill = function (d: number) {
-    return heatmapColour(colorDomain(d))
-  }
+  const fill = (chordItemIndex: number) =&gt;
+    heatmapColour(colorDomain(chordItemIndex))
 
-  charts.each(function (dataMatrix, chartIndex) {
+  charts.each(function (...[dataMatrix, chartIndex]) {
     const svgComp = select(this)
     const numberMatrix = dataMatrix.map((row) =&gt;
-      row.map((item) =&gt; (item ? +item.amount : 0))
+      row.map((cell) =&gt; (cell ? +cell.amount : 0))
     )
 
     const chordData = chord()
@@ -252,23 +273,25 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
       .enter()
       .append(&quot;svg:path&quot;)
       .attr(&quot;class&quot;, styles.chord)
-      .style(&quot;fill&quot;, (d) =&gt; fill(d.target.index))
+      .style(&quot;fill&quot;, (chordItem) =&gt; fill(chordItem.target.index))
       .style(&quot;filter&quot;, &quot;url(#drop-shadow-chords)&quot;)
-      .style(&quot;stroke&quot;, (d) =&gt; {
-        const originalColor = fill(d.target.index)
+      .style(&quot;stroke&quot;, (chordItem) =&gt; {
+        const originalColor = fill(chordItem.target.index)
         const newColor = rgb(originalColor).darker()
 
         return newColor.formatHex()
       })
       .style(&quot;stroke-width&quot;, 2)
-      .attr(&quot;d&quot;, ribbonLayout as any)
+      .attr(&quot;d&quot;, ribbonLayout as any) // eslint-disable-line @typescript-eslint/no-explicit-any
       .append(&quot;svg:title&quot;)
-      .text((d) =&gt; {
-        const { [d.source.index]: sourceData } = fullList
-        const { [d.target.index]: targetData } = fullList
+      .text((chordItem) =&gt; {
+        const {
+          [chordItem.source.index]: sourceData,
+          [chordItem.target.index]: targetData,
+        } = fullList
 
         return `${sourceData.name} owes ${targetData.name} $${formatCurrency(
-          d.source.value
+          chordItem.source.value
         )}B.`
       })
 
@@ -280,41 +303,44 @@ const renderChart: RenderChart = ({ data, rootElId }) =&gt; {
       .attr(&quot;class&quot;, styles.group)
 
     g.append(&quot;svg:path&quot;)
-      .style(&quot;fill&quot;, (d) =&gt; fill(d.index))
-      .attr(&quot;id&quot;, (d) =&gt; `group${d.index}-${chartIndex}`)
-      .attr(&quot;d&quot;, arc as any)
+      .style(&quot;fill&quot;, (chordGroup) =&gt; fill(chordGroup.index))
+      .attr(&quot;id&quot;, (chordGroup) =&gt; `group${chordGroup.index}-${chartIndex}`)
+      .attr(&quot;d&quot;, arc as any) // eslint-disable-line @typescript-eslint/no-explicit-any
       .style(&quot;filter&quot;, () =&gt; &quot;url(#drop-shadow-headings)&quot;)
       .append(&quot;svg:title&quot;)
       .text(
-        (d) =&gt;
-          `${fullList[d.index].name} ${
+        (chordGroup) =&gt;
+          `${fullList[chordGroup.index].name} ${
             chartIndex ? &quot;owes&quot; : &quot;is owed&quot;
-          } $${formatCurrency(d.value)}B.`
+          } $${formatCurrency(chordGroup.value)}B.`
       )
 
     g.append(&quot;svg:text&quot;)
       .attr(&quot;x&quot;, 6)
       .attr(&quot;dy&quot;, 15)
-      .filter((d) =&gt; d.value &gt; 150)
+      .filter((chordGroup) =&gt; chordGroup.value &gt; 150)
       .append(&quot;svg:textPath&quot;)
-      .attr(&quot;xlink:href&quot;, (d) =&gt; `#group${d.index}-${chartIndex}`)
-      .text((d) =&gt; fullList[d.index].name)
+      .attr(
+        &quot;xlink:href&quot;,
+        (chordGroup) =&gt; `#group${chordGroup.index}-${chartIndex}`
+      )
+      .text((chordGroup) =&gt; fullList[chordGroup.index].name)
       .attr(&quot;class&quot;, styles.headingTitle)
   })
 }
 
 const main = async () =&gt; {
-  const data = await fetchData()
+  const financialData = await fetchData()
 
   renderChart({
-    data,
+    financialData,
     rootElId: &quot;chart&quot;,
   })
 }
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 25 Aug 2021 23:26:40 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 26 Aug 2021 22:14:37 GMT</p>
     </body>
   </html>
   

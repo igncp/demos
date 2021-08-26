@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">src/demos/bars-3dimensional/bars-3dimensional.ts</td><td class="">94.21%</td><td class="">95%</td><td class="">432</td><td class="">407</td><td class="">25</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { RaphaelPaper } from &quot;raphael&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars-3dimensional/bars-3dimensional.ts</td><td class="">98.67%</td><td class="">95%</td><td class="">451</td><td class="">445</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { RaphaelPaper, RaphaelPath, RaphaelSet } from &quot;raphael&quot;
 
 import Raphael from &quot;@/demos/_utils/browserRaphael&quot;
 
@@ -21,13 +21,13 @@ const fetchData = async () =&gt; {
   const response = await fetch(
     `${ROOT_PATH}data/raphael/bars-3dimensional/data.json`
   )
-  const data = await response.json()
+  const jsonResponse = await response.json()
 
-  return data.results
+  return jsonResponse.results
 }
 
-type Data = {
-  [key: string]: number[]
+type CountriesMetrics = {
+  [countryName: string]: number[]
 } &amp; {
   keys: string[]
   keysLength: number
@@ -46,12 +46,23 @@ type Config = {
 }
 
 type Dom = {
-  els: { [k: string]: any }
+  elements: {
+    [k: string]: {
+      inner?: RaphaelPath
+      outer?: RaphaelPath
+      paperSet?: RaphaelSet
+    }
+  }
   paper: RaphaelPaper
 }
 
+type CalcArgs = {
+  countryName: string
+  serieIndex: number
+}
+
 type ChartOpts = {
-  data: Data
+  countriesMetrics: CountriesMetrics
   rootElId: string
 }
 
@@ -59,34 +70,34 @@ class Chart {
   private readonly rootElId: string
   private cg!: Config
   private dom!: Dom
-  private data!: Data
+  private countriesMetrics!: CountriesMetrics
 
-  public constructor({ data, rootElId }: ChartOpts) {
+  public constructor({ countriesMetrics, rootElId }: ChartOpts) {
     this.rootElId = rootElId
 
     this.setCg()
     this.setDom()
-    this.setData(data)
+    this.setData(countriesMetrics)
   }
 
   public render() {
     this.drawAxis()
-    this.data.keys.forEach((item) =&gt; {
-      this.dom.els[item].el = this.dom.paper.set()
+    this.countriesMetrics.keys.forEach((countryName) =&gt; {
+      this.dom.elements[countryName].paperSet = this.dom.paper.set()
     })
 
-    this.createCountries(this.data.seriesDisplayed)
+    this.createCountries(this.countriesMetrics.seriesDisplayed)
   }
 
   public displayNextSeries() {
-    const { data } = this
+    const { countriesMetrics } = this
 
-    data.seriesDisplayed =
-      data.seriesDisplayed + 1 === data.seriesLength
+    countriesMetrics.seriesDisplayed =
+      countriesMetrics.seriesDisplayed + 1 === countriesMetrics.seriesLength
         ? 0
-        : data.seriesDisplayed + 1
+        : countriesMetrics.seriesDisplayed + 1
 
-    this.animateCountries(data.seriesDisplayed)
+    this.animateCountries(countriesMetrics.seriesDisplayed)
   }
 
   private setCg() {
@@ -95,7 +106,7 @@ class Chart {
     ) as HTMLElement).getBoundingClientRect()
 
     this.cg = {
-      colorScheme: [&quot;#C1252D&quot;, &quot;#5F3A5F&quot;, &quot;#51A8D0&quot;],
+      colorScheme: [&quot;#c1252d&quot;, &quot;#5f3a5f&quot;, &quot;#51a8d0&quot;],
       deep: 5,
       easing: &quot;bounce&quot;,
       heightOffset: 100,
@@ -107,7 +118,7 @@ class Chart {
 
   private setDom() {
     this.dom = {
-      els: {},
+      elements: {},
       paper: Raphael(this.rootElId, this.cg.width, 245),
     }
     ;(document.getElementById(this.rootElId) as HTMLElement).classList.add(
@@ -115,41 +126,42 @@ class Chart {
     )
   }
 
-  private setData(data: Data) {
-    data.keys = Object.keys(data)
-    data.seriesDisplayed = 0
-    data.seriesLength = data[data.keys[0]].length
-    data.keysLength = data.keys.length
+  private setData(countriesMetrics: CountriesMetrics) {
+    countriesMetrics.keys = Object.keys(countriesMetrics)
+    countriesMetrics.seriesDisplayed = 0
+    countriesMetrics.seriesLength =
+      countriesMetrics[countriesMetrics.keys[0]].length
+    countriesMetrics.keysLength = countriesMetrics.keys.length
 
-    this.data = data
+    this.countriesMetrics = countriesMetrics
 
-    data.keys.forEach((item: string) =&gt; {
-      this.dom.els[item] = {}
+    countriesMetrics.keys.forEach((countryName: string) =&gt; {
+      this.dom.elements[countryName] = {}
     })
   }
 
-  private animateCountries(i: number) {
-    const { data } = this
+  private animateCountries(serieIndex: number) {
+    const { countriesMetrics } = this
 
-    data.keys.forEach((item) =&gt; {
-      this.dom.els[item].inner.animate(
+    countriesMetrics.keys.forEach((countryName) =&gt; {
+      this.dom.elements[countryName].inner!.animate(
         {
-          path: this.calcInnerPath(item, i),
+          path: this.calcInnerPath({ countryName, serieIndex }),
         },
         this.cg.speed,
         this.cg.easing
       )
-      this.dom.els[item].outer.animate(
+      this.dom.elements[countryName].outer!.animate(
         {
-          path: this.calcOuterPath(item, i),
+          path: this.calcOuterPath({ countryName, serieIndex }),
         },
         this.cg.speed,
         this.cg.easing
       )
 
-      return this.dom.els[item].el.animate(
+      return this.dom.elements[countryName].paperSet!.animate(
         {
-          fill: this.cg.colorScheme[i],
+          fill: this.cg.colorScheme[serieIndex],
         },
         this.cg.speed
       )
@@ -164,13 +176,14 @@ class Chart {
       cg: { deep },
     } = this
 
-    for (let i = 0, _i = 0; _i &lt;= 3; _i += 1, i = _i) {
-      const path = `M5,${25 * i} ${this.cg.width},${
-        this.cg.heightOffset + i * 25
+    Array.from({ length: 4 }).forEach((...[, pathIndex]) =&gt; {
+      const horizontalLineHeight = 25 * pathIndex
+      const path = `M5,${horizontalLineHeight} ${this.cg.width},${
+        this.cg.heightOffset + horizontalLineHeight
       }`
 
       paper.path(path).attr(&quot;stroke-dasharray&quot;, &quot;. &quot;)
-    }
+    })
 
     return paper
       .path(
@@ -182,84 +195,95 @@ class Chart {
       .attr(&quot;stroke&quot;, &quot;none&quot;)
   }
 
-  private calcH0(it: string, se: number): number {
-    return 100 - this.data[it]![se]!
+  private calcH0({ countryName, serieIndex }: CalcArgs): number {
+    return 100 - this.countriesMetrics[countryName]![serieIndex]!
   }
 
-  private calcH5(it: string, se: number) {
-    return 100 - this.data[it][se] + 5 * this.cg.ratio
-  }
-
-  private calcH10(it: string, se: number) {
-    return 100 - this.data[it][se] + 10 * this.cg.ratio
-  }
-
-  private calcInnerPath(it: string, se: number) {
+  private calcH5({ countryName, serieIndex }: CalcArgs) {
     return (
-      `M0,${this.calcH5(it, se)} 15,${this.calcH10(it, se)} ` +
-      `15,${100 + 10 * this.cg.ratio} 0,${100 + 5 * this.cg.ratio}Z`
+      100 - this.countriesMetrics[countryName][serieIndex] + 5 * this.cg.ratio
     )
   }
 
-  private calcOuterPath(it: string, se: number) {
-    return `M0,${this.calcH5(it, se)} 5,${this.calcH0(it, se)} 20,${this.calcH5(
-      it,
-      se
-    )} 20,${100 + 5 * this.cg.ratio} 15,${100 + 10 * this.cg.ratio} 0,${
-      100 + 5 * this.cg.ratio
-    }Z`
+  private calcH10({ countryName, serieIndex }: CalcArgs) {
+    return (
+      100 - this.countriesMetrics[countryName][serieIndex] + 10 * this.cg.ratio
+    )
   }
 
-  private createCountries(i: number) {
-    const { data } = this
+  private calcInnerPath({ countryName, serieIndex }: CalcArgs) {
+    return `M0,${this.calcH5({ countryName, serieIndex })} 15,${this.calcH10({
+      countryName,
+      serieIndex,
+    })} 15,${100 + 10 * this.cg.ratio} 0,${100 + 5 * this.cg.ratio}Z`
+  }
+
+  private calcOuterPath({ countryName, serieIndex }: CalcArgs) {
+    return `M0,${this.calcH5({ countryName, serieIndex })} 5,${this.calcH0({
+      countryName,
+      serieIndex,
+    })} 20,${this.calcH5({ countryName, serieIndex })} 20,${
+      100 + 5 * this.cg.ratio
+    } 15,${100 + 10 * this.cg.ratio} 0,${100 + 5 * this.cg.ratio}Z`
+  }
+
+  private createCountries(serieIndex: number) {
+    const { countriesMetrics } = this
     const {
       dom: { paper },
     } = this
 
-    return data.keys.forEach((item, index) =&gt; {
-      this.dom.els[item].inner = paper.path(this.calcInnerPath(item, i))
-      this.dom.els[item].outer = paper
-        .path(this.calcOuterPath(item, i))
-        .attr(&quot;opacity&quot;, 0.5)
-      this.dom.els[item].el.push(
-        this.dom.els[item].inner,
-        this.dom.els[item].outer
+    return countriesMetrics.keys.forEach((...[countryName, countryIndex]) =&gt; {
+      this.dom.elements[countryName].inner = paper.path(
+        this.calcInnerPath({ countryName, serieIndex })
       )
-      this.dom.els[item].el.transform(
-        `T ${(this.cg.width / data.keysLength) * index},` +
-          `${(this.cg.heightOffset / data.keysLength) * index}`
+      this.dom.elements[countryName].outer = paper
+        .path(this.calcOuterPath({ countryName, serieIndex }))
+        .attr(&quot;opacity&quot;, 0.5)
+      this.dom.elements[countryName].paperSet!.push(
+        this.dom.elements[countryName].inner!,
+        this.dom.elements[countryName].outer!
+      )
+      this.dom.elements[countryName].paperSet!.transform(
+        `T ${(this.cg.width / countriesMetrics.keysLength) * countryIndex},` +
+          `${
+            (this.cg.heightOffset / countriesMetrics.keysLength) * countryIndex
+          }`
       )
 
-      return this.dom.els[item].el
-        .attr(&quot;fill&quot;, &quot;#C1252D&quot;)
+      return this.dom.elements[countryName]
+        .paperSet!.attr(&quot;fill&quot;, &quot;#c1252d&quot;)
         .attr(&quot;stroke&quot;, &quot;none&quot;)
-        .attr(&quot;title&quot;, `${item}: ${data[item][i]}`)
+        .attr(
+          &quot;title&quot;,
+          `${countryName}: ${countriesMetrics[countryName][serieIndex]}`
+        )
     })
   }
 }
 
 const main = async () =&gt; {
-  const data = await fetchData()
+  const countriesMetrics = await fetchData()
 
   const chart = new Chart({
-    data,
+    countriesMetrics,
     rootElId: &quot;chart&quot;,
   })
 
   chart.render()
-  ;(document.querySelector(&quot;.animate-bars&quot;) as HTMLElement).addEventListener(
-    &quot;click&quot;,
-    (e) =&gt; {
-      e.preventDefault()
 
-      chart.displayNextSeries()
-    }
-  )
+  const animateButton = document.querySelector(&quot;.animate-bars&quot;) as HTMLElement
+
+  animateButton.addEventListener(&quot;click&quot;, (clickEvent) =&gt; {
+    clickEvent.preventDefault()
+
+    chart.displayNextSeries()
+  })
 }
 
 export default main
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:7,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:9,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:14,&quot;text&quot;:&quot;results&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:61,&quot;character&quot;:25,&quot;text&quot;:&quot;el&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:97,&quot;character&quot;:13,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:25,&quot;text&quot;:&quot;inner&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:121,&quot;character&quot;:31,&quot;text&quot;:&quot;animate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:128,&quot;character&quot;:25,&quot;text&quot;:&quot;outer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:128,&quot;character&quot;:31,&quot;text&quot;:&quot;animate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:32,&quot;text&quot;:&quot;el&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:136,&quot;character&quot;:35,&quot;text&quot;:&quot;animate&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:206,&quot;character&quot;:25,&quot;text&quot;:&quot;inner&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:207,&quot;character&quot;:25,&quot;text&quot;:&quot;outer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:210,&quot;character&quot;:25,&quot;text&quot;:&quot;el&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:210,&quot;character&quot;:28,&quot;text&quot;:&quot;push&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:211,&quot;character&quot;:27,&quot;text&quot;:&quot;inner&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:212,&quot;character&quot;:27,&quot;text&quot;:&quot;outer&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:214,&quot;character&quot;:25,&quot;text&quot;:&quot;el&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:214,&quot;character&quot;:28,&quot;text&quot;:&quot;transform&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:219,&quot;character&quot;:32,&quot;text&quot;:&quot;el&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:220,&quot;character&quot;:9,&quot;text&quot;:&quot;attr&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:221,&quot;character&quot;:9,&quot;text&quot;:&quot;attr&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:222,&quot;character&quot;:9,&quot;text&quot;:&quot;attr&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:228,&quot;character&quot;:8,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 25 Aug 2021 23:26:40 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:2,&quot;character&quot;:7,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:10,&quot;character&quot;:8,&quot;text&quot;:&quot;jsonResponse&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:9,&quot;text&quot;:&quot;jsonResponse&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:22,&quot;text&quot;:&quot;results&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:108,&quot;character&quot;:13,&quot;text&quot;:&quot;Raphael&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/bars-3dimensional/bars-3dimensional.ts&quot;,&quot;line&quot;:252,&quot;character&quot;:8,&quot;text&quot;:&quot;countriesMetrics&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 26 Aug 2021 22:14:37 GMT</p>
     </body>
   </html>
   
