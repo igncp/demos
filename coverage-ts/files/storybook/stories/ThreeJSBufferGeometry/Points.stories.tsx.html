@@ -1,0 +1,266 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Points.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSBufferGeometry/Points.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">330</td><td class="">330</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+import {
+  BufferGeometry,
+  Color,
+  Float32BufferAttribute,
+  PerspectiveCamera,
+  PointsMaterial,
+  Points as PointsThree,
+  Scene,
+  WebGLRenderer,
+} from &quot;three&quot;
+import { OrbitControls } from &quot;three/examples/jsm/controls/OrbitControls.js&quot;
+
+import { StoryInfo, TemplateType, createRangeControl } from &quot;../common&quot;
+
+const ROOT_ID = &quot;example&quot;
+
+type Props = {
+  particles: number
+  rotationSpeed: number
+  size: number
+}
+
+type State = {
+  isStopped: boolean
+  time: number
+}
+
+type SimulationElements = {
+  camera: PerspectiveCamera
+  points: PointsThree
+  renderer: WebGLRenderer
+  scene: Scene
+}
+
+type Simulation = {
+  elements: SimulationElements
+  props: Props
+  state: State
+  stop: () =&gt; void
+}
+
+const demo = ({
+  prevSimulation,
+  props,
+}: {
+  prevSimulation: Simulation | null
+  props: Props
+}): Simulation =&gt; {
+  const state: State = {
+    time: 0,
+    ...(prevSimulation?.state ?? {}),
+    isStopped: false,
+  }
+  const container = document.getElementById(ROOT_ID) as HTMLElement
+  const { width } = container.getBoundingClientRect()
+  const height = 500
+
+  const elements = ((): SimulationElements =&gt; {
+    if (prevSimulation) {
+      return prevSimulation.elements
+    }
+
+    const camera = new PerspectiveCamera(27, width / height, 5, 3500)
+
+    const scene = new Scene()
+    const geometry = new BufferGeometry()
+
+    const positions: number[] = []
+    const colors: number[] = []
+    const color = new Color()
+
+    const { size } = props
+    const sizeHalf = size / 2
+
+    Array.from({ length: props.particles }, () =&gt; {
+      const x = Math.random() * size - sizeHalf
+      const y = Math.random() * size - sizeHalf
+      const z = Math.random() * size - sizeHalf
+
+      positions.push(x, y, z)
+
+      const vx = x / size + 0.5
+      const vy = y / size + 0.5
+      const vz = z / size + 0.5
+
+      color.setRGB(vx, vy, vz)
+
+      colors.push(color.r, color.g, color.b)
+    })
+
+    geometry.setAttribute(&quot;position&quot;, new Float32BufferAttribute(positions, 3))
+    geometry.setAttribute(&quot;color&quot;, new Float32BufferAttribute(colors, 3))
+
+    geometry.computeBoundingSphere()
+
+    const material = new PointsMaterial({ size: 15, vertexColors: true })
+
+    const points = new PointsThree(geometry, material)
+    const renderer = new WebGLRenderer()
+
+    scene.add(points)
+
+    return {
+      camera,
+      points,
+      renderer,
+      scene,
+    }
+  })()
+
+  const { camera, points, renderer, scene } = elements
+
+  const createSimulation = (): Simulation =&gt; ({
+    elements,
+    props,
+    state,
+    stop: () =&gt; {
+      state.isStopped = true
+    },
+  })
+
+  const initSimulation = () =&gt; {
+    scene.background = new Color(0xffffff)
+
+    camera.position.z = 2750
+    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setSize(width, height)
+
+    container.innerHTML = &quot;&quot;
+    container.appendChild(renderer.domElement)
+
+    const controls = new OrbitControls(camera, renderer.domElement)
+
+    controls.target.y = 0.5
+    controls.update()
+  }
+
+  const render = () =&gt; {
+    state.time += props.rotationSpeed * 0.0001
+
+    points.rotation.x = state.time * 0.25
+    points.rotation.y = state.time * 0.5
+
+    renderer.render(scene, camera)
+  }
+
+  const animate = () =&gt; {
+    if (state.isStopped) {
+      return
+    }
+
+    requestAnimationFrame(animate)
+
+    render()
+  }
+
+  if (prevSimulation) {
+    prevSimulation.stop()
+
+    animate()
+
+    return createSimulation()
+  }
+
+  initSimulation()
+  animate()
+
+  return createSimulation()
+}
+
+const restartProps: Array&lt;keyof Props&gt; = [&quot;particles&quot;, &quot;size&quot;]
+
+const Points = (props: Props) =&gt; {
+  const simulationRef = React.useRef&lt;Simulation | null&gt;(null)
+
+  React.useEffect(() =&gt; {
+    const shouldRestart = restartProps.some(
+      (restartProp) =&gt;
+        simulationRef.current?.props[restartProp] !== props[restartProp]
+    )
+
+    if (shouldRestart) {
+      simulationRef.current?.stop()
+      simulationRef.current = null
+    }
+
+    simulationRef.current = demo({
+      prevSimulation: simulationRef.current,
+      props,
+    })
+  }, [props])
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[]}
+        source=&quot;https://github.com/mrdoob/three.js/blob/master/examples/webgl_buffergeometry_points.html&quot;
+        storyName={[&quot;ThreeJSBufferGeometry&quot;, &quot;Points&quot;]}
+      /&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;Points {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const [speedArg, speedControls] = createRangeControl({
+  diffMin: 100,
+  initialValue: 100,
+  step: 1,
+})
+
+const [particlesArg, particlesControls] = createRangeControl({
+  diffMax: 100_000,
+  diffMin: 499_499,
+  initialValue: 500_000,
+  step: 1,
+})
+
+const [sizeArg, sizeControls] = createRangeControl({
+  diffMax: 200,
+  diffMin: 799,
+  initialValue: 800,
+  step: 1,
+})
+
+const args: Props = {
+  particles: particlesArg,
+  rotationSpeed: speedArg,
+  size: sizeArg,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {
+    particles: particlesControls,
+    rotationSpeed: speedControls,
+    size: sizeControls,
+  },
+  component: Points,
+  title: &quot;ThreeJS/BufferGeometry/Points&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 28 Aug 2021 17:34:56 GMT</p>
+    </body>
+  </html>
+  
