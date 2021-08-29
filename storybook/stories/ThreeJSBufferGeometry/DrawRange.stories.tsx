@@ -48,7 +48,6 @@ type Props = {
 
 type State = {
   isStopped: boolean
-  time: number
 }
 
 type ParticleData = {
@@ -86,7 +85,6 @@ const demo = ({
 }): Simulation => {
   const { maxConnections, minConnectionDistance, particleCount } = props
   const state: State = {
-    time: 0,
     ...(prevSimulation?.state ?? {}),
     isStopped: false,
   }

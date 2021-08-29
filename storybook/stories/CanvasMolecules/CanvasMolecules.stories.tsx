@@ -124,7 +124,7 @@ const main = ({
     .append("canvas")
     .attr("height", height)
     .attr("width", width)
-    .style("background", "#000")
+    .style("background", "#fff")
     .node() as HTMLCanvasElement
 
   const ctx = canvasEl.getContext("2d") as CanvasRenderingContext2D

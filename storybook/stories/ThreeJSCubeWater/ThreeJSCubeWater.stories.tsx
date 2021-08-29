@@ -118,10 +118,10 @@ const createDemo = ({
     sky.scale.setScalar(planeSize)
     scene.add(sky)
 
-    const geometry = new BoxGeometry(boxSize, boxSize, boxSize)
-    const material = new MeshStandardMaterial({ roughness: 0 })
+    const boxGeometry = new BoxGeometry(boxSize, boxSize, boxSize)
+    const boxMaterial = new MeshStandardMaterial({ roughness: 0 })
 
-    const boxMesh = new Mesh(geometry, material)
+    const boxMesh = new Mesh(boxGeometry, boxMaterial)
 
     scene.add(boxMesh)
 

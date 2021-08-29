@@ -32,12 +32,12 @@ type Meteorite = {
   year: string
 }
 type MeteoriteGeo = Meteorite & {
-  geometry: Meteorite["geolocation"]
+  geometry: Meteorite["geolocation"] // eslint-disable-line id-denylist
   type: "Feature"
 }
 type Countries = {
   features: Array<{
-    geometry: { coordinates: Point[]; type: "Polygon" }
+    geometry: { coordinates: Point[]; type: "Polygon" } // eslint-disable-line id-denylist
     id: string
     properties: { name: string }
     type: "Feature"
@@ -357,7 +357,7 @@ const renderChart: RenderChart = ({ countries, meteorites, rootElId }) => {
 
   const meteoritesGeo: MeteoriteGeo[] = meteorites.map((meteoriteGeo) => ({
     ...meteoriteGeo,
-    geometry: meteoriteGeo.geolocation,
+    geometry: meteoriteGeo.geolocation, // eslint-disable-line id-denylist
     type: "Feature",
   }))
 

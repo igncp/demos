@@ -80,23 +80,23 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
 
   type HandleMesh = (o: {
     mass: number
-    mesh: Mesh
+    objectMesh: Mesh
     oimoGeometry: OIMOGeometry
   }) => void
 
-  const handleMesh: HandleMesh = ({ mass, mesh, oimoGeometry }) => {
+  const handleMesh: HandleMesh = ({ mass, objectMesh, oimoGeometry }) => {
     const shapeConfig = new ShapeConfig()
 
-    shapeConfig.geometry = oimoGeometry
+    shapeConfig.geometry = oimoGeometry // eslint-disable-line id-denylist
 
     const bodyConfig = new RigidBodyConfig()
 
     bodyConfig.type = mass === 0 ? RigidBodyType.STATIC : RigidBodyType.DYNAMIC
 
     bodyConfig.position = new Vec3(
-      mesh.position.x,
-      mesh.position.y,
-      mesh.position.z
+      objectMesh.position.x,
+      objectMesh.position.y,
+      objectMesh.position.z
     )
 
     const body = new RigidBody(bodyConfig)
@@ -105,35 +105,35 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
     world.addRigidBody(body)
 
     if (mass > 0) {
-      meshes.push(mesh)
-      meshMap.set(mesh, body)
+      meshes.push(objectMesh)
+      meshMap.set(objectMesh, body)
     }
   }
 
   type HandleInstancedMesh = (o: {
     mass: number
-    mesh: InstancedMesh
+    objectMesh: InstancedMesh
     oimoGeometry: OIMOGeometry
   }) => void
 
   const handleInstancedMesh: HandleInstancedMesh = ({
     mass,
-    mesh,
+    objectMesh,
     oimoGeometry,
   }) => {
     const {
       instanceMatrix: { array: matrixArray },
-    } = mesh
+    } = objectMesh
 
     const bodies: OIMOBody[] = []
 
-    Array.from({ length: mesh.count }).forEach((...forEachArgs) => {
+    Array.from({ length: objectMesh.count }).forEach((...forEachArgs) => {
       const [, meshItemIndex] = forEachArgs
       const arrayIndex = meshItemIndex * 16
 
       const shapeConfig = new ShapeConfig()
 
-      shapeConfig.geometry = oimoGeometry
+      shapeConfig.geometry = oimoGeometry // eslint-disable-line id-denylist
 
       const bodyConfig = new RigidBodyConfig()
 
@@ -154,15 +154,15 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
     })
 
     if (mass > 0) {
-      meshes.push(mesh)
-      meshMap.set(mesh, bodies)
+      meshes.push(objectMesh)
+      meshMap.set(objectMesh, bodies)
     }
   }
 
-  const getOIMOGeometry = (geometry: THREEGeometry): OIMOGeometry => {
-    const { parameters } = geometry
+  const getOIMOGeometry = (threeGeometry: THREEGeometry): OIMOGeometry => {
+    const { parameters } = threeGeometry
 
-    if (geometry.type === "BoxGeometry") {
+    if (threeGeometry.type === "BoxGeometry") {
       const sx = parameters.width !== undefined ? parameters.width / 2 : 0.5
       const sy = parameters.height !== undefined ? parameters.height / 2 : 0.5
       const sz = parameters.depth !== undefined ? parameters.depth / 2 : 0.5
@@ -175,38 +175,38 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
     return new OSphereGeometry(radius)
   }
 
-  type AddMesh = (o: { mass?: number; mesh: MeshLike }) => void
+  type AddMesh = (o: { mass?: number; objectMesh: MeshLike }) => void
 
-  const addMesh: AddMesh = ({ mass = 0, mesh }) => {
-    const oimoGeometry = getOIMOGeometry(mesh.geometry)
+  const addMesh: AddMesh = ({ mass = 0, objectMesh }) => {
+    const oimoGeometry = getOIMOGeometry(objectMesh.geometry)
 
     if (oimoGeometry !== null) {
-      if ("isInstancedMesh" in mesh) {
-        handleInstancedMesh({ mass, mesh, oimoGeometry })
-      } else if ("isMesh" in mesh) {
-        handleMesh({ mass, mesh, oimoGeometry })
+      if ("isInstancedMesh" in objectMesh) {
+        handleInstancedMesh({ mass, objectMesh, oimoGeometry })
+      } else if ("isMesh" in objectMesh) {
+        handleMesh({ mass, objectMesh, oimoGeometry })
       }
     }
   }
 
   type SetMeshPosition = (o: {
     bodyIndex?: number
-    mesh: MeshLike
+    objectMesh: MeshLike
     position: Vector3
   }) => void
 
   const setMeshPosition: SetMeshPosition = ({
     bodyIndex = 0,
-    mesh,
+    objectMesh,
     position,
   }) => {
-    if ("isInstancedMesh" in mesh) {
-      const bodies = meshMap.get(mesh)
+    if ("isInstancedMesh" in objectMesh) {
+      const bodies = meshMap.get(objectMesh)
       const { [bodyIndex]: body } = bodies
 
       body.setPosition(new Vec3(position.x, position.y, position.z))
-    } else if ("isMesh" in mesh) {
-      const body = meshMap.get(mesh)
+    } else if ("isMesh" in objectMesh) {
+      const body = meshMap.get(objectMesh)
 
       body.setPosition(new Vec3(position.x, position.y, position.z))
     }
@@ -223,10 +223,10 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
 
     lastTime = time
 
-    meshes.forEach((mesh) => {
-      if ("isInstancedMesh" in mesh) {
-        const matrixArray = mesh.instanceMatrix.array as number[]
-        const bodies: OIMOBody[] = meshMap.get(mesh)
+    meshes.forEach((objectMesh) => {
+      if ("isInstancedMesh" in objectMesh) {
+        const matrixArray = objectMesh.instanceMatrix.array as number[]
+        const bodies: OIMOBody[] = meshMap.get(objectMesh)
 
         bodies.forEach((...forEachArgs) => {
           const [body, bodyIndex] = forEachArgs
@@ -239,12 +239,12 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
           })
         })
 
-        mesh.instanceMatrix.needsUpdate = true
-      } else if ("isMesh" in mesh) {
-        const body = meshMap.get(mesh)
+        objectMesh.instanceMatrix.needsUpdate = true
+      } else if ("isMesh" in objectMesh) {
+        const body = meshMap.get(objectMesh)
 
-        mesh.position.copy(body.getPosition())
-        mesh.quaternion.copy(body.getOrientation())
+        objectMesh.position.copy(body.getPosition())
+        objectMesh.quaternion.copy(body.getOrientation())
       }
     })
   }

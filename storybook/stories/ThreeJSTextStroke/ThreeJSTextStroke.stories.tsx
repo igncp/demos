@@ -91,16 +91,16 @@ const createDemo: CreateDemo = ({ prevSimulation, props }) => {
     scene.clear()
 
     const shapes = font.generateShapes(message, 100) as Array<Path | Shape>
-    const geometry = new ShapeGeometry(shapes as Shape[])
+    const textGeometry = new ShapeGeometry(shapes as Shape[])
 
-    geometry.computeBoundingBox()
+    textGeometry.computeBoundingBox()
 
     const xMid =
-      -0.5 * (geometry.boundingBox!.max.x - geometry.boundingBox!.min.x)
+      -0.5 * (textGeometry.boundingBox!.max.x - textGeometry.boundingBox!.min.x)
 
-    geometry.translate(xMid, 0, 0)
+    textGeometry.translate(xMid, 0, 0)
 
-    const text = new Mesh(geometry, matLite)
+    const text = new Mesh(textGeometry, matLite)
 
     text.position.z = -150
     scene.add(text)

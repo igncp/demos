@@ -51,10 +51,10 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
 
   const increaseOffset = 0.01
 
-  const mesh: Mesh = []
+  const wavesMesh: Mesh = []
 
   const generateMesh = () => {
-    mesh.length = 0
+    wavesMesh.length = 0
 
     const gridWidth = width / cols
     const gridHeight = height / rows
@@ -62,7 +62,7 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
 
     Array.from({ length: cols }).forEach((...[, col]) => {
       Array.from({ length: rows }).forEach((...[, row]) => {
-        mesh.push([
+        wavesMesh.push([
           {
             x: col * gridWidth,
             y: row * gridHeight + gridHeight,
@@ -80,7 +80,7 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
           },
         ])
 
-        mesh.push([
+        wavesMesh.push([
           {
             x: col * gridWidth + gridWidth,
             y: row * gridHeight,
@@ -106,7 +106,7 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
   const clip: Clip = ({ fragment, total }) => fragment - total / 2
 
   const projectMesh = () => {
-    mesh.forEach((triangle) => {
+    wavesMesh.forEach((triangle) => {
       triangle.forEach((point) => {
         const projectionScale = (zoom * fov) / (fov + point.z)
 
@@ -128,7 +128,7 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
     ctx.globalCompositeOperation = "lighter"
     ctx.strokeStyle = "black"
 
-    mesh.forEach((triangle) => {
+    wavesMesh.forEach((triangle) => {
       const firstPoint = triangle[0]
 
       ctx.beginPath()
@@ -144,7 +144,7 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
   }
 
   const addNoise = () => {
-    mesh.forEach((triangle) => {
+    wavesMesh.forEach((triangle) => {
       triangle.forEach((point) => {
         point.y +=
           waveHeight *

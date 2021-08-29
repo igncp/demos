@@ -64,7 +64,7 @@ const demo = ({
     const camera = new PerspectiveCamera(27, width / height, 5, 3500)
 
     const scene = new Scene()
-    const geometry = new BufferGeometry()
+    const pointsGeometry = new BufferGeometry()
 
     const positions: number[] = []
     const colors: number[] = []
@@ -89,14 +89,17 @@ const demo = ({
       colors.push(color.r, color.g, color.b)
     })
 
-    geometry.setAttribute("position", new Float32BufferAttribute(positions, 3))
-    geometry.setAttribute("color", new Float32BufferAttribute(colors, 3))
+    pointsGeometry.setAttribute(
+      "position",
+      new Float32BufferAttribute(positions, 3)
+    )
+    pointsGeometry.setAttribute("color", new Float32BufferAttribute(colors, 3))
 
-    geometry.computeBoundingSphere()
+    pointsGeometry.computeBoundingSphere()
 
-    const material = new PointsMaterial({ size: 15, vertexColors: true })
+    const pointsMaterial = new PointsMaterial({ size: 15, vertexColors: true })
 
-    const points = new PointsThree(geometry, material)
+    const points = new PointsThree(pointsGeometry, pointsMaterial)
     const renderer = new WebGLRenderer()
 
     scene.add(points)

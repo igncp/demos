@@ -228,14 +228,14 @@ const createDemo: CreateDemo = ({ prevSimulation, props }) => {
 
   scene.background = new Color(0xffffff)
 
-  const geometry = new SphereGeometry(sphereRadius, 32, 16)
+  const sphereGeometry = new SphereGeometry(sphereRadius, 32, 16)
 
   for (let alpha = 0; alpha <= 1.0; alpha += stepSize) {
     for (let beta = 0; beta <= 1.0; beta += stepSize) {
       for (let gamma = 0; gamma <= 1.0; gamma += stepSize) {
         const diffuseColor = new Color().setRGB(alpha, beta, gamma)
 
-        const material = new MeshPhysicalMaterial({
+        const sphereMaterial = new MeshPhysicalMaterial({
           clearcoat: 1.0 - alpha,
           clearcoatRoughness: 1.0 - beta,
           color: diffuseColor,
@@ -245,15 +245,15 @@ const createDemo: CreateDemo = ({ prevSimulation, props }) => {
           roughness: 0.5,
         })
 
-        const mesh = new Mesh(geometry, material)
+        const sphereMesh = new Mesh(sphereGeometry, sphereMaterial)
 
-        mesh.position.x = alpha * 400 - 200
-        mesh.position.y = beta * 400 - 200
-        mesh.position.z = gamma * 400 - 200
+        sphereMesh.position.x = alpha * 400 - 200
+        sphereMesh.position.y = beta * 400 - 200
+        sphereMesh.position.z = gamma * 400 - 200
 
-        scene.add(mesh)
+        scene.add(sphereMesh)
 
-        spheresList.push(mesh)
+        spheresList.push(sphereMesh)
       }
     }
   }

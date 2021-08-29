@@ -55,7 +55,7 @@ const createGradients = ({
   <stop offset="50%" stop-color="${colorScale(0.5)}">
     <animate attributeName="offset"
       values="${[5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2, 3, 4]
-        .map((n) => `.${n}`)
+        .map((offsetValue) => `.${offsetValue}`)
         .join(";")}"
       dur="${duration}s"
       repeatCount="indefinite" />

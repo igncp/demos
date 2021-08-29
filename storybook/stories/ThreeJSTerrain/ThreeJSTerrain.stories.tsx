@@ -171,9 +171,9 @@ const generateTexture: GenerateTexture = ({
 
 type Simulation = {
   heightData: Uint8Array
-  material: MeshBasicMaterial
   props: Props
   stop: () => void
+  terrainMaterial: MeshBasicMaterial
 }
 
 const createDemo = ({
@@ -209,7 +209,7 @@ const createDemo = ({
     ] as const).every((k) => previousSimulation.props[k] === props[k])
 
     if (canReuseSimulation) {
-      previousSimulation.material.map = createTexture(
+      previousSimulation.terrainMaterial.map = createTexture(
         previousSimulation.heightData
       )
 
@@ -258,15 +258,15 @@ const createDemo = ({
       transparent: true,
     })
 
-  const material = createMaterial()
+  const terrainMaterial = createMaterial()
 
-  const geometry = new PlaneGeometry(
+  const terrainGeometry = new PlaneGeometry(
     planeSize,
     planeSize,
     worldWidth - 1,
     worldDepth - 1
   )
-  const mesh = new Mesh(geometry, material)
+  const terrainMesh = new Mesh(terrainGeometry, terrainMaterial)
 
   const geometryHelper = new ConeGeometry(
     surfaceConeRadius,
@@ -294,7 +294,7 @@ const createDemo = ({
       1
     raycaster.setFromCamera(pointer, camera)
 
-    const intersects = raycaster.intersectObject(mesh)
+    const intersects = raycaster.intersectObject(terrainMesh)
 
     if (intersects.length > 0) {
       surfaceCone.position.set(0, 0, 0)
@@ -324,9 +324,9 @@ const createDemo = ({
   camera.position.x = 2000
   controls.update()
 
-  geometry.rotateX(-Math.PI / 2)
+  terrainGeometry.rotateX(-Math.PI / 2)
 
-  const vertices = geometry.attributes.position.array as number[]
+  const vertices = terrainGeometry.attributes.position.array as number[]
 
   for (
     let heightArrIdx = 0, vertexIdx = 0, { length: verticesLength } = vertices;
@@ -341,9 +341,9 @@ const createDemo = ({
   // this has been deprecated in favor of Face:
   // https://threejs.org/docs/#examples/en/math/convexhull/Face
   // @ts-ignore
-  geometry.computeFaceNormals()
+  terrainGeometry.computeFaceNormals()
 
-  scene.add(mesh)
+  scene.add(terrainMesh)
 
   scene.add(surfaceCone)
 
@@ -363,12 +363,12 @@ const createDemo = ({
 
   return {
     heightData: newHeightData,
-    material,
     props,
     stop: () => {
       container.removeEventListener("pointermove", onPointerMove)
       state.isStopped = true
     },
+    terrainMaterial,
   }
 }
 

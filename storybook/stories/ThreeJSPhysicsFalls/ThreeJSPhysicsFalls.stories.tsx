@@ -93,7 +93,7 @@ const createDemo: CreateDemo = ({
       new ShadowMaterial({ color: 0x777777 })
     )
 
-    const material = new MeshLambertMaterial()
+    const objectsMaterial = new MeshLambertMaterial()
     const geometryBox = new BoxGeometry(0.1, 0.1, 0.1)
     const geometrySphere = new IcosahedronGeometry(0.075, 3)
 
@@ -102,7 +102,7 @@ const createDemo: CreateDemo = ({
     return {
       boxes: new InstancedMesh(
         geometryBox,
-        material,
+        objectsMaterial,
         Math.ceil(props.itemsNumber / shapesTypes)
       ),
       camera: new PerspectiveCamera(50, width / height, 0.1, 100),
@@ -113,7 +113,7 @@ const createDemo: CreateDemo = ({
       scene: new Scene(),
       spheres: new InstancedMesh(
         geometrySphere,
-        material,
+        objectsMaterial,
         Math.ceil(props.itemsNumber / shapesTypes)
       ),
     }
@@ -161,18 +161,18 @@ const createDemo: CreateDemo = ({
     floor.position.y = -2.5
     floor.receiveShadow = true
     scene.add(floor)
-    physics.addMesh({ mesh: floor })
+    physics.addMesh({ objectMesh: floor })
 
-    meshList.forEach((mesh) => {
-      mesh.instanceMatrix.setUsage(DynamicDrawUsage)
-      mesh.castShadow = true
-      mesh.receiveShadow = true
-      scene.add(mesh)
+    meshList.forEach((objectMesh) => {
+      objectMesh.instanceMatrix.setUsage(DynamicDrawUsage)
+      objectMesh.castShadow = true
+      objectMesh.receiveShadow = true
+      scene.add(objectMesh)
 
       const matrix = new Matrix4()
       const color = new Color()
 
-      Array.from({ length: mesh.count }).forEach((...forEachArgs) => {
+      Array.from({ length: objectMesh.count }).forEach((...forEachArgs) => {
         const [, meshItemIndex] = forEachArgs
 
         matrix.setPosition(
@@ -181,11 +181,14 @@ const createDemo: CreateDemo = ({
           Math.random() - 0.5
         )
 
-        mesh.setMatrixAt(meshItemIndex, matrix)
-        mesh.setColorAt(meshItemIndex, color.setHex(0xffffff * Math.random()))
+        objectMesh.setMatrixAt(meshItemIndex, matrix)
+        objectMesh.setColorAt(
+          meshItemIndex,
+          color.setHex(0xffffff * Math.random())
+        )
       })
 
-      physics.addMesh({ mass: 1, mesh })
+      physics.addMesh({ mass: 1, objectMesh })
     })
 
     renderer.setPixelRatio(window.devicePixelRatio)
@@ -226,11 +229,11 @@ const createDemo: CreateDemo = ({
 
     meshList
       .filter(() => Math.random() > 0.5)
-      .forEach((mesh) => {
-        const bodyIndex = Math.floor(Math.random() * mesh.count)
+      .forEach((objectMesh) => {
+        const bodyIndex = Math.floor(Math.random() * objectMesh.count)
 
         position.set(0, Math.random() + 1, 0)
-        physics.setMeshPosition({ bodyIndex, mesh, position })
+        physics.setMeshPosition({ bodyIndex, objectMesh, position })
       })
   }
 

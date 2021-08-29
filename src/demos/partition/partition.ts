@@ -89,7 +89,7 @@ const getInterpolatorFn = ({
   fn,
   initialData,
 }: {
-  fn: (n: HierarchyRectNode) => string | null
+  fn: (node: HierarchyRectNode) => string | null
   initialData: HierarchyRectNode[]
 }) => (...[finalNode, nodeIndex]: [HierarchyRectNode, number]) => {
   const { [nodeIndex]: initialNode } = initialData

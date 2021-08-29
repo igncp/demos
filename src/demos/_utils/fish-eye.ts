@@ -20,12 +20,12 @@ function createFishEyeScale({
     const min = range[0]
     const max = range[1]
 
-    const m = isLeft ? focus - min : max - focus
-    const n = m === 0 ? max - min : m
+    const focusDiff = isLeft ? focus - min : max - focus
+    const diff = focusDiff === 0 ? max - min : focusDiff
 
     return (
-      ((isLeft ? -1 : 1) * n * (distortion + 1)) /
-        (distortion + n / Math.abs(x - focus)) +
+      ((isLeft ? -1 : 1) * diff * (distortion + 1)) /
+        (distortion + diff / Math.abs(x - focus)) +
       focus
     )
   }

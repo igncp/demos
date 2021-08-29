@@ -32,19 +32,19 @@ const fetchData = async (): Promise<IncomeMetric[] | undefined> =>
   json(`${ROOT_PATH}data/d3js/fish-eye/data.json`)
 
 const humanizeNumber = (initialN: number): string => {
-  let n = initialN.toString()
+  let numStr = initialN.toString()
 
   while (true) {
-    const n2 = n.replace(/(\d)(\d{3})($|,|\.)/g, "$1,$2$3")
+    const numStrFormatted = numStr.replace(/(\d)(\d{3})($|,|\.)/g, "$1,$2$3")
 
-    if (n === n2) {
+    if (numStrFormatted === numStr) {
       break
     }
 
-    n = n2
+    numStr = numStrFormatted
   }
 
-  return n
+  return numStr
 }
 
 const margin = {

@@ -183,47 +183,47 @@ class Point<PointConstraint extends IConstraint> {
 }
 
 class Constraint {
-  private readonly p1: Point<Constraint>
-  private readonly p2: Point<Constraint>
+  private readonly point1: Point<Constraint>
+  private readonly point2: Point<Constraint>
   private readonly length: number
 
   public constructor({
-    p1,
-    p2,
+    point1,
+    point2,
     spacing,
   }: {
-    p1: Point<Constraint>
-    p2: Point<Constraint>
+    point1: Point<Constraint>
+    point2: Point<Constraint>
     spacing: number
   }) {
-    this.p1 = p1
-    this.p2 = p2
+    this.point1 = point1
+    this.point2 = point2
     this.length = spacing
   }
 
   public resolve(tearDistance: number) {
-    const diffX = this.p1.x - this.p2.x
-    const diffY = this.p1.y - this.p2.y
+    const diffX = this.point1.x - this.point2.x
+    const diffY = this.point1.y - this.point2.y
     const distance = Math.sqrt(diffX * diffX + diffY * diffY)
     const diff = (this.length - distance) / distance
 
     if (distance > tearDistance) {
-      this.p1.removeConstraint(this)
+      this.point1.removeConstraint(this)
     }
 
     const halfDiff = diff / 2
     const px = diffX * halfDiff
     const py = diffY * halfDiff
 
-    this.p1.x += px
-    this.p1.y += py
-    this.p2.x -= px
-    this.p2.y -= py
+    this.point1.x += px
+    this.point1.y += py
+    this.point2.x -= px
+    this.point2.y -= py
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
-    ctx.moveTo(this.p1.x, this.p1.y)
-    ctx.lineTo(this.p2.x, this.p2.y)
+    ctx.moveTo(this.point1.x, this.point1.y)
+    ctx.lineTo(this.point2.x, this.point2.y)
   }
 }
 
@@ -330,8 +330,8 @@ const main = ({
             } = this
 
             const constraint = new Constraint({
-              p1: newPoint,
-              p2: pointLeft,
+              point1: newPoint,
+              point2: pointLeft,
               spacing,
             })
 
@@ -346,8 +346,8 @@ const main = ({
             } = this
 
             const constraint = new Constraint({
-              p1: newPoint,
-              p2: pointAbove,
+              point1: newPoint,
+              point2: pointAbove,
               spacing,
             })
 

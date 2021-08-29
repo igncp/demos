@@ -96,10 +96,10 @@ type State = {
 
 type SimulationElements = {
   camera: PerspectiveCamera
-  geometry: InstancedBufferGeometry
-  mesh: Mesh
   renderer: WebGLRenderer
   scene: Scene
+  trianglesGeometry: InstancedBufferGeometry
+  trianglesMesh: Mesh
 }
 
 type Simulation = {
@@ -158,7 +158,7 @@ const demo = ({
 
     const { fragmentShader, vertexShader } = getShaders()
 
-    const material = new RawShaderMaterial({
+    const trianglesMaterial = new RawShaderMaterial({
       fragmentShader,
       side: DoubleSide,
       transparent: true,
@@ -171,21 +171,21 @@ const demo = ({
       vertexShader,
     })
 
-    const geometry = new InstancedBufferGeometry()
-    const mesh = new Mesh(geometry, material)
+    const trianglesGeometry = new InstancedBufferGeometry()
+    const trianglesMesh = new Mesh(trianglesGeometry, trianglesMaterial)
 
-    scene.add(mesh)
+    scene.add(trianglesMesh)
 
     return {
       camera,
-      geometry,
-      mesh,
       renderer,
       scene,
+      trianglesGeometry,
+      trianglesMesh,
     }
   })()
 
-  const { camera, geometry, mesh, renderer, scene } = elements
+  const { camera, renderer, scene, trianglesGeometry, trianglesMesh } = elements
 
   const createSimulation = (): Simulation => ({
     elements,
@@ -243,21 +243,24 @@ const demo = ({
       orientationsEnd.push(vector.x, vector.y, vector.z, vector.w)
     })
 
-    geometry.setAttribute("position", new Float32BufferAttribute(positions, 3))
+    trianglesGeometry.setAttribute(
+      "position",
+      new Float32BufferAttribute(positions, 3)
+    )
 
-    geometry.setAttribute(
+    trianglesGeometry.setAttribute(
       "offset",
       new InstancedBufferAttribute(new Float32Array(offsets), 3)
     )
-    geometry.setAttribute(
+    trianglesGeometry.setAttribute(
       "color",
       new InstancedBufferAttribute(new Float32Array(colors), 4)
     )
-    geometry.setAttribute(
+    trianglesGeometry.setAttribute(
       "orientationStart",
       new InstancedBufferAttribute(new Float32Array(orientationsStart), 4)
     )
-    geometry.setAttribute(
+    trianglesGeometry.setAttribute(
       "orientationEnd",
       new InstancedBufferAttribute(new Float32Array(orientationsEnd), 4)
     )
@@ -270,21 +273,21 @@ const demo = ({
 
   const render = () => {
     state.rotationTime += props.speed * 0.1
-    mesh.rotation.y = state.rotationTime * 0.0005
+    trianglesMesh.rotation.y = state.rotationTime * 0.0005
 
     if (props.expansionAnimation) {
-      const material = mesh.material as RawShaderMaterial
+      const trianglesMaterial = trianglesMesh.material as RawShaderMaterial
 
       state.expansionTime += props.speed * 0.1
       /* eslint-disable id-denylist */
-      material.uniforms["time"].value = state.expansionTime * 0.005
-      material.uniforms["sineTime"].value = Math.sin(
-        material.uniforms["time"].value * 0.05
+      trianglesMaterial.uniforms["time"].value = state.expansionTime * 0.005
+      trianglesMaterial.uniforms["sineTime"].value = Math.sin(
+        trianglesMaterial.uniforms["time"].value * 0.05
       )
       /* eslint-enable id-denylist */
     }
 
-    geometry.instanceCount = props.instancesCount
+    trianglesGeometry.instanceCount = props.instancesCount
 
     renderer.render(scene, camera)
   }
@@ -303,9 +306,9 @@ const demo = ({
     prevSimulation.stop()
 
     const { fragmentShader } = getShaders()
-    const material = mesh.material as RawShaderMaterial
+    const trianglesMaterial = trianglesMesh.material as RawShaderMaterial
 
-    material.fragmentShader = fragmentShader
+    trianglesMaterial.fragmentShader = fragmentShader
 
     animate()
 
