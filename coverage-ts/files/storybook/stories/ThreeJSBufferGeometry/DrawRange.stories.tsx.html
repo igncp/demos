@@ -1,0 +1,476 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>DrawRange.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSBufferGeometry/DrawRange.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">610</td><td class="">610</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+import {
+  BoxGeometry,
+  BoxHelper,
+  BufferAttribute,
+  BufferGeometry,
+  Color,
+  DynamicDrawUsage,
+  Group,
+  LineBasicMaterial,
+  LineSegments,
+  Mesh,
+  PerspectiveCamera,
+  Points,
+  PointsMaterial,
+  Scene,
+  Vector3,
+  WebGLRenderer,
+  sRGBEncoding,
+} from &quot;three&quot;
+import { OrbitControls } from &quot;three/examples/jsm/controls/OrbitControls.js&quot;
+
+import { StoryInfo, TemplateType, createRangeControl } from &quot;../common&quot;
+
+const ROOT_ID = &quot;example&quot;
+
+const initialParticleCount = 500
+const maxParticleCount = 1000
+
+const cubeSize = 800
+const cubeSizeHalf = cubeSize / 2
+
+const isOutOfBounds = ({
+  arbitraryValue,
+  bounds,
+}: {
+  arbitraryValue: number
+  bounds: readonly [number, number]
+}) =&gt; arbitraryValue &lt; bounds[0] || arbitraryValue &gt; bounds[1]
+
+type Props = {
+  maxConnections: number
+  minConnectionDistance: number
+  particleCount: number
+  showDots: boolean
+  showLines: boolean
+}
+
+type State = {
+  isStopped: boolean
+  time: number
+}
+
+type ParticleData = {
+  numConnections: number
+  velocity: Vector3
+}
+
+type SimulationElements = {
+  camera: PerspectiveCamera
+  controls: OrbitControls
+  linesColors: Float32Array
+  linesMesh: LineSegments
+  linesPositions: Float32Array
+  particles: BufferGeometry
+  particlesData: ParticleData[]
+  particlesPositions: Float32Array
+  pointCloud: Points
+  renderer: WebGLRenderer
+  scene: Scene
+}
+
+type Simulation = {
+  elements: SimulationElements
+  props: Props
+  state: State
+  stop: () =&gt; void
+}
+
+const demo = ({
+  prevSimulation,
+  props,
+}: {
+  prevSimulation: Simulation | null
+  props: Props
+}): Simulation =&gt; {
+  const { maxConnections, minConnectionDistance, particleCount } = props
+  const state: State = {
+    time: 0,
+    ...(prevSimulation?.state ?? {}),
+    isStopped: false,
+  }
+  const container = document.getElementById(ROOT_ID) as HTMLElement
+  const { width } = container.getBoundingClientRect()
+  const height = 500
+
+  const elements = ((): SimulationElements =&gt; {
+    if (prevSimulation) {
+      return prevSimulation.elements
+    }
+
+    const camera = new PerspectiveCamera(45, width / height, 1, 4000)
+
+    const scene = new Scene()
+
+    scene.background = new Color(0xffffff)
+
+    const group = new Group()
+
+    scene.add(group)
+
+    const helper = new BoxHelper(
+      new Mesh(new BoxGeometry(cubeSize, cubeSize, cubeSize))
+    )
+    const helperMaterial = helper.material as PointsMaterial
+
+    helperMaterial.color.setHex(0x000000)
+    helperMaterial.transparent = true
+
+    group.add(helper)
+
+    const segments = maxParticleCount * maxParticleCount
+
+    const linesPositions = new Float32Array(segments * 3)
+    const linesColors = new Float32Array(segments * 3)
+
+    const pointsMaterial = new PointsMaterial({
+      color: 0x000000,
+      size: 3,
+      sizeAttenuation: false,
+      transparent: true,
+    })
+
+    const particlesData: ParticleData[] = []
+    const particles = new BufferGeometry()
+    const particlesPositions = new Float32Array(maxParticleCount * 3)
+
+    Array.from({ length: maxParticleCount }).forEach((...[, particleIndex]) =&gt; {
+      const x = Math.random() * cubeSize - cubeSizeHalf
+      const y = Math.random() * cubeSize - cubeSizeHalf
+      const z = Math.random() * cubeSize - cubeSizeHalf
+
+      particlesPositions[particleIndex * 3] = x
+      particlesPositions[particleIndex * 3 + 1] = y
+      particlesPositions[particleIndex * 3 + 2] = z
+
+      particlesData.push({
+        numConnections: 0,
+        velocity: new Vector3(
+          -1 + Math.random() * 2,
+          -1 + Math.random() * 2,
+          -1 + Math.random() * 2
+        ),
+      })
+    })
+
+    particles.setDrawRange(0, particleCount)
+    particles.setAttribute(
+      &quot;position&quot;,
+      new BufferAttribute(particlesPositions, 3).setUsage(DynamicDrawUsage)
+    )
+
+    const pointCloud = new Points(particles, pointsMaterial)
+
+    group.add(pointCloud)
+
+    const lineGeometry = new BufferGeometry()
+
+    lineGeometry.setAttribute(
+      &quot;position&quot;,
+      new BufferAttribute(linesPositions, 3).setUsage(DynamicDrawUsage)
+    )
+    lineGeometry.setAttribute(
+      &quot;color&quot;,
+      new BufferAttribute(linesColors, 3).setUsage(DynamicDrawUsage)
+    )
+
+    lineGeometry.computeBoundingSphere()
+
+    lineGeometry.setDrawRange(0, 0)
+
+    const lineMaterial = new LineBasicMaterial({
+      transparent: true,
+      vertexColors: true,
+    })
+
+    const linesMesh = new LineSegments(lineGeometry, lineMaterial)
+
+    group.add(linesMesh)
+
+    const renderer = new WebGLRenderer({ antialias: true })
+    const controls = new OrbitControls(camera, renderer.domElement)
+
+    return {
+      camera,
+      controls,
+      linesColors,
+      linesMesh,
+      linesPositions,
+      particles,
+      particlesData,
+      particlesPositions,
+      pointCloud,
+      renderer,
+      scene,
+    }
+  })()
+
+  const {
+    camera,
+    controls,
+    linesColors,
+    linesMesh,
+    linesPositions,
+    particles,
+    particlesData,
+    particlesPositions,
+    pointCloud,
+    renderer,
+    scene,
+  } = elements
+
+  const createSimulation = (): Simulation =&gt; ({
+    elements,
+    props,
+    state,
+    stop: () =&gt; {
+      state.isStopped = true
+    },
+  })
+
+  const initSimulation = () =&gt; {
+    camera.position.z = 1750
+    controls.minDistance = 1000
+    controls.maxDistance = 3000
+
+    renderer.outputEncoding = sRGBEncoding
+
+    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setSize(width, height)
+
+    container.innerHTML = &quot;&quot;
+    container.appendChild(renderer.domElement)
+
+    controls.target.y = 0.5
+    controls.update()
+  }
+
+  const render = () =&gt; {
+    let vertexpos = 0
+    let colorpos = 0
+    let numConnected = 0
+
+    particlesData.forEach((particleData) =&gt; {
+      particleData.numConnections = 0
+    })
+
+    const bounds = [-cubeSizeHalf, cubeSizeHalf] as const
+    const isOutOfBoundsParam = {
+      arbitraryValue: 0,
+      bounds,
+    }
+
+    Array.from({ length: particleCount }).forEach((...[, particleIndex]) =&gt; {
+      const { [particleIndex]: particleData } = particlesData
+
+      particlesPositions[particleIndex * 3] += particleData.velocity.x
+      particlesPositions[particleIndex * 3 + 1] += particleData.velocity.y
+      particlesPositions[particleIndex * 3 + 2] += particleData.velocity.z
+
+      isOutOfBoundsParam.arbitraryValue = particlesPositions[particleIndex * 3]
+
+      if (isOutOfBounds(isOutOfBoundsParam)) {
+        particleData.velocity.x = -particleData.velocity.x
+      }
+
+      isOutOfBoundsParam.arbitraryValue =
+        particlesPositions[particleIndex * 3 + 1]
+
+      if (isOutOfBounds(isOutOfBoundsParam)) {
+        particleData.velocity.y = -particleData.velocity.y
+      }
+
+      isOutOfBoundsParam.arbitraryValue =
+        particlesPositions[particleIndex * 3 + 2]
+
+      if (isOutOfBounds(isOutOfBoundsParam)) {
+        particleData.velocity.z = -particleData.velocity.z
+      }
+
+      if (
+        maxConnections &gt; -1 &amp;&amp;
+        particleData.numConnections &gt;= maxConnections
+      ) {
+        return
+      }
+
+      for (
+        let particleBIndex = particleIndex + 1;
+        particleBIndex &lt; particleCount;
+        particleBIndex += 1
+      ) {
+        const { [particleBIndex]: particleDataB } = particlesData
+
+        if (
+          maxConnections &gt; -1 &amp;&amp;
+          particleDataB.numConnections &gt;= maxConnections
+        ) {
+          return
+        }
+
+        const dx =
+          particlesPositions[particleIndex * 3] -
+          particlesPositions[particleBIndex * 3]
+        const dy =
+          particlesPositions[particleIndex * 3 + 1] -
+          particlesPositions[particleBIndex * 3 + 1]
+        const dz =
+          particlesPositions[particleIndex * 3 + 2] -
+          particlesPositions[particleBIndex * 3 + 2]
+
+        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz)
+
+        if (distance &gt; minConnectionDistance) {
+          return
+        }
+
+        particleData.numConnections += 1
+        particleDataB.numConnections += 1
+
+        const alpha = 1.0 - distance / minConnectionDistance
+
+        /* eslint-disable no-plusplus */
+        linesPositions[vertexpos++] = particlesPositions[particleIndex * 3]
+        linesPositions[vertexpos++] = particlesPositions[particleIndex * 3 + 1]
+        linesPositions[vertexpos++] = particlesPositions[particleIndex * 3 + 2]
+
+        linesPositions[vertexpos++] = particlesPositions[particleBIndex * 3]
+        linesPositions[vertexpos++] = particlesPositions[particleBIndex * 3 + 1]
+        linesPositions[vertexpos++] = particlesPositions[particleBIndex * 3 + 2]
+
+        Array.from({ length: 6 }).forEach(() =&gt; {
+          linesColors[colorpos++] = alpha
+        })
+        /* eslint-enable no-plusplus */
+
+        numConnected += 1
+      }
+    })
+
+    linesMesh.geometry.setDrawRange(0, numConnected * 2)
+    linesMesh.geometry.attributes.position.needsUpdate = true
+    linesMesh.geometry.attributes.color.needsUpdate = true
+
+    pointCloud.geometry.attributes.position.needsUpdate = true
+
+    renderer.render(scene, camera)
+  }
+
+  const animate = () =&gt; {
+    if (state.isStopped) {
+      return
+    }
+
+    requestAnimationFrame(animate)
+
+    render()
+  }
+
+  if (prevSimulation) {
+    prevSimulation.stop()
+
+    pointCloud.visible = props.showDots
+    linesMesh.visible = props.showLines
+
+    particles.setDrawRange(0, particleCount)
+
+    animate()
+
+    return createSimulation()
+  }
+
+  initSimulation()
+  animate()
+
+  return createSimulation()
+}
+
+const DrawRange = (props: Props) =&gt; {
+  const simulationRef = React.useRef&lt;Simulation | null&gt;(null)
+
+  React.useEffect(() =&gt; {
+    simulationRef.current = demo({
+      prevSimulation: simulationRef.current,
+      props,
+    })
+  }, [props])
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[]}
+        source=&quot;https://github.com/mrdoob/three.js/blob/master/examples/webgl_buffergeometry_drawrange.html&quot;
+        storyName={[&quot;ThreeJSBufferGeometry&quot;, &quot;DrawRange&quot;]}
+      /&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Template = ((props: Props) =&gt; (
+  &lt;DrawRange {...props} /&gt;
+)) as TemplateType&lt;Props&gt;
+
+export const Common = Template.bind({})
+
+const [particleCountArg, particleCountControls] = createRangeControl({
+  diffMax: maxParticleCount - initialParticleCount,
+  diffMin: 499,
+  initialValue: initialParticleCount,
+  step: 1,
+})
+
+const [
+  minConnectionDistanceArg,
+  minConnectionDistanceControls,
+] = createRangeControl({
+  diffMin: 149,
+  initialValue: 150,
+  step: 1,
+})
+
+const [maxConnectionsArg, maxConnectionsControls] = createRangeControl({
+  diffMax: 100,
+  diffMin: 0,
+  initialValue: -1,
+  step: 1,
+})
+
+const args: Props = {
+  maxConnections: maxConnectionsArg,
+  minConnectionDistance: minConnectionDistanceArg,
+  particleCount: particleCountArg,
+  showDots: true,
+  showLines: true,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {
+    maxConnections: maxConnectionsControls,
+    minConnectionDistance: minConnectionDistanceControls,
+    particleCount: particleCountControls,
+  },
+  component: DrawRange,
+  title: &quot;ThreeJS/BufferGeometry/DrawRange&quot;,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 29 Aug 2021 14:34:47 GMT</p>
+    </body>
+  </html>
+  
