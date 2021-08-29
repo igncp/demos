@@ -193,7 +193,7 @@
     {
       "file": "src/demos/_utils/fish-eye.ts",
       "line": 27,
-      "character": 35,
+      "character": 38,
       "text": "x",
       "kind": 1
     },
@@ -1270,22 +1270,22 @@
     },
     {
       "file": "storybook/stories/ThreeJSBufferGeometry/Instancing.stories.tsx",
-      "line": 279,
-      "character": 32,
+      "line": 282,
+      "character": 41,
       "text": "value",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSBufferGeometry/Instancing.stories.tsx",
-      "line": 280,
-      "character": 36,
+      "line": 283,
+      "character": 45,
       "text": "value",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSBufferGeometry/Instancing.stories.tsx",
-      "line": 281,
-      "character": 34,
+      "line": 284,
+      "character": 43,
       "text": "value",
       "kind": 1
     },
@@ -1397,7 +1397,7 @@
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 86,
-      "character": 48,
+      "character": 54,
       "text": "oimoGeometry",
       "kind": 1
     },
@@ -1433,13 +1433,13 @@
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 161,
       "character": 27,
-      "text": "geometry",
+      "text": "threeGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 161,
-      "character": 37,
+      "character": 42,
       "text": "THREEGeometry",
       "kind": 1
     },
@@ -1454,13 +1454,13 @@
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 164,
       "character": 8,
-      "text": "geometry",
+      "text": "threeGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 164,
-      "character": 17,
+      "character": 22,
       "text": "type",
       "kind": 1
     },
@@ -1593,7 +1593,7 @@
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 161,
-      "character": 53,
+      "character": 58,
       "text": "OIMOGeometry",
       "kind": 1
     },
@@ -1614,14 +1614,14 @@
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 184,
-      "character": 42,
+      "character": 48,
       "text": "oimoGeometry",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 186,
-      "character": 33,
+      "character": 39,
       "text": "oimoGeometry",
       "kind": 1
     },
@@ -1726,34 +1726,34 @@
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 245,
-      "character": 27,
+      "character": 33,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 245,
-      "character": 32,
+      "character": 38,
       "text": "getPosition",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 246,
-      "character": 29,
+      "character": 35,
       "text": "body",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSPhysicsFalls/OimoPhysics.ts",
       "line": 246,
-      "character": 34,
+      "character": 40,
       "text": "getOrientation",
       "kind": 1
     }
   ],
-  "percentage": 98.93217153596446,
-  "total": 23412,
-  "covered": 23162,
+  "percentage": 98.9634298034663,
+  "total": 24118,
+  "covered": 23868,
   "uncovered": 250
 }
