@@ -14,12 +14,16 @@ https://igncp.github.io/demos/
 - There are other demos using SVG, Canvas and [WebGL](https://get.webgl.org/) in a hosted [Storybook](https://storybook.js.org/):
     - https://igncp.github.io/demos/storybook
     - They explore mostly web UI features without focusing in data visualization
-- TypeScript coverage report: https://igncp.github.io/demos/coverage-ts
+- TypeScript coverage report:
+    - https://igncp.github.io/demos/coverage-ts
     - The coverage is relatively high
     - There are no TypeScript errors but in some cases it uses `any`
 - Some in-browser unit tests using [QUnit](https://qunitjs.com/) for learning the usage of third-party dependencies better:
     - https://igncp.github.io/demos/testing
     - [src/pages/testing.tsx](./src/pages/testing.tsx)
+- It has extensive code-checks configurations:
+    - [ESLint](https://eslint.org/) config: [.eslintrc.js](./.eslintrc.js)
+    - [stylelint](https://stylelint.io/): [stylelint.config.js](./stylelint.config.js)
 - Version from 2016 using [CoffeeScript](https://coffeescript.org/) and [Sail.js](https://sailsjs.com/): 
     - http://igncp-demos.herokuapp.com/
     - [Github Branch](https://github.com/igncp/demos/tree/2016-version)
