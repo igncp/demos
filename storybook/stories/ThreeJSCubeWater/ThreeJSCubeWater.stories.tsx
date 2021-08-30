@@ -248,13 +248,30 @@ const createDemo = ({
 
 const ThreeJSCubeWater = (props: Props) => {
   const simulationRef = React.useRef<Simulation | null>(null)
+  const [isReadyToRender, setIsReadyToRender] = React.useState(false)
 
   React.useEffect(() => {
+    const onFinish = () => {
+      setIsReadyToRender(true)
+    }
+
+    const img = document.createElement("img")
+
+    img.src = waterTexture
+    img.onload = onFinish
+    img.onerror = onFinish
+  }, [])
+
+  React.useEffect(() => {
+    if (!isReadyToRender) {
+      return
+    }
+
     simulationRef.current = createDemo({
       prevSimulation: simulationRef.current,
       props,
     })
-  }, [props])
+  }, [props, isReadyToRender])
 
   return (
     <div>
