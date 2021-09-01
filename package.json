@@ -103,7 +103,7 @@
     "lint-fix:ts": "npm run lint:ts -- --fix",
     "lint:css": "stylelint \"src/**/*.css\" \"storybook/stories/**/*.css\"",
     "lint:ts": "eslint --ext .js --ext .ts --ext .tsx .",
-    "pocs-serve": "http-server ./research/poc",
+    "pocs-serve": "http-server ./research",
     "serve": "gatsby serve",
     "start": "npm run develop",
     "storybook:build": "cd ./storybook && npm run storybook:build",

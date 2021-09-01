@@ -32,6 +32,10 @@
 - https://github.com/jdorfman/awesome-json-datasets
 - https://www.data.gov/
 - https://www.kaggle.com/datasets
+- https://console.cloud.google.com/marketplace/browse?filter=solution-type:dataset
+- https://www.tableau.com/learn/articles/free-public-data-sets
+- https://registry.opendata.aws/
+- https://datasetsearch.research.google.com/
 
 ## Features to implement
 
@@ -40,4 +44,9 @@
 
 ## Charts ideas
 
-- Different regions in China
+- Infographic?: https://www.kaggle.com/martinmraz07/oscar-movies/version/2
+    - Parse producers, directors, and actors names to create a graph of relationships
+    - Ranking of the most awarded, nominees
+    - Ranking of ratings
+    - Evolution of audience size
+- Map: Different regions in China
