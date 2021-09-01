@@ -23,7 +23,7 @@ https://igncp.github.io/demos/
     - [src/pages/testing.tsx](./src/pages/testing.tsx)
 - It has extensive code-checks configurations:
     - [ESLint](https://eslint.org/) config: [.eslintrc.js](./.eslintrc.js)
-    - [stylelint](https://stylelint.io/): [stylelint.config.js](./stylelint.config.js)
+    - [stylelint](https://stylelint.io/) config: [stylelint.config.js](./stylelint.config.js)
 - Version from 2016 using [CoffeeScript](https://coffeescript.org/) and [Sail.js](https://sailsjs.com/): 
     - http://igncp-demos.herokuapp.com/
     - [Github Branch](https://github.com/igncp/demos/tree/2016-version)

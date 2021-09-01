@@ -63,9 +63,7 @@ const fetchRecords = async () => {
     })
 }
 
-const main = async () => {
-  const oscarsRecords = await fetchRecords()
-
+const extractStructures = (oscarsRecords) => {
   const actorsToMovies = oscarsRecords.reduce((...[acc, record]) => {
     record.actors.forEach((...[actorName]) => {
       acc[actorName] = acc[actorName] || []
@@ -75,12 +73,17 @@ const main = async () => {
     return acc
   }, {})
 
-  console.log("oscarsRecords", oscarsRecords)
-  console.log(
-    "actorsToMovies",
+  return {
     actorsToMovies,
-    Object.keys(actorsToMovies).length
-  )
+  }
+}
+
+const main = async () => {
+  const oscarsRecords = await fetchRecords()
+
+  const structures = extractStructures(oscarsRecords)
+
+  console.log("demo.js: structures", structures)
 
   d3.select("#chart").append("svg")
 }
