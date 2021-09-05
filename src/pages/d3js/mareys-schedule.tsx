@@ -4,7 +4,10 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/mareys-schedule/mareys-schedule"
+import main, {
+  CONTAINER_ID,
+  RANGE_ID,
+} from "@/demos/mareys-schedule/mareys-schedule"
 
 const MareysSchedule = ({ pageContext }: DemoPageProps) => (
   <Demo
@@ -14,9 +17,9 @@ const MareysSchedule = ({ pageContext }: DemoPageProps) => (
     scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
   >
     <div>
-      <div className="slider" />
+      <div id={RANGE_ID} />
     </div>
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

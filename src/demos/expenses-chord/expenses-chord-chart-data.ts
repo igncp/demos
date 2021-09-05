@@ -1,8 +1,5 @@
-import { json } from "d3"
-
 import { ChartConfig, DisplayType, RibbonType } from "./expenses-chord-chart"
-
-export const ALL_ID = "All"
+import { Expenses } from "./expenses-chord-data-model"
 
 type State = {
   selectedCountry: string
@@ -10,83 +7,32 @@ type State = {
   timeIndex: number
 }
 
-type DataItem = {
-  value: number | null // eslint-disable-line id-denylist
-  year: number
-}
-
-type ChordData = {
-  [country: string]: {
-    [region: string]: DataItem[]
-  }
-}
-
 export const createInitialState = (): State => ({
-  selectedCountry: ALL_ID,
-  selectedRegion: ALL_ID,
+  selectedCountry: Expenses.ALL_ID,
+  selectedRegion: Expenses.ALL_ID,
   timeIndex: 0,
 })
 
-export const getAreas = (chordData: ChordData) => {
-  const countries = Object.keys(chordData).sort()
-  const regions = Object.keys(chordData[countries[0]]).sort()
-
-  return { countries, regions }
-}
-
-export const fetchData = () =>
-  (json(
-    `${ROOT_PATH}data/d3js/expenses-chord/data.json`
-  ) as unknown) as Promise<ChordData>
-
 export const createChartConfig = ({
-  chordData,
-  countries,
-  regions,
+  expenses,
   state,
 }: {
-  chordData: ChordData
-  countries: string[]
-  regions: string[]
+  expenses: Expenses
   state: State
 }): ChartConfig => {
-  const names = countries.concat(regions)
+  const getChordMatrix: ChartConfig["getChordMatrix"] = () =>
+    expenses.getRelationsMatrix({
+      countryFilter: state.selectedCountry,
+      regionFilter: state.selectedRegion,
+      timeIndexFilter: state.timeIndex,
+    })
 
-  const getChordMatrix: ChartConfig["getChordMatrix"] = () => {
-    const matrix = names.map((maybeCountry) => {
-      if (!chordData[maybeCountry] as unknown) {
-        return names.map(() => 0)
-      }
+  const allNames = expenses.getAllNames()
 
-      if (![ALL_ID, maybeCountry].includes(state.selectedCountry)) {
-        return names.map(() => 0)
-      }
-
-      return names.map((maybeRegion) => {
-        const {
-          [maybeCountry]: { [maybeRegion]: dataItem },
-        } = chordData
-
-        if (!dataItem as unknown) {
-          return 0
-        }
-
-        if (![ALL_ID, maybeRegion].includes(state.selectedRegion)) {
-          return 0
-        }
-
-        return dataItem[state.timeIndex].value
-      })
-    }) as number[][]
-
-    return matrix
-  }
-
-  // @TODO: confirm title
   const getChordTitle: ChartConfig["getChordTitle"] = (
     ...[sourceIndex, targetIndex, sourceValue]
   ) =>
-    `People from "${names[sourceIndex]}" spend into "${names[targetIndex]}": ${sourceValue}`
+    `People from "${allNames[sourceIndex]}" spend into "${allNames[targetIndex]}": ${sourceValue}`
 
   const getChordGroupTitle: ChartConfig["getChordGroupTitle"] = (
     chordItemLabel
@@ -94,20 +40,24 @@ export const createChartConfig = ({
 
   const getRibbonGroupIdColor: ChartConfig["getRibbonGroupIdColor"] = (
     ...[sourceGroupId, targetGroupId]
-  ) => (state.selectedRegion === ALL_ID ? targetGroupId : sourceGroupId)
+  ) =>
+    state.selectedRegion === Expenses.ALL_ID ? targetGroupId : sourceGroupId
 
   const getDisplayTypeOnGroupClick: ChartConfig["getDisplayTypeOnGroupClick"] = (
     chordGroupId
   ) =>
-    countries.includes(chordGroupId) ? DisplayType.Source : DisplayType.Target
+    expenses.getCountriesList().includes(chordGroupId)
+      ? DisplayType.Source
+      : DisplayType.Target
 
   const getRibbonType: ChartConfig["getRibbonType"] = () =>
-    state.selectedCountry !== ALL_ID && state.selectedRegion !== ALL_ID
+    state.selectedCountry !== Expenses.ALL_ID &&
+    state.selectedRegion !== Expenses.ALL_ID
       ? RibbonType.Common
       : RibbonType.Arrow
 
   return {
-    chordGroupsIds: names,
+    chordGroupsIds: allNames,
     getChordGroupTitle,
     getChordMatrix,
     getChordTitle,
@@ -116,4 +66,70 @@ export const createChartConfig = ({
     getRibbonType,
     rootElId: "chart",
   }
+}
+
+export const setupChartForm = ({
+  expenses,
+  renderItems,
+  state,
+}: {
+  expenses: Expenses
+  renderItems: () => void
+  state: State
+}) => {
+  $("#slider-time").slider({
+    change: (...[, { value: timeValue }]) => {
+      if (timeValue === 3) {
+        // @TODO: error in this case, find why
+        return
+      }
+
+      state.timeIndex = timeValue!
+      renderItems()
+    },
+    max: expenses.getTimeFramesNumber(),
+    min: 0,
+  })
+
+  const setupSelect = ({
+    id,
+    onChange,
+    selectOptions,
+  }: {
+    id: string
+    onChange: (v: string) => void
+    selectOptions: string[]
+  }) => {
+    const selectEl = document.getElementById(id) as HTMLSelectElement
+
+    ;[Expenses.ALL_ID].concat(selectOptions).forEach((selectOption) => {
+      const option = document.createElement("option")
+
+      option.setAttribute("value", selectOption)
+      option.innerText = selectOption
+
+      selectEl.appendChild(option)
+    })
+
+    selectEl.addEventListener("change", () => {
+      onChange(selectEl.value)
+    })
+  }
+
+  setupSelect({
+    id: "countries-select",
+    onChange: (newSelected: string) => {
+      state.selectedCountry = newSelected
+      renderItems()
+    },
+    selectOptions: expenses.getCountriesList(),
+  })
+  setupSelect({
+    id: "regions-select",
+    onChange: (newSelected: string) => {
+      state.selectedRegion = newSelected
+      renderItems()
+    },
+    selectOptions: expenses.getRegionsList(),
+  })
 }

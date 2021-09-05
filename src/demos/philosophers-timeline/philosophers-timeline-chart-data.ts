@@ -1,7 +1,7 @@
 import { csv, timeParse } from "d3"
 import qs from "query-string"
 
-import { ChartConfig, SortOrder } from "./philosophers-timeline-chart"
+import { ChartConfig, SortOrder } from "./timeline-bands-brush-chart"
 
 export type TimeBandItem = {
   end: Date
@@ -131,7 +131,10 @@ const onChartItemClick: Config["onChartItemClick"] = (timelineChart) => {
   )
 }
 
+const chartTitle = "Philosophers through History"
+
 export const getChartConfig = (): Config => ({
+  chartTitle,
   getItemLimitLeft,
   getItemLimitRight,
   getItemText,

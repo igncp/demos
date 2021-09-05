@@ -109,7 +109,7 @@
     "storybook:build": "cd ./storybook && npm run storybook:build",
     "storybook:run": "cd ./storybook && npm run storybook:run",
     "test": "echo 'Tests are written in the page: src/pages/testing.tsx'",
-    "ts-coverage": "typescript-coverage-report",
+    "ts-coverage": "typescript-coverage-report --ignore-files '**/*.json'",
     "ts-css": "sh ./scripts/ts_css.sh",
     "ts-prune": "sh ./scripts/ts_prune.sh"
   },

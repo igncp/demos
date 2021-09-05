@@ -24,6 +24,8 @@ https://igncp.github.io/demos/
 - It has extensive code-checks configurations:
     - [ESLint](https://eslint.org/) config: [.eslintrc.js](./.eslintrc.js)
     - [stylelint](https://stylelint.io/) config: [stylelint.config.js](./stylelint.config.js)
+- There is an [internal checklist](./research/charts-checklist.md) which aims to improve the quality and reusability of the charts
+    - New charts should follow it completely but older charts (pre-2021) are still being updated to comply with it
 - Version from 2016 using [CoffeeScript](https://coffeescript.org/) and [Sail.js](https://sailsjs.com/): 
     - http://igncp-demos.herokuapp.com/
     - [Github Branch](https://github.com/igncp/demos/tree/2016-version)
@@ -35,15 +37,6 @@ You need to have Node.js installed
 - Clone the repo
 - Inside the repo directory, run: `npm install`
 - To start the server `npm run develop`
-
-## Roadmap
-
-I've updated this repository after it was inactive for several years. The remaining steps for existing charts are:
-
-1. [ ] Remove or change dependencies
-    - [ ] Remove Bootstrap but keep same look and feel
-1. [ ] Resolve TypeScript cases with `any`
-1. [ ] Resolve as many `@typescript-eslint/no-use-before-define` errors by using generics
 
 ## License
 

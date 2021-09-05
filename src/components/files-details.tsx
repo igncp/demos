@@ -132,12 +132,12 @@ const FilesDetails = ({ demoInfo }: Props) => {
           <strong>Code:</strong>
         </p>
         <ul>
-          {demoInfo.files.demo.map(({ content, fileName }) => (
+          {demoInfo.files.demoTS.map(({ content, fileName }) => (
             <li key={fileName}>
               <p>
-                {`${fileName}.ts`}{" "}
+                {fileName}{" "}
                 {(() => {
-                  const filePath = `demos/${demoInfo.key}/${fileName}.ts`
+                  const filePath = `demos/${demoInfo.key}/${fileName}`
 
                   return (
                     <>
@@ -177,19 +177,21 @@ const FilesDetails = ({ demoInfo }: Props) => {
               />
             </pre>
           </li>
-          {demoInfo.files.cssModule && (
-            <li>
+          {demoInfo.files.demoCSS.map(({ content, fileName }) => (
+            <li key={fileName}>
               <p>
-                {`${demoInfo.key}.module.css`}{" "}
-                <CodeInGH
-                  filePath={`demos/${demoInfo.key}/${demoInfo.key}.module.css`}
-                />
+                {`${fileName}`}{" "}
+                {(() => {
+                  const filePath = `demos/${demoInfo.key}/${fileName}`
+
+                  return <CodeInGH filePath={filePath} />
+                })()}
               </p>
               <pre>
                 <code
                   dangerouslySetInnerHTML={{
                     __html: Prism.highlight(
-                      demoInfo.files.cssModule,
+                      content,
                       Prism.languages.scss,
                       "scss"
                     ),
@@ -197,7 +199,7 @@ const FilesDetails = ({ demoInfo }: Props) => {
                 />
               </pre>
             </li>
-          )}
+          ))}
         </ul>
       </div>
     </div>

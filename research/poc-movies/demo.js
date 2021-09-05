@@ -1,6 +1,38 @@
 /* eslint-disable no-unused-vars */
-/* global d3, anime, topojson, chroma, hotkeys, uuid, Papa */
+/* global d3, anime, topojson, chroma, hotkeys, uuid, Papa, Redux */
 /* eslint-enable no-unused-vars */
+
+const Actions = {
+  SET_STRUCTURES: "SET_STRUCTURES",
+}
+
+const createStore = () => {
+  const store = Redux.createStore(
+    (...[state, action]) => {
+      switch (action.type) {
+        case Actions.SET_STRUCTURES: {
+          return {
+            ...state,
+            structures: action.payload,
+          }
+        }
+
+        default:
+          return state
+      }
+    },
+    {
+      structures: {},
+    }
+  )
+
+  return store
+}
+
+const actionSetStructures = (structures) => ({
+  payload: structures,
+  type: Actions.SET_STRUCTURES,
+})
 
 const camelize = (str) =>
   str
@@ -73,19 +105,72 @@ const extractStructures = (oscarsRecords) => {
     return acc
   }, {})
 
+  const sortedByIMDBRated = oscarsRecords
+    .slice()
+    .sort((...[recordA, recordB]) => recordB.IMDBRating - recordA.IMDBRating)
+    .map((r) => r.id) // @TODO: add r to restricted names list
+
   return {
     actorsToMovies,
+    oscarsRecords,
+    sortedByIMDBRated,
+  }
+}
+
+const buildListView = ({ container, store }) => {
+  const view = document.createElement("div")
+
+  container.innerHTML = ""
+
+  const {
+    structures: { oscarsRecords, sortedByIMDBRated },
+  } = store.getState()
+
+  sortedByIMDBRated.forEach((recordId) => {
+    const newRow = document.createElement("div")
+    const { [recordId]: record } = oscarsRecords
+
+    newRow.innerHTML = `
+<span>${record.IMDBRating}</span> - <span>${record.film}</span>
+`
+    view.appendChild(newRow)
+  })
+
+  console.log("demo.js: structures", store.getState().structures)
+
+  container.appendChild(view)
+}
+
+const createPageLayout = () => {
+  const grid = Array.from({ length: 4 }).map(() => {
+    const gridItem = document.createElement("div")
+
+    gridItem.classList.add("layoutGrid")
+
+    return gridItem
+  })
+  const mainContainer = document.getElementById("chart")
+
+  grid.forEach((gridElement) => {
+    mainContainer.appendChild(gridElement)
+  })
+
+  return {
+    grid,
+    mainContainer,
   }
 }
 
 const main = async () => {
+  const store = createStore()
   const oscarsRecords = await fetchRecords()
 
   const structures = extractStructures(oscarsRecords)
+  const pageLayout = createPageLayout()
 
-  console.log("demo.js: structures", structures)
+  store.dispatch(actionSetStructures(structures))
 
-  d3.select("#chart").append("svg")
+  buildListView({ container: pageLayout.grid[0], store })
 }
 
 main()

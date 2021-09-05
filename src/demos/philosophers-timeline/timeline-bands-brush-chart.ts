@@ -10,7 +10,7 @@ import {
   selectAll,
 } from "d3"
 
-import * as styles from "./philosophers-timeline.module.css"
+import * as styles from "./timeline-bands-brush-chart.module.css"
 
 export enum SortOrder {
   Ascending = "ascending",
@@ -109,6 +109,7 @@ type ChartDataBase = {
 }
 
 export type ChartConfig<ChartData extends ChartDataBase> = {
+  chartTitle: string
   getItemLimitLeft: (chartItem: ChartData) => Date
   getItemLimitRight: (chartItem: ChartData) => Date
   getItemText: (o: { chartItem: ChartData; maxLetters: number }) => string
@@ -168,7 +169,7 @@ export class Timeline<ChartData extends ChartDataBase> {
       .attr("class", "chart-title")
       .attr("text-anchor", "middle")
       .attr("transform", `translate(${outerWidth / 2},-20)`)
-      .text("Philosophers through History")
+      .text(chartConfig.chartTitle)
       .style("font-weight", "bold")
 
     filterBlackOpacity({ deviation: 1, id: "intervals", slope: 0.2, svg })

@@ -12,8 +12,9 @@ import {
   select,
 } from "d3"
 import { Delaunay } from "d3-delaunay"
+import { v1 as uuidv1 } from "uuid"
 
-import * as styles from "./area.module.css"
+import * as styles from "./area-chart.module.css"
 
 const filterBlackOpacity = ({
   deviation,
@@ -56,7 +57,7 @@ const filterBlackOpacity = ({
 
 export type ChartConfig<AreaPoint> = {
   areaPoints: AreaPoint[]
-  getChartTitle: () => string
+  chartTitle: string
   getItemId: (areaPoint: AreaPoint) => number
   getItemTitle: (areaPoint: AreaPoint) => string
   getItemXValue: (areaPoint: AreaPoint) => number
@@ -76,6 +77,9 @@ export const renderChart = <AreaPoint>(
     rootElId
   ) as HTMLElement).getBoundingClientRect()
   const isSmallDevice = elWidth < 500
+
+  const voronoiGroupClass = `voronoi-group-${uuidv1().slice(0, 6)}`
+  const pointClassPrefix = `point-${uuidv1().slice(0, 6)}-`
 
   const margin = {
     bottom: 50,
@@ -103,7 +107,7 @@ export const renderChart = <AreaPoint>(
     .attr("class", styles.chartTitle)
     .attr("text-anchor", "middle")
     .attr("transform", `translate(${width / 2},${titleYOffset})`)
-    .text(chartConfig.getChartTitle())
+    .text(chartConfig.chartTitle)
     .style("font-weight", "bold")
 
   filterBlackOpacity({
@@ -192,14 +196,14 @@ export const renderChart = <AreaPoint>(
   ])
 
   const mouseover = (...[, areaPoint]: [unknown, AreaPoint]) => {
-    select(`.point-${chartConfig.getItemId(areaPoint)}`).style(
+    select(`.${pointClassPrefix}${chartConfig.getItemId(areaPoint)}`).style(
       "display",
       "block"
     )
   }
 
   const mouseleave = (...[, areaPoint]: [unknown, AreaPoint]) => {
-    select(`.point-${chartConfig.getItemId(areaPoint)}`).style(
+    select(`.${pointClassPrefix}${chartConfig.getItemId(areaPoint)}`).style(
       "display",
       "none"
     )
@@ -218,7 +222,8 @@ export const renderChart = <AreaPoint>(
     .attr("r", "5px")
     .attr(
       "class",
-      (areaPoint) => `${styles.point} point-${chartConfig.getItemId(areaPoint)}`
+      (areaPoint) =>
+        `${styles.point} ${pointClassPrefix}${chartConfig.getItemId(areaPoint)}`
     )
     .style("filter", "url(#drop-shadow-points)")
 
@@ -234,10 +239,10 @@ export const renderChart = <AreaPoint>(
     )
     .on("mouseover", mouseover)
     .on("mouseleave", mouseleave)
-    .attr("class", "voronoi-group")
+    .attr("class", voronoiGroupClass)
     .attr("title", chartConfig.getItemTitle)
 
-  $(".voronoi-group").tooltip({
+  $(`.${voronoiGroupClass}`).tooltip({
     track: true,
   })
 

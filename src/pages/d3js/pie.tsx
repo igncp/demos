@@ -4,16 +4,21 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/pie/pie"
+import main, { BUTTON_ID, CONTAINER_ID } from "@/demos/pie/pie"
 
 const Pie = ({ pageContext }: DemoPageProps) => (
-  <Demo main={main} pageContext={pageContext}>
+  <Demo
+    links={["/vendors/jquery-ui/themes/base/jquery-ui.min.css"]}
+    main={main}
+    pageContext={pageContext}
+    scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
+  >
     <form>
-      <button className="btn btn-success" id="change-data" type="button">
+      <button className="btn btn-success" id={BUTTON_ID} type="button">
         Change
       </button>
     </form>
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

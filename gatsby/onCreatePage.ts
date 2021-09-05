@@ -29,25 +29,38 @@ const readIfExists = (filePath: string) => {
   }
 }
 
-const getDemoFiles = (demoName: string) => {
-  const extraFiles = fs
+const getDemoTSFiles = (demoName: string) => {
+  const tsFiles = fs
     .readdirSync(`${__dirname}/../src/demos/${demoName}`)
     .filter((file) => /\.ts$/.test(file))
-    .map((file) => file.replace(/\.ts$/, ""))
     .filter((file) => !file.includes(".css") && file !== demoName)
+  const mainStr = "export default main" // move the main demo file to the top
 
-  return [
-    {
-      content: readIfExists(`src/demos/${demoName}/${demoName}.ts`),
-      fileName: demoName,
-    },
-  ]
-    .concat(
-      extraFiles.map((fileName) => ({
-        content: readIfExists(`src/demos/${demoName}/${fileName}.ts`),
-        fileName,
-      }))
-    )
+  return tsFiles
+    .map((fileName) => ({
+      content: readIfExists(`src/demos/${demoName}/${fileName}`),
+      fileName,
+    }))
+    .filter((file) => !!file.content)
+    .sort((...[fileA, fileB]) => {
+      if (fileA.content.includes(mainStr)) {
+        return -1
+      }
+
+      return fileB.content.includes(mainStr) ? 1 : 0
+    })
+}
+
+const getDemoCSSFiles = (demoName: string) => {
+  const cssFiles = fs
+    .readdirSync(`${__dirname}/../src/demos/${demoName}`)
+    .filter((file) => /\.css$/.test(file))
+
+  return cssFiles
+    .map((fileName) => ({
+      content: readIfExists(`src/demos/${demoName}/${fileName}`),
+      fileName,
+    }))
     .filter((file) => !!file.content)
 }
 
@@ -70,7 +83,6 @@ const getDemoInfo = (slugs: string[]) => {
     return null
   }
 
-  const demoFiles = getDemoFiles(demoName)
   const page = getPage({ category, demoName })
 
   type DemoKey = keyof typeof categoryData
@@ -81,8 +93,8 @@ const getDemoInfo = (slugs: string[]) => {
     ...demoBase,
     category,
     files: {
-      cssModule: readIfExists(`src/demos/${demoName}/${demoName}.module.css`),
-      demo: demoFiles,
+      demoCSS: getDemoCSSFiles(demoName),
+      demoTS: getDemoTSFiles(demoName),
       page,
     },
     key: demoName,

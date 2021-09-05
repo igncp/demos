@@ -1,4 +1,4 @@
-.countryTooltip {
+.mapLayoutItemTooltip {
   background: #ffccfc;
 }
 
@@ -29,7 +29,7 @@
   }
 }
 
-.meteorite {
+.circle {
   fill: orange;
 
   &:hover {
@@ -37,11 +37,11 @@
   }
 }
 
-.meteorite.active {
+.circle.active {
   fill: red;
 }
 
-.meteorite.moved {
+.circle.moved {
   fill: green;
 }
 

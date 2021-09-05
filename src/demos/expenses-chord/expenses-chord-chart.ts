@@ -1,6 +1,8 @@
 import {
+  BaseType,
   Chord,
   ChordGroup,
+  Selection,
   arc as arcD3,
   chordDirected,
   descending as descendingD3,
@@ -18,6 +20,7 @@ import { v1 as uuid } from "uuid"
 import * as styles from "./expenses-chord.module.css"
 
 const height = 800
+const elementDefaultOpacity = 0.7
 
 export enum DisplayType {
   Source = "source",
@@ -39,6 +42,19 @@ const durations = {
 } as const
 
 const easingFn = easeCircle
+
+const applyOpacityEffect = <ContainerEl extends BaseType, Datum>(
+  elementsSelection: Selection<ContainerEl, Datum, BaseType, unknown>
+) => {
+  elementsSelection
+    .style("opacity", elementDefaultOpacity)
+    .on("mouseenter", function () {
+      select(this).style("opacity", 1)
+    })
+    .on("mouseleave", function () {
+      select(this).style("opacity", elementDefaultOpacity)
+    })
+}
 
 // eslint-disable-next-line max-params,@typescript-eslint/no-explicit-any
 const zoomed = function (this: Element, zoomEvent: any) {
@@ -145,11 +161,14 @@ export const renderChart = (chartConfig: ChartConfig) => {
     .innerRadius(innerRadius)
     .outerRadius(outerRadius)
 
-  const ribbonContainer = svg.append("g").attr("fill-opacity", 0.75)
+  const ribbonContainer = svg.append("g")
   const groupContainer = svg
     .append("g")
     .attr("font-family", "sans-serif")
     .attr("font-size", 10)
+
+  const getRibbonKey = (ribbonNode: Chord) =>
+    `${ribbonNode.source.index}_${ribbonNode.target.index}`
 
   const renderItems = () => {
     const usedRibbon =
@@ -162,9 +181,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
       .selectAll<SVGPathElement, Chord>(`.${styles.ribbon}`)
       .data()
       .reduce((...[acc, ribbonNode]) => {
-        acc[
-          `${ribbonNode.source.index}_${ribbonNode.target.index}`
-        ] = ribbonNode
+        acc[getRibbonKey(ribbonNode)] = ribbonNode
 
         return acc
       }, {} as { [k: string]: Chord | undefined })
@@ -179,16 +196,17 @@ export const renderChart = (chartConfig: ChartConfig) => {
 
     const ribbons = ribbonContainer
       .selectAll<SVGPathElement, Chord>(`.${styles.ribbon}`)
-      .data<Chord>(
-        chords,
-        (chordItem) => `${chordItem.source.index}_${chordItem.target.index}`
-      )
+      .data<Chord>(chords, (chordItem) => getRibbonKey(chordItem))
       .join(
-        (enter) =>
-          enter
+        (enter) => {
+          const enterSelection = enter
             .append("path")
             .attr("class", styles.ribbon)
             .attr("fill", fillRibbon)
+
+          applyOpacityEffect(enterSelection)
+
+          return enterSelection
             .transition()
             .duration(durations.ribbonAnimation)
             .attrTween("d", (finalRibbon) => {
@@ -219,7 +237,8 @@ export const renderChart = (chartConfig: ChartConfig) => {
 
                 return usedRibbon(interpolated)
               }
-            }),
+            })
+        },
         (update) => {
           update
             .transition()
@@ -227,7 +246,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
             .attr("fill", fillRibbon)
             .attrTween("d", (finalRibbon) => {
               const {
-                [`${finalRibbon.source.index}_${finalRibbon.target.index}`]: initialRibbon,
+                [getRibbonKey(finalRibbon)]: initialRibbon,
               } = initialRibbonsData
 
               if (!initialRibbon) {
@@ -309,6 +328,8 @@ export const renderChart = (chartConfig: ChartConfig) => {
             .attr("title", (groupItem) =>
               chartConfig.getChordGroupTitle(chordGroupsIds[groupItem.index])
             )
+
+          applyOpacityEffect(groupSelection)
 
           groupSelection
             .append("path")

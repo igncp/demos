@@ -2,7 +2,6 @@
 
 - https://thednp.github.io/kute.js/index.html
 - https://mattboldt.com/demos/typed-js/
-- Threejs for 3D visualizations
 - Redux Toolkit
 - Rxjs for real-time charts
 

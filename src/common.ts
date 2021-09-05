@@ -15,14 +15,16 @@ export type DemoBase = {
   summary: string[]
 }
 
+type DemoFile = {
+  content: string
+  fileName: string
+}
+
 export type DemoInfo = DemoBase & {
   category: string
   files: {
-    cssModule: string
-    demo: Array<{
-      content: string
-      fileName: string
-    }>
+    demoCSS: DemoFile[]
+    demoTS: DemoFile[]
     page: {
       content: string
       type: string

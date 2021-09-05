@@ -5,6 +5,7 @@ import { DemoPageProps } from "@/common"
 import Demo from "@/components/demo"
 
 import main from "@/demos/area/area"
+import { BUTTON_ID } from "@/demos/area/income-chart-controls"
 
 const Area = ({ pageContext }: DemoPageProps) => (
   <Demo
@@ -14,7 +15,7 @@ const Area = ({ pageContext }: DemoPageProps) => (
     scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
   >
     <form>
-      <button className="btn btn-info" id="toggle-voronoi" type="button">
+      <button className="btn btn-info" id={BUTTON_ID} type="button">
         Toggle Voronoi
       </button>
     </form>

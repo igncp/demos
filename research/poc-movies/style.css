@@ -1,0 +1,8 @@
+/* @TODO: use flexbox */
+.layoutGrid {
+  border: 1px solid black;
+  max-height: 500px;
+  min-height: 20px;
+  overflow: auto;
+  padding: 20px;
+}

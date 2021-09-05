@@ -1,9 +1,9 @@
-import { Timeline } from "./philosophers-timeline-chart"
 import {
   TimeBandItem,
   fetchData,
   getChartConfig,
 } from "./philosophers-timeline-chart-data"
+import { Timeline } from "./timeline-bands-brush-chart"
 
 enum BandName {
   Main = "mainBand",
