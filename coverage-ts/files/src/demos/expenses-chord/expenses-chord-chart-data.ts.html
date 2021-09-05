@@ -11,11 +11,8 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/expenses-chord/expenses-chord-chart-data.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">149</td><td class="">149</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { json } from &quot;d3&quot;
-
-import { ChartConfig, DisplayType, RibbonType } from &quot;./expenses-chord-chart&quot;
-
-export const ALL_ID = &quot;All&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/expenses-chord/expenses-chord-chart-data.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">180</td><td class="">180</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { ChartConfig, DisplayType, RibbonType } from &quot;./expenses-chord-chart&quot;
+import { Expenses } from &quot;./expenses-chord-data-model&quot;
 
 type State = {
   selectedCountry: string
@@ -23,83 +20,32 @@ type State = {
   timeIndex: number
 }
 
-type DataItem = {
-  value: number | null // eslint-disable-line id-denylist
-  year: number
-}
-
-type ChordData = {
-  [country: string]: {
-    [region: string]: DataItem[]
-  }
-}
-
 export const createInitialState = (): State =&gt; ({
-  selectedCountry: ALL_ID,
-  selectedRegion: ALL_ID,
+  selectedCountry: Expenses.ALL_ID,
+  selectedRegion: Expenses.ALL_ID,
   timeIndex: 0,
 })
 
-export const getAreas = (chordData: ChordData) =&gt; {
-  const countries = Object.keys(chordData).sort()
-  const regions = Object.keys(chordData[countries[0]]).sort()
-
-  return { countries, regions }
-}
-
-export const fetchData = () =&gt;
-  (json(
-    `${ROOT_PATH}data/d3js/expenses-chord/data.json`
-  ) as unknown) as Promise&lt;ChordData&gt;
-
 export const createChartConfig = ({
-  chordData,
-  countries,
-  regions,
+  expenses,
   state,
 }: {
-  chordData: ChordData
-  countries: string[]
-  regions: string[]
+  expenses: Expenses
   state: State
 }): ChartConfig =&gt; {
-  const names = countries.concat(regions)
+  const getChordMatrix: ChartConfig[&quot;getChordMatrix&quot;] = () =&gt;
+    expenses.getRelationsMatrix({
+      countryFilter: state.selectedCountry,
+      regionFilter: state.selectedRegion,
+      timeIndexFilter: state.timeIndex,
+    })
 
-  const getChordMatrix: ChartConfig[&quot;getChordMatrix&quot;] = () =&gt; {
-    const matrix = names.map((maybeCountry) =&gt; {
-      if (!chordData[maybeCountry] as unknown) {
-        return names.map(() =&gt; 0)
-      }
+  const allNames = expenses.getAllNames()
 
-      if (![ALL_ID, maybeCountry].includes(state.selectedCountry)) {
-        return names.map(() =&gt; 0)
-      }
-
-      return names.map((maybeRegion) =&gt; {
-        const {
-          [maybeCountry]: { [maybeRegion]: dataItem },
-        } = chordData
-
-        if (!dataItem as unknown) {
-          return 0
-        }
-
-        if (![ALL_ID, maybeRegion].includes(state.selectedRegion)) {
-          return 0
-        }
-
-        return dataItem[state.timeIndex].value
-      })
-    }) as number[][]
-
-    return matrix
-  }
-
-  // @TODO: confirm title
   const getChordTitle: ChartConfig[&quot;getChordTitle&quot;] = (
     ...[sourceIndex, targetIndex, sourceValue]
   ) =&gt;
-    `People from &quot;${names[sourceIndex]}&quot; spend into &quot;${names[targetIndex]}&quot;: ${sourceValue}`
+    `People from &quot;${allNames[sourceIndex]}&quot; spend into &quot;${allNames[targetIndex]}&quot;: ${sourceValue}`
 
   const getChordGroupTitle: ChartConfig[&quot;getChordGroupTitle&quot;] = (
     chordItemLabel
@@ -107,20 +53,24 @@ export const createChartConfig = ({
 
   const getRibbonGroupIdColor: ChartConfig[&quot;getRibbonGroupIdColor&quot;] = (
     ...[sourceGroupId, targetGroupId]
-  ) =&gt; (state.selectedRegion === ALL_ID ? targetGroupId : sourceGroupId)
+  ) =&gt;
+    state.selectedRegion === Expenses.ALL_ID ? targetGroupId : sourceGroupId
 
   const getDisplayTypeOnGroupClick: ChartConfig[&quot;getDisplayTypeOnGroupClick&quot;] = (
     chordGroupId
   ) =&gt;
-    countries.includes(chordGroupId) ? DisplayType.Source : DisplayType.Target
+    expenses.getCountriesList().includes(chordGroupId)
+      ? DisplayType.Source
+      : DisplayType.Target
 
   const getRibbonType: ChartConfig[&quot;getRibbonType&quot;] = () =&gt;
-    state.selectedCountry !== ALL_ID &amp;&amp; state.selectedRegion !== ALL_ID
+    state.selectedCountry !== Expenses.ALL_ID &amp;&amp;
+    state.selectedRegion !== Expenses.ALL_ID
       ? RibbonType.Common
       : RibbonType.Arrow
 
   return {
-    chordGroupsIds: names,
+    chordGroupsIds: allNames,
     getChordGroupTitle,
     getChordMatrix,
     getChordTitle,
@@ -130,8 +80,74 @@ export const createChartConfig = ({
     rootElId: &quot;chart&quot;,
   }
 }
+
+export const setupChartForm = ({
+  expenses,
+  renderItems,
+  state,
+}: {
+  expenses: Expenses
+  renderItems: () =&gt; void
+  state: State
+}) =&gt; {
+  $(&quot;#slider-time&quot;).slider({
+    change: (...[, { value: timeValue }]) =&gt; {
+      if (timeValue === 3) {
+        // @TODO: error in this case, find why
+        return
+      }
+
+      state.timeIndex = timeValue!
+      renderItems()
+    },
+    max: expenses.getTimeFramesNumber(),
+    min: 0,
+  })
+
+  const setupSelect = ({
+    id,
+    onChange,
+    selectOptions,
+  }: {
+    id: string
+    onChange: (v: string) =&gt; void
+    selectOptions: string[]
+  }) =&gt; {
+    const selectEl = document.getElementById(id) as HTMLSelectElement
+
+    ;[Expenses.ALL_ID].concat(selectOptions).forEach((selectOption) =&gt; {
+      const option = document.createElement(&quot;option&quot;)
+
+      option.setAttribute(&quot;value&quot;, selectOption)
+      option.innerText = selectOption
+
+      selectEl.appendChild(option)
+    })
+
+    selectEl.addEventListener(&quot;change&quot;, () =&gt; {
+      onChange(selectEl.value)
+    })
+  }
+
+  setupSelect({
+    id: &quot;countries-select&quot;,
+    onChange: (newSelected: string) =&gt; {
+      state.selectedCountry = newSelected
+      renderItems()
+    },
+    selectOptions: expenses.getCountriesList(),
+  })
+  setupSelect({
+    id: &quot;regions-select&quot;,
+    onChange: (newSelected: string) =&gt; {
+      state.selectedRegion = newSelected
+      renderItems()
+    },
+    selectOptions: expenses.getRegionsList(),
+  })
+}
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 01 Sep 2021 22:07:31 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 05 Sep 2021 17:47:04 GMT</p>
     </body>
   </html>
   

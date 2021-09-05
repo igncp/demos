@@ -836,105 +836,105 @@
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 43,
+      "line": 59,
       "character": 40,
       "text": "zoomEvent",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 47,
+      "line": 63,
       "character": 23,
       "text": "zoomEvent",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 47,
+      "line": 63,
       "character": 33,
       "text": "transform",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 88,
+      "line": 104,
       "character": 24,
       "text": "r",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 89,
+      "line": 105,
       "character": 4,
       "text": "r",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 89,
+      "line": 105,
       "character": 6,
       "text": "radius",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 89,
+      "line": 105,
       "character": 32,
       "text": "padAngle",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 91,
+      "line": 107,
       "character": 8,
       "text": "ribbonArrow",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 92,
+      "line": 108,
       "character": 8,
       "text": "ribbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 154,
+      "line": 173,
       "character": 10,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 155,
+      "line": 174,
       "character": 58,
       "text": "ribbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 155,
+      "line": 174,
       "character": 67,
       "text": "ribbonArrow",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 219,
+      "line": 237,
       "character": 23,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 233,
+      "line": 252,
       "character": 29,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 251,
+      "line": 270,
       "character": 23,
       "text": "usedRibbon",
       "kind": 1
@@ -1010,29 +1010,29 @@
       "kind": 1
     },
     {
-      "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 330,
+      "file": "src/demos/meteorites-map/circles-map-chart.ts",
+      "line": 41,
       "character": 46,
       "text": "zoomEvent",
       "kind": 1
     },
     {
-      "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 331,
+      "file": "src/demos/meteorites-map/circles-map-chart.ts",
+      "line": 42,
       "character": 60,
       "text": "zoomEvent",
       "kind": 1
     },
     {
-      "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 331,
+      "file": "src/demos/meteorites-map/circles-map-chart.ts",
+      "line": 42,
       "character": 70,
       "text": "transform",
       "kind": 1
     },
     {
-      "file": "src/demos/meteorites-map/meteorites-map.ts",
-      "line": 345,
+      "file": "src/demos/meteorites-map/circles-map-chart.ts",
+      "line": 64,
       "character": 8,
       "text": "geometryPath",
       "kind": 1
@@ -1094,36 +1094,36 @@
       "kind": 1
     },
     {
-      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 554,
+      "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
+      "line": 555,
       "character": 23,
       "text": "brushEvent",
       "kind": 1
     },
     {
-      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 557,
+      "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
+      "line": 558,
       "character": 10,
       "text": "brushEvent",
       "kind": 1
     },
     {
-      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 557,
+      "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
+      "line": 558,
       "character": 21,
       "text": "selection",
       "kind": 1
     },
     {
-      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 559,
+      "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
+      "line": 560,
       "character": 22,
       "text": "selectionStart",
       "kind": 1
     },
     {
-      "file": "src/demos/philosophers-timeline/philosophers-timeline-chart.ts",
-      "line": 559,
+      "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
+      "line": 560,
       "character": 38,
       "text": "selectionEnd",
       "kind": 1
@@ -1752,8 +1752,8 @@
       "kind": 1
     }
   ],
-  "percentage": 98.98328520883322,
-  "total": 24589,
-  "covered": 24339,
+  "percentage": 99.00817265730382,
+  "total": 25206,
+  "covered": 24956,
   "uncovered": 250
 }

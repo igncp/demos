@@ -1,0 +1,391 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>circles-map-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/meteorites-map/circles-map-chart.ts</td><td class="">99.20%</td><td class="">95%</td><td class="">499</td><td class="">495</td><td class="">4</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import anime from &quot;animejs&quot;
+import { geoMercator, geoPath, select, zoom } from &quot;d3&quot;
+import { v1 as uuidv1 } from &quot;uuid&quot;
+
+import * as styles from &quot;./circles-map-chart.module.css&quot;
+
+type Point = [number, number]
+export type Geolocation = { coordinates: Point; type: &quot;Point&quot; }
+
+export type MapLayout = {
+  features: Array&lt;{
+    geometry: { coordinates: Point[]; type: &quot;Polygon&quot; } // eslint-disable-line id-denylist
+    id: string
+    properties: { name: string }
+    type: &quot;Feature&quot;
+  }&gt;
+  type: &quot;FeatureCollection&quot;
+}
+
+type ChartDataConstraint = {
+  geolocation: Geolocation
+}
+
+type ChartState = {
+  isDuringAnimation: boolean
+  selectedCircle: string | null
+}
+
+const margin = {
+  bottom: 0,
+  left: 0,
+  right: 0,
+  top: 0,
+}
+
+const svgCutBottom = 250 // to remove the south pole which doesn&#x27;t have any in the data
+const height = 1000 - margin.top - margin.bottom
+const modalHiddenTop = 250
+const clickedCircleDistortion = 20
+
+// eslint-disable-next-line max-params,@typescript-eslint/no-explicit-any
+const zoomed = function (this: SVGSVGElement, zoomEvent: any) {
+  select(this).transition().duration(500).attr(&quot;transform&quot;, zoomEvent.transform)
+}
+
+export type ChartConfig&lt;CircleData&gt; = {
+  chartHelpHTML: string
+  chartTitle: string
+  circlesData: CircleData[]
+  getCircleId: (circleData: CircleData) =&gt; string
+  getCircleTitle: (circlesData: CircleData) =&gt; string
+  getModalHTML: (circleData: CircleData) =&gt; string
+  mapLayout: MapLayout
+  rootElId: string
+}
+
+export const renderChart = &lt;CircleData extends ChartDataConstraint&gt;(
+  chartConfig: ChartConfig&lt;CircleData&gt;
+) =&gt; {
+  const { circlesData, getCircleId, mapLayout, rootElId } = chartConfig
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+  const width =
+    rootEl.getBoundingClientRect().width - margin.left - margin.right
+  const projectionFn = geoMercator().translate([width / 2, height / 2])
+  const geometryPath: any = geoPath().projection(projectionFn) // eslint-disable-line @typescript-eslint/no-explicit-any
+
+  const circleClassUnique = `${styles.circle}-${uuidv1().slice(0, 6)}`
+  const circleClass = `${circleClassUnique} ${styles.circle}`
+  const mapLayoutItemClass = `mapLayoutItem-${uuidv1().slice(0, 6)}`
+
+  type CircleGeo = CircleData &amp; {
+    geometry: CircleData[&quot;geolocation&quot;] // eslint-disable-line id-denylist
+    type: &quot;Feature&quot;
+  }
+
+  const state: ChartState = {
+    isDuringAnimation: false,
+    selectedCircle: null,
+  }
+
+  const modal = select(`#${rootElId}`)
+    .append(&quot;div&quot;)
+    .attr(&quot;class&quot;, styles.modal)
+    .style(&quot;top&quot;, `${-modalHiddenTop}px`)
+
+  const circlesGeo: CircleGeo[] = circlesData.map((circleData) =&gt; ({
+    ...circleData,
+    geometry: circleData.geolocation, // eslint-disable-line id-denylist
+    type: &quot;Feature&quot;,
+  }))
+
+  const removeSelection = () =&gt; {
+    if (state.isDuringAnimation) {
+      return
+    }
+
+    state.selectedCircle = null
+
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    circlesEls.attr(&quot;class&quot;, circleClass)
+
+    anime({
+      targets: `.${circleClassUnique}`,
+      translateX: 0,
+      translateY: 0,
+    })
+
+    state.isDuringAnimation = true
+
+    anime({
+      complete: () =&gt; {
+        state.isDuringAnimation = false
+        modal.text(&quot;&quot;)
+      },
+      targets: `.${styles.modal}`,
+      translateY: 0,
+    })
+  }
+
+  const getNearCirclesWithVectors = ({
+    targetCircle,
+  }: {
+    targetCircle: CircleGeo
+  }) =&gt; {
+    const targetProj = projectionFn(targetCircle.geometry.coordinates) as [
+      number,
+      number
+    ]
+
+    const nearCircles = circlesGeo
+      .slice(0)
+      .filter((otherCircle) =&gt; !!(otherCircle.geometry as unknown))
+      .map((otherCircle) =&gt; {
+        const {
+          geometry: { coordinates: otherCircleCoordinates },
+        } = otherCircle
+        const proj = projectionFn(otherCircleCoordinates) as [number, number]
+        const vector = [proj[0] - targetProj[0], proj[1] - targetProj[1]]
+        const vectorLength = Math.sqrt(
+          Math.pow(vector[0], 2) + Math.pow(vector[1], 2)
+        )
+
+        return {
+          ...otherCircle,
+          vector,
+          vectorLength,
+        }
+      })
+      .filter(
+        (otherCircle) =&gt;
+          otherCircle.vectorLength &lt; 20 &amp;&amp; otherCircle.vectorLength !== 0
+      )
+      .map((otherCircle) =&gt; ({
+        ...otherCircle,
+        vectorNormalized: [
+          otherCircle.vector[0] / otherCircle.vectorLength,
+          otherCircle.vector[1] / otherCircle.vectorLength,
+        ] as [number, number],
+      }))
+
+    const nearCirclesSet = new Set(
+      nearCircles.map((nearCircle) =&gt; getCircleId(nearCircle))
+    )
+
+    const vectorsMap = nearCircles.reduce((...[acc, nearCircle]) =&gt; {
+      acc[getCircleId(nearCircle)] = nearCircle.vectorNormalized
+
+      return acc
+    }, {} as Record&lt;string, [number, number]&gt;)
+
+    return {
+      nearCircles,
+      nearCirclesSet,
+      vectorsMap,
+    }
+  }
+
+  const circleClickHandler = ({
+    clickedCircle,
+  }: {
+    clickedCircle: CircleGeo
+  }) =&gt; {
+    if (state.isDuringAnimation) {
+      return
+    }
+
+    const clickedCircleId = getCircleId(clickedCircle)
+
+    if (state.selectedCircle === clickedCircleId) {
+      removeSelection()
+
+      return
+    }
+
+    state.selectedCircle = clickedCircleId
+
+    const modalHTML = chartConfig.getModalHTML(clickedCircle)
+
+    modal.html(modalHTML)
+
+    const { nearCirclesSet, vectorsMap } = getNearCirclesWithVectors({
+      targetCircle: clickedCircle,
+    })
+
+    const getShouldSet0 = (geometryIndex: number) =&gt; {
+      const { [geometryIndex]: animatedCircle } = circlesGeo
+
+      return (
+        getCircleId(animatedCircle) === getCircleId(clickedCircle) ||
+        !nearCirclesSet.has(getCircleId(animatedCircle))
+      )
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    circlesEls.attr(&quot;class&quot;, (circle) =&gt; {
+      if (nearCirclesSet.has(getCircleId(circle))) {
+        return `${styles.moved} ${circleClass}`
+      }
+
+      return getCircleId(circle) === getCircleId(clickedCircle)
+        ? `${styles.active} ${circleClass}`
+        : circleClass
+    })
+
+    const getTranslateFn = (coordIdx: number) =&gt; (
+      ...[, geometryIndex]: [unknown, number]
+    ) =&gt; {
+      if (getShouldSet0(geometryIndex)) {
+        return 0
+      }
+
+      const { [geometryIndex]: animatedCircle } = circlesGeo
+      const { [getCircleId(animatedCircle)]: vectorNormalized } = vectorsMap
+
+      return vectorNormalized[coordIdx] * clickedCircleDistortion
+    }
+
+    anime({
+      targets: `.${circleClassUnique}`,
+      translateX: getTranslateFn(0),
+      translateY: getTranslateFn(1),
+    })
+
+    const { top } = rootEl.getBoundingClientRect()
+
+    anime({
+      targets: `.${styles.modal}`,
+      translateY: modalHiddenTop + 50 + top + window.scrollY,
+    })
+  }
+
+  const circlesClickHandlerFn = (
+    ...[clickEvent, clickedCircle]: [MouseEvent, CircleGeo]
+  ) =&gt; {
+    clickEvent.stopPropagation()
+    circleClickHandler({
+      clickedCircle,
+    })
+  }
+
+  const svg = select(`#${rootElId}`)
+    .append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, width)
+    .attr(&quot;height&quot;, height - svgCutBottom)
+    .style(&quot;cursor&quot;, &quot;pointer&quot;)
+    .on(&quot;click&quot;, removeSelection)
+    .style(&quot;transform-origin&quot;, &quot;top left&quot;)
+    .call(
+      zoom&lt;SVGSVGElement, unknown&gt;()
+        .extent([
+          [0, 0],
+          [width, height],
+        ])
+        .on(&quot;end&quot;, zoomed)
+    )
+
+  const svgMap = svg.append(&quot;g&quot;)
+
+  svg
+    .append(&quot;text&quot;)
+    .text(chartConfig.chartTitle)
+    .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+    .style(&quot;font-size&quot;, &quot;20px&quot;)
+    .attr(&quot;transform&quot;, `translate(${width / 2},40)`)
+    .style(&quot;font-weight&quot;, &quot;bold&quot;)
+
+  const addInfo = () =&gt; {
+    const dialogId = `dialog-${uuidv1().slice(0, 6)}`
+
+    const group = svg
+      .append(&quot;g&quot;)
+      .attr(&quot;transform&quot;, `translate(${width - 50},50)`)
+      .attr(&quot;class&quot;, styles.infoTrigger)
+
+    svg.append(&quot;g&quot;).html(`
+&lt;filter id=&quot;pulse&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;100%&quot; height=&quot;100%&quot;&gt;
+  &lt;feTurbulence result=&quot;cloud&quot; baseFrequency=&quot;.01&quot; seed=&quot;1&quot;  type=&quot;fractalNoise&quot; numOctaves=&quot;2&quot;&gt;
+  &lt;animate attributeName=&quot;baseFrequency&quot; calcMode=&quot;paced&quot; begin=&quot;0s&quot; dur=&quot;12s&quot; values=&quot;.01;.13;.01;&quot; repeatCount=&quot;indefinite&quot;/&gt;
+  &lt;/feTurbulence&gt;
+  &lt;feComposite operator=&quot;in&quot; in=&quot;cloud&quot; in2=&quot;SourceGraphic&quot;/&gt;
+&lt;/filter&gt;
+    `)
+
+    const dialog = select(document.body)
+      .append(&quot;div&quot;)
+      .attr(&quot;id&quot;, dialogId)
+      .html(chartConfig.chartHelpHTML)
+
+    $(`#${dialogId}`).dialog({
+      autoOpen: false,
+      modal: true,
+      resizable: false,
+    })
+
+    group.append(&quot;circle&quot;).attr(&quot;r&quot;, &quot;20&quot;).attr(&quot;filter&quot;, &quot;url(#pulse)&quot;)
+
+    group.append(&quot;text&quot;).text(&quot;?&quot;)
+
+    group.on(&quot;click&quot;, () =&gt; {
+      $(`#${dialogId}`).dialog(&quot;open&quot;)
+    })
+
+    return {
+      remove: () =&gt; {
+        dialog.remove()
+      },
+    }
+  }
+
+  addInfo()
+
+  svgMap
+    .append(&quot;g&quot;)
+    .attr(&quot;class&quot;, mapLayoutItemClass)
+    .selectAll(&quot;path&quot;)
+    .data(mapLayout.features)
+    .enter()
+    .append(&quot;path&quot;)
+    .attr(&quot;d&quot;, geometryPath)
+    .attr(&quot;fill&quot;, &quot;#ccc&quot;)
+    .style(&quot;stroke&quot;, &quot;white&quot;)
+    .style(&quot;stroke-width&quot;, 1.5)
+    .style(&quot;opacity&quot;, 0.8)
+    .style(&quot;stroke&quot;, &quot;white&quot;)
+    .style(&quot;stroke-width&quot;, 0.3)
+    .on(&quot;click&quot;, removeSelection)
+    .attr(&quot;title&quot;, (mapLayoutItem) =&gt; mapLayoutItem.properties.name)
+
+  const circlesWrapper = svgMap.append(&quot;g&quot;).on(&quot;click&quot;, removeSelection)
+
+  const circlesEls = circlesWrapper
+    .selectAll(&quot;path&quot;)
+    .data(circlesGeo)
+    .enter()
+    .append(&quot;path&quot;)
+    .attr(&quot;d&quot;, geometryPath)
+    .attr(&quot;class&quot;, circleClass)
+    .style(&quot;stroke&quot;, &quot;white&quot;)
+    .style(&quot;cursor&quot;, &quot;pointer&quot;)
+    .style(&quot;stroke-width&quot;, 1.5)
+    .style(&quot;opacity&quot;, 0.8)
+    .attr(&quot;title&quot;, (circleGeo) =&gt; chartConfig.getCircleTitle(circleGeo))
+    .on(&quot;click&quot;, circlesClickHandlerFn)
+
+  $(`.${circleClassUnique}`).tooltip({
+    track: true,
+  })
+
+  $(`.${mapLayoutItemClass}`).tooltip({
+    tooltipClass: styles.mapLayoutItemTooltip,
+    track: true,
+  })
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/meteorites-map/circles-map-chart.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:46,&quot;text&quot;:&quot;zoomEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/circles-map-chart.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:60,&quot;text&quot;:&quot;zoomEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/circles-map-chart.ts&quot;,&quot;line&quot;:42,&quot;character&quot;:70,&quot;text&quot;:&quot;transform&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/meteorites-map/circles-map-chart.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:8,&quot;text&quot;:&quot;geometryPath&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 05 Sep 2021 17:47:05 GMT</p>
+    </body>
+  </html>
+  

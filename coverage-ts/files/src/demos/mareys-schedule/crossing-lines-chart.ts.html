@@ -1,0 +1,282 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>crossing-lines-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/crossing-lines-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">417</td><td class="">417</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Selection,
+  axisBottom,
+  axisTop,
+  extent,
+  line as lineD3,
+  scaleLinear,
+  scaleTime,
+  select,
+} from &quot;d3&quot;
+import { v1 as uuid } from &quot;uuid&quot;
+
+import * as styles from &quot;./crossing-lines-chart.module.css&quot;
+
+// @TODO make it more generic to allow other y type in addition to Date
+
+export type HorizontalMarker = {
+  key: string
+  label: string
+  position: number
+}
+
+type Point = {
+  horizontalMarker: HorizontalMarker
+  lineId: number
+  x: Date | null
+}
+
+export enum LineStyle {
+  Black = &quot;Black&quot;,
+  Purple = &quot;Purple&quot;,
+  Red = &quot;Red&quot;,
+}
+
+type Line = {
+  id: number
+  points: Point[]
+}
+
+type CrossingLines = {
+  horizontalMarkers: HorizontalMarker[]
+  lines: Line[]
+}
+
+export type Redraw = (range: [Date, Date]) =&gt; void
+
+const lineStyleToClassName: { [key in LineStyle]: string } = {
+  [LineStyle.Red]: styles.redLine,
+  [LineStyle.Purple]: styles.purpleLine,
+  [LineStyle.Black]: styles.blackLine,
+}
+
+const filterBlackOpacity = ({
+  deviation,
+  id,
+  slope,
+  svg,
+}: {
+  deviation: number
+  id: string
+  slope: number
+  svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+}) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs
+    .append(&quot;filter&quot;)
+    .attr(&quot;height&quot;, &quot;500%&quot;)
+    .attr(&quot;id&quot;, `drop-shadow-${id}`)
+    .attr(&quot;width&quot;, &quot;500%&quot;)
+    .attr(&quot;x&quot;, &quot;-200%&quot;)
+    .attr(&quot;y&quot;, &quot;-200%&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+}
+
+const margin = {
+  bottom: 50,
+  left: 120,
+  right: 50,
+  top: 80,
+}
+
+const height = 600 - margin.top - margin.bottom
+
+export type ChartConfig = {
+  chartTitle: string
+  crossingLinesData: CrossingLines
+  getLineStyle: (line: Line) =&gt; LineStyle
+  getLineTitle: (line: Line) =&gt; string
+  getPointTitle: (point: Point) =&gt; string
+  getXAxisLabel: (date: Date) =&gt; string
+  rootElId: string
+}
+
+export const renderChart = (chartConfig: ChartConfig) =&gt; {
+  const { crossingLinesData, rootElId } = chartConfig
+  const { horizontalMarkers, lines } = crossingLinesData
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add(styles.mareysScheduleChart)
+
+  const width =
+    rootEl.getBoundingClientRect().width - margin.left - margin.right
+
+  const linePathClass = `line-${uuid().slice(0, 6)}`
+  const pointCircleClass = `point-${uuid().slice(0, 6)}`
+  const filterId = `lines-${uuid().slice(0, 6)}`
+  const clipId = `clip-${uuid().slice(0, 6)}`
+
+  const redraw: Redraw = ([timeStart, timeEnd]) =&gt; {
+    const x = scaleTime().domain([timeStart, timeEnd]).range([0, width])
+    const y = scaleLinear().range([0, height])
+    const xAxisTop = axisTop&lt;Date&gt;(x)
+      .ticks(8)
+      .tickFormat(chartConfig.getXAxisLabel)
+    const xAxisBottom = axisBottom&lt;Date&gt;(x)
+      .ticks(8)
+      .tickFormat(chartConfig.getXAxisLabel)
+
+    const svg = select(`#${rootElId}`)
+      .text(&quot;&quot;)
+      .append(&quot;svg&quot;)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+      .attr(&quot;width&quot;, width + margin.left + margin.right)
+      .append(&quot;g&quot;)
+      .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+
+    svg
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, styles.chartTitle)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .attr(&quot;transform&quot;, `translate(${width / 2},-40)`)
+      .text(chartConfig.chartTitle)
+      .style(&quot;font-weight&quot;, &quot;bold&quot;)
+
+    filterBlackOpacity({
+      deviation: 2,
+      id: filterId,
+      slope: 0.2,
+      svg,
+    })
+
+    svg
+      .append(&quot;defs&quot;)
+      .append(&quot;clipPath&quot;)
+      .attr(&quot;id&quot;, clipId)
+      .append(&quot;rect&quot;)
+      .attr(&quot;y&quot;, -margin.top)
+      .attr(&quot;width&quot;, width)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+
+    y.domain(
+      extent(
+        horizontalMarkers,
+        (horizontalMarker) =&gt; horizontalMarker.position
+      ) as [number, number]
+    )
+
+    const horizontalMarkersSelection = svg
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, styles.horizontalMarker)
+      .selectAll(&quot;g&quot;)
+      .data(horizontalMarkers)
+      .enter()
+      .append(&quot;g&quot;)
+      .attr(
+        &quot;transform&quot;,
+        (horizontalMarker) =&gt; `translate(0,${y(horizontalMarker.position)})`
+      )
+
+    horizontalMarkersSelection
+      .append(&quot;text&quot;)
+      .attr(&quot;x&quot;, -6)
+      .attr(&quot;dy&quot;, &quot;.35em&quot;)
+      .text((horizontalMarker) =&gt; horizontalMarker.label)
+
+    horizontalMarkersSelection.append(&quot;line&quot;).attr(&quot;x2&quot;, width)
+    svg.append(&quot;g&quot;).attr(&quot;class&quot;, `x top ${styles.axis}`).call(xAxisTop)
+    svg
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, `x bottom ${styles.axis}`)
+      .attr(&quot;transform&quot;, `translate(0,${height})`)
+      .call(xAxisBottom)
+
+    const mouseover = (...[, line]: [unknown, Line]) =&gt; {
+      select(`.line-${line.id}`).select(&quot;path&quot;).style(&quot;stroke-width&quot;, &quot;5px&quot;)
+    }
+
+    const mouseleave = (...[, line]: [unknown, Line]) =&gt; {
+      select(`.line-${line.id}`).select(&quot;path&quot;).style(&quot;stroke-width&quot;, &quot;2.5px&quot;)
+    }
+
+    const linesSelection = svg
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, styles.line)
+      .attr(&quot;clip-path&quot;, `url(#${clipId})`)
+      .selectAll(&quot;g&quot;)
+      .data(lines)
+      .enter()
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, (crossingLine) =&gt; {
+        const lineStyle = chartConfig.getLineStyle(crossingLine)
+        const { [lineStyle]: lineClass } = lineStyleToClassName
+
+        return `${lineClass} line-${crossingLine.id}`
+      })
+      .on(&quot;mouseover&quot;, mouseover)
+      .on(&quot;mouseleave&quot;, mouseleave)
+
+    const line = lineD3&lt;Point&gt;()
+      .x((point) =&gt; x(point.x!))
+      .y((point) =&gt; y(point.horizontalMarker.position))
+
+    linesSelection
+      .append(&quot;path&quot;)
+      .attr(&quot;d&quot;, (crossingLine) =&gt; line(crossingLine.points))
+      .attr(&quot;class&quot;, linePathClass)
+      .attr(&quot;title&quot;, chartConfig.getLineTitle)
+
+    linesSelection
+      .selectAll(&quot;circle&quot;)
+      .data((crossingLine) =&gt; crossingLine.points)
+      .enter()
+      .append(&quot;circle&quot;)
+      .attr(
+        &quot;transform&quot;,
+        (point) =&gt;
+          `translate(${x(point.x!)},${y(point.horizontalMarker.position)})`
+      )
+      .style(&quot;filter&quot;, `url(#drop-shadow-${filterId})`)
+      .attr(&quot;r&quot;, &quot;5px&quot;)
+      .attr(&quot;class&quot;, pointCircleClass)
+      .attr(&quot;title&quot;, (point) =&gt; chartConfig.getPointTitle(point))
+
+    $(`.${linePathClass}`).tooltip({
+      track: true,
+    })
+    $(`.${pointCircleClass}`).tooltip({
+      track: true,
+    })
+  }
+
+  return {
+    refresh: (limits: [Date, Date]) =&gt; {
+      redraw(limits)
+    },
+  }
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 05 Sep 2021 17:47:05 GMT</p>
+    </body>
+  </html>
+  
