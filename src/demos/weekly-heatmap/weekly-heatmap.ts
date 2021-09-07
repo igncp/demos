@@ -1,5 +1,10 @@
 import { renderChart } from "./weekly-heatmap-chart"
-import { TimeItem, createChartConfig, fetchData } from "./weekly-heatmap-data"
+import {
+  CONTAINER_ID,
+  TimeItem,
+  createChartConfig,
+  fetchData,
+} from "./weekly-heatmap-data"
 
 const main = async () => {
   const weeklyData = await fetchData()
@@ -7,5 +12,7 @@ const main = async () => {
 
   renderChart<TimeItem>(chartConfig)
 }
+
+export { CONTAINER_ID }
 
 export default main

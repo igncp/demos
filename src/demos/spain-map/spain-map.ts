@@ -1,5 +1,6 @@
 import { renderChart } from "./spain-map-chart"
 import {
+  CONTAINER_ID,
   Properties,
   createChartConfig,
   fetchAreasData,
@@ -11,5 +12,7 @@ const main = async () => {
 
   renderChart<Properties>(chartConfig)
 }
+
+export { CONTAINER_ID }
 
 export default main

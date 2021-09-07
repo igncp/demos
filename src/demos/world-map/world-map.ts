@@ -9,6 +9,8 @@ import {
 } from "d3"
 import { feature } from "topojson-client"
 
+const CONTAINER_ID = "chart"
+
 type CountryData = GeoPermissibleObjects & {
   id: number
 }
@@ -125,9 +127,11 @@ const main = async () => {
   const world = await fetchData()
 
   renderChart({
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
     world,
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

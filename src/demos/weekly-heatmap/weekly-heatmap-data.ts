@@ -2,6 +2,8 @@ import { tsv } from "d3"
 
 import { ChartConfig } from "./weekly-heatmap-chart"
 
+export const CONTAINER_ID = "chart"
+
 export type TimeItem = {
   arbitraryMetric: number
   day: number
@@ -73,7 +75,7 @@ export const createChartConfig = (weeklyData: TimeItem[]): Config => ({
   getItemVerticalIndex,
   getLegendText,
   horizontalLabels: hours,
-  rootElId: "chart",
+  rootElId: CONTAINER_ID,
   verticalLabels: days,
   weeklyData,
 })

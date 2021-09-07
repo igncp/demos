@@ -4,7 +4,7 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/spain-map/spain-map"
+import main, { CONTAINER_ID } from "@/demos/spain-map/spain-map"
 
 const SpainMap = ({ pageContext }: DemoPageProps) => (
   <Demo
@@ -13,7 +13,7 @@ const SpainMap = ({ pageContext }: DemoPageProps) => (
     pageContext={pageContext}
     scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
   >
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

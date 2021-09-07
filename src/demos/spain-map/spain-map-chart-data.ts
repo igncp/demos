@@ -2,6 +2,8 @@ import { json } from "d3"
 
 import { AreasData, ChartConfig } from "./spain-map-chart"
 
+export const CONTAINER_ID = "chart"
+
 export type Properties = {
   ENGTYPE_3: string // e.g. Comarca
   HASC_3: string
@@ -51,7 +53,7 @@ export const createChartConfig = (areasData: AreasData): Config => ({
   getTitleText,
   getWidths,
   projectionsCenters,
-  rootElId: "chart",
+  rootElId: CONTAINER_ID,
 })
 
 export const fetchAreasData = () =>

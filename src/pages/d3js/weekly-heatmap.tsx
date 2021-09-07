@@ -4,7 +4,7 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/weekly-heatmap/weekly-heatmap"
+import main, { CONTAINER_ID } from "@/demos/weekly-heatmap/weekly-heatmap"
 
 const WeeklyHeatmap = ({ pageContext }: DemoPageProps) => (
   <Demo
@@ -13,7 +13,7 @@ const WeeklyHeatmap = ({ pageContext }: DemoPageProps) => (
     pageContext={pageContext}
     scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
   >
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

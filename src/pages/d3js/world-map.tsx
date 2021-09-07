@@ -4,11 +4,11 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/world-map/world-map"
+import main, { CONTAINER_ID } from "@/demos/world-map/world-map"
 
 const WorldMap = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
-    <div className="world-map-chart" id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 
