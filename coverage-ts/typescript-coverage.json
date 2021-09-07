@@ -1200,70 +1200,70 @@
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 19,
+      "line": 21,
       "character": 5,
       "text": "WorldData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 21,
+      "line": 23,
       "character": 43,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 21,
+      "line": 23,
       "character": 50,
       "text": "WorldData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 23,
+      "line": 25,
       "character": 46,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 30,
+      "line": 32,
       "character": 20,
       "text": "featuresData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 32,
+      "line": 34,
       "character": 4,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 32,
+      "line": 34,
       "character": 10,
       "text": "objects",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 32,
+      "line": 34,
       "character": 18,
       "text": "countries",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 36,
+      "line": 38,
       "character": 16,
       "text": "featuresData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 36,
+      "line": 38,
       "character": 29,
       "text": "length",
       "kind": 1
@@ -1752,8 +1752,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.00817265730382,
-  "total": 25206,
-  "covered": 24956,
+  "percentage": 99.01528281077674,
+  "total": 25388,
+  "covered": 25138,
   "uncovered": 250
 }

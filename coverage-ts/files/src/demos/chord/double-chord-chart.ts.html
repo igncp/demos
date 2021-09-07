@@ -1,0 +1,268 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>double-chord-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/chord/double-chord-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">397</td><td class="">397</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  BaseType,
+  Chord,
+  ChordGroup,
+  Selection,
+  arc as arcD3,
+  chord,
+  descending,
+  extent,
+  range,
+  rgb,
+  ribbon as ribbonD3,
+  scaleLinear,
+  select,
+} from &quot;d3&quot;
+import { v1 as uuidv1 } from &quot;uuid&quot;
+
+import * as styles from &quot;./chord.module.css&quot;
+
+const addDropShadowFilter = &lt;SVGData&gt;({
+  charts,
+  deviation,
+  name,
+  slope,
+}: {
+  charts: Selection&lt;BaseType, SVGData, BaseType, unknown&gt;
+  deviation: number
+  name: string
+  slope: number
+}) =&gt; {
+  const defs = charts.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, name)
+
+  filter
+    .append(&quot;feOffset&quot;)
+    .attr(&quot;dx&quot;, 0.5)
+    .attr(&quot;dy&quot;, 0.5)
+    .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+    .attr(&quot;result&quot;, &quot;offOut&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;offOut&quot;)
+    .attr(&quot;result&quot;, &quot;blurOut&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter
+    .append(&quot;feBlend&quot;)
+    .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+    .attr(&quot;in2&quot;, &quot;blurOut&quot;)
+    .attr(&quot;mode&quot;, &quot;normal&quot;)
+
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+}
+
+const colours = [
+  &quot;#39B347&quot;,
+  &quot;#C92E47&quot;,
+  &quot;#DB704D&quot;,
+  &quot;#FFA22C&quot;,
+  &quot;#5E92AA&quot;,
+  &quot;#F8EDD3&quot;,
+]
+
+const margin = {
+  bottom: 20,
+  top: 50,
+}
+const height = 500
+
+type GroupItem = {
+  id: number
+  label: string
+}
+type ChordMatrix = number[][]
+
+export type ChartConfig = {
+  chords: [ChordMatrix, ChordMatrix]
+  chordsTitles: [string, string]
+  getGroupTitle: (o: { chartIndex: number; chordGroup: ChordGroup }) =&gt; string
+  getRibbonTitle: (o: {
+    sourceIndex: number
+    sourceValue: number
+    targetIndex: number
+    targetValue: number
+  }) =&gt; string
+  groupItems: GroupItem[]
+  rootElId: string
+}
+
+export const renderChart = (chartConfig: ChartConfig) =&gt; {
+  const { chords, chordsTitles, groupItems, rootElId } = chartConfig
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+  const [leftChordItems, rightChordItems] = chords
+  const [leftChordLabel, rightChordLabel] = chordsTitles
+
+  const dropShadowRibbonsId = `drop-shadow-ribbons-${uuidv1().slice(0, 6)}`
+  const dropShadowGroupsId = `drop-shadow-groups-${uuidv1().slice(0, 6)}`
+
+  const ribbonItemClass = `ribbon-item-${uuidv1().slice(0, 6)}`
+  const chordGroupClass = `chord-group-${uuidv1().slice(0, 6)}`
+
+  rootEl.classList.add(styles.chordChart)
+
+  const width = rootEl.getBoundingClientRect().width / 2 - 20
+
+  const r1 = Math.min(width, height) / 2 - 4
+  const r0 = r1 - 20
+
+  const chordGroupArc = arcD3&lt;ChordGroup&gt;().innerRadius(r0).outerRadius(r1)
+  const svg = select(`#${rootElId}`)
+
+  const charts = svg
+    .selectAll(&quot;div&quot;)
+    .data([leftChordItems, rightChordItems])
+    .enter()
+    .append(&quot;div&quot;)
+    .style(&quot;display&quot;, &quot;inline-block&quot;)
+    .style(&quot;width&quot;, `${width}px`)
+    .style(&quot;height&quot;, `${height + margin.top + margin.bottom}px`)
+    .append(&quot;svg:svg&quot;)
+    .attr(&quot;width&quot;, width)
+    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+    .append(&quot;svg:g&quot;)
+    .attr(&quot;transform&quot;, `translate(${width / 2},${height / 2 + margin.top})`)
+
+  const leftChart = charts.filter((...[, chartIndex]) =&gt; chartIndex === 0)
+  const rightChart = charts.filter((...[, chartIndex]) =&gt; chartIndex === 1)
+
+  const setLabel = ({
+    chart,
+    label,
+  }: {
+    chart: Selection&lt;BaseType, ChordMatrix, BaseType, unknown&gt;
+    label: string
+  }) =&gt;
+    chart
+      .append(&quot;text&quot;)
+      .text(label)
+      .attr(&quot;transform&quot;, `translate(0,${(-1 * height) / 2 - 10})`)
+      .attr(&quot;class&quot;, styles.chartTitle)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+
+  setLabel({ chart: leftChart, label: leftChordLabel })
+  setLabel({ chart: rightChart, label: rightChordLabel })
+
+  addDropShadowFilter({
+    charts,
+    deviation: 2,
+    name: dropShadowRibbonsId,
+    slope: 0.4,
+  })
+  addDropShadowFilter({
+    charts,
+    deviation: 3,
+    name: dropShadowGroupsId,
+    slope: 0.5,
+  })
+
+  const colorDomain = scaleLinear()
+    .domain(extent([0, groupItems.length - 1]) as [number, number])
+    .range([0, 1])
+
+  const heatmapColour = scaleLinear&lt;string&gt;()
+    .domain(range(0, 1, 1.0 / colours.length))
+    .range(colours)
+
+  const fillGroupIndex = (chordGroupIndex: number) =&gt;
+    heatmapColour(colorDomain(chordGroupIndex))
+
+  charts.each(function (...[numberMatrix, chartIndex]) {
+    const svgComp = select(this)
+
+    const chordData = chord()
+      .sortGroups(descending)
+      .sortSubgroups(descending)
+      .sortChords(descending)(numberMatrix)
+
+    const ribbonPath = ribbonD3&lt;Chord, Chord&gt;().radius(r0)
+
+    svgComp
+      .selectAll(`path.${styles.chord}`)
+      .data(chordData)
+      .enter()
+      .append(&quot;path&quot;)
+      .attr(&quot;d&quot;, ribbonPath)
+      .attr(&quot;class&quot;, `${styles.chord} ${ribbonItemClass}`)
+      .style(&quot;fill&quot;, (chordItem) =&gt; fillGroupIndex(chordItem.target.index))
+      .style(&quot;filter&quot;, `url(#${dropShadowRibbonsId})`)
+      .style(&quot;stroke&quot;, (ribbonItem) =&gt; {
+        const originalColor = fillGroupIndex(ribbonItem.target.index)
+        const newColor = rgb(originalColor).darker()
+
+        return newColor.formatHex()
+      })
+      .style(&quot;stroke-width&quot;, 2)
+      .attr(&quot;title&quot;, (ribbonItem) =&gt;
+        chartConfig.getRibbonTitle({
+          sourceIndex: ribbonItem.source.index,
+          sourceValue: ribbonItem.source.value,
+          targetIndex: ribbonItem.target.index,
+          targetValue: ribbonItem.source.value,
+        })
+      )
+
+    const g = svgComp
+      .selectAll(`g.${styles.group}`)
+      .data(chordData.groups)
+      .enter()
+      .append(&quot;svg:g&quot;)
+      .attr(&quot;class&quot;, styles.group)
+
+    g.append(&quot;svg:path&quot;)
+      .attr(&quot;d&quot;, chordGroupArc)
+      .style(&quot;fill&quot;, (chordGroup) =&gt; fillGroupIndex(chordGroup.index))
+      .attr(&quot;id&quot;, (chordGroup) =&gt; `group${chordGroup.index}-${chartIndex}`)
+      .attr(&quot;class&quot;, chordGroupClass)
+      .style(&quot;filter&quot;, () =&gt; `url(#${dropShadowGroupsId})`)
+      .attr(&quot;title&quot;, (chordGroup) =&gt;
+        chartConfig.getGroupTitle({
+          chartIndex,
+          chordGroup,
+        })
+      )
+
+    g.append(&quot;svg:text&quot;)
+      .attr(&quot;x&quot;, 6)
+      .attr(&quot;dy&quot;, 15)
+      .filter((chordGroup) =&gt; chordGroup.value &gt; 150)
+      .append(&quot;svg:textPath&quot;)
+      .attr(
+        &quot;xlink:href&quot;,
+        (chordGroup) =&gt; `#group${chordGroup.index}-${chartIndex}`
+      )
+      .text((chordGroup) =&gt; groupItems[chordGroup.index].label)
+      .attr(&quot;class&quot;, styles.headingTitle)
+
+    $(`.${ribbonItemClass}`).tooltip({
+      track: true,
+    })
+
+    $(`.${chordGroupClass}`).tooltip({
+      track: true,
+    })
+  })
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 07 Sep 2021 21:50:20 GMT</p>
+    </body>
+  </html>
+  
