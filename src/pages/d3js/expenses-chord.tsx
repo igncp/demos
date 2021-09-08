@@ -1,18 +1,18 @@
 import React from "react"
 
-import { DemoPageProps } from "@/common"
+import { DemoPageProps, JQUERYUI } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/expenses-chord/expenses-chord"
+import main, { CONTAINER_ID } from "@/demos/expenses-chord/expenses-chord"
 import * as styles from "@/demos/expenses-chord/expenses-chord.module.css"
 
 const ExpensesChord = ({ pageContext }: DemoPageProps) => (
   <Demo
-    links={["/vendors/jquery-ui/themes/base/jquery-ui.min.css"]}
+    links={[JQUERYUI.STYLE]}
     main={main}
     pageContext={pageContext}
-    scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
+    scripts={[JQUERYUI.SCRIPT]}
   >
     <div>Time Item:</div>
     <div className={styles.sliderTime} id="slider-time" />
@@ -22,7 +22,7 @@ const ExpensesChord = ({ pageContext }: DemoPageProps) => (
       <span>Regions:</span>
       <select id="regions-select" />
     </p>
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

@@ -4,6 +4,8 @@ import Raphael from "@/demos/_utils/browserRaphael"
 
 import * as styles from "./bars-3dimensional.module.css"
 
+const CONTAINER_ID = "chart"
+
 const fetchData = async () => {
   const response = await fetch(
     `${ROOT_PATH}data/raphael/bars-3dimensional/data.json`
@@ -254,7 +256,7 @@ const main = async () => {
 
   const chart = new Chart({
     countriesMetrics,
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   })
 
   chart.render()
@@ -267,5 +269,7 @@ const main = async () => {
     chart.displayNextSeries()
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

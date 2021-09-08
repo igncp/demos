@@ -4,7 +4,7 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/vectors/vectors"
+import main, { CONTAINER_ID } from "@/demos/vectors/vectors"
 
 const Vectors = ({ pageContext }: DemoPageProps) => (
   <Demo
@@ -12,7 +12,7 @@ const Vectors = ({ pageContext }: DemoPageProps) => (
     pageContext={pageContext}
     scripts={["/vendors/d3/d3.min.js"]}
   >
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

@@ -1,4 +1,5 @@
 import {
+  CONTAINER_ID,
   TimeBandItem,
   fetchData,
   getChartConfig,
@@ -26,5 +27,7 @@ const main = async () => {
     .redraw()
     .createTooltip()
 }
+
+export { CONTAINER_ID }
 
 export default main

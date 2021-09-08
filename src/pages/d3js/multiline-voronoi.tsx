@@ -4,7 +4,7 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/multiline-voronoi/multiline-voronoi"
+import main, { CONTAINER_ID } from "@/demos/multiline-voronoi/multiline-voronoi"
 
 const MultilineVoronoi = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
@@ -12,7 +12,7 @@ const MultilineVoronoi = ({ pageContext }: DemoPageProps) => (
       <input id="show-voronoi" type="checkbox" />{" "}
       <label htmlFor="show-voronoi">Show Voronoi lines</label>
     </form>
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

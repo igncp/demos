@@ -3,6 +3,8 @@ import qs from "query-string"
 
 import { ChartConfig, SortOrder } from "./timeline-bands-brush-chart"
 
+export const CONTAINER_ID = "chart"
+
 export type TimeBandItem = {
   end: Date
   instant: boolean
@@ -141,5 +143,5 @@ export const getChartConfig = (): Config => ({
   getItemTitle,
   getSortFn,
   onChartItemClick,
-  rootElId: "chart",
+  rootElId: CONTAINER_ID,
 })

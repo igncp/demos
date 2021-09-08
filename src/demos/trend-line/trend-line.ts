@@ -18,6 +18,8 @@ import {
 
 import * as styles from "./trend-line.module.css"
 
+const CONTAINER_ID = "chart"
+
 type InitialDataItem = {
   occurred: string
   value: string // eslint-disable-line id-denylist
@@ -214,7 +216,7 @@ const renderGraph = ({
 }
 
 const main = async () => {
-  const rootElId = "chart"
+  const rootElId = CONTAINER_ID
   const lineData = await fetchData()
 
   const getIsZoomed = () =>
@@ -232,5 +234,7 @@ const main = async () => {
     renderContent(isZoomed)
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

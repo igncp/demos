@@ -2,7 +2,11 @@ import hotkeys from "hotkeys-js"
 import qs from "query-string"
 
 import { renderChart } from "./energy-sankey-chart"
-import { createChartConfig, fetchData } from "./energy-sankey-chart-data"
+import {
+  CONTAINER_ID,
+  createChartConfig,
+  fetchData,
+} from "./energy-sankey-chart-data"
 
 const main = async () => {
   hotkeys("control", () => {})
@@ -29,5 +33,7 @@ const main = async () => {
 
   renderChart(chartConfig)
 }
+
+export { CONTAINER_ID }
 
 export default main

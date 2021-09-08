@@ -19,6 +19,8 @@ import { Delaunay } from "d3-delaunay"
 
 import * as styles from "./multiline-voronoi.module.css"
 
+const CONTAINER_ID = "chart"
+
 type InitialDataItem = {
   [monthKey: string]: string
   name: string
@@ -322,7 +324,7 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
 }
 
 const main = async () => {
-  const rootElId = "chart"
+  const rootElId = CONTAINER_ID
 
   const { cities, months } = await fetchData()
 
@@ -343,5 +345,7 @@ const main = async () => {
       setVoronoi((mouseEvent.target as HTMLInputElement).checked || false)
     })
 }
+
+export { CONTAINER_ID }
 
 export default main

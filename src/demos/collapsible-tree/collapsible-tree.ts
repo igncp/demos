@@ -11,6 +11,8 @@ import {
 
 import * as styles from "./collapsible-tree.module.css"
 
+const CONTAINER_ID = "chart"
+
 type DataNode = {
   _children: Array<HierarchyPointNode<DataNode>> | undefined
   children: DataNode[]
@@ -207,7 +209,7 @@ const renderChart: RenderChart = ({ rootData, rootElId }) => {
 }
 
 const main = async () => {
-  const rootElId = "chart"
+  const rootElId = CONTAINER_ID
 
   const rootData = await fetchData()
 
@@ -216,5 +218,7 @@ const main = async () => {
     rootElId,
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

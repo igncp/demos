@@ -14,6 +14,8 @@ import qs from "query-string"
 
 import * as styles from "./map-distorsions.module.css"
 
+const CONTAINER_ID = "chart"
+
 type ProjectionItem = {
   "Acc. 40º 150%": string
   "Angular": string
@@ -355,9 +357,11 @@ const renderChart: RenderChart = ({ mapsDistorsions, rootElId }) => {
 
 const main = async () => {
   const mapsDistorsions = await fetchData()
-  const rootElId = "chart"
+  const rootElId = CONTAINER_ID
 
   renderChart({ mapsDistorsions, rootElId })
 }
+
+export { CONTAINER_ID }
 
 export default main

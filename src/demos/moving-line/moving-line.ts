@@ -4,6 +4,8 @@ import Raphael from "@/demos/_utils/browserRaphael"
 
 import * as styles from "./moving-line.module.css"
 
+const CONTAINER_ID = "chart"
+
 type GraphData = {
   charts: Array<{
     lower: string
@@ -157,8 +159,10 @@ const main = async () => {
 
   renderChart({
     graphData,
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

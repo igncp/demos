@@ -10,6 +10,8 @@ import {
 
 import * as styles from "./force.module.css"
 
+const CONTAINER_ID = "chart"
+
 type Node = {
   fx: number | null
   fy: number | null
@@ -192,8 +194,10 @@ const main = async () => {
 
   renderGraph({
     forceData,
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

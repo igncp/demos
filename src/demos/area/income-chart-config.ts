@@ -1,6 +1,8 @@
 import { ChartConfig } from "./area-chart"
 import { IncomeItem } from "./income-item-model"
 
+export const CONTAINER_ID = "chart"
+
 type Config = ChartConfig<IncomeItem>
 
 const getItemXValue: Config["getItemXValue"] = (incomeItem) =>
@@ -21,5 +23,5 @@ export const createChartConfig = (
   getItemTitle,
   getItemXValue,
   getItemYValue,
-  rootElId: "chart",
+  rootElId: CONTAINER_ID,
 })

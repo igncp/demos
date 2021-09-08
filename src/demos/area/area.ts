@@ -1,5 +1,5 @@
 import { renderChart } from "./area-chart"
-import { createChartConfig } from "./income-chart-config"
+import { CONTAINER_ID, createChartConfig } from "./income-chart-config"
 import { setupChartControls } from "./income-chart-controls"
 import { IncomeItem } from "./income-item-model"
 
@@ -11,5 +11,7 @@ const main = async () => {
 
   setupChartControls(toggleVoronoi)
 }
+
+export { CONTAINER_ID }
 
 export default main

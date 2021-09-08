@@ -56,3 +56,8 @@ export type DemoPageProps = {
 }
 
 export const STORYBOOK_DEMO_KEY = "storybook"
+
+export const JQUERYUI = {
+  SCRIPT: "/vendors/jquery-ui/jquery-ui.min.js",
+  STYLE: "/vendors/jquery-ui/themes/base/jquery-ui.min.css",
+}

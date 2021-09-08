@@ -13,6 +13,8 @@ import {
 
 import * as styles from "./icosahedron.module.css"
 
+const CONTAINER_ID = "chart"
+
 type IcosahedronOpts = {
   rootElId: string
 }
@@ -225,12 +227,14 @@ class Icosahedron {
 
 const main = () => {
   const chart = new Icosahedron({
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   })
 
   chart.start()
 
   return Promise.resolve()
 }
+
+export { CONTAINER_ID }
 
 export default main

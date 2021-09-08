@@ -4,6 +4,8 @@ import Raphael from "@/demos/_utils/browserRaphael"
 
 import * as styles from "./circular-arcs.module.css"
 
+const CONTAINER_ID = "chart"
+
 const strokeWidth = 3
 
 type ArcFnOpts = {
@@ -118,7 +120,7 @@ const createArc = ({ arcI, fill, paper, stroke }: CreateArcOpts) => {
 }
 
 const main = () => {
-  const rootElId = "chart"
+  const rootElId = CONTAINER_ID
   const chartWrapper = document.getElementById(rootElId) as HTMLElement
 
   chartWrapper.classList.add(styles.circularArcsChart)
@@ -142,5 +144,7 @@ const main = () => {
 
   return Promise.resolve()
 }
+
+export { CONTAINER_ID }
 
 export default main

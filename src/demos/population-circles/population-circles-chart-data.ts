@@ -4,6 +4,8 @@ import qs from "query-string"
 
 import { ChartConfig } from "./population-circles-chart"
 
+export const CONTAINER_ID = "chart"
+
 type PopulationRecord = {
   count: number
   date: string
@@ -249,6 +251,6 @@ export const createChartConfig = ({
     getItemTitle,
     getStringForColor,
     onClick,
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   }
 }

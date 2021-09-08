@@ -12,6 +12,8 @@ import {
   select,
 } from "d3"
 
+const CONTAINER_ID = "chart"
+
 type DataNode = {
   children: DataNode[]
   name: string
@@ -132,7 +134,7 @@ const addFilter = (
 
 const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
   const { width } = (document.getElementById(
-    "chart"
+    rootElId
   ) as HTMLElement).getBoundingClientRect()
   const radius = Math.min(width, height) / 2
   const colorScale = scaleOrdinal(schemePastel2)
@@ -300,7 +302,7 @@ const main = async () => {
   const { updatePartition } = renderChart({
     partitionType,
     rootData,
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   })
 
   formEl.addEventListener("change", () => {
@@ -309,5 +311,7 @@ const main = async () => {
     updatePartition(newPartitionType)
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

@@ -1,18 +1,20 @@
 import React from "react"
 
-import { DemoPageProps } from "@/common"
+import { DemoPageProps, JQUERYUI } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/population-circles/population-circles"
+import main, {
+  CONTAINER_ID,
+} from "@/demos/population-circles/population-circles"
 import * as styles from "@/demos/population-circles/population-circles.module.css"
 
 const PopulationCircles = ({ pageContext }: DemoPageProps) => (
   <Demo
-    links={["/vendors/jquery-ui/themes/base/jquery-ui.min.css"]}
+    links={[JQUERYUI.STYLE]}
     main={main}
     pageContext={pageContext}
-    scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
+    scripts={[JQUERYUI.SCRIPT]}
   >
     <form>
       {[
@@ -40,7 +42,7 @@ const PopulationCircles = ({ pageContext }: DemoPageProps) => (
       <p>Population Percentile</p>
       <div className="population-slider" />
     </div>
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

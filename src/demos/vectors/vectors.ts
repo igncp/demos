@@ -11,6 +11,8 @@ import {
 
 import * as styles from "./vectors.module.css"
 
+const CONTAINER_ID = "chart"
+
 // missing:
 // - connect nodes
 // - drag node
@@ -309,11 +311,13 @@ const main = () => {
   const vectorsData = getInitialData()
 
   renderGraph({
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
     vectorsData,
   })
 
   return Promise.resolve()
 }
+
+export { CONTAINER_ID }
 
 export default main

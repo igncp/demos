@@ -1,19 +1,21 @@
 import React from "react"
 
-import { DemoPageProps } from "@/common"
+import { DemoPageProps, JQUERYUI } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/concentric-circles/concentric-circles"
+import main, {
+  CONTAINER_ID,
+} from "@/demos/concentric-circles/concentric-circles"
 
 const ConcentricCircles = ({ pageContext }: DemoPageProps) => (
   <Demo
-    links={["/vendors/jquery-ui/themes/base/jquery-ui.min.css"]}
+    links={[JQUERYUI.STYLE]}
     main={main}
     pageContext={pageContext}
-    scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
+    scripts={[JQUERYUI.SCRIPT]}
   >
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

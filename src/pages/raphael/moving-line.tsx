@@ -4,11 +4,11 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/moving-line/moving-line"
+import main, { CONTAINER_ID } from "@/demos/moving-line/moving-line"
 
 const CircularArcs = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

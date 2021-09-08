@@ -2,6 +2,8 @@ import { format as formatD3, json } from "d3"
 
 import { ChartConfig } from "./energy-sankey-chart"
 
+export const CONTAINER_ID = "chart"
+
 type EnergyDataLink = {
   source: string
   target: string
@@ -66,6 +68,6 @@ export const createChartConfig = ({
     getNodeText,
     getNodeTitle,
     onNodeClick,
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   }
 }

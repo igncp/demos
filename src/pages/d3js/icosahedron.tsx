@@ -4,7 +4,7 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/icosahedron/icosahedron"
+import main, { CONTAINER_ID } from "@/demos/icosahedron/icosahedron"
 
 const Icosahedron = ({ pageContext }: DemoPageProps) => (
   <Demo
@@ -12,7 +12,7 @@ const Icosahedron = ({ pageContext }: DemoPageProps) => (
     pageContext={pageContext}
     scripts={["/vendors/d3/d3.min.js"]}
   >
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

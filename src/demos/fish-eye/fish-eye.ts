@@ -20,6 +20,8 @@ import d3Fisheye, { FishEyeScale } from "@/demos/_utils/fish-eye"
 
 import * as styles from "./fish-eye.module.css"
 
+const CONTAINER_ID = "chart"
+
 type IncomeMetric = {
   income: number
   lifeExpectancy: number
@@ -350,10 +352,12 @@ const main = async () => {
 
   const chart = new FishEyeChart({
     incomeMetrics: incomeMetrics as IncomeMetric[],
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   })
 
   chart.render()
 }
+
+export { CONTAINER_ID }
 
 export default main

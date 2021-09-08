@@ -7,6 +7,8 @@ type State = {
   timeIndex: number
 }
 
+export const CONTAINER_ID = "chart"
+
 export const createInitialState = (): State => ({
   selectedCountry: Expenses.ALL_ID,
   selectedRegion: Expenses.ALL_ID,
@@ -64,7 +66,7 @@ export const createChartConfig = ({
     getDisplayTypeOnGroupClick,
     getRibbonGroupIdColor,
     getRibbonType,
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   }
 }
 

@@ -11,6 +11,8 @@ import {
 
 import * as styles from "./bars.module.css"
 
+const CONTAINER_ID = "chart"
+
 type BarData = number
 
 const height = 500
@@ -215,7 +217,7 @@ const main = async () => {
 
   const barsChart = new BarsChart({
     bars,
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   })
 
   barsChart.render()
@@ -231,5 +233,7 @@ const main = async () => {
     }
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

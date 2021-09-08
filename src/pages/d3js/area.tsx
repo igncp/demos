@@ -1,25 +1,25 @@
 import React from "react"
 
-import { DemoPageProps } from "@/common"
+import { DemoPageProps, JQUERYUI } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/area/area"
+import main, { CONTAINER_ID } from "@/demos/area/area"
 import { BUTTON_ID } from "@/demos/area/income-chart-controls"
 
 const Area = ({ pageContext }: DemoPageProps) => (
   <Demo
-    links={["/vendors/jquery-ui/themes/base/jquery-ui.min.css"]}
+    links={[JQUERYUI.STYLE]}
     main={main}
     pageContext={pageContext}
-    scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
+    scripts={[JQUERYUI.SCRIPT]}
   >
     <form>
       <button className="btn btn-info" id={BUTTON_ID} type="button">
         Toggle Voronoi
       </button>
     </form>
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

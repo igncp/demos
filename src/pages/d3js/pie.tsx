@@ -1,6 +1,6 @@
 import React from "react"
 
-import { DemoPageProps } from "@/common"
+import { DemoPageProps, JQUERYUI } from "@/common"
 
 import Demo from "@/components/demo"
 
@@ -8,10 +8,10 @@ import main, { BUTTON_ID, CONTAINER_ID } from "@/demos/pie/pie"
 
 const Pie = ({ pageContext }: DemoPageProps) => (
   <Demo
-    links={["/vendors/jquery-ui/themes/base/jquery-ui.min.css"]}
+    links={[JQUERYUI.STYLE]}
     main={main}
     pageContext={pageContext}
-    scripts={["/vendors/jquery-ui/jquery-ui.min.js"]}
+    scripts={[JQUERYUI.SCRIPT]}
   >
     <form>
       <button className="btn btn-success" id={BUTTON_ID} type="button">

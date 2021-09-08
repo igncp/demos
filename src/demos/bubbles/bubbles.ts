@@ -1,5 +1,7 @@
 import * as styles from "./bubbles.module.css"
 
+const CONTAINER_ID = "chart"
+
 const fetchScript = (src: string) =>
   new Promise((resolve) => {
     const script = document.createElement("script")
@@ -144,8 +146,10 @@ const main = async () => {
 
   renderChart({
     jsonData,
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

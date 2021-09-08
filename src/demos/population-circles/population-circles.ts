@@ -3,6 +3,7 @@ import hotkeys from "hotkeys-js"
 
 import { renderChart } from "./population-circles-chart"
 import {
+  CONTAINER_ID,
   Municipality,
   createChartConfig,
   createState,
@@ -49,5 +50,7 @@ const main = async () => {
     value: 0, // eslint-disable-line id-denylist
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

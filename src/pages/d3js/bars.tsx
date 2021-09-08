@@ -4,7 +4,7 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/bars/bars"
+import main, { CONTAINER_ID } from "@/demos/bars/bars"
 
 const Bars = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
@@ -13,7 +13,7 @@ const Bars = ({ pageContext }: DemoPageProps) => (
         Add item
       </button>
     </form>
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

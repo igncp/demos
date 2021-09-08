@@ -4,7 +4,7 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/partition/partition"
+import main, { CONTAINER_ID } from "@/demos/partition/partition"
 
 const Partition = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
@@ -16,7 +16,7 @@ const Partition = ({ pageContext }: DemoPageProps) => (
         <input defaultChecked name="mode" type="radio" value="count" /> Count
       </label>
     </form>
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 

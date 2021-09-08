@@ -1,5 +1,6 @@
 import { renderChart } from "./expenses-chord-chart"
 import {
+  CONTAINER_ID,
   createChartConfig,
   createInitialState,
   setupChartForm,
@@ -23,5 +24,7 @@ const main = async () => {
     state,
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

@@ -9,6 +9,8 @@ import {
   select,
 } from "d3"
 
+const CONTAINER_ID = "chart"
+
 type NamesMetric = {
   count: string
   name: string
@@ -172,8 +174,10 @@ const main = async () => {
 
   renderChart({
     namesMetrics,
-    rootElId: "chart",
+    rootElId: CONTAINER_ID,
   })
 }
+
+export { CONTAINER_ID }
 
 export default main

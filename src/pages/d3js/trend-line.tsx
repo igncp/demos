@@ -4,7 +4,7 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main from "@/demos/trend-line/trend-line"
+import main, { CONTAINER_ID } from "@/demos/trend-line/trend-line"
 
 const TrendLine = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
@@ -16,7 +16,7 @@ const TrendLine = ({ pageContext }: DemoPageProps) => (
         <input name="mode" type="radio" value="normal" /> Normal
       </label>
     </form>
-    <div id="chart" />
+    <div id={CONTAINER_ID} />
   </Demo>
 )
 
