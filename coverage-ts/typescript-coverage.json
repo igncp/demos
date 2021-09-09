@@ -2,13 +2,6 @@
   "fileCounts": {},
   "anys": [
     {
-      "file": "gatsby/onCreatePage.ts",
-      "line": 26,
-      "character": 11,
-      "text": "_",
-      "kind": 1
-    },
-    {
       "file": "src/components/demo.tsx",
       "line": 35,
       "character": 18,
@@ -927,14 +920,14 @@
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 252,
+      "line": 251,
       "character": 29,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 270,
+      "line": 269,
       "character": 23,
       "text": "usedRibbon",
       "kind": 1
@@ -997,14 +990,14 @@
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 245,
+      "line": 243,
       "character": 16,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 289,
+      "line": 287,
       "character": 43,
       "text": "scale",
       "kind": 1
@@ -1752,8 +1745,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.02412366304942,
+  "percentage": 99.02802716839722,
   "total": 25618,
-  "covered": 25368,
-  "uncovered": 250
+  "covered": 25369,
+  "uncovered": 249
 }
