@@ -169,14 +169,8 @@ const createDemo = ({
     },
   })
 
-  const {
-    camera,
-    line,
-    renderer,
-    scene,
-    textGeometry,
-    uniforms,
-  } = simulationElements
+  const { camera, line, renderer, scene, textGeometry, uniforms } =
+    simulationElements
 
   const setupNewSimulation = () => {
     camera.position.z = 400

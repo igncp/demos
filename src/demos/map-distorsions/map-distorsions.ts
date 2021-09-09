@@ -25,7 +25,7 @@ type ProjectionItem = {
 }
 
 const fetchData = () =>
-  (tsv(`${ROOT_PATH}data/d3js/map-distorsions/data.tsv`) as unknown) as Promise<
+  tsv(`${ROOT_PATH}data/d3js/map-distorsions/data.tsv`) as unknown as Promise<
     ProjectionItem[]
   >
 
@@ -225,9 +225,8 @@ const renderChart: RenderChart = ({ mapsDistorsions, rootElId }) => {
           )
         : sortedData
             .map((projection: ProjectionItem) => {
-              const {
-                [dimItem.name as keyof ProjectionItem]: name,
-              } = projection
+              const { [dimItem.name as keyof ProjectionItem]: name } =
+                projection
 
               return getShortName(name)
             })
@@ -237,9 +236,8 @@ const renderChart: RenderChart = ({ mapsDistorsions, rootElId }) => {
 
   const draw = (projectionItem: ProjectionItem) => {
     const allPoints: Array<[number, number]> = dimensions.map((dimItem) => {
-      const {
-        [dimItem.name as keyof ProjectionItem]: projectionValue,
-      } = projectionItem
+      const { [dimItem.name as keyof ProjectionItem]: projectionValue } =
+        projectionItem
 
       return [
         x(dimItem.name) as number,

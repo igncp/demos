@@ -238,9 +238,9 @@ const main = ({
   startY,
   tearDistance,
 }: Props) => {
-  const { width } = (document.getElementById(
-    ROOT_ID
-  ) as HTMLElement).getBoundingClientRect()
+  const { width } = (
+    document.getElementById(ROOT_ID) as HTMLElement
+  ).getBoundingClientRect()
   const height = 400
 
   const canvasEl = select(`#${ROOT_ID}`)

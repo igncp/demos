@@ -25,7 +25,7 @@ const fetchData = async (): Promise<NamesMetrics> => {
     `${ROOT_PATH}data/d3js/concentric-circles/data.csv`
   )
 
-  return (response as unknown) as NamesMetrics
+  return response as unknown as NamesMetrics
 }
 
 const colours = ["#7C7CC9", "#52D552", "#337233", "#323247"]

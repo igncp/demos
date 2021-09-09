@@ -54,23 +54,19 @@ const height = 500 - margin.top - margin.bottom
 
 const animationTime = 2000
 
-const getInterpolation = ({
-  line,
-  lineData,
-}: {
-  line: Line<DataItem>
-  lineData: DataItem[]
-}) => () => {
-  const interpolate = scaleQuantile()
-    .domain([0, 1])
-    .range(range(1, lineData.length + 1))
+const getInterpolation =
+  ({ line, lineData }: { line: Line<DataItem>; lineData: DataItem[] }) =>
+  () => {
+    const interpolate = scaleQuantile()
+      .domain([0, 1])
+      .range(range(1, lineData.length + 1))
 
-  return (t: number): string => {
-    const interpolatedLine = lineData.slice(0, interpolate(t))
+    return (t: number): string => {
+      const interpolatedLine = lineData.slice(0, interpolate(t))
 
-    return line(interpolatedLine)!
+      return line(interpolatedLine)!
+    }
   }
-}
 
 const createLinearRegression = (lineData: DataItem[]) => {
   const linearRegression: {

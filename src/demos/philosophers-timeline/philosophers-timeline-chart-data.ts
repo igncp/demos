@@ -52,9 +52,9 @@ const parseDate = function (dateString: string) {
 const yearMillis = 31622400000
 
 export const fetchData = async (): Promise<TimeBandItem[]> => {
-  const timeBandItems = ((await csv(
+  const timeBandItems = (await csv(
     `${ROOT_PATH}data/d3js/philosophers-timeline/data.csv`
-  )) as unknown) as TimeBandItem[]
+  )) as unknown as TimeBandItem[]
   const today = new Date()
   const instantOffset = 100 * yearMillis
 
@@ -85,18 +85,18 @@ const getItemLimitLeft: Config["getItemLimitLeft"] = (timeBandItem) =>
 const getItemLimitRight: Config["getItemLimitRight"] = (timeBandItem) =>
   timeBandItem.end
 
-const getSortFn: Config["getSortFn"] = (sortOrder) => (
-  ...[timeBandItemA, timeBandItemB]: [TimeBandItem, TimeBandItem]
-) => {
-  const factor = sortOrder === SortOrder.Ascending ? 1 : -1
-  const startDiff = Number(timeBandItemA.start) - Number(timeBandItemB.start)
+const getSortFn: Config["getSortFn"] =
+  (sortOrder) =>
+  (...[timeBandItemA, timeBandItemB]: [TimeBandItem, TimeBandItem]) => {
+    const factor = sortOrder === SortOrder.Ascending ? 1 : -1
+    const startDiff = Number(timeBandItemA.start) - Number(timeBandItemB.start)
 
-  if (startDiff !== 0) {
-    return startDiff * factor
+    if (startDiff !== 0) {
+      return startDiff * factor
+    }
+
+    return (Number(timeBandItemB.end) - Number(timeBandItemA.end)) * factor
   }
-
-  return (Number(timeBandItemB.end) - Number(timeBandItemA.end)) * factor
-}
 
 const getItemText: Config["getItemText"] = ({
   chartItem: timeBandItem,

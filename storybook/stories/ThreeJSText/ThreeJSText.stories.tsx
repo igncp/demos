@@ -336,10 +336,8 @@ const createDemo: CreateDemo = ({ previousSimulation, props }) => {
 }
 
 const ThreeJSText = (props: Props) => {
-  const [
-    previousSimulation,
-    setPreviousSimulation,
-  ] = React.useState<Simulation | null>(null)
+  const [previousSimulation, setPreviousSimulation] =
+    React.useState<Simulation | null>(null)
 
   React.useEffect(() => {
     const newSimulation = createDemo({ previousSimulation, props })

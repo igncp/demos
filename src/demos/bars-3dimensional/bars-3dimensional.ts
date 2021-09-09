@@ -90,9 +90,9 @@ class Chart {
   }
 
   private setCg() {
-    const { width } = (document.getElementById(
-      this.rootElId
-    ) as HTMLElement).getBoundingClientRect()
+    const { width } = (
+      document.getElementById(this.rootElId) as HTMLElement
+    ).getBoundingClientRect()
 
     this.cg = {
       colorScheme: ["#c1252d", "#5f3a5f", "#51a8d0"],

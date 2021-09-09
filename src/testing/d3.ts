@@ -186,9 +186,8 @@ const d3Tests = (QUnit: QUnitType) => {
 
   QUnit.test("d3.select", (assert) => {
     const div = document.createElement("div")
-    const svg: Selection<SVGSVGElement, unknown, null, unknown> = select(
-      div
-    ).append("svg")
+    const svg: Selection<SVGSVGElement, unknown, null, unknown> =
+      select(div).append("svg")
     // note that here the parent is still null in the types
     const g: Selection<SVGPathElement, number, null, unknown> = svg
       .append("path")

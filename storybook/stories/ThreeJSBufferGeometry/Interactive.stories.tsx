@@ -224,15 +224,8 @@ const demo = ({
     }
   })()
 
-  const {
-    camera,
-    cubeMesh,
-    line,
-    pointer,
-    raycaster,
-    renderer,
-    scene,
-  } = elements
+  const { camera, cubeMesh, line, pointer, raycaster, renderer, scene } =
+    elements
 
   const onClick = (clickEvent: MouseEvent) => {
     clickEvent.preventDefault()

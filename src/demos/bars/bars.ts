@@ -59,9 +59,9 @@ class BarsChart {
 
   public render() {
     const { bars, rootElId } = this
-    const { width } = (document.getElementById(
-      rootElId
-    ) as HTMLElement).getBoundingClientRect()
+    const { width } = (
+      document.getElementById(rootElId) as HTMLElement
+    ).getBoundingClientRect()
 
     const colorScale = scaleLinear()
       .domain(extent(bars) as [BarData, BarData])

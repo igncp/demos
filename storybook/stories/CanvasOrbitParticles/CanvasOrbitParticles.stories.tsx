@@ -34,9 +34,9 @@ const main = ({
   scale,
   speed,
 }: Props) => {
-  const { width } = (document.getElementById(
-    ROOT_ID
-  ) as HTMLElement).getBoundingClientRect()
+  const { width } = (
+    document.getElementById(ROOT_ID) as HTMLElement
+  ).getBoundingClientRect()
   const height = 500
 
   const canvasEl = select(`#${ROOT_ID}`)

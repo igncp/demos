@@ -91,9 +91,8 @@ class FinancialData {
 
     parsedList.forEach((financialItem) => {
       debits[financialItem.creditor.id][financialItem.debtor.id] = financialItem
-      credits[financialItem.debtor.id][
-        financialItem.creditor.id
-      ] = financialItem
+      credits[financialItem.debtor.id][financialItem.creditor.id] =
+        financialItem
 
       countriesList[financialItem.creditor.id] = financialItem.creditor
       countriesList[financialItem.debtor.id] = financialItem.debtor

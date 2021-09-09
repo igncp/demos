@@ -73,9 +73,9 @@ export const renderChart = <AreaPoint>(
   chartConfig: ChartConfig<AreaPoint>
 ): ChartReturn => {
   const { areaPoints, rootElId } = chartConfig
-  const { width: elWidth } = (document.getElementById(
-    rootElId
-  ) as HTMLElement).getBoundingClientRect()
+  const { width: elWidth } = (
+    document.getElementById(rootElId) as HTMLElement
+  ).getBoundingClientRect()
   const isSmallDevice = elWidth < 500
 
   const voronoiGroupClass = `voronoi-group-${uuidv1().slice(0, 6)}`

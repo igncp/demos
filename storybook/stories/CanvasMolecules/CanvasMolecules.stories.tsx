@@ -107,9 +107,9 @@ const main = ({
   radiusBase,
   speedBase,
 }: Props) => {
-  const { width } = (document.getElementById(
-    ROOT_ID
-  ) as HTMLElement).getBoundingClientRect()
+  const { width } = (
+    document.getElementById(ROOT_ID) as HTMLElement
+  ).getBoundingClientRect()
   const height = 500
 
   const particleArgs = {

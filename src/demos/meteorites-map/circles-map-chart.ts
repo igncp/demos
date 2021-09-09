@@ -222,18 +222,18 @@ export const renderChart = <CircleData extends ChartDataConstraint>(
         : circleClass
     })
 
-    const getTranslateFn = (coordIdx: number) => (
-      ...[, geometryIndex]: [unknown, number]
-    ) => {
-      if (getShouldSet0(geometryIndex)) {
-        return 0
+    const getTranslateFn =
+      (coordIdx: number) =>
+      (...[, geometryIndex]: [unknown, number]) => {
+        if (getShouldSet0(geometryIndex)) {
+          return 0
+        }
+
+        const { [geometryIndex]: animatedCircle } = circlesGeo
+        const { [getCircleId(animatedCircle)]: vectorNormalized } = vectorsMap
+
+        return vectorNormalized[coordIdx] * clickedCircleDistortion
       }
-
-      const { [geometryIndex]: animatedCircle } = circlesGeo
-      const { [getCircleId(animatedCircle)]: vectorNormalized } = vectorsMap
-
-      return vectorNormalized[coordIdx] * clickedCircleDistortion
-    }
 
     anime({
       targets: `.${circleClassUnique}`,

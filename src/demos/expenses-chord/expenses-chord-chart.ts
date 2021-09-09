@@ -94,9 +94,9 @@ export const renderChart = (chartConfig: ChartConfig) => {
 
   const color = scaleOrdinal(chordGroupsIds, schemeTableau10)
 
-  const { width } = (document.getElementById(
-    rootElId
-  ) as HTMLElement).getBoundingClientRect()
+  const { width } = (
+    document.getElementById(rootElId) as HTMLElement
+  ).getBoundingClientRect()
 
   const innerRadius = Math.min(width, height) * 0.5 - 20
   const outerRadius = innerRadius + 20
@@ -245,9 +245,8 @@ export const renderChart = (chartConfig: ChartConfig) => {
             .duration(durations.ribbonAnimation)
             .attr("fill", fillRibbon)
             .attrTween("d", (finalRibbon) => {
-              const {
-                [getRibbonKey(finalRibbon)]: initialRibbon,
-              } = initialRibbonsData
+              const { [getRibbonKey(finalRibbon)]: initialRibbon } =
+                initialRibbonsData
 
               if (!initialRibbon) {
                 return () => usedRibbon(finalRibbon)

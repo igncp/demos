@@ -57,6 +57,6 @@ export const createChartConfig = (areasData: AreasData): Config => ({
 })
 
 export const fetchAreasData = () =>
-  (json(
+  json(
     `${ROOT_PATH}data/d3js/spain-map/data.json`
-  ) as unknown) as Promise<AreasData>
+  ) as unknown as Promise<AreasData>

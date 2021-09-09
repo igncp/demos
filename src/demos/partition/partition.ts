@@ -24,9 +24,9 @@ type HierarchyRectNode = HierarchyRectangularNode<DataNode>
 type PartitionType = "count" | "size"
 
 const fetchData = () =>
-  (json(
+  json(
     `${ROOT_PATH}data/d3js/partition/flare.json`
-  ) as unknown) as Promise<DataNode>
+  ) as unknown as Promise<DataNode>
 
 const height = 700
 const overColor = "#de7c03"
@@ -87,26 +87,28 @@ const extractTweenObj = (node: HierarchyRectNode) => ({
   y1: node.y1,
 })
 
-const getInterpolatorFn = ({
-  fn,
-  initialData,
-}: {
-  fn: (node: HierarchyRectNode) => string | null
-  initialData: HierarchyRectNode[]
-}) => (...[finalNode, nodeIndex]: [HierarchyRectNode, number]) => {
-  const { [nodeIndex]: initialNode } = initialData
+const getInterpolatorFn =
+  ({
+    fn,
+    initialData,
+  }: {
+    fn: (node: HierarchyRectNode) => string | null
+    initialData: HierarchyRectNode[]
+  }) =>
+  (...[finalNode, nodeIndex]: [HierarchyRectNode, number]) => {
+    const { [nodeIndex]: initialNode } = initialData
 
-  const interpolateFn = interpolate(
-    extractTweenObj(initialNode),
-    extractTweenObj(finalNode)
-  )
+    const interpolateFn = interpolate(
+      extractTweenObj(initialNode),
+      extractTweenObj(finalNode)
+    )
 
-  return (t: number) => {
-    const transitientState = interpolateFn(t)
+    return (t: number) => {
+      const transitientState = interpolateFn(t)
 
-    return fn(transitientState as HierarchyRectNode)!
+      return fn(transitientState as HierarchyRectNode)!
+    }
   }
-}
 
 const addFilter = (
   svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
@@ -133,9 +135,9 @@ const addFilter = (
 }
 
 const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
-  const { width } = (document.getElementById(
-    rootElId
-  ) as HTMLElement).getBoundingClientRect()
+  const { width } = (
+    document.getElementById(rootElId) as HTMLElement
+  ).getBoundingClientRect()
   const radius = Math.min(width, height) / 2
   const colorScale = scaleOrdinal(schemePastel2)
 
@@ -291,7 +293,7 @@ const main = async () => {
 
   const getCurrentSelectedRadio = (): PartitionType => {
     const selectedRadio = Array.from(
-      (formEl.elements as unknown) as HTMLInputElement[]
+      formEl.elements as unknown as HTMLInputElement[]
     ).find((formElement: HTMLInputElement) => formElement.checked)
 
     return selectedRadio!.value as PartitionType

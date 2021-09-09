@@ -56,9 +56,9 @@ class MareysSchedules {
   }
 
   public static async fetchAndCreateSchedules(): Promise<MareysSchedules> {
-    const originalItems = ((await tsv(
+    const originalItems = (await tsv(
       `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`
-    )) as unknown) as RawDataItem[]
+    )) as unknown as RawDataItem[]
 
     const stations: Station[] = []
 

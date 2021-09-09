@@ -135,9 +135,9 @@ class Icosahedron {
       rotationFactor1: 1 / 1000,
       rotationFactor2: 4,
       t0: Date.now(),
-      width: (document.getElementById(
-        this.rootElId
-      ) as HTMLElement).getBoundingClientRect().width,
+      width: (
+        document.getElementById(this.rootElId) as HTMLElement
+      ).getBoundingClientRect().width,
       zeroVelocity: [0, 0, 0],
     }
   }

@@ -158,12 +158,12 @@ const demo = ({
   const height = 500
 
   const getShaders = () => {
-    const fragmentShader = (document.getElementById(
-      FRAGMENT_SHADER_ID
-    ) as HTMLElement).textContent!
-    const vertexShader = (document.getElementById(
-      VERTEX_SHADER_ID
-    ) as HTMLElement).textContent!
+    const fragmentShader = (
+      document.getElementById(FRAGMENT_SHADER_ID) as HTMLElement
+    ).textContent!
+    const vertexShader = (
+      document.getElementById(VERTEX_SHADER_ID) as HTMLElement
+    ).textContent!
 
     return {
       fragmentShader,

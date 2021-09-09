@@ -127,15 +127,15 @@ const demo = ({
   const height = 500
 
   const getShaders = () => {
-    const fragmentShaderColorSinText = (document.getElementById(
-      FRAGMENT_SHADER_COLOR_SIN_ID
-    ) as HTMLElement).textContent!
-    const fragmentShaderColorPlainText = (document.getElementById(
-      FRAGMENT_SHADER_COLOR_PLAIN
-    ) as HTMLElement).textContent!
-    const vertexShaderText = (document.getElementById(
-      VERTEX_SHADER_ID
-    ) as HTMLElement).textContent!
+    const fragmentShaderColorSinText = (
+      document.getElementById(FRAGMENT_SHADER_COLOR_SIN_ID) as HTMLElement
+    ).textContent!
+    const fragmentShaderColorPlainText = (
+      document.getElementById(FRAGMENT_SHADER_COLOR_PLAIN) as HTMLElement
+    ).textContent!
+    const vertexShaderText = (
+      document.getElementById(VERTEX_SHADER_ID) as HTMLElement
+    ).textContent!
 
     return {
       fragmentShader: props.colorAnimation

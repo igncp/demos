@@ -70,9 +70,9 @@ const fetchData = async () => {
   const monthFormat = timeFormat(formatStr)
   const monthParse = timeParse(formatStr)
 
-  const dataItems = ((await tsv(
+  const dataItems = (await tsv(
     `${ROOT_PATH}data/d3js/multiline-voronoi/data.tsv`
-  )) as unknown) as InitialDataItem[]
+  )) as unknown as InitialDataItem[]
 
   const months: Date[] = Object.keys(dataItems[0])
     .map((v) => monthParse(v)!)

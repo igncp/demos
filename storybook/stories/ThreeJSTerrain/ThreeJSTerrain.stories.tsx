@@ -202,11 +202,9 @@ const createDemo = ({
   }
 
   if (previousSimulation) {
-    const canReuseSimulation = ([
-      "mountainHeight",
-      "worldWidth",
-      "worldDepth",
-    ] as const).every((k) => previousSimulation.props[k] === props[k])
+    const canReuseSimulation = (
+      ["mountainHeight", "worldWidth", "worldDepth"] as const
+    ).every((k) => previousSimulation.props[k] === props[k])
 
     if (canReuseSimulation) {
       previousSimulation.terrainMaterial.map = createTexture(

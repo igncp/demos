@@ -45,12 +45,11 @@ export const createChartConfig = ({
   ) =>
     state.selectedRegion === Expenses.ALL_ID ? targetGroupId : sourceGroupId
 
-  const getDisplayTypeOnGroupClick: ChartConfig["getDisplayTypeOnGroupClick"] = (
-    chordGroupId
-  ) =>
-    expenses.getCountriesList().includes(chordGroupId)
-      ? DisplayType.Source
-      : DisplayType.Target
+  const getDisplayTypeOnGroupClick: ChartConfig["getDisplayTypeOnGroupClick"] =
+    (chordGroupId) =>
+      expenses.getCountriesList().includes(chordGroupId)
+        ? DisplayType.Source
+        : DisplayType.Target
 
   const getRibbonType: ChartConfig["getRibbonType"] = () =>
     state.selectedCountry !== Expenses.ALL_ID &&

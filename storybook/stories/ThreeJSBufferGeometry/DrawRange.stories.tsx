@@ -421,14 +421,12 @@ const [particleCountArg, particleCountControls] = createRangeControl({
   step: 1,
 })
 
-const [
-  minConnectionDistanceArg,
-  minConnectionDistanceControls,
-] = createRangeControl({
-  diffMin: 149,
-  initialValue: 150,
-  step: 1,
-})
+const [minConnectionDistanceArg, minConnectionDistanceControls] =
+  createRangeControl({
+    diffMin: 149,
+    initialValue: 150,
+    step: 1,
+  })
 
 const [maxConnectionsArg, maxConnectionsControls] = createRangeControl({
   diffMax: 100,

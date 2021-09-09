@@ -27,8 +27,7 @@ const getThreeExampleDoc = (path: string[]) => ({
 
 export const webAPIDocs = {
   GLSLShaders: {
-    link:
-      "https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders",
+    link: "https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders",
     name: "GLSL Shaders",
   },
   pointerEvent: {

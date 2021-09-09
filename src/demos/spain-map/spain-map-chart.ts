@@ -78,9 +78,9 @@ export const renderChart = <Properties>(
     properties: Properties
   }
 
-  const { width: chartWidth } = (document.getElementById(
-    rootElId
-  ) as HTMLElement).getBoundingClientRect()
+  const { width: chartWidth } = (
+    document.getElementById(rootElId) as HTMLElement
+  ).getBoundingClientRect()
 
   const {
     objects: { data1: dataRoot },

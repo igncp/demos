@@ -41,9 +41,9 @@ const renderChart: RenderChart = ({ rootElId, world }) => {
   const colorFn = (...[, countryIndex]: [unknown, number]) =>
     interpolateRdYlGn(colorScale(countryIndex))
 
-  const { width } = (document.getElementById(
-    rootElId
-  ) as HTMLElement).getBoundingClientRect()
+  const { width } = (
+    document.getElementById(rootElId) as HTMLElement
+  ).getBoundingClientRect()
   const height = 500
 
   const setZoom = (...[, countryData]: [unknown, CountryData]) => {

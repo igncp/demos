@@ -125,9 +125,9 @@ export const createChart = <SliceData>({
 
     private render() {
       const { slices } = this
-      const { width } = (document.getElementById(
-        rootElId
-      ) as HTMLElement).getBoundingClientRect()
+      const { width } = (
+        document.getElementById(rootElId) as HTMLElement
+      ).getBoundingClientRect()
 
       const svg = select(`#${rootElId}`)
         .append("svg:svg")

@@ -17,10 +17,8 @@ export const getChartConfig = (financialData: FinancialData): ChartConfig => {
     sourceValue,
     targetIndex,
   }) => {
-    const {
-      [sourceIndex]: sourceData,
-      [targetIndex]: targetData,
-    } = countriesList
+    const { [sourceIndex]: sourceData, [targetIndex]: targetData } =
+      countriesList
 
     return `${sourceData.name} owes ${targetData.name} $${formatCurrency(
       sourceValue

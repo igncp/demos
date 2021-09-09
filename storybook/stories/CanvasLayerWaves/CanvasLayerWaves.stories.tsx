@@ -30,9 +30,9 @@ type Mesh = Triangle[]
 const ROOT_ID = "example"
 
 const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
-  const { width } = (document.getElementById(
-    ROOT_ID
-  ) as HTMLElement).getBoundingClientRect()
+  const { width } = (
+    document.getElementById(ROOT_ID) as HTMLElement
+  ).getBoundingClientRect()
   const height = 500
   const state = {
     isStopped: false,

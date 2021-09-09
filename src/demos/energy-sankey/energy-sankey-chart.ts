@@ -93,13 +93,8 @@ export type ChartConfig<NodeData, LinkData> = {
 export const renderChart = <NodeData, LinkData>(
   chartConfig: ChartConfig<NodeData, LinkData>
 ) => {
-  const {
-    chartLinks,
-    chartNodes,
-    getNodeId,
-    onNodeClick,
-    rootElId,
-  } = chartConfig
+  const { chartLinks, chartNodes, getNodeId, onNodeClick, rootElId } =
+    chartConfig
 
   type ChartSankeyNode = SankeyNode<NodeData, LinkData>
   type ChartSankeyLink = SankeyLink<NodeData, LinkData>
@@ -135,9 +130,9 @@ export const renderChart = <NodeData, LinkData>(
     ])
 
   const { links, nodes } = sankeyVal({
-    links: (chartLinks.map((sankeyLink) =>
+    links: chartLinks.map((sankeyLink) =>
       Object.assign({}, sankeyLink)
-    ) as unknown) as Array<SankeyLink<NodeData, LinkData>>,
+    ) as unknown as Array<SankeyLink<NodeData, LinkData>>,
     nodes: chartNodes.map((sankeyNode) =>
       Object.assign({}, sankeyNode)
     ) as NodeData[],

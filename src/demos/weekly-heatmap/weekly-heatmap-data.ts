@@ -34,9 +34,9 @@ const workingDayMin = 0
 const workingDayMax = 4
 
 export const fetchData = async (): Promise<TimeItem[]> => {
-  const weeklyTSVData = ((await tsv(
+  const weeklyTSVData = (await tsv(
     `${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`
-  )) as unknown) as TimeItemOriginal[]
+  )) as unknown as TimeItemOriginal[]
 
   return weeklyTSVData.map((timeItem) => ({
     arbitraryMetric: +timeItem.value,
