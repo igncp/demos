@@ -53,8 +53,6 @@ const Head = () => (
         />
       </>
     )}
-
-    {/*@TODO: meta title and description*/}
   </>
 )
 

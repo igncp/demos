@@ -210,8 +210,6 @@ const createDemo: CreateDemo = ({ prevSimulation, props }) => {
   })
 
   if (prevSimulation) {
-    prevSimulation.stop()
-
     const simulation = createSimulation()
 
     animate(simulation)
@@ -340,6 +338,10 @@ const ThreeJSReflectiveSpheres = (props: Props) => {
     const newSimulation = createDemo({ prevSimulation, props })
 
     setPrevSimulation(newSimulation)
+
+    return () => {
+      newSimulation.stop()
+    }
   }, [props])
 
   return (

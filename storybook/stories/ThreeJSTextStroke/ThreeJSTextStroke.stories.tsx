@@ -147,8 +147,6 @@ const createDemo: CreateDemo = ({ prevSimulation, props }) => {
   }
 
   if (prevSimulation) {
-    prevSimulation.stop()
-
     generateText()
     animate()
 
@@ -184,6 +182,10 @@ const ThreeJSTextStroke = (props: Props) => {
     const newSimulation = createDemo({ prevSimulation, props })
 
     setPrevSimulation(newSimulation)
+
+    return () => {
+      newSimulation.stop()
+    }
   }, [props])
 
   return (

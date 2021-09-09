@@ -184,8 +184,6 @@ const createDemo = ({
   }
 
   if (prevSimulation) {
-    prevSimulation.stop()
-
     animate()
 
     return createSimulation()
@@ -264,13 +262,19 @@ const ThreeJSCubeWater = (props: Props) => {
 
   React.useEffect(() => {
     if (!isReadyToRender) {
-      return
+      return () => {}
     }
 
     simulationRef.current = createDemo({
       prevSimulation: simulationRef.current,
       props,
     })
+
+    return () => {
+      if (simulationRef.current) {
+        simulationRef.current!.stop()
+      }
+    }
   }, [props, isReadyToRender])
 
   return (

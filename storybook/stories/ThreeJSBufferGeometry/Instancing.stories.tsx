@@ -303,8 +303,6 @@ const demo = ({
   }
 
   if (prevSimulation) {
-    prevSimulation.stop()
-
     const { fragmentShader } = getShaders()
     const trianglesMaterial = trianglesMesh.material as RawShaderMaterial
 
@@ -329,6 +327,10 @@ const Instancing = (props: Props) => {
       prevSimulation: simulationRef.current,
       props,
     })
+
+    return () => {
+      simulationRef.current!.stop()
+    }
   }, [props])
 
   return (

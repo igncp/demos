@@ -352,8 +352,6 @@ const demo = ({
   }
 
   if (prevSimulation) {
-    prevSimulation.stop()
-
     animate()
 
     return createSimulation()
@@ -379,14 +377,16 @@ const Interactive = (props: Props) => {
         prevSimulation: null,
         props,
       })
-
-      return
+    } else {
+      simulationRef.current = demo({
+        prevSimulation: simulationRef.current,
+        props,
+      })
     }
 
-    simulationRef.current = demo({
-      prevSimulation: simulationRef.current,
-      props,
-    })
+    return () => {
+      simulationRef.current!.stop()
+    }
   }, [props])
 
   return (

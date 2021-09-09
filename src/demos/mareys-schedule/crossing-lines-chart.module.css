@@ -50,9 +50,9 @@
       }
     }
 
-    .purpleLine {
+    .orangeLine {
       path {
-        stroke: rgb(183, 116, 9);
+        stroke: #d9b611;
       }
 
       circle {

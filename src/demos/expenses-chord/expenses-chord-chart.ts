@@ -102,8 +102,8 @@ export const renderChart = (chartConfig: ChartConfig) => {
   const outerRadius = innerRadius + 20
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ribbonCommon = (r: any) =>
-    r.radius(innerRadius - 0.5).padAngle(1 / innerRadius)
+  const ribbonCommon = (ribbonType: any) =>
+    ribbonType.radius(innerRadius - 0.5).padAngle(1 / innerRadius)
 
   const ribbonArrow = ribbonCommon(ribbonArrowD3())
   const ribbon = ribbonCommon(ribbonD3())

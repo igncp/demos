@@ -11,7 +11,7 @@ module.exports = {
   ],
   webpackFinal: (config) => {
     config.module.rules = config.module.rules.filter(
-      (r) => !r.test.test(".css")
+      (rule) => !rule.test.test(".css")
     )
 
     config.module.rules.push({

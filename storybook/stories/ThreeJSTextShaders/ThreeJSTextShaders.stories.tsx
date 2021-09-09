@@ -267,8 +267,6 @@ const createDemo = ({
   setupSimulation()
 
   if (prevSimulation) {
-    prevSimulation.stop()
-
     animate()
 
     return createSimulation()
@@ -289,6 +287,10 @@ const ThreeJSTextShaders = (props: Props) => {
     const newSimulation = createDemo({ prevSimulation, props })
 
     setPrevSimulation(newSimulation)
+
+    return () => {
+      newSimulation.stop()
+    }
   }, [props])
 
   return (

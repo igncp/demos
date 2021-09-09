@@ -28,7 +28,7 @@ type Point = {
 
 export enum LineStyle {
   Black = "Black",
-  Purple = "Purple",
+  Orange = "Orange",
   Red = "Red",
 }
 
@@ -46,7 +46,7 @@ export type Redraw = (range: [Date, Date]) => void
 
 const lineStyleToClassName: { [key in LineStyle]: string } = {
   [LineStyle.Red]: styles.redLine,
-  [LineStyle.Purple]: styles.purpleLine,
+  [LineStyle.Orange]: styles.orangeLine,
   [LineStyle.Black]: styles.blackLine,
 }
 
@@ -105,6 +105,7 @@ export type ChartConfig = {
   getLineTitle: (line: Line) => string
   getPointTitle: (point: Point) => string
   getXAxisLabel: (date: Date) => string
+  onPointClick: (point: Point) => void
   rootElId: string
 }
 
@@ -238,6 +239,8 @@ export const renderChart = (chartConfig: ChartConfig) => {
       .data((crossingLine) => crossingLine.points)
       .enter()
       .append("circle")
+      .style("cursor", "pointer")
+      .on("click", (...[, point]) => chartConfig.onPointClick(point))
       .attr(
         "transform",
         (point) =>

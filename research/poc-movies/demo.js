@@ -108,7 +108,7 @@ const extractStructures = (oscarsRecords) => {
   const sortedByIMDBRated = oscarsRecords
     .slice()
     .sort((...[recordA, recordB]) => recordB.IMDBRating - recordA.IMDBRating)
-    .map((r) => r.id) // @TODO: add r to restricted names list
+    .map((oscarRecord) => oscarRecord.id)
 
   return {
     actorsToMovies,

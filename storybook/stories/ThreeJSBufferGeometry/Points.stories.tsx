@@ -159,8 +159,6 @@ const demo = ({
   }
 
   if (prevSimulation) {
-    prevSimulation.stop()
-
     animate()
 
     return createSimulation()
@@ -193,6 +191,13 @@ const Points = (props: Props) => {
       props,
     })
   }, [props])
+
+  React.useEffect(
+    () => () => {
+      simulationRef.current?.stop()
+    },
+    []
+  )
 
   return (
     <div>

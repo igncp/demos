@@ -383,6 +383,15 @@ const ThreeJSTerrain = (props: Props) => {
     setSimulation(newSimulation)
   }, [props])
 
+  React.useEffect(
+    () => () => {
+      if (previousSimulation) {
+        previousSimulation.stop()
+      }
+    },
+    []
+  )
+
   return (
     <div>
       <StoryInfo

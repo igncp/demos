@@ -52,6 +52,13 @@ const SVGUnderlineBorder = (props: Props) => {
     main(props)
   })
 
+  React.useEffect(
+    () => () => {
+      select(`#${ROOT_ID}`).text("")
+    },
+    []
+  )
+
   return (
     <div>
       <p>Hover the underline to see the effect</p>

@@ -5,7 +5,7 @@ declare const styles: {
   readonly "horizontalMarker": string
   readonly "line": string
   readonly "mareysScheduleChart": string
-  readonly "purpleLine": string
+  readonly "orangeLine": string
   readonly "redLine": string
 }
 export = styles

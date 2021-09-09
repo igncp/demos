@@ -136,7 +136,7 @@ const main = () => {
   for (let arcI = 0; arcI <= 50; arcI += 1) {
     createArc({
       arcI,
-      fill: "#85D588",
+      fill: "#85d588",
       paper,
       stroke: "#558857",
     })

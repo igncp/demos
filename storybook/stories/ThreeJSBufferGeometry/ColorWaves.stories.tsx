@@ -291,8 +291,6 @@ const demo = ({
   }
 
   if (prevSimulation) {
-    prevSimulation.stop()
-
     const { fragmentShader } = getShaders()
 
     cubeMaterial.fragmentShader = fragmentShader
@@ -324,19 +322,22 @@ const ColorWaves = (props: Props) => {
           props[reRenderProp] !== prevSimulation.props[reRenderProp]
       )
     ) {
-      prevSimulation.stop()
       simulationRef.current = demo({
         prevSimulation: null,
         props,
       })
-
-      return
+    } else {
+      simulationRef.current = demo({
+        prevSimulation: simulationRef.current,
+        props,
+      })
     }
 
-    simulationRef.current = demo({
-      prevSimulation: simulationRef.current,
-      props,
-    })
+    return () => {
+      if (simulationRef.current) {
+        simulationRef.current.stop()
+      }
+    }
   }, [props])
 
   return (

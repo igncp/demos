@@ -366,8 +366,6 @@ const demo = ({
   }
 
   if (prevSimulation) {
-    prevSimulation.stop()
-
     pointCloud.visible = props.showDots
     linesMesh.visible = props.showLines
 
@@ -392,6 +390,10 @@ const DrawRange = (props: Props) => {
       prevSimulation: simulationRef.current,
       props,
     })
+
+    return () => {
+      simulationRef.current!.stop()
+    }
   }, [props])
 
   return (

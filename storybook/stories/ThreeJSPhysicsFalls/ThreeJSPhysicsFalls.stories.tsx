@@ -238,8 +238,6 @@ const createDemo: CreateDemo = ({
   }
 
   if (previousSimulation) {
-    previousSimulation.stop()
-
     animate()
 
     return createSimulation()
@@ -283,6 +281,13 @@ const ThreeJSPhysicsFalls = (props: Props) => {
         props: latestProps,
       })
     }, 200),
+    []
+  )
+
+  React.useEffect(
+    () => () => {
+      simulationRef.current!.stop()
+    },
     []
   )
 

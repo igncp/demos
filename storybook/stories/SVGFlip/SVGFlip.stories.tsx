@@ -45,6 +45,10 @@ const SVGFlip = (props: Props) => {
     main(props)
   })
 
+  React.useEffect(() => {
+    select(`#${ROOT_ID}`).text("")
+  }, [])
+
   return (
     <div>
       <p>Hover the rectangle to flip the circle</p>

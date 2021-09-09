@@ -35,6 +35,7 @@ module.exports = [
   "p",
   "p1",
   "p2",
+  "r",
   "result",
   "val",
   "vals",

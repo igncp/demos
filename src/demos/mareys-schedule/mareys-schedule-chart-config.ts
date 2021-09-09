@@ -1,3 +1,5 @@
+import qs from "query-string"
+
 import {
   ChartConfig,
   HorizontalMarker,
@@ -72,7 +74,7 @@ export const createChartConfig = (schedules: MareysSchedules): ChartConfig => {
       case "L":
         return LineStyle.Black
       case "N":
-        return LineStyle.Purple
+        return LineStyle.Orange
 
       default:
         return LineStyle.Red
@@ -89,6 +91,14 @@ export const createChartConfig = (schedules: MareysSchedules): ChartConfig => {
   const getXAxisLabel: ChartConfig["getXAxisLabel"] = (date) =>
     MareysSchedules.convertDateToString(date)
 
+  const onPointClick: ChartConfig["onPointClick"] = (point) => {
+    window.open(
+      `https://www.google.com/search?${qs.stringify({
+        q: `Station California ${point.horizontalMarker.label}`,
+      })}`
+    )
+  }
+
   return {
     chartTitle,
     crossingLinesData,
@@ -96,6 +106,7 @@ export const createChartConfig = (schedules: MareysSchedules): ChartConfig => {
     getLineTitle,
     getPointTitle,
     getXAxisLabel,
+    onPointClick,
     rootElId: CONTAINER_ID,
   }
 }

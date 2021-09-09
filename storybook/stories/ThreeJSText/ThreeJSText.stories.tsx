@@ -292,8 +292,6 @@ const createDemo: CreateDemo = ({ previousSimulation, props }) => {
   }
 
   if (previousSimulation) {
-    previousSimulation.stop()
-
     addListeners()
     animate()
     refreshText()
@@ -347,6 +345,10 @@ const ThreeJSText = (props: Props) => {
     const newSimulation = createDemo({ previousSimulation, props })
 
     setPreviousSimulation(newSimulation)
+
+    return () => {
+      newSimulation.stop()
+    }
   }, [props])
 
   return (
