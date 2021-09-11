@@ -2,10 +2,12 @@ import {
   BaseType,
   Chord,
   ChordGroup,
+  D3DragEvent,
   Selection,
   arc as arcD3,
   chordDirected,
   descending as descendingD3,
+  drag,
   easeCircle,
   interpolate,
   ribbonArrow as ribbonArrowD3,
@@ -13,7 +15,6 @@ import {
   scaleOrdinal,
   schemeTableau10,
   select,
-  zoom,
 } from "d3"
 import { v1 as uuid } from "uuid"
 
@@ -56,12 +57,49 @@ const applyOpacityEffect = <ContainerEl extends BaseType, Datum>(
     })
 }
 
-// eslint-disable-next-line max-params,@typescript-eslint/no-explicit-any
-const zoomed = function (this: Element, zoomEvent: any) {
-  select(this)
-    .transition()
-    .duration(durations.zoom)
-    .attr("transform", zoomEvent.transform)
+// @TODO: setup drag with zoom
+const setupDrag = ({
+  svgDrag,
+  svgTop,
+}: {
+  svgDrag: Selection<SVGGElement, unknown, HTMLElement, unknown>
+  svgTop: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
+}) => {
+  const draggedState = {
+    s: 1,
+    x: 0,
+    y: 0,
+  }
+
+  const setupTransform = () => {
+    svgDrag.attr(
+      "transform",
+      `translate(${draggedState.x},${draggedState.y}) scale(${draggedState.s})`
+    )
+  }
+
+  const dragHandler = drag<SVGSVGElement, unknown>().on(
+    "drag",
+    (dragEvent: D3DragEvent<SVGSVGElement, unknown, unknown>) => {
+      draggedState.x += dragEvent.dx
+      draggedState.y += dragEvent.dy
+
+      setupTransform()
+    }
+  )
+
+  setupTransform()
+
+  svgTop
+    .style("cursor", "move")
+    .call(dragHandler)
+    .on("wheel", (wheelEvent: WheelEvent) => {
+      wheelEvent.preventDefault()
+
+      draggedState.s += -wheelEvent.deltaY / 1000
+
+      setupTransform()
+    })
 }
 
 export type ChartConfig = {
@@ -108,28 +146,27 @@ export const renderChart = (chartConfig: ChartConfig) => {
   const ribbonArrow = ribbonCommon(ribbonArrowD3())
   const ribbon = ribbonCommon(ribbonD3())
 
-  const zoomBehavior = zoom()
-    .extent([
-      [0, 0],
-      [width / 2, height / 2],
-    ])
-    .on("end", zoomed)
-
   const totalHeight = height + 50
 
-  const svg = select(`#${rootElId}`)
+  const svgTop = select(`#${rootElId}`)
     .attr("class", styles.chartWrapper)
     .append("svg")
     .attr("width", width)
     .attr("height", totalHeight)
+
+  const svgCenter = svgTop
     .append("g")
     .attr("transform", `translate(${width / 2}, ${totalHeight / 2})`)
-    .append("g")
-    .call(zoomBehavior as any) // eslint-disable-line @typescript-eslint/no-explicit-any
-    .on("dblclick.zoom", null)
+
+  const svgG = svgCenter.append("g").attr("class", "svg-drag")
+
+  setupDrag({
+    svgDrag: svgG,
+    svgTop,
+  })
 
   // this rect is to allow zooming
-  svg
+  svgG
     .append("rect")
     .attr("fill", "#fff")
     .attr("width", width)
@@ -143,7 +180,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
     .sortSubgroups(descendingD3)
     .sortChords(descendingD3)
 
-  svg
+  svgG
     .append("path")
     .attr("fill", "none")
     .attr("id", textId)
@@ -161,8 +198,8 @@ export const renderChart = (chartConfig: ChartConfig) => {
     .innerRadius(innerRadius)
     .outerRadius(outerRadius)
 
-  const ribbonContainer = svg.append("g")
-  const groupContainer = svg
+  const ribbonContainer = svgG.append("g")
+  const groupContainer = svgG
     .append("g")
     .attr("font-family", "sans-serif")
     .attr("font-size", 10)

@@ -1,16 +1,16 @@
 .collapsibleTreeChart {
   .node {
     cursor: pointer;
-  }
 
-  .node circle {
-    fill: #fff;
-    stroke: steelblue;
-    stroke-width: 1.5px;
-  }
+    circle {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+    }
 
-  .node text {
-    font: 10px sans-serif;
+    text {
+      font: 10px sans-serif;
+    }
   }
 
   .link {
