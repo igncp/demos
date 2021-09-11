@@ -3,7 +3,7 @@
 set -e
 
 LINES="$(./node_modules/.bin/ts-prune . | \
-  ag -v '(pages|Page404|head.tsx|onCreatePage|onCreateWebpackConfig|storybook)' \
+  grep -vE '(pages|Page404|head.tsx|onCreatePage|onCreateWebpackConfig|storybook)' \
   || true)"
 
 if [ -n "$LINES" ]; then
