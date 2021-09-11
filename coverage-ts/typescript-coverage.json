@@ -829,105 +829,84 @@
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 59,
-      "character": 40,
-      "text": "zoomEvent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 63,
-      "character": 23,
-      "text": "zoomEvent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 63,
-      "character": 33,
-      "text": "transform",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 104,
+      "line": 142,
       "character": 24,
       "text": "ribbonType",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 105,
+      "line": 143,
       "character": 4,
       "text": "ribbonType",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 105,
+      "line": 143,
       "character": 15,
       "text": "radius",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 105,
+      "line": 143,
       "character": 41,
       "text": "padAngle",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 107,
+      "line": 145,
       "character": 8,
       "text": "ribbonArrow",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 108,
+      "line": 146,
       "character": 8,
       "text": "ribbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 173,
+      "line": 210,
       "character": 10,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 174,
+      "line": 211,
       "character": 58,
       "text": "ribbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 174,
+      "line": 211,
       "character": 67,
       "text": "ribbonArrow",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 237,
+      "line": 274,
       "character": 23,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 251,
+      "line": 288,
       "character": 29,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 269,
+      "line": 306,
       "character": 23,
       "text": "usedRibbon",
       "kind": 1
@@ -1745,8 +1724,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.02802716839722,
-  "total": 25618,
-  "covered": 25369,
-  "uncovered": 249
+  "percentage": 99.0492386179176,
+  "total": 25874,
+  "covered": 25628,
+  "uncovered": 246
 }

@@ -1,0 +1,303 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>collapsible-tree-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/collapsible-tree/collapsible-tree-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">512</td><td class="">512</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  D3DragEvent,
+  HierarchyNode,
+  HierarchyPointLink,
+  HierarchyPointNode,
+  Selection,
+  drag,
+  hierarchy,
+  linkHorizontal,
+  select,
+  tree as treeD3,
+} from &quot;d3&quot;
+
+import * as styles from &quot;./collapsible-tree.module.css&quot;
+
+export type NodeShape&lt;Content&gt; = Content &amp; {
+  children?: Array&lt;NodeShape&lt;Content&gt;&gt;
+}
+
+type DataNode&lt;BaseData&gt; = BaseData &amp;
+  NodeShape&lt;{
+    _children: Array&lt;HierarchyPointNode&lt;DataNode&lt;BaseData&gt;&gt;&gt; | undefined
+    x: number
+    x0: number
+    y: number
+    y0: number
+  }&gt;
+
+type DiagonalNode = { x: number; y: number }
+type DiagonalLink = { source: DiagonalNode; target: DiagonalNode }
+
+const margin = {
+  bottom: 20,
+  left: 120,
+  right: 120,
+  top: 20,
+}
+
+const duration = 750
+const height = 800 - margin.top - margin.bottom
+
+const getDataNode = &lt;BaseData&gt;(
+  initialNode: NodeShape&lt;BaseData&gt;
+): DataNode&lt;BaseData&gt; =&gt; ({
+  ...initialNode,
+  _children: undefined,
+  children: (initialNode.children ?? []).map((subNode) =&gt; getDataNode(subNode)),
+  x: 0,
+  x0: 0,
+  y: 0,
+  y0: 0,
+})
+
+const setupDrag = &lt;SelectionData&gt;(
+  svgG: Selection&lt;SVGGElement, SelectionData, HTMLElement, unknown&gt;
+) =&gt; {
+  const translateOffset = {
+    x: margin.left,
+    y: height / 2,
+  } as const
+
+  const draggedState = {
+    x: 0,
+    y: 0,
+  }
+
+  const dragHandler = drag&lt;SVGSVGElement, unknown&gt;().on(
+    &quot;drag&quot;,
+    (dragEvent: D3DragEvent&lt;SVGSVGElement, unknown, unknown&gt;) =&gt; {
+      draggedState.x += dragEvent.dx
+      draggedState.y += dragEvent.dy
+
+      svgG.attr(
+        &quot;transform&quot;,
+        `translate(${translateOffset.x + draggedState.x},${
+          translateOffset.y + draggedState.y
+        })`
+      )
+    }
+  )
+
+  svgG.attr(&quot;transform&quot;, `translate(${translateOffset.x},${translateOffset.y})`)
+
+  const svg = select(svgG.node()!.parentNode as SVGSVGElement)
+
+  svg.style(&quot;cursor&quot;, &quot;move&quot;).call(dragHandler)
+}
+
+export type ChartConfig&lt;BaseData&gt; = {
+  getNodeId: (node: DataNode&lt;BaseData&gt;) =&gt; number
+  getNodeLabel: (node: DataNode&lt;BaseData&gt;) =&gt; string
+  rootData: NodeShape&lt;BaseData&gt;
+  rootElId: string
+}
+
+export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData&gt;) =&gt; {
+  const { rootData, rootElId } = chartConfig
+
+  const rootEl = document.getElementById(rootElId) as HTMLElement
+
+  rootEl.classList.add(styles.collapsibleTreeChart)
+
+  const width =
+    rootEl.getBoundingClientRect().width - margin.right - margin.left
+
+  type TreeNode = HierarchyPointNode&lt;DataNode&lt;BaseData&gt;&gt;
+  type TreeLink = HierarchyPointLink&lt;DataNode&lt;BaseData&gt;&gt;
+  type HierarchyDataNode = HierarchyNode&lt;DataNode&lt;BaseData&gt;&gt;
+
+  const dataNodeRoot = getDataNode(rootData)
+
+  const rootHierarchy = hierarchy&lt;DataNode&lt;BaseData&gt;&gt;(dataNodeRoot)
+
+  rootHierarchy.data.x0 = height / 2
+  rootHierarchy.data.y0 = 0
+
+  const tree = treeD3&lt;DataNode&lt;BaseData&gt;&gt;().nodeSize([40, 250])
+
+  const rootTree = tree(rootHierarchy)
+
+  rootTree.descendants().forEach((treeNode: TreeNode) =&gt; {
+    treeNode.data._children = treeNode.children
+
+    if (treeNode.depth) {
+      treeNode.children = undefined
+    }
+  })
+
+  const diagonal = linkHorizontal&lt;DiagonalLink, DiagonalNode&gt;()
+    .x((diagonalNode) =&gt; diagonalNode.y)
+    .y((diagonalNode) =&gt; diagonalNode.x)
+
+  const svgG = select&lt;SVGElement, TreeNode&gt;(`#${rootElId}`)
+    .append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, width + margin.right + margin.left)
+    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+    .append(&quot;g&quot;)
+
+  setupDrag(svgG)
+
+  const gLink = svgG
+    .append(&quot;g&quot;)
+    .attr(&quot;fill&quot;, &quot;none&quot;)
+    .attr(&quot;stroke&quot;, &quot;#555&quot;)
+    .attr(&quot;stroke-opacity&quot;, 0.4)
+    .attr(&quot;stroke-width&quot;, 1.5)
+
+  const gNode = svgG.append(&quot;g&quot;).attr(&quot;pointer-events&quot;, &quot;all&quot;)
+
+  const update = function (source: TreeNode) {
+    const nodes = rootTree.descendants().reverse()
+    const links = rootTree.links()
+
+    tree(rootHierarchy)
+
+    let left = rootHierarchy
+    let right = rootHierarchy
+
+    rootHierarchy.eachBefore((node: HierarchyDataNode) =&gt; {
+      if (node.data.x &lt; left.data.x) {
+        left = node
+      }
+
+      if (node.data.x &gt; right.data.x) {
+        right = node
+      }
+    })
+
+    const node = gNode
+      .selectAll&lt;SVGGElement, TreeNode&gt;(&quot;g&quot;)
+      .data(nodes, (treeNode) =&gt; chartConfig.getNodeId(treeNode.data))
+
+    const circleDefaultFill = (treeNode: TreeNode) =&gt;
+      treeNode.data._children ? &quot;green&quot; : &quot;red&quot;
+
+    const nodeEnter = node
+      .enter()
+      .append(&quot;g&quot;)
+      .attr(&quot;transform&quot;, () =&gt; `translate(${source.data.y0},${source.data.x0})`)
+      .attr(&quot;cursor&quot;, (treeNode) =&gt;
+        treeNode.data._children ? &quot;pointer&quot; : &quot;default&quot;
+      )
+      .attr(&quot;fill-opacity&quot;, 0)
+      .attr(&quot;stroke-opacity&quot;, 0)
+      .on(&quot;click&quot;, (...[, treeNode]) =&gt; {
+        treeNode.children = treeNode.children
+          ? undefined
+          : treeNode.data._children
+
+        update(treeNode)
+      })
+      .on(&quot;mouseenter&quot;, function () {
+        select&lt;SVGGElement, TreeNode&gt;(this)
+          .select&lt;SVGCircleElement&gt;(&quot;circle&quot;)
+          .attr(&quot;fill&quot;, (treeNode) =&gt;
+            treeNode.data._children ? &quot;blue&quot; : circleDefaultFill(treeNode)
+          )
+      })
+      .on(&quot;mouseleave&quot;, function () {
+        select&lt;SVGGElement, TreeNode&gt;(this)
+          .select&lt;SVGCircleElement&gt;(&quot;circle&quot;)
+          .attr(&quot;fill&quot;, circleDefaultFill)
+      })
+
+    nodeEnter
+      .append(&quot;circle&quot;)
+      .attr(&quot;r&quot;, 10)
+      .attr(&quot;fill&quot;, circleDefaultFill)
+      .attr(&quot;stroke-width&quot;, 10)
+
+    nodeEnter
+      .append(&quot;text&quot;)
+      .attr(&quot;dy&quot;, &quot;5px&quot;)
+      .attr(&quot;dx&quot;, (treeNode) =&gt; (treeNode.data._children ? &quot;-10px&quot; : &quot;10px&quot;))
+      .attr(&quot;x&quot;, (treeNode) =&gt; (treeNode.data._children ? -6 : 6))
+      .style(&quot;font-size&quot;, &quot;20px&quot;)
+      .attr(&quot;text-anchor&quot;, (treeNode) =&gt;
+        treeNode.data._children ? &quot;end&quot; : &quot;start&quot;
+      )
+      .text((treeNode) =&gt; chartConfig.getNodeLabel(treeNode.data))
+      .clone(true)
+      .lower()
+      .attr(&quot;stroke-linejoin&quot;, &quot;round&quot;)
+      .attr(&quot;stroke-width&quot;, 3)
+      .attr(&quot;stroke&quot;, &quot;white&quot;)
+
+    node
+      .merge(nodeEnter)
+      .transition()
+      .duration(duration)
+      .attr(&quot;transform&quot;, (treeNode) =&gt; `translate(${treeNode.y},${treeNode.x})`)
+      .attr(&quot;fill-opacity&quot;, 1)
+      .attr(&quot;stroke-opacity&quot;, 1)
+
+    node
+      .exit()
+      .transition()
+      .duration(duration)
+      .remove()
+      .attr(&quot;transform&quot;, () =&gt; `translate(${source.y},${source.x})`)
+      .attr(&quot;fill-opacity&quot;, 0)
+      .attr(&quot;stroke-opacity&quot;, 0)
+
+    const link = gLink
+      .selectAll&lt;SVGPathElement, TreeLink&gt;(&quot;path&quot;)
+      .data(links, (treeLink) =&gt; chartConfig.getNodeId(treeLink.target.data))
+
+    const linkEnter = link
+      .enter()
+      .append(&quot;path&quot;)
+      .attr(&quot;d&quot;, () =&gt; {
+        const diagonalNode = {
+          x: source.data.x0,
+          y: source.data.y0,
+        }
+        const diagonalLink = { source: diagonalNode, target: diagonalNode }
+
+        return diagonal(diagonalLink)
+      })
+
+    link.merge(linkEnter).transition().duration(duration).attr(&quot;d&quot;, diagonal)
+
+    link
+      .exit()
+      .transition()
+      .duration(duration)
+      .remove()
+      .attr(&quot;d&quot;, () =&gt; {
+        const diagonalNode = {
+          x: source.x,
+          y: source.y,
+        }
+        const diagonalLink = { source: diagonalNode, target: diagonalNode }
+
+        return diagonal(diagonalLink)
+      })
+
+    rootTree.eachBefore((treeNode) =&gt; {
+      treeNode.data.x0 = treeNode.x
+      treeNode.data.y0 = treeNode.y
+    })
+  }
+
+  update(rootTree)
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 11 Sep 2021 11:19:44 GMT</p>
+    </body>
+  </html>
+  
