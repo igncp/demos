@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/collapsible-tree/collapsible-tree-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">555</td><td class="">555</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/collapsible-tree/collapsible-tree-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">557</td><td class="">557</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   D3DragEvent,
   HierarchyPointLink,
   HierarchyPointNode,
@@ -22,8 +22,8 @@
   tree as treeD3,
 } from &quot;d3&quot;
 
-import { LinkUI } from &quot;./collapsible-tree-chart-link-ui&quot;
-import { NodeUI } from &quot;./collapsible-tree-chart-node-ui&quot;
+import { UILink } from &quot;./collapsible-tree-chart-ui-link&quot;
+import { UINode } from &quot;./collapsible-tree-chart-ui-node&quot;
 import * as styles from &quot;./collapsible-tree.module.css&quot;
 
 const inlineStyles = {
@@ -80,9 +80,9 @@ export const findParentNode = &lt;NodeData&gt;({
   )
 }
 
-type DataNode&lt;BaseData&gt; = BaseData &amp;
+type ChartNode&lt;BaseData&gt; = BaseData &amp;
   NodeShape&lt;{
-    _children: Array&lt;HierarchyPointNode&lt;DataNode&lt;BaseData&gt;&gt;&gt; | undefined
+    _children: Array&lt;HierarchyPointNode&lt;ChartNode&lt;BaseData&gt;&gt;&gt; | undefined
     x: number
     x0: number
     y: number
@@ -99,12 +99,14 @@ const margin = {
 const openCloseAnimationDuration = 750
 const height = 800 - margin.top - margin.bottom
 
-const getDataNode = &lt;BaseData&gt;(
+const getChartNode = &lt;BaseData&gt;(
   initialNode: NodeShape&lt;BaseData&gt;
-): DataNode&lt;BaseData&gt; =&gt; ({
+): ChartNode&lt;BaseData&gt; =&gt; ({
   ...initialNode,
   _children: undefined,
-  children: (initialNode.children ?? []).map((subNode) =&gt; getDataNode(subNode)),
+  children: (initialNode.children ?? []).map((subNode) =&gt;
+    getChartNode(subNode)
+  ),
   x: 0,
   x0: 0,
   y: 0,
@@ -147,11 +149,11 @@ const setupDrag = &lt;SelectionData&gt;(
 }
 
 export type ChartConfig&lt;BaseData&gt; = {
-  canBeRemoved: (node: DataNode&lt;BaseData&gt;) =&gt; boolean
-  getNodeId: (node: DataNode&lt;BaseData&gt;) =&gt; number
-  getNodeLabel: (node: DataNode&lt;BaseData&gt;) =&gt; string
-  onNodeAdd: (node: DataNode&lt;BaseData&gt;) =&gt; NodeShape&lt;BaseData&gt;
-  onNodeRemove: (node: DataNode&lt;BaseData&gt;) =&gt; NodeShape&lt;BaseData&gt;
+  canBeRemoved: (node: ChartNode&lt;BaseData&gt;) =&gt; boolean
+  getNodeId: (node: ChartNode&lt;BaseData&gt;) =&gt; number
+  getNodeLabel: (node: ChartNode&lt;BaseData&gt;) =&gt; string
+  onNodeAdd: (node: ChartNode&lt;BaseData&gt;) =&gt; NodeShape&lt;BaseData&gt;
+  onNodeRemove: (node: ChartNode&lt;BaseData&gt;) =&gt; NodeShape&lt;BaseData&gt;
   rootData: NodeShape&lt;BaseData&gt;
   rootElId: string
 }
@@ -166,17 +168,17 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
   const width =
     rootEl.getBoundingClientRect().width - margin.right - margin.left
 
-  type TreeNode = HierarchyPointNode&lt;DataNode&lt;BaseData&gt;&gt;
-  type TreeLink = HierarchyPointLink&lt;DataNode&lt;BaseData&gt;&gt;
+  type TreeNode = HierarchyPointNode&lt;ChartNode&lt;BaseData&gt;&gt;
+  type TreeLink = HierarchyPointLink&lt;ChartNode&lt;BaseData&gt;&gt;
 
-  const dataNodeRoot = getDataNode(rootData)
+  const dataNodeRoot = getChartNode(rootData)
 
-  const rootHierarchy = hierarchy&lt;DataNode&lt;BaseData&gt;&gt;(dataNodeRoot)
+  const rootHierarchy = hierarchy&lt;ChartNode&lt;BaseData&gt;&gt;(dataNodeRoot)
 
   rootHierarchy.data.x0 = height / 2
   rootHierarchy.data.y0 = 0
 
-  const buildTree = treeD3&lt;DataNode&lt;BaseData&gt;&gt;().nodeSize([40, 250])
+  const buildTree = treeD3&lt;ChartNode&lt;BaseData&gt;&gt;().nodeSize([40, 250])
 
   const rootTree = buildTree(rootHierarchy)
 
@@ -207,14 +209,14 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
     openCloseAnimationDuration,
   }
 
-  const linkUI = new LinkUI&lt;SVGGElement, TreeLink, TreeNode&gt;(commonUIOpts)
+  const uiLink = new UILink&lt;SVGGElement, TreeLink, TreeNode&gt;(commonUIOpts)
 
-  const nodeUI = new NodeUI({
+  const uiNode = new UINode({
     ...commonUIOpts,
     displayRemoveButton: (treeNode) =&gt; chartConfig.canBeRemoved(treeNode.data),
     getNodeId: (treeNode) =&gt; chartConfig.getNodeId(treeNode.data),
     getPointingLinkForNode: (treeNode) =&gt;
-      linkUI
+      uiLink
         .getSelection()
         .filter(
           (link) =&gt;
@@ -231,15 +233,15 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
 
     buildTree(rootHierarchy)
 
-    nodeUI.update({
+    uiNode.update({
       getData: () =&gt; [
         nodes,
         (treeNode) =&gt; chartConfig.getNodeId(treeNode.data),
       ],
       onNodeAdd: (clickedTreeNode) =&gt; {
         const newNodeData = chartConfig.onNodeAdd(clickedTreeNode.data)
-        const newDataNode = getDataNode(newNodeData)
-        const newNodeHirarchy = hierarchy&lt;DataNode&lt;BaseData&gt;&gt;(
+        const newDataNode = getChartNode(newNodeData)
+        const newNodeHirarchy = hierarchy&lt;ChartNode&lt;BaseData&gt;&gt;(
           newDataNode
         ) as TreeNode
 
@@ -255,7 +257,9 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
         clickedTreeNode.data.children = clickedTreeNode.data.children ?? []
         clickedTreeNode.data.children.push(newNodeHirarchy.data)
 
-        update(clickedTreeNode)
+        window.requestAnimationFrame(() =&gt; {
+          update(clickedTreeNode)
+        })
       },
       onNodeClick: (treeNode) =&gt; {
         treeNode.children = treeNode.children
@@ -270,7 +274,7 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
         const treeNode = findNode({
           getId: (node) =&gt; chartConfig.getNodeId(node.data),
           node: rootHierarchy,
-          nodeId: chartConfig.getNodeId(parentNode as DataNode&lt;BaseData&gt;),
+          nodeId: chartConfig.getNodeId(parentNode as ChartNode&lt;BaseData&gt;),
         }) as TreeNode
 
         const nodeIndex = treeNode.children!.findIndex(
@@ -286,7 +290,7 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
       source,
     })
 
-    linkUI.update({
+    uiLink.update({
       getData: () =&gt; [
         links,
         (treeLink) =&gt; chartConfig.getNodeId(treeLink.target.data),
@@ -303,7 +307,7 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
   update(rootTree)
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 12 Sep 2021 13:15:39 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 12 Sep 2021 22:47:34 GMT</p>
     </body>
   </html>
   

@@ -444,233 +444,191 @@
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 82,
+      "line": 85,
       "character": 10,
       "text": "d3",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 82,
+      "line": 85,
       "character": 14,
       "text": "nv",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 90,
+      "line": 93,
       "character": 8,
       "text": "color",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 90,
+      "line": 93,
       "character": 16,
       "text": "d3",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 90,
+      "line": 93,
       "character": 19,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 90,
+      "line": 93,
       "character": 25,
       "text": "category20b",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 102,
+      "line": 105,
       "character": 10,
       "text": "color",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 102,
+      "line": 105,
       "character": 17,
       "text": "color",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 115,
+      "line": 118,
       "character": 8,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 115,
+      "line": 118,
       "character": 16,
       "text": "nv",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 115,
+      "line": 118,
       "character": 19,
       "text": "models",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 115,
+      "line": 118,
       "character": 26,
       "text": "scatterChart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 117,
+      "line": 120,
       "character": 2,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 117,
+      "line": 120,
       "character": 8,
       "text": "margin",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 119,
+      "line": 122,
       "character": 2,
       "text": "nv",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 119,
+      "line": 122,
       "character": 5,
       "text": "utils",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 119,
+      "line": 122,
       "character": 11,
       "text": "windowResize",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 119,
+      "line": 122,
       "character": 24,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 119,
+      "line": 122,
       "character": 30,
       "text": "update",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 121,
+      "line": 124,
       "character": 2,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 121,
+      "line": 124,
       "character": 8,
       "text": "forceY",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 121,
+      "line": 124,
       "character": 27,
       "text": "forceX",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 123,
+      "line": 126,
       "character": 2,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 123,
+      "line": 126,
       "character": 8,
       "text": "tooltipContent",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 127,
+      "line": 130,
       "character": 2,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 127,
+      "line": 130,
       "character": 8,
       "text": "xAxis",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 128,
+      "line": 131,
       "character": 5,
       "text": "axisLabelDistance",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bubbles/bubbles.ts",
-      "line": 129,
-      "character": 5,
-      "text": "tickFormat",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bubbles/bubbles.ts",
-      "line": 129,
-      "character": 16,
-      "text": "d3",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bubbles/bubbles.ts",
-      "line": 129,
-      "character": 19,
-      "text": "format",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bubbles/bubbles.ts",
-      "line": 130,
-      "character": 5,
-      "text": "axisLabel",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bubbles/bubbles.ts",
-      "line": 131,
-      "character": 2,
-      "text": "chart",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bubbles/bubbles.ts",
-      "line": 131,
-      "character": 8,
-      "text": "yAxis",
       "kind": 1
     },
     {
@@ -698,68 +656,110 @@
       "file": "src/demos/bubbles/bubbles.ts",
       "line": 133,
       "character": 5,
-      "text": "axisLabelDistance",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bubbles/bubbles.ts",
-      "line": 134,
-      "character": 5,
       "text": "axisLabel",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 136,
+      "line": 134,
       "character": 2,
+      "text": "chart",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bubbles/bubbles.ts",
+      "line": 134,
+      "character": 8,
+      "text": "yAxis",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bubbles/bubbles.ts",
+      "line": 135,
+      "character": 5,
+      "text": "tickFormat",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bubbles/bubbles.ts",
+      "line": 135,
+      "character": 16,
       "text": "d3",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bubbles/bubbles.ts",
+      "line": 135,
+      "character": 19,
+      "text": "format",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
       "line": 136,
       "character": 5,
-      "text": "select",
+      "text": "axisLabelDistance",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
       "line": 137,
       "character": 5,
-      "text": "append",
+      "text": "axisLabel",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 138,
-      "character": 5,
-      "text": "attr",
+      "line": 139,
+      "character": 2,
+      "text": "d3",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
       "line": 139,
       "character": 5,
-      "text": "datum",
+      "text": "select",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
       "line": 140,
       "character": 5,
+      "text": "append",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bubbles/bubbles.ts",
+      "line": 141,
+      "character": 5,
+      "text": "attr",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bubbles/bubbles.ts",
+      "line": 142,
+      "character": 5,
+      "text": "datum",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bubbles/bubbles.ts",
+      "line": 143,
+      "character": 5,
       "text": "call",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 140,
+      "line": 143,
       "character": 10,
       "text": "chart",
       "kind": 1
     },
     {
       "file": "src/demos/bubbles/bubbles.ts",
-      "line": 144,
+      "line": 147,
       "character": 9,
       "text": "jsonData",
       "kind": 1
@@ -828,43 +828,22 @@
       "kind": 1
     },
     {
-      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
-      "line": 211,
+      "file": "src/demos/collapsible-tree/collapsible-tree-chart-ui-small-button.ts",
+      "line": 60,
       "character": 24,
       "text": "clickEvent",
       "kind": 1
     },
     {
-      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
-      "line": 212,
+      "file": "src/demos/collapsible-tree/collapsible-tree-chart-ui-small-button.ts",
+      "line": 61,
       "character": 8,
       "text": "clickEvent",
       "kind": 1
     },
     {
-      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
-      "line": 212,
-      "character": 19,
-      "text": "stopPropagation",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
-      "line": 231,
-      "character": 24,
-      "text": "clickEvent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
-      "line": 232,
-      "character": 8,
-      "text": "clickEvent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
-      "line": 232,
+      "file": "src/demos/collapsible-tree/collapsible-tree-chart-ui-small-button.ts",
+      "line": 61,
       "character": 19,
       "text": "stopPropagation",
       "kind": 1
@@ -1109,35 +1088,35 @@
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 555,
+      "line": 558,
       "character": 23,
       "text": "brushEvent",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 558,
+      "line": 561,
       "character": 10,
       "text": "brushEvent",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 558,
+      "line": 561,
       "character": 21,
       "text": "selection",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 560,
+      "line": 563,
       "character": 22,
       "text": "selectionStart",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 560,
+      "line": 563,
       "character": 38,
       "text": "selectionEnd",
       "kind": 1
@@ -1222,14 +1201,14 @@
     {
       "file": "src/demos/world-map/world-map.ts",
       "line": 23,
-      "character": 43,
+      "character": 53,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
       "line": 23,
-      "character": 50,
+      "character": 60,
       "text": "WorldData",
       "kind": 1
     },
@@ -1766,8 +1745,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.05166898731795,
-  "total": 26573,
-  "covered": 26321,
-  "uncovered": 252
+  "percentage": 99.06654170571696,
+  "total": 26675,
+  "covered": 26426,
+  "uncovered": 249
 }
