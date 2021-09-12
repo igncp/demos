@@ -140,7 +140,7 @@ const d3js: D3JS = {
     docs: [],
     isCompleted: true,
     name: "Collapsible Tree",
-    notes: [],
+    notes: ["Added the option to create new nodes on click"],
     sources: [
       "http://bl.ocks.org/mbostock/4339083",
       "https://observablehq.com/@d3/collapsible-tree",

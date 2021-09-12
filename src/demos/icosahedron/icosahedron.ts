@@ -191,7 +191,7 @@ class Icosahedron {
         ) +
         position[0],
       velocity![1] + position[1],
-      position![2] + velocity![2],
+      position[2] + velocity![2],
     ]
   }
 

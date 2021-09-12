@@ -117,7 +117,7 @@ class MareysSchedules {
     } = trainData
 
     if (trainData.direction === "S") {
-      return `${firstStop.station.name} -> ${lastStop!.station.name}`
+      return `${firstStop.station.name} -> ${lastStop.station.name}`
     }
 
     return `${lastStop.station.name} -> ${firstStop.station.name}`

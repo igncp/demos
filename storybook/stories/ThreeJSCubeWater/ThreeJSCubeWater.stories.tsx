@@ -272,7 +272,7 @@ const ThreeJSCubeWater = (props: Props) => {
 
     return () => {
       if (simulationRef.current) {
-        simulationRef.current!.stop()
+        simulationRef.current.stop()
       }
     }
   }, [props, isReadyToRender])

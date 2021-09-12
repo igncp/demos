@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import QUnitType from "qunit"
 
 const Raphael = typeof window === "undefined" ? null : require("raphael")
@@ -12,9 +11,8 @@ const raphaelTests = (QUnit: QUnitType) => {
     assert.deepEqual(paper.canvas instanceof SVGSVGElement, true)
     assert.deepEqual(paper.width, 100)
     assert.deepEqual(paper.height, 100)
-    assert.deepEqual((paper as any).getSize(), { height: 0, width: 0 })
+    assert.deepEqual(paper.getSize(), { height: 0, width: 0 })
   })
 }
 
 export default raphaelTests
-/* eslint-enable @typescript-eslint/no-explicit-any */

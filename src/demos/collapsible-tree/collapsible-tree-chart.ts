@@ -1,20 +1,70 @@
 import {
   D3DragEvent,
-  HierarchyNode,
   HierarchyPointLink,
   HierarchyPointNode,
   Selection,
   drag,
   hierarchy,
-  linkHorizontal,
   select,
   tree as treeD3,
 } from "d3"
 
+import { LinkUI } from "./collapsible-tree-chart-link-ui"
+import { NodeUI } from "./collapsible-tree-chart-node-ui"
 import * as styles from "./collapsible-tree.module.css"
+
+const inlineStyles = {
+  linkDefaultColor: "#555",
+} as const
 
 export type NodeShape<Content> = Content & {
   children?: Array<NodeShape<Content>>
+}
+
+export const findNode = <NodeData>({
+  getId,
+  node,
+  nodeId,
+}: {
+  getId: (node: NodeShape<NodeData>) => number
+  node: NodeShape<NodeData>
+  nodeId: number
+}): NodeShape<NodeData> | null => {
+  if (getId(node) === nodeId) {
+    return node
+  }
+
+  return (node.children ?? []).reduce(
+    (...[acc, otherNode]) =>
+      acc ?? findNode({ getId, node: otherNode, nodeId }),
+    null as NodeShape<NodeData> | null
+  )
+}
+
+export const findParentNode = <NodeData>({
+  getId,
+  node,
+  nodeId,
+}: {
+  getId: (node: NodeShape<NodeData>) => number
+  node: NodeShape<NodeData>
+  nodeId: number
+}): NodeShape<NodeData> | null => {
+  if (!node.children?.length) {
+    return null
+  }
+
+  const hasNode = node.children.some((otherNode) => getId(otherNode) === nodeId)
+
+  if (hasNode) {
+    return node
+  }
+
+  return node.children.reduce(
+    (...[acc, otherNode]) =>
+      acc ?? findParentNode({ getId, node: otherNode, nodeId }),
+    null as NodeShape<NodeData> | null
+  )
 }
 
 type DataNode<BaseData> = BaseData &
@@ -26,9 +76,6 @@ type DataNode<BaseData> = BaseData &
     y0: number
   }>
 
-type DiagonalNode = { x: number; y: number }
-type DiagonalLink = { source: DiagonalNode; target: DiagonalNode }
-
 const margin = {
   bottom: 20,
   left: 120,
@@ -36,7 +83,7 @@ const margin = {
   top: 20,
 }
 
-const duration = 750
+const openCloseAnimationDuration = 750
 const height = 800 - margin.top - margin.bottom
 
 const getDataNode = <BaseData>(
@@ -87,8 +134,11 @@ const setupDrag = <SelectionData>(
 }
 
 export type ChartConfig<BaseData> = {
+  canBeRemoved: (node: DataNode<BaseData>) => boolean
   getNodeId: (node: DataNode<BaseData>) => number
   getNodeLabel: (node: DataNode<BaseData>) => string
+  onNodeAdd: (node: DataNode<BaseData>) => NodeShape<BaseData>
+  onNodeRemove: (node: DataNode<BaseData>) => NodeShape<BaseData>
   rootData: NodeShape<BaseData>
   rootElId: string
 }
@@ -105,7 +155,6 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
 
   type TreeNode = HierarchyPointNode<DataNode<BaseData>>
   type TreeLink = HierarchyPointLink<DataNode<BaseData>>
-  type HierarchyDataNode = HierarchyNode<DataNode<BaseData>>
 
   const dataNodeRoot = getDataNode(rootData)
 
@@ -114,9 +163,9 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
   rootHierarchy.data.x0 = height / 2
   rootHierarchy.data.y0 = 0
 
-  const tree = treeD3<DataNode<BaseData>>().nodeSize([40, 250])
+  const buildTree = treeD3<DataNode<BaseData>>().nodeSize([40, 250])
 
-  const rootTree = tree(rootHierarchy)
+  const rootTree = buildTree(rootHierarchy)
 
   rootTree.descendants().forEach((treeNode: TreeNode) => {
     treeNode.data._children = treeNode.children
@@ -126,10 +175,6 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
     }
   })
 
-  const diagonal = linkHorizontal<DiagonalLink, DiagonalNode>()
-    .x((diagonalNode) => diagonalNode.y)
-    .y((diagonalNode) => diagonalNode.x)
-
   const svgG = select<SVGElement, TreeNode>(`#${rootElId}`)
     .append("svg")
     .attr("width", width + margin.right + margin.left)
@@ -138,142 +183,103 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
 
   setupDrag(svgG)
 
-  const gLink = svgG
-    .append("g")
-    .attr("fill", "none")
-    .attr("stroke", "#555")
-    .attr("stroke-opacity", 0.4)
-    .attr("stroke-width", 1.5)
+  const commonUIOpts = {
+    container: svgG,
+    getInitialPosition: (node: TreeNode) => ({
+      x: node.data.x0,
+      y: node.data.y0,
+    }),
+    getPosition: (node: TreeNode) => ({ x: node.x, y: node.y }),
+    linkDefaultColor: inlineStyles.linkDefaultColor,
+    openCloseAnimationDuration,
+  }
 
-  const gNode = svgG.append("g").attr("pointer-events", "all")
+  const linkUI = new LinkUI<SVGGElement, TreeLink, TreeNode>(commonUIOpts)
+
+  const nodeUI = new NodeUI({
+    ...commonUIOpts,
+    displayRemoveButton: (treeNode) => chartConfig.canBeRemoved(treeNode.data),
+    getNodeId: (treeNode) => chartConfig.getNodeId(treeNode.data),
+    getPointingLinkForNode: (treeNode) =>
+      linkUI
+        .getSelection()
+        .filter(
+          (link) =>
+            chartConfig.getNodeId(link.target.data) ===
+            chartConfig.getNodeId(treeNode.data)
+        ) as unknown as Selection<SVGElement, unknown, SVGElement, unknown>,
+    getText: (treeNode) => chartConfig.getNodeLabel(treeNode.data),
+    hasDescendants: (node) => !!node.data.children?.length,
+  })
 
   const update = function (source: TreeNode) {
     const nodes = rootTree.descendants().reverse()
     const links = rootTree.links()
 
-    tree(rootHierarchy)
+    buildTree(rootHierarchy)
 
-    let left = rootHierarchy
-    let right = rootHierarchy
+    nodeUI.update({
+      getData: () => [
+        nodes,
+        (treeNode) => chartConfig.getNodeId(treeNode.data),
+      ],
+      onNodeAdd: (clickedTreeNode) => {
+        const newNodeData = chartConfig.onNodeAdd(clickedTreeNode.data)
+        const newDataNode = getDataNode(newNodeData)
+        const newNodeHirarchy = hierarchy<DataNode<BaseData>>(
+          newDataNode
+        ) as TreeNode
 
-    rootHierarchy.eachBefore((node: HierarchyDataNode) => {
-      if (node.data.x < left.data.x) {
-        left = node
-      }
+        // @ts-ignore
+        newNodeHirarchy.depth = clickedTreeNode.depth + 1
+        newNodeHirarchy.parent = clickedTreeNode
 
-      if (node.data.x > right.data.x) {
-        right = node
-      }
-    })
+        clickedTreeNode.children =
+          clickedTreeNode.children ?? clickedTreeNode.data._children ?? []
+        clickedTreeNode.data._children = clickedTreeNode.children
+        clickedTreeNode.children.push(newNodeHirarchy)
 
-    const node = gNode
-      .selectAll<SVGGElement, TreeNode>("g")
-      .data(nodes, (treeNode) => chartConfig.getNodeId(treeNode.data))
+        clickedTreeNode.data.children = clickedTreeNode.data.children ?? []
+        clickedTreeNode.data.children.push(newNodeHirarchy.data)
 
-    const circleDefaultFill = (treeNode: TreeNode) =>
-      treeNode.data._children ? "green" : "red"
-
-    const nodeEnter = node
-      .enter()
-      .append("g")
-      .attr("transform", () => `translate(${source.data.y0},${source.data.x0})`)
-      .attr("cursor", (treeNode) =>
-        treeNode.data._children ? "pointer" : "default"
-      )
-      .attr("fill-opacity", 0)
-      .attr("stroke-opacity", 0)
-      .on("click", (...[, treeNode]) => {
+        update(clickedTreeNode)
+      },
+      onNodeClick: (treeNode) => {
         treeNode.children = treeNode.children
           ? undefined
           : treeNode.data._children
 
         update(treeNode)
-      })
-      .on("mouseenter", function () {
-        select<SVGGElement, TreeNode>(this)
-          .select<SVGCircleElement>("circle")
-          .attr("fill", (treeNode) =>
-            treeNode.data._children ? "blue" : circleDefaultFill(treeNode)
-          )
-      })
-      .on("mouseleave", function () {
-        select<SVGGElement, TreeNode>(this)
-          .select<SVGCircleElement>("circle")
-          .attr("fill", circleDefaultFill)
-      })
+      },
+      onNodeRemove: (clickedTreeNode) => {
+        const parentNode = chartConfig.onNodeRemove(clickedTreeNode.data)
 
-    nodeEnter
-      .append("circle")
-      .attr("r", 10)
-      .attr("fill", circleDefaultFill)
-      .attr("stroke-width", 10)
+        const treeNode = findNode({
+          getId: (node) => chartConfig.getNodeId(node.data),
+          node: rootHierarchy,
+          nodeId: chartConfig.getNodeId(parentNode as DataNode<BaseData>),
+        }) as TreeNode
 
-    nodeEnter
-      .append("text")
-      .attr("dy", "5px")
-      .attr("dx", (treeNode) => (treeNode.data._children ? "-10px" : "10px"))
-      .attr("x", (treeNode) => (treeNode.data._children ? -6 : 6))
-      .style("font-size", "20px")
-      .attr("text-anchor", (treeNode) =>
-        treeNode.data._children ? "end" : "start"
-      )
-      .text((treeNode) => chartConfig.getNodeLabel(treeNode.data))
-      .clone(true)
-      .lower()
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-width", 3)
-      .attr("stroke", "white")
+        const nodeIndex = treeNode.children!.findIndex(
+          (node) =>
+            chartConfig.getNodeId(node.data) ===
+            chartConfig.getNodeId(clickedTreeNode.data)
+        )
 
-    node
-      .merge(nodeEnter)
-      .transition()
-      .duration(duration)
-      .attr("transform", (treeNode) => `translate(${treeNode.y},${treeNode.x})`)
-      .attr("fill-opacity", 1)
-      .attr("stroke-opacity", 1)
+        treeNode.children!.splice(nodeIndex, 1)
 
-    node
-      .exit()
-      .transition()
-      .duration(duration)
-      .remove()
-      .attr("transform", () => `translate(${source.y},${source.x})`)
-      .attr("fill-opacity", 0)
-      .attr("stroke-opacity", 0)
+        update(treeNode)
+      },
+      source,
+    })
 
-    const link = gLink
-      .selectAll<SVGPathElement, TreeLink>("path")
-      .data(links, (treeLink) => chartConfig.getNodeId(treeLink.target.data))
-
-    const linkEnter = link
-      .enter()
-      .append("path")
-      .attr("d", () => {
-        const diagonalNode = {
-          x: source.data.x0,
-          y: source.data.y0,
-        }
-        const diagonalLink = { source: diagonalNode, target: diagonalNode }
-
-        return diagonal(diagonalLink)
-      })
-
-    link.merge(linkEnter).transition().duration(duration).attr("d", diagonal)
-
-    link
-      .exit()
-      .transition()
-      .duration(duration)
-      .remove()
-      .attr("d", () => {
-        const diagonalNode = {
-          x: source.x,
-          y: source.y,
-        }
-        const diagonalLink = { source: diagonalNode, target: diagonalNode }
-
-        return diagonal(diagonalLink)
-      })
+    linkUI.update({
+      getData: () => [
+        links,
+        (treeLink) => chartConfig.getNodeId(treeLink.target.data),
+      ],
+      source,
+    })
 
     rootTree.eachBefore((treeNode) => {
       treeNode.data.x0 = treeNode.x

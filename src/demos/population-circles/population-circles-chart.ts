@@ -266,7 +266,7 @@ export const renderChart = <CircleData>(
         | ChartTransition
         | Selection<SVGCircleElement, ChartNode, SVGGElement, unknown>
     ) => {
-      const elem = circle.attr("r", (node) => node.r!) as ChartTransition
+      const elem = circle.attr("r", (node) => node.r) as ChartTransition
 
       elem.attr("fill", generateColor).attr("stroke", generateDarkerColor)
     }

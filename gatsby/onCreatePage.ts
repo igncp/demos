@@ -172,7 +172,7 @@ const onCreatePage: GatsbyNode["onCreatePage"] = ({ actions, page }) => {
   } else if (demoInfo) {
     deletePage(page)
 
-    const { [demoInfo.category as Category]: categoryMetas } = metas
+    const { [demoInfo.category]: categoryMetas } = metas
 
     const context: DemoPageProps["pageContext"] = {
       demoInfo,

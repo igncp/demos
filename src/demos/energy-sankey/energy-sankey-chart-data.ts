@@ -46,7 +46,7 @@ export const createChartConfig = ({
     [
       sankeyNode.category === sankeyNode.name ? "" : sankeyNode.category,
       sankeyNode.name,
-      format(nodeValue!),
+      format(nodeValue),
     ]
       .filter(Boolean)
       .join("\n")

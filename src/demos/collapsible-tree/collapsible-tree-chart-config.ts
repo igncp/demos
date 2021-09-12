@@ -1,6 +1,11 @@
 import { json } from "d3"
 
-import { ChartConfig, NodeShape } from "./collapsible-tree-chart"
+import {
+  ChartConfig,
+  NodeShape,
+  findNode,
+  findParentNode,
+} from "./collapsible-tree-chart"
 
 export const CONTAINER_ID = "chart"
 
@@ -35,6 +40,12 @@ const getBaseNode = ({
   }
 }
 
+const findMaxId = (node: BaseNode): BaseNode["id"] =>
+  (node.children ?? []).reduce(
+    (...[acc, childrenNode]) => Math.max(findMaxId(childrenNode), acc),
+    node.id
+  )
+
 export const fetchData = async (): Promise<BaseNode> => {
   const rawNode = (await json(
     `${ROOT_PATH}data/d3js/collapsible-tree/data.json`
@@ -47,10 +58,62 @@ type Config = ChartConfig<BaseData>
 
 const getNodeLabel: Config["getNodeLabel"] = (node) => node.name
 const getNodeId: Config["getNodeId"] = (node) => node.id
+const canBeRemoved: Config["canBeRemoved"] = (node) => node.id !== 0
 
-export const createChartConfig = (rootData: BaseNode): Config => ({
-  getNodeId,
-  getNodeLabel,
-  rootData,
-  rootElId: CONTAINER_ID,
-})
+export const createChartConfig = (rootData: BaseNode): Config => {
+  const onNodeAdd: Config["onNodeAdd"] = (clickedNode) => {
+    const maxId = findMaxId(rootData)
+    const baseNode = findNode({
+      getId: (node) => node.id,
+      node: rootData,
+      nodeId: clickedNode.id,
+    })
+
+    if (!baseNode) {
+      throw new Error("Node not found")
+    }
+
+    const newId = maxId + 1
+
+    baseNode.children = baseNode.children ?? []
+
+    const newNode = {
+      id: newId,
+      name: `New Node id: ${newId}`,
+    }
+
+    baseNode.children.push(newNode)
+
+    return newNode
+  }
+
+  const onNodeRemove: Config["onNodeRemove"] = (clickedNode) => {
+    const parentNode = findParentNode({
+      getId: (node) => node.id,
+      node: rootData,
+      nodeId: clickedNode.id,
+    })
+
+    if (!parentNode) {
+      throw new Error("No parent node")
+    }
+
+    const nodeIndex = parentNode.children!.findIndex(
+      (node) => node.id === clickedNode.id
+    )
+
+    parentNode.children!.splice(nodeIndex, 1)
+
+    return parentNode
+  }
+
+  return {
+    canBeRemoved,
+    getNodeId,
+    getNodeLabel,
+    onNodeAdd,
+    onNodeRemove,
+    rootData,
+    rootElId: CONTAINER_ID,
+  }
+}

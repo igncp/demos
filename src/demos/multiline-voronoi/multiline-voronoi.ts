@@ -85,7 +85,7 @@ const fetchData = async () => {
 
     return {
       metrics: months.map((date: Date) => {
-        const itemKey = monthFormat(date) as string
+        const itemKey = monthFormat(date)
         const { [itemKey as keyof InitialDataItem]: itemValue } = initialCity
         const employmentRate: number = Number(itemValue) / 100
 

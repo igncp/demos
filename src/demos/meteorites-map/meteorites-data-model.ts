@@ -44,9 +44,9 @@ class MeteoritesData {
   }
 
   public static async createAndFetch() {
-    const meteorites = (await json(
+    const meteorites = await json(
       `${ROOT_PATH}data/d3js/meteorites-map/meteorites.json`
-    )) as unknown
+    )
 
     return new MeteoritesData(meteorites as Meteorite[])
   }
