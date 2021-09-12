@@ -101,7 +101,7 @@ const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
     })
   }
 
-  type Clip = (o: { fragment: number; total: number }) => number
+  type Clip = (options: { fragment: number; total: number }) => number
 
   const clip: Clip = ({ fragment, total }) => fragment - total / 2
 

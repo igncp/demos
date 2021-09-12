@@ -140,12 +140,15 @@ const d3js: D3JS = {
     docs: [],
     isCompleted: true,
     name: "Collapsible Tree",
-    notes: ["Added the option to create new nodes on click"],
+    notes: ["Added the option to create and remove nodes dynamically on click"],
     sources: [
       "http://bl.ocks.org/mbostock/4339083",
       "https://observablehq.com/@d3/collapsible-tree",
     ],
-    summary: [],
+    summary: [
+      "In this case there are many files to improve the separation of concerns, minimize dependencies of each module and the data exposes.",
+      "There are several important entities in this type of chart: `hierarchy` (which produces `HierarchyNode`), `tree` (which produces `HierarchyPointNode`).",
+    ],
   },
   "concentric-circles": {
     dataFiles: [],

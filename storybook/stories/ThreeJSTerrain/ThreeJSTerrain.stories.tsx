@@ -76,7 +76,7 @@ const generateHeight = ({
   return heightData
 }
 
-type GenerateTexture = (o: {
+type GenerateTexture = (options: {
   depth: number
   heightData: Uint8Array
   lightLevel: number

@@ -32,12 +32,12 @@ export type ChartConfig<CircleData> = {
   colorDomain: string[]
   getChartItems: () => CircleData[]
   getEmptyItem: () => CircleData
-  getHeaderText: (o: { chartItems: CircleData[] }) => string
+  getHeaderText: (options: { chartItems: CircleData[] }) => string
   getIsSmall: () => boolean
   getItemId: (circleData: CircleData) => string
   getItemLabel: (circleData: CircleData) => string
   getItemMetric: (circleData: CircleData) => number
-  getItemTitle: (o: { circleData: CircleData }) => string
+  getItemTitle: (options: { circleData: CircleData }) => string
   getStringForColor: (circleData: CircleData) => string
   onClick: (m: CircleData) => void
   rootElId: string
@@ -47,7 +47,7 @@ type RenderChartReturn = {
   updateChart: () => void
 }
 
-type AddDropShadow = (o: {
+type AddDropShadow = (options: {
   deviation: number
   name: string
   slope: number

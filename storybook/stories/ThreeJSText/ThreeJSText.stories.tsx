@@ -109,7 +109,7 @@ const materials = [
   new MeshPhongMaterial({ color: 0xffffff }), // side
 ]
 
-type CreateDemo = (o: {
+type CreateDemo = (config: {
   previousSimulation: Simulation | null
   props: Props
 }) => Simulation

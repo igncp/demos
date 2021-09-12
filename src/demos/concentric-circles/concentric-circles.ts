@@ -60,7 +60,11 @@ const addFilter = (svg: SVG) => {
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-type AddDescription = (o: { height: number; svg: SVG; width: number }) => void
+type AddDescription = (options: {
+  height: number
+  svg: SVG
+  width: number
+}) => void
 
 const addDescription: AddDescription = ({ height, svg, width }) => {
   svg
@@ -72,7 +76,10 @@ const addDescription: AddDescription = ({ height, svg, width }) => {
     .attr("width", "20px")
 }
 
-type RenderChart = (o: { namesMetrics: NamesMetrics; rootElId: string }) => void
+type RenderChart = (chartConfig: {
+  namesMetrics: NamesMetrics
+  rootElId: string
+}) => void
 
 const renderChart: RenderChart = ({ namesMetrics, rootElId }) => {
   const c = scaleLinear()

@@ -109,7 +109,7 @@ const margin = {
   top: 60,
 }
 
-type RenderChart = (o: {
+type RenderChart = (chartConfig: {
   cities: City[]
   months: Date[]
   rootElId: string

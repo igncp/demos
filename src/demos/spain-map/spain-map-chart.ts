@@ -62,7 +62,7 @@ export type AreasData = Topology<Objects<GeoJsonProperties>>
 
 export type ChartConfig<Properties> = {
   areasData: AreasData
-  getTitleText: (o: Properties) => string
+  getTitleText: (properties: Properties) => string
   getWidths: (chartWidth: number) => number[]
   projectionsCenters: Array<[number, number]>
   rootElId: string

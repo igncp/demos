@@ -77,7 +77,10 @@ const fetchData = async () => {
   return jsonData.data
 }
 
-type RenderChart = (o: { jsonData: JsonData; rootElId: string }) => void
+type RenderChart = (chartConfig: {
+  jsonData: JsonData
+  rootElId: string
+}) => void
 
 const renderChart: RenderChart = ({ jsonData, rootElId }) => {
   const { d3, nv } = window as any // eslint-disable-line @typescript-eslint/no-explicit-any

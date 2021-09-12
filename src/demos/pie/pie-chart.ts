@@ -27,7 +27,10 @@ export type ChartConfig<SliceData> = {
   getSliceValue: (sliceData: SliceData) => number
   pieSlices: SliceData[]
   rootElId: string
-  updateSliceValue: (o: { newValue: number; sliceData: SliceData }) => void
+  updateSliceValue: (sliceInfo: {
+    newValue: number
+    sliceData: SliceData
+  }) => void
 }
 
 export const createChart = <SliceData>({

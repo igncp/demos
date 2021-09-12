@@ -49,7 +49,7 @@ const texts = {
     "Comparison of 41 map projections by four different types of distortion. Lower is better.",
 }
 
-type RenderChart = (o: {
+type RenderChart = (chartConfig: {
   mapsDistorsions: ProjectionItem[]
   rootElId: string
 }) => void

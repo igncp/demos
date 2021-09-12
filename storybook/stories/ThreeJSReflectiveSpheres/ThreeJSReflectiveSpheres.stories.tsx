@@ -106,7 +106,7 @@ const animate = (simulation: Simulation) => {
 
 const font = new Font(fontData)
 
-type CreateDemo = (o: {
+type CreateDemo = (config: {
   prevSimulation: Simulation | null
   props: Props
 }) => Simulation
@@ -256,7 +256,7 @@ const createDemo: CreateDemo = ({ prevSimulation, props }) => {
     }
   }
 
-  type AddLabel = (o: { location: Vector3; name: string }) => void
+  type AddLabel = (options: { location: Vector3; name: string }) => void
 
   const addLabel: AddLabel = ({ location, name }) => {
     const textGeo = new TextGeometry(name, {

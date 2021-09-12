@@ -21,7 +21,7 @@ const transitionDuration = 1500
 
 type WorldData = any // eslint-disable-line @typescript-eslint/no-explicit-any
 
-type RenderChart = (o: { rootElId: string; world: WorldData }) => void
+type RenderChart = (chartConfig: { rootElId: string; world: WorldData }) => void
 
 const renderChart: RenderChart = ({ rootElId, world }) => {
   const state: {

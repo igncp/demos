@@ -81,8 +81,11 @@ type ChordMatrix = number[][]
 export type ChartConfig = {
   chords: [ChordMatrix, ChordMatrix]
   chordsTitles: [string, string]
-  getGroupTitle: (o: { chartIndex: number; chordGroup: ChordGroup }) => string
-  getRibbonTitle: (o: {
+  getGroupTitle: (options: {
+    chartIndex: number
+    chordGroup: ChordGroup
+  }) => string
+  getRibbonTitle: (options: {
     sourceIndex: number
     sourceValue: number
     targetIndex: number

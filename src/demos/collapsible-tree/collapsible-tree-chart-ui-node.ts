@@ -2,36 +2,36 @@ import anime from "animejs"
 import { BaseType, Selection, select } from "d3"
 
 import { CommonUIProps } from "./collapsible-tree-chart-ui-common"
+import { UISmallButton } from "./collapsible-tree-chart-ui-small-button"
 
-type NodeUIOpts<Container extends BaseType, Datum> = CommonUIProps<
+type UINodeOpts<Container extends BaseType, Datum> = CommonUIProps<
   Container,
   Datum
 > &
   Readonly<{
-    displayRemoveButton: (o: Datum) => boolean
-    getNodeId: (o: Datum) => number
+    displayRemoveButton: (nodeData: Datum) => boolean
+    getNodeId: (nodeData: Datum) => number
     getPointingLinkForNode: (
-      o: Datum
+      nodeData: Datum
     ) => Selection<SVGElement, unknown, SVGElement, unknown>
-    getText: (o: Datum) => string
+    getText: (nodeData: Datum) => string
     hasDescendants: (node: Datum) => boolean
   }>
 
 const nodeCircleClass = "node-circle"
 const nodeLabelClass = "node-label"
-const plusTriggerClass = "plus-trigger"
-const minusTriggerClass = "minus-trigger"
-
-const triggerClasses = [plusTriggerClass, minusTriggerClass]
 
 /**
  * Responsible for handle the UI of the node, without any knowledge of the node
  * tree structure (it doesn't know how the children nodes are referenced)
  */
-export class NodeUI<Container extends BaseType, Datum> {
-  private readonly initialOpts: NodeUIOpts<Container, Datum>
+export class UINode<Container extends BaseType, Datum> {
+  private readonly initialOpts: UINodeOpts<Container, Datum>
   private readonly nodeG: Selection<SVGGElement, Datum, Element, unknown>
   private readonly hoveredItems = new Set<number>()
+
+  private readonly plusButton: UISmallButton<SVGGElement, Datum, SVGGElement>
+  private readonly minusButton: UISmallButton<SVGGElement, Datum, SVGGElement>
 
   private readonly circleLinkForEffect: Selection<
     SVGCircleElement,
@@ -40,7 +40,7 @@ export class NodeUI<Container extends BaseType, Datum> {
     unknown
   >
 
-  public constructor(opts: NodeUIOpts<Container, Datum>) {
+  public constructor(opts: UINodeOpts<Container, Datum>) {
     this.initialOpts = opts
 
     this.nodeG = this.initialOpts.container
@@ -51,10 +51,22 @@ export class NodeUI<Container extends BaseType, Datum> {
       .insert("circle", ":first-child")
       .attr("r", 4)
       .attr("fill", "none")
+
+    this.plusButton = new UISmallButton({
+      dx: "0px",
+      fontSize: "20px",
+      text: "+",
+    })
+
+    this.minusButton = new UISmallButton({
+      dx: "-15px",
+      fontSize: "25px",
+      text: "-",
+    })
   }
 
   public update(opts: {
-    getData: () => [Datum[], (o: Datum) => number]
+    getData: () => [Datum[], (nodeData: Datum) => number]
     onNodeAdd: (node: Datum) => void
     onNodeClick: (node: Datum) => void
     onNodeRemove: (node: Datum) => void
@@ -101,6 +113,42 @@ export class NodeUI<Container extends BaseType, Datum> {
       .on("click", (...[, treeNode]) => {
         opts.onNodeClick(treeNode)
       })
+
+    nodeEnter
+      .append("circle")
+      .attr("r", 10)
+      .attr("class", nodeCircleClass)
+      .attr("stroke-width", 10)
+
+    const textDX = 10
+
+    nodeEnter
+      .append("text")
+      .attr("class", nodeLabelClass)
+      .attr("dy", "5px")
+      .style("font-size", "20px")
+      .text(getText)
+      .clone(true)
+      .lower()
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-width", 3)
+      .attr("stroke", "white")
+
+    const { minusButton, plusButton } = this
+
+    const buttons = [plusButton, minusButton]
+
+    const showButtonsIfNecessary = (container: SVGGElement) => {
+      buttons.forEach((button) => {
+        button.hide({
+          container,
+          filterFn: (node) =>
+            button === minusButton && !displayRemoveButton(node),
+        })
+      })
+    }
+
+    nodeEnter
       .on("mouseenter", function (...[, focusedTreeNode]) {
         hoveredItems.add(getNodeId(focusedTreeNode))
 
@@ -108,15 +156,7 @@ export class NodeUI<Container extends BaseType, Datum> {
           .select<SVGCircleElement>("circle")
           .attr("fill", circleDefaultFill)
 
-        triggerClasses.forEach((className) => {
-          select<SVGGElement, Datum>(this)
-            .select<SVGTextElement>(`.${className}`)
-            .style("display", (node) =>
-              className !== minusTriggerClass || displayRemoveButton(node)
-                ? "block"
-                : "none"
-            )
-        })
+        showButtonsIfNecessary(this)
 
         const pointingLink = getPointingLinkForNode(focusedTreeNode)
 
@@ -146,10 +186,10 @@ export class NodeUI<Container extends BaseType, Datum> {
           .select<SVGCircleElement>("circle")
           .attr("fill", circleDefaultFill)
 
-        triggerClasses.forEach((className) => {
-          select<SVGGElement, Datum>(this)
-            .select<SVGTextElement>(`.${className}`)
-            .style("display", "none")
+        buttons.forEach((button) => {
+          button.hide({
+            container: this,
+          })
         })
 
         const pointingLink = getPointingLinkForNode(focusedTreeNode)
@@ -162,76 +202,6 @@ export class NodeUI<Container extends BaseType, Datum> {
 
         pointingLink.style("stroke", linkDefaultColor)
         anime.remove(circleLinkForEffect.node())
-      })
-
-    nodeEnter
-      .append("circle")
-      .attr("r", 10)
-      .attr("class", nodeCircleClass)
-      .attr("stroke-width", 10)
-
-    const textDX = 10
-
-    nodeEnter
-      .append("text")
-      .attr("class", nodeLabelClass)
-      .attr("dy", "5px")
-      .style("font-size", "20px")
-      .text(getText)
-      .clone(true)
-      .lower()
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-width", 3)
-      .attr("stroke", "white")
-
-    // this improves the interaction with the trigger buttons to maintain the
-    // hover
-    nodeEnter
-      .append("rect")
-      .attr("y", "-25px")
-      .attr("x", "-15px")
-      .style("fill", "white")
-      .attr("height", "15px")
-      .attr("width", "30px")
-
-    nodeEnter
-      .append("text")
-      .attr("class", plusTriggerClass)
-      .attr("dy", "-10px")
-      .attr("dx", "0px")
-      .style("font-size", "20px")
-      .style("display", "none")
-      .text("+")
-      .attr("cursor", "pointer")
-      .on("mouseenter", function () {
-        select(this).attr("fill", "orange")
-      })
-      .on("mouseleave", function () {
-        select(this).attr("fill", null)
-      })
-      .on("click", (...[clickEvent, nodeDatum]) => {
-        clickEvent.stopPropagation()
-        opts.onNodeAdd(nodeDatum)
-      })
-
-    nodeEnter
-      .append("text")
-      .attr("class", minusTriggerClass)
-      .attr("dy", "-10px")
-      .attr("dx", "-15px")
-      .style("font-size", "25px")
-      .style("display", "none")
-      .text("-")
-      .attr("cursor", "pointer")
-      .on("mouseenter", function () {
-        select(this).attr("fill", "orange")
-      })
-      .on("mouseleave", function () {
-        select(this).attr("fill", null)
-      })
-      .on("click", (...[clickEvent, nodeDatum]) => {
-        clickEvent.stopPropagation()
-        opts.onNodeRemove(nodeDatum)
       })
 
     nodeSelection
@@ -249,6 +219,28 @@ export class NodeUI<Container extends BaseType, Datum> {
     const groupsToUpdate = [nodeSelection, nodeEnter]
 
     groupsToUpdate.forEach((nodeGroup) => {
+      plusButton.add({
+        container: nodeGroup,
+        onClick: (nodeDatum) => {
+          opts.onNodeAdd(nodeDatum)
+        },
+      })
+
+      minusButton.add({
+        container: nodeGroup,
+        onClick: (nodeDatum) => {
+          opts.onNodeRemove(nodeDatum)
+        },
+      })
+
+      nodeGroup.each(function (nodeDatum) {
+        const isHovered = hoveredItems.has(getNodeId(nodeDatum))
+
+        if (isHovered) {
+          showButtonsIfNecessary(this)
+        }
+      })
+
       nodeGroup.attr("cursor", (treeNode) =>
         hasDescendants(treeNode) ? "pointer" : "default"
       )

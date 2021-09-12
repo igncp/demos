@@ -78,14 +78,17 @@ const svgHeight = sankeyHeight + legendHeight
 export type ChartConfig<NodeData, LinkData> = {
   chartLinks: LinkData[]
   chartNodes: NodeData[]
-  getLinkTitle: (o: {
+  getLinkTitle: (linkInfo: {
     sankeyLink: LinkData
     sankeyLinkSource: NodeData
     sankeyLinkTarget: NodeData
   }) => string
   getNodeId: (node: NodeData) => string
   getNodeText: (node: NodeData) => string
-  getNodeTitle: (o: { nodeValue: number; sankeyNode: NodeData }) => string
+  getNodeTitle: (nodeInfo: {
+    nodeValue: number
+    sankeyNode: NodeData
+  }) => string
   onNodeClick?: (node: NodeData) => boolean
   rootElId: string
 }

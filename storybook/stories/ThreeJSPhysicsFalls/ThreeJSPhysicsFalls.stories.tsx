@@ -63,7 +63,7 @@ const createPhysics = (previousSimulation: Simulation | null): Physics =>
 
 const speedScale = scaleLinear().domain([0, 200]).range([200, 1])
 
-type CreateDemo = (o: {
+type CreateDemo = (options: {
   physics: Physics
   previousSimulation: Simulation | null
   props: Props
@@ -250,7 +250,7 @@ const createDemo: CreateDemo = ({
   return createSimulation()
 }
 
-type Demo = (o: {
+type Demo = (config: {
   previousSimulation: Simulation | null
   props: Props
 }) => Simulation

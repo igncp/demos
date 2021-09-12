@@ -12,7 +12,7 @@ enum SpinnerType {
 }
 
 type Props = { color: string; size: number; type: SpinnerType }
-type SpinnerFn = (o: {
+type SpinnerFn = (config: {
   props: Props
   svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
 }) => void

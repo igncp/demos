@@ -6,7 +6,7 @@ const treeLinkPathClass = "tree-link"
 
 type DiagonalLink = { source: Point; target: Point }
 
-type LinkUIOpts<Container extends BaseType, NodeDatum> = CommonUIProps<
+type UILinkOpts<Container extends BaseType, NodeDatum> = CommonUIProps<
   Container,
   NodeDatum
 >
@@ -15,16 +15,16 @@ type LinkUIOpts<Container extends BaseType, NodeDatum> = CommonUIProps<
  * Responsible for handle the UI of the link, without any knowledge of the node
  * tree structure, with a constraint on the link data.
  */
-export class LinkUI<
+export class UILink<
   Container extends BaseType,
   LinkDatum extends DiagonalLink,
   NodeDatum
 > {
-  private readonly initialOpts: LinkUIOpts<Container, NodeDatum>
+  private readonly initialOpts: UILinkOpts<Container, NodeDatum>
   private readonly linkG: Selection<SVGGElement, NodeDatum, Element, unknown>
   private readonly linkPath: Link<unknown, DiagonalLink, Point>
 
-  public constructor(opts: LinkUIOpts<Container, NodeDatum>) {
+  public constructor(opts: UILinkOpts<Container, NodeDatum>) {
     this.initialOpts = opts
 
     this.linkPath = linkHorizontal<DiagonalLink, Point>()
@@ -40,7 +40,7 @@ export class LinkUI<
   }
 
   public update(opts: {
-    getData: () => [LinkDatum[], (o: LinkDatum) => number]
+    getData: () => [LinkDatum[], (linkData: LinkDatum) => number]
     source: NodeDatum
   }) {
     const {

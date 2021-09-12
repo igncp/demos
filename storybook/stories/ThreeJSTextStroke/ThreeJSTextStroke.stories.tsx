@@ -39,7 +39,7 @@ type Simulation = {
 
 const font = new Font(FontData)
 
-type CreateDemo = (o: {
+type CreateDemo = (config: {
   prevSimulation: Simulation | null
   props: Props
 }) => Simulation

@@ -21,7 +21,7 @@ type THREEGeometry = any
 type Point = { x: number; y: number; z: number }
 type MeshLike = InstancedMesh | Mesh
 
-type Compose = (o: {
+type Compose = (options: {
   arrayBaseIndex: number
   matrixArray: number[]
   position: Point
@@ -78,7 +78,7 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
   const meshes: MeshLike[] = []
   const meshMap = new WeakMap()
 
-  type HandleMesh = (o: {
+  type HandleMesh = (options: {
     mass: number
     objectMesh: Mesh
     oimoGeometry: OIMOGeometry
@@ -110,7 +110,7 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
     }
   }
 
-  type HandleInstancedMesh = (o: {
+  type HandleInstancedMesh = (options: {
     mass: number
     objectMesh: InstancedMesh
     oimoGeometry: OIMOGeometry
@@ -175,7 +175,7 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
     return new OSphereGeometry(radius)
   }
 
-  type AddMesh = (o: { mass?: number; objectMesh: MeshLike }) => void
+  type AddMesh = (options: { mass?: number; objectMesh: MeshLike }) => void
 
   const addMesh: AddMesh = ({ mass = 0, objectMesh }) => {
     const oimoGeometry = getOIMOGeometry(objectMesh.geometry)
@@ -189,7 +189,7 @@ const createOimoPhysics = ({ frameRate = 90 } = {}) => {
     }
   }
 
-  type SetMeshPosition = (o: {
+  type SetMeshPosition = (options: {
     bodyIndex?: number
     objectMesh: MeshLike
     position: Vector3

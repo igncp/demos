@@ -15,7 +15,7 @@ const ROOT_ID = "example"
 
 const colors = ["#f35d4f", "#f36849", "#c0d988", "#6ddaf1", "#f1e85b"]
 
-type GetRandomInt = (o: { max: number; min: number }) => number
+type GetRandomInt = (options: { max: number; min: number }) => number
 
 const getRandomInt: GetRandomInt = ({ max, min }) =>
   Math.floor(Math.random() * (max - min + 1)) + min

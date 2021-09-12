@@ -32,6 +32,7 @@ module.exports = [
   "n2",
   "num",
   "nums",
+  "o",
   "p",
   "p1",
   "p2",

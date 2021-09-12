@@ -112,7 +112,10 @@ export type ChartConfig<ChartData extends ChartDataBase> = {
   chartTitle: string
   getItemLimitLeft: (chartItem: ChartData) => Date
   getItemLimitRight: (chartItem: ChartData) => Date
-  getItemText: (o: { chartItem: ChartData; maxLetters: number }) => string
+  getItemText: (itemInfo: {
+    chartItem: ChartData
+    maxLetters: number
+  }) => string
   getItemTitle: (chartItem: ChartData) => string
   getSortFn: (
     sortOrder: SortOrder

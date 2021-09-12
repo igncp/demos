@@ -113,7 +113,10 @@ const settings = {
 
 const height = 600
 
-type RenderGraph = (o: { rootElId: string; vectorsData: VectorsData }) => void
+type RenderGraph = (chartConfig: {
+  rootElId: string
+  vectorsData: VectorsData
+}) => void
 
 const renderGraph: RenderGraph = ({ rootElId, vectorsData }) => {
   const { links, nodes } = vectorsData

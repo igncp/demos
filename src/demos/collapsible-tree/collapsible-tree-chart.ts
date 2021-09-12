@@ -9,8 +9,8 @@ import {
   tree as treeD3,
 } from "d3"
 
-import { LinkUI } from "./collapsible-tree-chart-link-ui"
-import { NodeUI } from "./collapsible-tree-chart-node-ui"
+import { UILink } from "./collapsible-tree-chart-ui-link"
+import { UINode } from "./collapsible-tree-chart-ui-node"
 import * as styles from "./collapsible-tree.module.css"
 
 const inlineStyles = {
@@ -67,9 +67,9 @@ export const findParentNode = <NodeData>({
   )
 }
 
-type DataNode<BaseData> = BaseData &
+type ChartNode<BaseData> = BaseData &
   NodeShape<{
-    _children: Array<HierarchyPointNode<DataNode<BaseData>>> | undefined
+    _children: Array<HierarchyPointNode<ChartNode<BaseData>>> | undefined
     x: number
     x0: number
     y: number
@@ -86,12 +86,14 @@ const margin = {
 const openCloseAnimationDuration = 750
 const height = 800 - margin.top - margin.bottom
 
-const getDataNode = <BaseData>(
+const getChartNode = <BaseData>(
   initialNode: NodeShape<BaseData>
-): DataNode<BaseData> => ({
+): ChartNode<BaseData> => ({
   ...initialNode,
   _children: undefined,
-  children: (initialNode.children ?? []).map((subNode) => getDataNode(subNode)),
+  children: (initialNode.children ?? []).map((subNode) =>
+    getChartNode(subNode)
+  ),
   x: 0,
   x0: 0,
   y: 0,
@@ -134,11 +136,11 @@ const setupDrag = <SelectionData>(
 }
 
 export type ChartConfig<BaseData> = {
-  canBeRemoved: (node: DataNode<BaseData>) => boolean
-  getNodeId: (node: DataNode<BaseData>) => number
-  getNodeLabel: (node: DataNode<BaseData>) => string
-  onNodeAdd: (node: DataNode<BaseData>) => NodeShape<BaseData>
-  onNodeRemove: (node: DataNode<BaseData>) => NodeShape<BaseData>
+  canBeRemoved: (node: ChartNode<BaseData>) => boolean
+  getNodeId: (node: ChartNode<BaseData>) => number
+  getNodeLabel: (node: ChartNode<BaseData>) => string
+  onNodeAdd: (node: ChartNode<BaseData>) => NodeShape<BaseData>
+  onNodeRemove: (node: ChartNode<BaseData>) => NodeShape<BaseData>
   rootData: NodeShape<BaseData>
   rootElId: string
 }
@@ -153,17 +155,17 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
   const width =
     rootEl.getBoundingClientRect().width - margin.right - margin.left
 
-  type TreeNode = HierarchyPointNode<DataNode<BaseData>>
-  type TreeLink = HierarchyPointLink<DataNode<BaseData>>
+  type TreeNode = HierarchyPointNode<ChartNode<BaseData>>
+  type TreeLink = HierarchyPointLink<ChartNode<BaseData>>
 
-  const dataNodeRoot = getDataNode(rootData)
+  const dataNodeRoot = getChartNode(rootData)
 
-  const rootHierarchy = hierarchy<DataNode<BaseData>>(dataNodeRoot)
+  const rootHierarchy = hierarchy<ChartNode<BaseData>>(dataNodeRoot)
 
   rootHierarchy.data.x0 = height / 2
   rootHierarchy.data.y0 = 0
 
-  const buildTree = treeD3<DataNode<BaseData>>().nodeSize([40, 250])
+  const buildTree = treeD3<ChartNode<BaseData>>().nodeSize([40, 250])
 
   const rootTree = buildTree(rootHierarchy)
 
@@ -194,14 +196,14 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
     openCloseAnimationDuration,
   }
 
-  const linkUI = new LinkUI<SVGGElement, TreeLink, TreeNode>(commonUIOpts)
+  const uiLink = new UILink<SVGGElement, TreeLink, TreeNode>(commonUIOpts)
 
-  const nodeUI = new NodeUI({
+  const uiNode = new UINode({
     ...commonUIOpts,
     displayRemoveButton: (treeNode) => chartConfig.canBeRemoved(treeNode.data),
     getNodeId: (treeNode) => chartConfig.getNodeId(treeNode.data),
     getPointingLinkForNode: (treeNode) =>
-      linkUI
+      uiLink
         .getSelection()
         .filter(
           (link) =>
@@ -218,15 +220,15 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
 
     buildTree(rootHierarchy)
 
-    nodeUI.update({
+    uiNode.update({
       getData: () => [
         nodes,
         (treeNode) => chartConfig.getNodeId(treeNode.data),
       ],
       onNodeAdd: (clickedTreeNode) => {
         const newNodeData = chartConfig.onNodeAdd(clickedTreeNode.data)
-        const newDataNode = getDataNode(newNodeData)
-        const newNodeHirarchy = hierarchy<DataNode<BaseData>>(
+        const newDataNode = getChartNode(newNodeData)
+        const newNodeHirarchy = hierarchy<ChartNode<BaseData>>(
           newDataNode
         ) as TreeNode
 
@@ -242,7 +244,9 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
         clickedTreeNode.data.children = clickedTreeNode.data.children ?? []
         clickedTreeNode.data.children.push(newNodeHirarchy.data)
 
-        update(clickedTreeNode)
+        window.requestAnimationFrame(() => {
+          update(clickedTreeNode)
+        })
       },
       onNodeClick: (treeNode) => {
         treeNode.children = treeNode.children
@@ -257,7 +261,7 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
         const treeNode = findNode({
           getId: (node) => chartConfig.getNodeId(node.data),
           node: rootHierarchy,
-          nodeId: chartConfig.getNodeId(parentNode as DataNode<BaseData>),
+          nodeId: chartConfig.getNodeId(parentNode as ChartNode<BaseData>),
         }) as TreeNode
 
         const nodeIndex = treeNode.children!.findIndex(
@@ -273,7 +277,7 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
       source,
     })
 
-    linkUI.update({
+    uiLink.update({
       getData: () => [
         links,
         (treeLink) => chartConfig.getNodeId(treeLink.target.data),

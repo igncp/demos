@@ -49,7 +49,7 @@ const getNodeText = (node: HierarchyRectNode) => {
   return ""
 }
 
-type RenderChart = (o: {
+type RenderChart = (chartConfig: {
   partitionType: PartitionType
   rootData: DataNode
   rootElId: string
