@@ -1,0 +1,300 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>collapsible-tree-chart-node-ui.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts</td><td class="">98.49%</td><td class="">95%</td><td class="">397</td><td class="">391</td><td class="">6</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import anime from &quot;animejs&quot;
+import { BaseType, Selection, select } from &quot;d3&quot;
+
+import { CommonUIProps } from &quot;./collapsible-tree-chart-ui-common&quot;
+
+type NodeUIOpts&lt;Container extends BaseType, Datum&gt; = CommonUIProps&lt;
+  Container,
+  Datum
+&gt; &amp;
+  Readonly&lt;{
+    displayRemoveButton: (o: Datum) =&gt; boolean
+    getNodeId: (o: Datum) =&gt; number
+    getPointingLinkForNode: (
+      o: Datum
+    ) =&gt; Selection&lt;SVGElement, unknown, SVGElement, unknown&gt;
+    getText: (o: Datum) =&gt; string
+    hasDescendants: (node: Datum) =&gt; boolean
+  }&gt;
+
+const nodeCircleClass = &quot;node-circle&quot;
+const nodeLabelClass = &quot;node-label&quot;
+const plusTriggerClass = &quot;plus-trigger&quot;
+const minusTriggerClass = &quot;minus-trigger&quot;
+
+const triggerClasses = [plusTriggerClass, minusTriggerClass]
+
+/**
+ * Responsible for handle the UI of the node, without any knowledge of the node
+ * tree structure (it doesn&#x27;t know how the children nodes are referenced)
+ */
+export class NodeUI&lt;Container extends BaseType, Datum&gt; {
+  private readonly initialOpts: NodeUIOpts&lt;Container, Datum&gt;
+  private readonly nodeG: Selection&lt;SVGGElement, Datum, Element, unknown&gt;
+  private readonly hoveredItems = new Set&lt;number&gt;()
+
+  private readonly circleLinkForEffect: Selection&lt;
+    SVGCircleElement,
+    Datum,
+    Element,
+    unknown
+  &gt;
+
+  public constructor(opts: NodeUIOpts&lt;Container, Datum&gt;) {
+    this.initialOpts = opts
+
+    this.nodeG = this.initialOpts.container
+      .append(&quot;g&quot;)
+      .attr(&quot;pointer-events&quot;, &quot;all&quot;)
+
+    this.circleLinkForEffect = this.initialOpts.container
+      .insert(&quot;circle&quot;, &quot;:first-child&quot;)
+      .attr(&quot;r&quot;, 4)
+      .attr(&quot;fill&quot;, &quot;none&quot;)
+  }
+
+  public update(opts: {
+    getData: () =&gt; [Datum[], (o: Datum) =&gt; number]
+    onNodeAdd: (node: Datum) =&gt; void
+    onNodeClick: (node: Datum) =&gt; void
+    onNodeRemove: (node: Datum) =&gt; void
+    source: Datum
+  }) {
+    const { source } = opts
+    const {
+      circleLinkForEffect,
+      hoveredItems,
+      initialOpts: {
+        displayRemoveButton,
+        getInitialPosition,
+        getNodeId,
+        getPointingLinkForNode,
+        getPosition,
+        getText,
+        hasDescendants,
+        linkDefaultColor,
+      },
+    } = this
+
+    const nodeSelection = this.nodeG
+      .selectAll&lt;SVGGElement, Datum&gt;(&quot;g&quot;)
+      .data(...opts.getData())
+
+    const circleDefaultFill = (node: Datum) =&gt; {
+      if (hasDescendants(node)) {
+        return hoveredItems.has(getNodeId(node)) ? &quot;blue&quot; : &quot;green&quot;
+      }
+
+      return &quot;red&quot;
+    }
+
+    const nodeEnter = nodeSelection
+      .enter()
+      .append(&quot;g&quot;)
+      .attr(&quot;transform&quot;, () =&gt; {
+        const position = getInitialPosition(source)
+
+        return `translate(${position.y},${position.x})`
+      })
+      .attr(&quot;fill-opacity&quot;, 0)
+      .attr(&quot;stroke-opacity&quot;, 0)
+      .on(&quot;click&quot;, (...[, treeNode]) =&gt; {
+        opts.onNodeClick(treeNode)
+      })
+      .on(&quot;mouseenter&quot;, function (...[, focusedTreeNode]) {
+        hoveredItems.add(getNodeId(focusedTreeNode))
+
+        select&lt;SVGGElement, Datum&gt;(this)
+          .select&lt;SVGCircleElement&gt;(&quot;circle&quot;)
+          .attr(&quot;fill&quot;, circleDefaultFill)
+
+        triggerClasses.forEach((className) =&gt; {
+          select&lt;SVGGElement, Datum&gt;(this)
+            .select&lt;SVGTextElement&gt;(`.${className}`)
+            .style(&quot;display&quot;, (node) =&gt;
+              className !== minusTriggerClass || displayRemoveButton(node)
+                ? &quot;block&quot;
+                : &quot;none&quot;
+            )
+        })
+
+        const pointingLink = getPointingLinkForNode(focusedTreeNode)
+
+        if (!pointingLink.size()) {
+          return
+        }
+
+        pointingLink.style(&quot;stroke&quot;, &quot;orange&quot;)
+        circleLinkForEffect.attr(&quot;fill&quot;, &quot;orange&quot;)
+
+        const animePath = anime.path(pointingLink.node() as SVGElement)
+
+        anime({
+          duration: 500,
+          easing: &quot;easeInOutSine&quot;,
+          endDelay: 1000,
+          loop: true,
+          targets: circleLinkForEffect.node(),
+          translateX: animePath(&quot;x&quot;),
+          translateY: animePath(&quot;y&quot;),
+        })
+      })
+      .on(&quot;mouseleave&quot;, function (...[, focusedTreeNode]) {
+        hoveredItems.delete(getNodeId(focusedTreeNode))
+
+        select&lt;SVGGElement, Datum&gt;(this)
+          .select&lt;SVGCircleElement&gt;(&quot;circle&quot;)
+          .attr(&quot;fill&quot;, circleDefaultFill)
+
+        triggerClasses.forEach((className) =&gt; {
+          select&lt;SVGGElement, Datum&gt;(this)
+            .select&lt;SVGTextElement&gt;(`.${className}`)
+            .style(&quot;display&quot;, &quot;none&quot;)
+        })
+
+        const pointingLink = getPointingLinkForNode(focusedTreeNode)
+
+        if (!pointingLink.size()) {
+          return
+        }
+
+        circleLinkForEffect.attr(&quot;fill&quot;, &quot;none&quot;)
+
+        pointingLink.style(&quot;stroke&quot;, linkDefaultColor)
+        anime.remove(circleLinkForEffect.node())
+      })
+
+    nodeEnter
+      .append(&quot;circle&quot;)
+      .attr(&quot;r&quot;, 10)
+      .attr(&quot;class&quot;, nodeCircleClass)
+      .attr(&quot;stroke-width&quot;, 10)
+
+    const textDX = 10
+
+    nodeEnter
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, nodeLabelClass)
+      .attr(&quot;dy&quot;, &quot;5px&quot;)
+      .style(&quot;font-size&quot;, &quot;20px&quot;)
+      .text(getText)
+      .clone(true)
+      .lower()
+      .attr(&quot;stroke-linejoin&quot;, &quot;round&quot;)
+      .attr(&quot;stroke-width&quot;, 3)
+      .attr(&quot;stroke&quot;, &quot;white&quot;)
+
+    // this improves the interaction with the trigger buttons to maintain the
+    // hover
+    nodeEnter
+      .append(&quot;rect&quot;)
+      .attr(&quot;y&quot;, &quot;-25px&quot;)
+      .attr(&quot;x&quot;, &quot;-15px&quot;)
+      .style(&quot;fill&quot;, &quot;white&quot;)
+      .attr(&quot;height&quot;, &quot;15px&quot;)
+      .attr(&quot;width&quot;, &quot;30px&quot;)
+
+    nodeEnter
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, plusTriggerClass)
+      .attr(&quot;dy&quot;, &quot;-10px&quot;)
+      .attr(&quot;dx&quot;, &quot;0px&quot;)
+      .style(&quot;font-size&quot;, &quot;20px&quot;)
+      .style(&quot;display&quot;, &quot;none&quot;)
+      .text(&quot;+&quot;)
+      .attr(&quot;cursor&quot;, &quot;pointer&quot;)
+      .on(&quot;mouseenter&quot;, function () {
+        select(this).attr(&quot;fill&quot;, &quot;orange&quot;)
+      })
+      .on(&quot;mouseleave&quot;, function () {
+        select(this).attr(&quot;fill&quot;, null)
+      })
+      .on(&quot;click&quot;, (...[clickEvent, nodeDatum]) =&gt; {
+        clickEvent.stopPropagation()
+        opts.onNodeAdd(nodeDatum)
+      })
+
+    nodeEnter
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, minusTriggerClass)
+      .attr(&quot;dy&quot;, &quot;-10px&quot;)
+      .attr(&quot;dx&quot;, &quot;-15px&quot;)
+      .style(&quot;font-size&quot;, &quot;25px&quot;)
+      .style(&quot;display&quot;, &quot;none&quot;)
+      .text(&quot;-&quot;)
+      .attr(&quot;cursor&quot;, &quot;pointer&quot;)
+      .on(&quot;mouseenter&quot;, function () {
+        select(this).attr(&quot;fill&quot;, &quot;orange&quot;)
+      })
+      .on(&quot;mouseleave&quot;, function () {
+        select(this).attr(&quot;fill&quot;, null)
+      })
+      .on(&quot;click&quot;, (...[clickEvent, nodeDatum]) =&gt; {
+        clickEvent.stopPropagation()
+        opts.onNodeRemove(nodeDatum)
+      })
+
+    nodeSelection
+      .merge(nodeEnter)
+      .transition()
+      .duration(this.initialOpts.openCloseAnimationDuration)
+      .attr(&quot;transform&quot;, (treeNode) =&gt; {
+        const position = getPosition(treeNode)
+
+        return `translate(${position.y},${position.x})`
+      })
+      .attr(&quot;fill-opacity&quot;, 1)
+      .attr(&quot;stroke-opacity&quot;, 1)
+
+    const groupsToUpdate = [nodeSelection, nodeEnter]
+
+    groupsToUpdate.forEach((nodeGroup) =&gt; {
+      nodeGroup.attr(&quot;cursor&quot;, (treeNode) =&gt;
+        hasDescendants(treeNode) ? &quot;pointer&quot; : &quot;default&quot;
+      )
+
+      nodeGroup
+        .selectAll&lt;SVGCircleElement, Datum&gt;(`.${nodeCircleClass}`)
+        .attr(&quot;fill&quot;, circleDefaultFill)
+
+      nodeGroup
+        .selectAll&lt;SVGCircleElement, Datum&gt;(`.${nodeLabelClass}`)
+        .attr(&quot;dx&quot;, (treeNode) =&gt;
+          hasDescendants(treeNode) ? `-${textDX}px` : `${textDX}px`
+        )
+        .attr(&quot;x&quot;, (treeNode) =&gt; (hasDescendants(treeNode) ? -6 : 6))
+        .attr(&quot;text-anchor&quot;, (treeNode) =&gt;
+          hasDescendants(treeNode) ? &quot;end&quot; : &quot;start&quot;
+        )
+    })
+
+    const sourcePosition = getPosition(source)
+
+    nodeSelection
+      .exit()
+      .transition()
+      .duration(this.initialOpts.openCloseAnimationDuration)
+      .remove()
+      .attr(&quot;transform&quot;, `translate(${sourcePosition.y},${sourcePosition.x})`)
+      .attr(&quot;fill-opacity&quot;, 0)
+      .attr(&quot;stroke-opacity&quot;, 0)
+  }
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts&quot;,&quot;line&quot;:211,&quot;character&quot;:24,&quot;text&quot;:&quot;clickEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts&quot;,&quot;line&quot;:212,&quot;character&quot;:8,&quot;text&quot;:&quot;clickEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts&quot;,&quot;line&quot;:212,&quot;character&quot;:19,&quot;text&quot;:&quot;stopPropagation&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts&quot;,&quot;line&quot;:231,&quot;character&quot;:24,&quot;text&quot;:&quot;clickEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts&quot;,&quot;line&quot;:232,&quot;character&quot;:8,&quot;text&quot;:&quot;clickEvent&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts&quot;,&quot;line&quot;:232,&quot;character&quot;:19,&quot;text&quot;:&quot;stopPropagation&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 12 Sep 2021 13:15:39 GMT</p>
+    </body>
+  </html>
+  

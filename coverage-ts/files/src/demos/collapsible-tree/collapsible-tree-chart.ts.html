@@ -11,23 +11,73 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/collapsible-tree/collapsible-tree-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">512</td><td class="">512</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/collapsible-tree/collapsible-tree-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">555</td><td class="">555</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   D3DragEvent,
-  HierarchyNode,
   HierarchyPointLink,
   HierarchyPointNode,
   Selection,
   drag,
   hierarchy,
-  linkHorizontal,
   select,
   tree as treeD3,
 } from &quot;d3&quot;
 
+import { LinkUI } from &quot;./collapsible-tree-chart-link-ui&quot;
+import { NodeUI } from &quot;./collapsible-tree-chart-node-ui&quot;
 import * as styles from &quot;./collapsible-tree.module.css&quot;
+
+const inlineStyles = {
+  linkDefaultColor: &quot;#555&quot;,
+} as const
 
 export type NodeShape&lt;Content&gt; = Content &amp; {
   children?: Array&lt;NodeShape&lt;Content&gt;&gt;
+}
+
+export const findNode = &lt;NodeData&gt;({
+  getId,
+  node,
+  nodeId,
+}: {
+  getId: (node: NodeShape&lt;NodeData&gt;) =&gt; number
+  node: NodeShape&lt;NodeData&gt;
+  nodeId: number
+}): NodeShape&lt;NodeData&gt; | null =&gt; {
+  if (getId(node) === nodeId) {
+    return node
+  }
+
+  return (node.children ?? []).reduce(
+    (...[acc, otherNode]) =&gt;
+      acc ?? findNode({ getId, node: otherNode, nodeId }),
+    null as NodeShape&lt;NodeData&gt; | null
+  )
+}
+
+export const findParentNode = &lt;NodeData&gt;({
+  getId,
+  node,
+  nodeId,
+}: {
+  getId: (node: NodeShape&lt;NodeData&gt;) =&gt; number
+  node: NodeShape&lt;NodeData&gt;
+  nodeId: number
+}): NodeShape&lt;NodeData&gt; | null =&gt; {
+  if (!node.children?.length) {
+    return null
+  }
+
+  const hasNode = node.children.some((otherNode) =&gt; getId(otherNode) === nodeId)
+
+  if (hasNode) {
+    return node
+  }
+
+  return node.children.reduce(
+    (...[acc, otherNode]) =&gt;
+      acc ?? findParentNode({ getId, node: otherNode, nodeId }),
+    null as NodeShape&lt;NodeData&gt; | null
+  )
 }
 
 type DataNode&lt;BaseData&gt; = BaseData &amp;
@@ -39,9 +89,6 @@ type DataNode&lt;BaseData&gt; = BaseData &amp;
     y0: number
   }&gt;
 
-type DiagonalNode = { x: number; y: number }
-type DiagonalLink = { source: DiagonalNode; target: DiagonalNode }
-
 const margin = {
   bottom: 20,
   left: 120,
@@ -49,7 +96,7 @@ const margin = {
   top: 20,
 }
 
-const duration = 750
+const openCloseAnimationDuration = 750
 const height = 800 - margin.top - margin.bottom
 
 const getDataNode = &lt;BaseData&gt;(
@@ -100,8 +147,11 @@ const setupDrag = &lt;SelectionData&gt;(
 }
 
 export type ChartConfig&lt;BaseData&gt; = {
+  canBeRemoved: (node: DataNode&lt;BaseData&gt;) =&gt; boolean
   getNodeId: (node: DataNode&lt;BaseData&gt;) =&gt; number
   getNodeLabel: (node: DataNode&lt;BaseData&gt;) =&gt; string
+  onNodeAdd: (node: DataNode&lt;BaseData&gt;) =&gt; NodeShape&lt;BaseData&gt;
+  onNodeRemove: (node: DataNode&lt;BaseData&gt;) =&gt; NodeShape&lt;BaseData&gt;
   rootData: NodeShape&lt;BaseData&gt;
   rootElId: string
 }
@@ -118,7 +168,6 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
 
   type TreeNode = HierarchyPointNode&lt;DataNode&lt;BaseData&gt;&gt;
   type TreeLink = HierarchyPointLink&lt;DataNode&lt;BaseData&gt;&gt;
-  type HierarchyDataNode = HierarchyNode&lt;DataNode&lt;BaseData&gt;&gt;
 
   const dataNodeRoot = getDataNode(rootData)
 
@@ -127,9 +176,9 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
   rootHierarchy.data.x0 = height / 2
   rootHierarchy.data.y0 = 0
 
-  const tree = treeD3&lt;DataNode&lt;BaseData&gt;&gt;().nodeSize([40, 250])
+  const buildTree = treeD3&lt;DataNode&lt;BaseData&gt;&gt;().nodeSize([40, 250])
 
-  const rootTree = tree(rootHierarchy)
+  const rootTree = buildTree(rootHierarchy)
 
   rootTree.descendants().forEach((treeNode: TreeNode) =&gt; {
     treeNode.data._children = treeNode.children
@@ -139,10 +188,6 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
     }
   })
 
-  const diagonal = linkHorizontal&lt;DiagonalLink, DiagonalNode&gt;()
-    .x((diagonalNode) =&gt; diagonalNode.y)
-    .y((diagonalNode) =&gt; diagonalNode.x)
-
   const svgG = select&lt;SVGElement, TreeNode&gt;(`#${rootElId}`)
     .append(&quot;svg&quot;)
     .attr(&quot;width&quot;, width + margin.right + margin.left)
@@ -151,142 +196,103 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
 
   setupDrag(svgG)
 
-  const gLink = svgG
-    .append(&quot;g&quot;)
-    .attr(&quot;fill&quot;, &quot;none&quot;)
-    .attr(&quot;stroke&quot;, &quot;#555&quot;)
-    .attr(&quot;stroke-opacity&quot;, 0.4)
-    .attr(&quot;stroke-width&quot;, 1.5)
+  const commonUIOpts = {
+    container: svgG,
+    getInitialPosition: (node: TreeNode) =&gt; ({
+      x: node.data.x0,
+      y: node.data.y0,
+    }),
+    getPosition: (node: TreeNode) =&gt; ({ x: node.x, y: node.y }),
+    linkDefaultColor: inlineStyles.linkDefaultColor,
+    openCloseAnimationDuration,
+  }
 
-  const gNode = svgG.append(&quot;g&quot;).attr(&quot;pointer-events&quot;, &quot;all&quot;)
+  const linkUI = new LinkUI&lt;SVGGElement, TreeLink, TreeNode&gt;(commonUIOpts)
+
+  const nodeUI = new NodeUI({
+    ...commonUIOpts,
+    displayRemoveButton: (treeNode) =&gt; chartConfig.canBeRemoved(treeNode.data),
+    getNodeId: (treeNode) =&gt; chartConfig.getNodeId(treeNode.data),
+    getPointingLinkForNode: (treeNode) =&gt;
+      linkUI
+        .getSelection()
+        .filter(
+          (link) =&gt;
+            chartConfig.getNodeId(link.target.data) ===
+            chartConfig.getNodeId(treeNode.data)
+        ) as unknown as Selection&lt;SVGElement, unknown, SVGElement, unknown&gt;,
+    getText: (treeNode) =&gt; chartConfig.getNodeLabel(treeNode.data),
+    hasDescendants: (node) =&gt; !!node.data.children?.length,
+  })
 
   const update = function (source: TreeNode) {
     const nodes = rootTree.descendants().reverse()
     const links = rootTree.links()
 
-    tree(rootHierarchy)
+    buildTree(rootHierarchy)
 
-    let left = rootHierarchy
-    let right = rootHierarchy
+    nodeUI.update({
+      getData: () =&gt; [
+        nodes,
+        (treeNode) =&gt; chartConfig.getNodeId(treeNode.data),
+      ],
+      onNodeAdd: (clickedTreeNode) =&gt; {
+        const newNodeData = chartConfig.onNodeAdd(clickedTreeNode.data)
+        const newDataNode = getDataNode(newNodeData)
+        const newNodeHirarchy = hierarchy&lt;DataNode&lt;BaseData&gt;&gt;(
+          newDataNode
+        ) as TreeNode
 
-    rootHierarchy.eachBefore((node: HierarchyDataNode) =&gt; {
-      if (node.data.x &lt; left.data.x) {
-        left = node
-      }
+        // @ts-ignore
+        newNodeHirarchy.depth = clickedTreeNode.depth + 1
+        newNodeHirarchy.parent = clickedTreeNode
 
-      if (node.data.x &gt; right.data.x) {
-        right = node
-      }
-    })
+        clickedTreeNode.children =
+          clickedTreeNode.children ?? clickedTreeNode.data._children ?? []
+        clickedTreeNode.data._children = clickedTreeNode.children
+        clickedTreeNode.children.push(newNodeHirarchy)
 
-    const node = gNode
-      .selectAll&lt;SVGGElement, TreeNode&gt;(&quot;g&quot;)
-      .data(nodes, (treeNode) =&gt; chartConfig.getNodeId(treeNode.data))
+        clickedTreeNode.data.children = clickedTreeNode.data.children ?? []
+        clickedTreeNode.data.children.push(newNodeHirarchy.data)
 
-    const circleDefaultFill = (treeNode: TreeNode) =&gt;
-      treeNode.data._children ? &quot;green&quot; : &quot;red&quot;
-
-    const nodeEnter = node
-      .enter()
-      .append(&quot;g&quot;)
-      .attr(&quot;transform&quot;, () =&gt; `translate(${source.data.y0},${source.data.x0})`)
-      .attr(&quot;cursor&quot;, (treeNode) =&gt;
-        treeNode.data._children ? &quot;pointer&quot; : &quot;default&quot;
-      )
-      .attr(&quot;fill-opacity&quot;, 0)
-      .attr(&quot;stroke-opacity&quot;, 0)
-      .on(&quot;click&quot;, (...[, treeNode]) =&gt; {
+        update(clickedTreeNode)
+      },
+      onNodeClick: (treeNode) =&gt; {
         treeNode.children = treeNode.children
           ? undefined
           : treeNode.data._children
 
         update(treeNode)
-      })
-      .on(&quot;mouseenter&quot;, function () {
-        select&lt;SVGGElement, TreeNode&gt;(this)
-          .select&lt;SVGCircleElement&gt;(&quot;circle&quot;)
-          .attr(&quot;fill&quot;, (treeNode) =&gt;
-            treeNode.data._children ? &quot;blue&quot; : circleDefaultFill(treeNode)
-          )
-      })
-      .on(&quot;mouseleave&quot;, function () {
-        select&lt;SVGGElement, TreeNode&gt;(this)
-          .select&lt;SVGCircleElement&gt;(&quot;circle&quot;)
-          .attr(&quot;fill&quot;, circleDefaultFill)
-      })
+      },
+      onNodeRemove: (clickedTreeNode) =&gt; {
+        const parentNode = chartConfig.onNodeRemove(clickedTreeNode.data)
 
-    nodeEnter
-      .append(&quot;circle&quot;)
-      .attr(&quot;r&quot;, 10)
-      .attr(&quot;fill&quot;, circleDefaultFill)
-      .attr(&quot;stroke-width&quot;, 10)
+        const treeNode = findNode({
+          getId: (node) =&gt; chartConfig.getNodeId(node.data),
+          node: rootHierarchy,
+          nodeId: chartConfig.getNodeId(parentNode as DataNode&lt;BaseData&gt;),
+        }) as TreeNode
 
-    nodeEnter
-      .append(&quot;text&quot;)
-      .attr(&quot;dy&quot;, &quot;5px&quot;)
-      .attr(&quot;dx&quot;, (treeNode) =&gt; (treeNode.data._children ? &quot;-10px&quot; : &quot;10px&quot;))
-      .attr(&quot;x&quot;, (treeNode) =&gt; (treeNode.data._children ? -6 : 6))
-      .style(&quot;font-size&quot;, &quot;20px&quot;)
-      .attr(&quot;text-anchor&quot;, (treeNode) =&gt;
-        treeNode.data._children ? &quot;end&quot; : &quot;start&quot;
-      )
-      .text((treeNode) =&gt; chartConfig.getNodeLabel(treeNode.data))
-      .clone(true)
-      .lower()
-      .attr(&quot;stroke-linejoin&quot;, &quot;round&quot;)
-      .attr(&quot;stroke-width&quot;, 3)
-      .attr(&quot;stroke&quot;, &quot;white&quot;)
+        const nodeIndex = treeNode.children!.findIndex(
+          (node) =&gt;
+            chartConfig.getNodeId(node.data) ===
+            chartConfig.getNodeId(clickedTreeNode.data)
+        )
 
-    node
-      .merge(nodeEnter)
-      .transition()
-      .duration(duration)
-      .attr(&quot;transform&quot;, (treeNode) =&gt; `translate(${treeNode.y},${treeNode.x})`)
-      .attr(&quot;fill-opacity&quot;, 1)
-      .attr(&quot;stroke-opacity&quot;, 1)
+        treeNode.children!.splice(nodeIndex, 1)
 
-    node
-      .exit()
-      .transition()
-      .duration(duration)
-      .remove()
-      .attr(&quot;transform&quot;, () =&gt; `translate(${source.y},${source.x})`)
-      .attr(&quot;fill-opacity&quot;, 0)
-      .attr(&quot;stroke-opacity&quot;, 0)
+        update(treeNode)
+      },
+      source,
+    })
 
-    const link = gLink
-      .selectAll&lt;SVGPathElement, TreeLink&gt;(&quot;path&quot;)
-      .data(links, (treeLink) =&gt; chartConfig.getNodeId(treeLink.target.data))
-
-    const linkEnter = link
-      .enter()
-      .append(&quot;path&quot;)
-      .attr(&quot;d&quot;, () =&gt; {
-        const diagonalNode = {
-          x: source.data.x0,
-          y: source.data.y0,
-        }
-        const diagonalLink = { source: diagonalNode, target: diagonalNode }
-
-        return diagonal(diagonalLink)
-      })
-
-    link.merge(linkEnter).transition().duration(duration).attr(&quot;d&quot;, diagonal)
-
-    link
-      .exit()
-      .transition()
-      .duration(duration)
-      .remove()
-      .attr(&quot;d&quot;, () =&gt; {
-        const diagonalNode = {
-          x: source.x,
-          y: source.y,
-        }
-        const diagonalLink = { source: diagonalNode, target: diagonalNode }
-
-        return diagonal(diagonalLink)
-      })
+    linkUI.update({
+      getData: () =&gt; [
+        links,
+        (treeLink) =&gt; chartConfig.getNodeId(treeLink.target.data),
+      ],
+      source,
+    })
 
     rootTree.eachBefore((treeNode) =&gt; {
       treeNode.data.x0 = treeNode.x
@@ -297,7 +303,7 @@ export const renderChart = &lt;BaseData&gt;(chartConfig: ChartConfig&lt;BaseData
   update(rootTree)
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 11 Sep 2021 11:23:25 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 12 Sep 2021 13:15:39 GMT</p>
     </body>
   </html>
   

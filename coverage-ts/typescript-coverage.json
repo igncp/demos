@@ -17,69 +17,83 @@
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 3,
+      "line": 2,
       "character": 6,
       "text": "Raphael",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 8,
+      "line": 7,
       "character": 10,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 8,
+      "line": 7,
       "character": 18,
       "text": "Raphael",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 10,
+      "line": 9,
       "character": 21,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 10,
+      "line": 9,
       "character": 38,
       "text": "Raphael",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 11,
+      "line": 10,
       "character": 21,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 11,
+      "line": 10,
       "character": 27,
       "text": "canvas",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 12,
+      "line": 11,
       "character": 21,
       "text": "paper",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
-      "line": 12,
+      "line": 11,
       "character": 27,
       "text": "width",
       "kind": 1
     },
     {
       "file": "src/testing/raphael.ts",
+      "line": 12,
+      "character": 21,
+      "text": "paper",
+      "kind": 1
+    },
+    {
+      "file": "src/testing/raphael.ts",
+      "line": 12,
+      "character": 27,
+      "text": "height",
+      "kind": 1
+    },
+    {
+      "file": "src/testing/raphael.ts",
       "line": 13,
       "character": 21,
       "text": "paper",
@@ -89,20 +103,6 @@
       "file": "src/testing/raphael.ts",
       "line": 13,
       "character": 27,
-      "text": "height",
-      "kind": 1
-    },
-    {
-      "file": "src/testing/raphael.ts",
-      "line": 14,
-      "character": 22,
-      "text": "paper",
-      "kind": 1
-    },
-    {
-      "file": "src/testing/raphael.ts",
-      "line": 14,
-      "character": 36,
       "text": "getSize",
       "kind": 1
     },
@@ -825,6 +825,48 @@
       "line": 133,
       "character": 16,
       "text": "Raphael",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
+      "line": 211,
+      "character": 24,
+      "text": "clickEvent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
+      "line": 212,
+      "character": 8,
+      "text": "clickEvent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
+      "line": 212,
+      "character": 19,
+      "text": "stopPropagation",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
+      "line": 231,
+      "character": 24,
+      "text": "clickEvent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
+      "line": 232,
+      "character": 8,
+      "text": "clickEvent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/collapsible-tree/collapsible-tree-chart-node-ui.ts",
+      "line": 232,
+      "character": 19,
+      "text": "stopPropagation",
       "kind": 1
     },
     {
@@ -1724,8 +1766,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.0492386179176,
-  "total": 25874,
-  "covered": 25628,
-  "uncovered": 246
+  "percentage": 99.05166898731795,
+  "total": 26573,
+  "covered": 26321,
+  "uncovered": 252
 }
