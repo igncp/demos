@@ -21,9 +21,11 @@ https://igncp.github.io/demos/
 - Some in-browser unit tests using [QUnit](https://qunitjs.com/) for learning the usage of third-party dependencies better:
     - https://igncp.github.io/demos/testing
     - [src/pages/testing.tsx](./src/pages/testing.tsx)
-- It has extensive code-checks configurations:
+- It has extensive tooling for the code:
     - [ESLint](https://eslint.org/) config: [.eslintrc.js](./.eslintrc.js)
     - [stylelint](https://stylelint.io/) config: [stylelint.config.js](./stylelint.config.js)
+    - [ts-prune](https://github.com/nadeesha/ts-prune) script: [scripts/ts_prune.sh](scripts/ts_prune.sh)
+    - [typed-css-modules](https://github.com/Quramy/typed-css-modules) script: [scripts/ts_css.sh](scripts/ts_css.sh)
 - There is an [internal checklist](./research/charts-checklist.md) which aims to improve the quality and reusability of the charts
     - New charts should follow it completely but older charts (pre-2021) are still being updated to comply with it
 - Version from 2016 using [CoffeeScript](https://coffeescript.org/) and [Sail.js](https://sailsjs.com/): 
