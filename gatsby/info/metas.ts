@@ -19,10 +19,6 @@ const metas: Metas = {
       description:
         "Bar Chart example with a traslation interval, a custom color scale and dynamic entry of new data. You can also see how to animate an axis change.",
     },
-    "bubbles": {
-      description:
-        "Bubbles Chart example with NV3D as D3.js extension, using data from the Nike API, and with a depurated style, an horizontal axis and other color scheme.",
-    },
     "chord": {
       description:
         "Chord Chart example using D3.js, which has a different color scheme with a color for each country, and a special drop shadow filter for a 3D effect.",

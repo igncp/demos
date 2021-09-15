@@ -34,23 +34,6 @@ ul {
   list-style-type: circle;
 }
 
-.bullet {
-  font-size: 30px;
-  text-shadow: 0.5px 0.5px 1px #444;
-
-  &.d3js {
-    color: #9ac99d;
-  }
-
-  &.raphael {
-    color: orange;
-  }
-
-  &.storybook {
-    color: purple;
-  }
-}
-
 .home-demo-name-link {
   color: #67777a;
 }
@@ -59,31 +42,8 @@ ul {
   font-weight: bold;
 }
 
-.page-header {
-  font-family: 'Lobster', cursive;
-
-  a {
-    color: #324297;
-  }
-
-  h1 {
-    font-size: 4em;
-    text-shadow: 1px 1px 1px #ddd;
-  }
-
-  small {
-    color: #9bb9a8;
-    font-size: 0.5em;
-  }
-}
-
 .row {
   margin: 0;
-}
-
-.source-number {
-  color: #b91515;
-  font-weight: bold;
 }
 
 .back-home {
@@ -95,13 +55,6 @@ ul {
   white-space: pre-line;
 }
 
-#chart {
-  border-radius: 10px;
-  box-shadow: 0 0 20px 0.1px #ddd;
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-
 #code pre {
   background-color: #fff;
   border: 1px solid #3a9e4a;
@@ -109,100 +62,6 @@ ul {
   color: #000;
   font-size: 16px;
   padding: 20px;
-}
-
-#data-list,
-#sources-list {
-  margin-bottom: 30px;
-}
-
-#demos-legend {
-  text-align: center;
-
-  ul {
-    display: inline-block;
-    list-style-type: none;
-    margin-top: 10px;
-    padding: 10px 20px 10px 30px;
-    text-align: left;
-  }
-
-  li {
-    display: inline-block;
-    position: relative;
-
-    &:first-child {
-      margin-right: 30px;
-    }
-  }
-
-  .bullet {
-    left: -15px;
-    position: absolute;
-    top: -10px;
-  }
-}
-
-#demos-lists {
-  font-size: 1.1em;
-  letter-spacing: 1px;
-  margin-top: 15px;
-
-  a {
-    background-color: rgba(145, 145, 145, 0.08);
-    padding-left: 20px;
-    transition: 0.5s linear background-color;
-
-    &.highlight {
-      background-color: #fff4fe;
-
-      &:hover {
-        background-color: #ffe2f9;
-      }
-    }
-
-    &:hover {
-      background-color: rgba(145, 172, 196, 0.3);
-      font-weight: bold;
-    }
-
-    .bullet {
-      left: -30px;
-      position: absolute;
-      top: 0;
-    }
-  }
-}
-
-#demo-title {
-  margin-bottom: 20px;
-}
-
-#main-source {
-  color: #bbb;
-}
-
-#notes {
-  margin-bottom: 30px;
-  margin-top: 30px;
-}
-
-#sources-list {
-  margin-top: 30px;
-}
-
-#gh-buttons {
-  padding: 0;
-  text-align: right;
-}
-
-#demo-wip {
-  border: 1px solid orange;
-  border-radius: 5px;
-  color: orange;
-  cursor: default;
-  margin-left: 10px;
-  padding: 10px;
 }
 
 @media only screen and (max-width: 600px) {

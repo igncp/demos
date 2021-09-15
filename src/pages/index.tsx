@@ -5,6 +5,7 @@ import { IndexPageProps } from "@/common"
 
 import DemosList from "@/components/demos-list"
 import Layout from "@/components/layout"
+import * as styles from "@/components/styles/styles.module.css"
 
 const IndexPage = ({
   pageContext: { groupedDemos, meta, numberPerGroup },
@@ -26,18 +27,20 @@ const IndexPage = ({
       using libraries like D3.js or Raphaël, and extensions of those.
     </div>
 
-    <div id="demos-legend">
+    <div id={styles.demosLegend}>
       <ul className="bs-callout bs-callout-warning">
         <li>
-          <span className="bullet d3js">&#8226;</span> D3js
+          <span className={`${styles.bullet} ${styles.d3js}`}>&#8226;</span>{" "}
+          D3js
         </li>
         <li>
-          <span className="bullet raphael">&#8226;</span> Raphaël
+          <span className={`${styles.bullet} ${styles.raphael}`}>&#8226;</span>{" "}
+          Raphaël
         </li>
       </ul>
     </div>
 
-    <div className="row" id="demos-lists">
+    <div className="row" id={styles.demosLists}>
       <div className="col-lg-offset-2 col-lg-3">
         <DemosList demos={groupedDemos[0]} indexOffset={0} />
       </div>

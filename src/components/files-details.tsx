@@ -8,6 +8,8 @@ import React from "react"
 
 import { DemoInfo } from "@/common"
 
+import * as styles from "@/components/styles/styles.module.css"
+
 const CodeInGH = ({ filePath }: { filePath: string }) => (
   <>
     <span>| </span>
@@ -47,7 +49,7 @@ const FilesDetails = ({ demoInfo }: Props) => {
   return (
     <div>
       {!!demoInfo.notes.length && (
-        <div className="bs-callout bs-callout-info" id="notes">
+        <div className={`bs-callout bs-callout-info${styles.notes}`}>
           <p>
             <strong>Notes:</strong>
           </p>
@@ -59,7 +61,7 @@ const FilesDetails = ({ demoInfo }: Props) => {
         </div>
       )}
       {!!demoInfo.summary.length && (
-        <div className="bs-callout bs-callout-summary" id="notes">
+        <div className={`bs-callout bs-callout-summary ${styles.notes}`}>
           <p>
             <strong>Implementation Summary:</strong>
           </p>
@@ -73,14 +75,14 @@ const FilesDetails = ({ demoInfo }: Props) => {
           </ul>
         </div>
       )}
-      <div className="bs-callout bs-callout-primary" id="sources-list">
+      <div className="bs-callout bs-callout-primary" id={styles.sourcesList}>
         <p>
           <strong>Sources:</strong>
         </p>
         <ul>
           {demoInfo.sources.map((...[source, sourceIndex]) => (
             <li key={sourceIndex}>
-              <span className="source-number">[{sourceIndex + 1}]</span>:{" "}
+              <span className={styles.sourceNumber}>[{sourceIndex + 1}]</span>:{" "}
               <a href={source}>{source}</a>
             </li>
           ))}
@@ -112,7 +114,7 @@ const FilesDetails = ({ demoInfo }: Props) => {
         </div>
       )}
       {!!demoInfo.dataFiles.length && (
-        <div className="bs-callout bs-callout-warning" id="data-list">
+        <div className="bs-callout bs-callout-warning" id={styles.dataList}>
           <p>
             <strong>Data files: </strong>
             {demoInfo.dataFiles.map((...[file, fileIndex]) => (

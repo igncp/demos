@@ -7,11 +7,7 @@ import Demo from "@/components/demo"
 import main, { CONTAINER_ID } from "@/demos/icosahedron/icosahedron"
 
 const Icosahedron = ({ pageContext }: DemoPageProps) => (
-  <Demo
-    main={main}
-    pageContext={pageContext}
-    scripts={["/vendors/d3/d3.min.js"]}
-  >
+  <Demo main={main} pageContext={pageContext}>
     <div id={CONTAINER_ID} />
   </Demo>
 )

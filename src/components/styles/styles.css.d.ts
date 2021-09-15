@@ -7,29 +7,12 @@ declare const styles: {
   readonly "bs-callout-success": string
   readonly "bs-callout-summary": string
   readonly "bs-callout-warning": string
-  readonly "bullet": string
-  readonly "chart": string
   readonly "code": string
   readonly "container": string
-  readonly "d3js": string
-  readonly "data-list": string
-  readonly "demo-title": string
-  readonly "demo-wip": string
-  readonly "demos-legend": string
-  readonly "demos-lists": string
-  readonly "gh-buttons": string
   readonly "hide-mobile": string
-  readonly "highlight": string
   readonly "home-demo-name-link": string
   readonly "home-demo-number": string
-  readonly "main-source": string
-  readonly "notes": string
-  readonly "page-header": string
-  readonly "raphael": string
   readonly "row": string
-  readonly "source-number": string
-  readonly "sources-list": string
-  readonly "storybook": string
   readonly "ui-tooltip": string
 }
 export = styles

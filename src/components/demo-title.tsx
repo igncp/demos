@@ -1,5 +1,7 @@
 import React from "react"
 
+import * as styles from "@/components/styles/styles.module.css"
+
 type Props = {
   isCompleted: boolean
   mainSource: string
@@ -7,14 +9,14 @@ type Props = {
 }
 
 const DemoTitle = ({ isCompleted, mainSource, name }: Props) => (
-  <h2 className="row" id="demo-title">
+  <h2 className="row" id={styles.demoTitle}>
     <span className="col-xs-10">
       {name} Chart{" "}
-      <small id="main-source" title="Main Source">
+      <small id={styles.mainSource} title="Main Source">
         <a href={mainSource}>···</a>
       </small>
       {!isCompleted && (
-        <small id="demo-wip" title="This demo is still work in progress">
+        <small id={styles.demoWip} title="This demo is still work in progress">
           WIP
         </small>
       )}

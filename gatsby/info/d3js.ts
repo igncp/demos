@@ -51,7 +51,6 @@ const d3DelaunayItems = [
 export type D3JS = {
   "area": DemoBase
   "bars": DemoBase
-  "bubbles": DemoBase
   "chord": DemoBase
   "collapsible-tree": DemoBase
   "concentric-circles": DemoBase
@@ -108,19 +107,6 @@ const d3js: D3JS = {
       "The interval stops when you place the mouse over a bar",
     ],
     sources: ["http://codepen.io/basemoz/pen/mBoiL"],
-    summary: [],
-  },
-  "bubbles": {
-    dataFiles: ["data.json"],
-    docs: [],
-    isCompleted: true,
-    name: "Bubbles",
-    notes: [
-      'Using the <a href="https://github.com/novus/nvd3" target="_blank">NV3D</a> extension for D3JS',
-      "Data taken from the Nike API (via the Codepen)",
-      'You can click the "Maginify" button and click a point to zoom the chart',
-    ],
-    sources: ["http://codepen.io/linghzang3/pen/GFdzh"],
     summary: [],
   },
   "chord": {

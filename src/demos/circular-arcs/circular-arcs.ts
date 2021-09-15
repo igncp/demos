@@ -128,10 +128,14 @@ const main = () => {
   const { width } = chartWrapper.getBoundingClientRect()
   const height = 500
 
-  Raphael.fn.circularArc = circularArc
-  Raphael.fn.arc = arcFn
+  const fn = Raphael.fn as any // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  const paper = Raphael(rootElId, width, height)
+  fn.circularArc = circularArc
+  fn.arc = arcFn
+
+  const paper = Raphael(rootElId, width, height) as ExtendedRaphael<
+    typeof circularArc
+  >
 
   for (let arcI = 0; arcI <= 50; arcI += 1) {
     createArc({

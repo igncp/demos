@@ -1,6 +1,8 @@
 import QUnitType from "qunit"
+import { RaphaelStatic } from "raphael"
 
-const Raphael = typeof window === "undefined" ? null : require("raphael")
+const Raphael: RaphaelStatic =
+  typeof window === "undefined" ? null : require("raphael")
 
 const raphaelTests = (QUnit: QUnitType) => {
   QUnit.test("basic", (assert) => {
@@ -11,7 +13,12 @@ const raphaelTests = (QUnit: QUnitType) => {
     assert.deepEqual(paper.canvas instanceof SVGSVGElement, true)
     assert.deepEqual(paper.width, 100)
     assert.deepEqual(paper.height, 100)
-    assert.deepEqual(paper.getSize(), { height: 0, width: 0 })
+    assert.deepEqual(
+      (
+        paper as unknown as { getSize: () => { height: number; width: number } }
+      ).getSize(),
+      { height: 0, width: 0 }
+    )
   })
 }
 

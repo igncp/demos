@@ -1,7 +1,9 @@
 import React from "react"
 
+import * as styles from "@/components/styles/styles.module.css"
+
 const PageTitle = () => (
-  <div className="page-header">
+  <div className={styles.pageHeader}>
     <h1 className="row">
       <span className="col-sm-8 col-xs-8">
         <a href={ROOT_PATH}>Demos</a>{" "}
@@ -9,7 +11,7 @@ const PageTitle = () => (
           interactive data visualization examples
         </small>
       </span>
-      <span className="col-xs-4" id="gh-buttons">
+      <span className="col-xs-4" id={styles.ghButtons}>
         <iframe
           className="hide-mobile"
           frameBorder="0"

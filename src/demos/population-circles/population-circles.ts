@@ -20,10 +20,14 @@ const main = async () => {
 
   const { updateChart } = renderChart<Municipality>(chartConfig)
 
-  select("form").on("change", (changeEvent) => {
-    state.populationType = changeEvent.target.value
-    updateChart()
-  })
+  select("form").on(
+    "change",
+    // eslint-disable-next-line id-denylist
+    (changeEvent: { target: { value: typeof state["populationType"] } }) => {
+      state.populationType = changeEvent.target.value
+      updateChart()
+    }
+  )
 
   $(".population-slider").slider({
     change: (...[, { values: populationValues }]) => {
