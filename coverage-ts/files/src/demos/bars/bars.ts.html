@@ -11,237 +11,28 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars/bars.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">355</td><td class="">355</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
-  Selection,
-  axisBottom,
-  axisLeft,
-  extent,
-  max,
-  range,
-  scaleLinear,
-  select,
-} from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars/bars.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">41</td><td class="">41</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { max } from &quot;d3&quot;
 
+import { BarsChart } from &quot;./bars-chart&quot;
+import { CONTAINER_ID, createChartConfig, fetchData } from &quot;./bars-chart-config&quot;
 import * as styles from &quot;./bars.module.css&quot;
-
-const CONTAINER_ID = &quot;chart&quot;
-
-type BarData = number
-
-const height = 500
-const margin = { left: 160, top: 100 }
-const floor = height - margin.top * 2
-
-const barWidth = 30
-const barHeight = 7
-
-const colours = [&quot;#323247&quot;, &quot;#7C7CC9&quot;, &quot;#72B66C&quot;, &quot;#429742&quot;]
-const barYFn = (barItem: BarData) =&gt; floor - barHeight * barItem
-const barHeightFn = (barItem: BarData) =&gt; barItem * barHeight
-
-const fetchData = async (): Promise&lt;BarData[]&gt; =&gt; {
-  const rawData = await fetch(`${ROOT_PATH}data/d3js/bars/data.json`)
-
-  return rawData.json()
-}
-
-type BarsChartOpts = {
-  bars: BarData[]
-  rootElId: string
-}
-
-type Interval = ReturnType&lt;typeof setInterval&gt;
-type Chart = Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
-type ColorFn = (c: BarData) =&gt; string
-
-class BarsChart {
-  private readonly bars: BarData[]
-  private readonly rootElId: string
-  private interval: Interval | null
-  private chart: Chart | null
-  private color: ColorFn | null
-
-  public constructor({ bars, rootElId }: BarsChartOpts) {
-    this.bars = bars
-    this.rootElId = rootElId
-
-    this.interval = null
-    this.chart = null
-    this.color = null
-  }
-
-  public render() {
-    const { bars, rootElId } = this
-    const { width } = (
-      document.getElementById(rootElId) as HTMLElement
-    ).getBoundingClientRect()
-
-    const colorScale = scaleLinear()
-      .domain(extent(bars) as [BarData, BarData])
-      .range([0, 1])
-    const heatmapColour: ColorFn = scaleLinear&lt;string&gt;()
-      .domain(range(0, 1, 1.0 / colours.length))
-      .range(colours)
-
-    const color = (barItem: BarData) =&gt; heatmapColour(colorScale(barItem))
-
-    this.color = color as ColorFn
-
-    const svg = select(`#${rootElId}`).append(&quot;svg&quot;)
-
-    svg
-      .attr(&quot;height&quot;, height)
-      .attr(&quot;width&quot;, width)
-      .attr(&quot;class&quot;, styles.barsChart)
-
-    const chart = svg.append(&quot;g&quot;)
-
-    this.chart = chart
-
-    chart.attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
-
-    this.interval = setInterval(this.getIntervalFn(), 1000)
-
-    const x = scaleLinear()
-      .domain([0.5, bars.length + 0.5])
-      .range([1, barWidth * bars.length])
-
-    const y = scaleLinear()
-      .domain([0, max(bars) as number])
-      .rangeRound([0, -1 * barHeight * (max(bars) as number)])
-
-    const xAxisG = chart.append(&quot;g&quot;)
-
-    xAxisG
-      .attr(&quot;class&quot;, `xAxis ${styles.axis}`)
-      .attr(&quot;transform&quot;, `translate(0,${floor})`)
-      .call(axisBottom(x))
-
-    xAxisG
-      .append(&quot;text&quot;)
-      .attr(&quot;transform&quot;, `translate(${(barWidth * bars.length) / 2} ,0)`)
-      .attr(&quot;class&quot;, &quot;xAxisLabel&quot;)
-      .attr(&quot;y&quot;, 40)
-      .attr(&quot;font-size&quot;, &quot;1.3em&quot;)
-      .attr(&quot;fill&quot;, &quot;black&quot;)
-      .style(&quot;text-anchor&quot;, &quot;end&quot;)
-      .text(&quot;Number&quot;)
-
-    const yAxisG = chart.append(&quot;g&quot;)
-
-    yAxisG
-      .attr(&quot;class&quot;, `yAxis ${styles.axis}`)
-      .attr(&quot;transform&quot;, `translate(0,${floor})`)
-      .call(axisLeft(y))
-
-    yAxisG
-      .append(&quot;text&quot;)
-      .attr(&quot;transform&quot;, `translate(-30,${(-1 * (height - 60)) / 2})`)
-      .attr(&quot;y&quot;, 40)
-      .attr(&quot;font-size&quot;, &quot;1.3em&quot;)
-      .attr(&quot;fill&quot;, &quot;black&quot;)
-      .style(&quot;text-anchor&quot;, &quot;end&quot;)
-      .text(&quot;Value&quot;)
-
-    this.drawRectangles()
-  }
-
-  public refresh() {
-    this.drawRectangles()
-    this.redraw()
-  }
-
-  private clearInterval() {
-    if (this.interval) {
-      clearInterval(this.interval)
-    }
-  }
-
-  private drawRectangles() {
-    const { bars, chart, color } = this
-
-    ;(chart as Chart)
-      .selectAll(&quot;rect&quot;)
-      .data(bars)
-      .enter()
-      .append(&quot;rect&quot;)
-      .attr(&quot;x&quot;, (...[, barIndex]) =&gt; barWidth * barIndex)
-      .attr(&quot;y&quot;, barYFn)
-      .attr(&quot;width&quot;, barWidth)
-      .attr(&quot;height&quot;, barHeightFn)
-      .attr(&quot;fill&quot;, (barItem) =&gt; color!(barItem))
-      .on(&quot;mouseover&quot;, () =&gt; {
-        this.clearInterval()
-      })
-      .on(&quot;mouseleave&quot;, () =&gt; {
-        this.clearInterval()
-        this.interval = setInterval(this.getIntervalFn(), 1000)
-      })
-      .append(&quot;title&quot;)
-      .text((barItem) =&gt; barItem)
-  }
-
-  private getIntervalFn() {
-    return () =&gt; {
-      const { bars } = this
-
-      bars.unshift(bars.pop() as BarData)
-
-      this.redraw()
-    }
-  }
-
-  private redraw() {
-    const { bars, chart, color } = this
-
-    if (!chart) {
-      return
-    }
-
-    const newX = scaleLinear()
-      .domain([0.5, bars.length + 0.5])
-      .range([1, barWidth * bars.length])
-
-    const newAxis = axisBottom(newX)
-
-    chart.select&lt;SVGGElement&gt;(&quot;.xAxis&quot;).transition().duration(500).call(newAxis)
-
-    chart
-      .select(&quot;.xAxisLabel&quot;)
-      .transition()
-      .duration(500)
-      .attr(&quot;transform&quot;, `translate(${(barWidth * bars.length) / 2} ,0)`)
-
-    chart
-      .selectAll(&quot;rect&quot;)
-      .data(bars)
-      .transition()
-      .duration(500)
-      .attr(&quot;y&quot;, barYFn)
-      .attr(&quot;height&quot;, barHeightFn)
-      .attr(&quot;fill&quot;, color as ColorFn)
-      .select(&quot;title&quot;)
-      .text((barItem) =&gt; barItem)
-  }
-}
 
 const main = async () =&gt; {
   const bars = await fetchData()
 
-  const barsChart = new BarsChart({
-    bars,
-    rootElId: CONTAINER_ID,
-  })
+  const chartConfig = createChartConfig({ bars })
+
+  const barsChart = new BarsChart(chartConfig)
 
   barsChart.render()
 
-  const addItemEl = document.getElementById(&quot;add-item&quot;) as HTMLElement
+  const addItemEl = document.getElementById(styles.addItemButton) as HTMLElement
 
   addItemEl.addEventListener(&quot;click&quot;, () =&gt; {
-    if (bars.length &lt; 20) {
-      bars.push(Math.floor(Math.random() * (max(bars) as number)) + 1)
-      barsChart.refresh()
-    } else {
+    bars.push(Math.floor(Math.random() * (max(bars) as number)) + 1)
+    barsChart.refresh()
+
+    if (bars.length &gt;= 20) {
       addItemEl.setAttribute(&quot;disabled&quot;, &quot;disabled&quot;)
     }
   })
@@ -251,7 +42,7 @@ export { CONTAINER_ID }
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 14 Sep 2021 21:54:00 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 15 Sep 2021 23:03:20 GMT</p>
     </body>
   </html>
   
