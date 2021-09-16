@@ -336,11 +336,6 @@ const createDemo = ({
     vertices[heightVertexIdx] = newHeightData[heightArrIdx] * 10
   }
 
-  // this has been deprecated in favor of Face:
-  // https://threejs.org/docs/#examples/en/math/convexhull/Face
-  // @ts-ignore
-  terrainGeometry.computeFaceNormals()
-
   scene.add(terrainMesh)
 
   scene.add(surfaceCone)

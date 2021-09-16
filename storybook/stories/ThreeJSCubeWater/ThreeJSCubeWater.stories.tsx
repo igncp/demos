@@ -167,7 +167,7 @@ const createDemo = ({
     boxMesh.rotation.x = state.timePassed * 0.5
     boxMesh.rotation.z = state.timePassed * 0.51
 
-    const waterMaterial = water.material as THREE.ShaderMaterial
+    const { material: waterMaterial } = water
 
     waterMaterial.uniforms["time"].value += 1.0 / 60.0 // eslint-disable-line id-denylist
 
@@ -225,9 +225,7 @@ const createDemo = ({
       sun.setFromSphericalCoords(1, phi, theta)
 
       sky.material.uniforms["sunPosition"].value.copy(sun)
-      ;(water.material as THREE.ShaderMaterial).uniforms["sunDirection"].value
-        .copy(sun)
-        .normalize()
+      water.material.uniforms["sunDirection"].value.copy(sun).normalize()
 
       scene.environment = pmremGenerator.fromScene(sky as any).texture // eslint-disable-line @typescript-eslint/no-explicit-any
     }
