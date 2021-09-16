@@ -13,6 +13,7 @@ import {
 } from "d3"
 
 const CONTAINER_ID = "chart"
+const TYPE_FORM = "type-form"
 
 type DataNode = {
   children: DataNode[]
@@ -289,7 +290,7 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
 const main = async () => {
   const rootData = await fetchData()
 
-  const formEl = document.getElementById("type-form") as HTMLFormElement
+  const formEl = document.getElementById(TYPE_FORM) as HTMLFormElement
 
   const getCurrentSelectedRadio = (): PartitionType => {
     const selectedRadio = Array.from(
@@ -314,6 +315,6 @@ const main = async () => {
   })
 }
 
-export { CONTAINER_ID }
+export { CONTAINER_ID, TYPE_FORM }
 
 export default main

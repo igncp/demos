@@ -4,13 +4,17 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main, { CONTAINER_ID } from "@/demos/multiline-voronoi/multiline-voronoi"
+import main, {
+  CONTAINER_ID,
+  SHOW_VORONOI_ID,
+} from "@/demos/multiline-voronoi/multiline-voronoi"
+import * as styles from "@/demos/multiline-voronoi/multiline-voronoi.module.css"
 
 const MultilineVoronoi = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
-    <form id="form">
-      <input id="show-voronoi" type="checkbox" />{" "}
-      <label htmlFor="show-voronoi">Show Voronoi lines</label>
+    <form id={styles.formVoronoi}>
+      <input id={SHOW_VORONOI_ID} type="checkbox" />{" "}
+      <label htmlFor={SHOW_VORONOI_ID}>Show Voronoi lines</label>
     </form>
     <div id={CONTAINER_ID} />
   </Demo>

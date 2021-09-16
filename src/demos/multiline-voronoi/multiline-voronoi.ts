@@ -20,6 +20,7 @@ import { Delaunay } from "d3-delaunay"
 import * as styles from "./multiline-voronoi.module.css"
 
 const CONTAINER_ID = "chart"
+const SHOW_VORONOI_ID = "show-voronoi"
 
 type InitialDataItem = {
   [monthKey: string]: string
@@ -334,18 +335,18 @@ const main = async () => {
     rootElId,
   })
 
-  const form = document.getElementById("form") as HTMLElement
+  const form = document.getElementById(styles.formVoronoi) as HTMLElement
   const chart = document.getElementById(rootElId) as HTMLElement
 
   chart.appendChild(form)
 
-  select("#show-voronoi")
+  select(`#${SHOW_VORONOI_ID}`)
     .property("disabled", false)
     .on("change", (mouseEvent: MouseEvent) => {
       setVoronoi((mouseEvent.target as HTMLInputElement).checked || false)
     })
 }
 
-export { CONTAINER_ID }
+export { CONTAINER_ID, SHOW_VORONOI_ID }
 
 export default main

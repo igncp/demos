@@ -4,11 +4,11 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main, { CONTAINER_ID } from "@/demos/partition/partition"
+import main, { CONTAINER_ID, TYPE_FORM } from "@/demos/partition/partition"
 
 const Partition = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
-    <form id="type-form">
+    <form id={TYPE_FORM}>
       <label>
         <input name="mode" type="radio" value="size" /> Size
       </label>

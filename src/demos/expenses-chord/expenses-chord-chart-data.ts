@@ -8,6 +8,9 @@ type State = {
 }
 
 export const CONTAINER_ID = "chart"
+export const SLIDER_TIME_ID = "slider-time"
+export const COUNTRIES_SELECT_ID = "countries-select"
+export const REGIONS_SELECT_ID = "regions-select"
 
 export const createInitialState = (): State => ({
   selectedCountry: Expenses.ALL_ID,
@@ -78,7 +81,7 @@ export const setupChartForm = ({
   renderItems: () => void
   state: State
 }) => {
-  $("#slider-time").slider({
+  $(`#${SLIDER_TIME_ID}`).slider({
     change: (...[, { value: timeValue }]) => {
       if (timeValue === 3) {
         // @TODO: error in this case, find why
@@ -118,7 +121,7 @@ export const setupChartForm = ({
   }
 
   setupSelect({
-    id: "countries-select",
+    id: COUNTRIES_SELECT_ID,
     onChange: (newSelected: string) => {
       state.selectedCountry = newSelected
       renderItems()
@@ -126,7 +129,7 @@ export const setupChartForm = ({
     selectOptions: expenses.getCountriesList(),
   })
   setupSelect({
-    id: "regions-select",
+    id: REGIONS_SELECT_ID,
     onChange: (newSelected: string) => {
       state.selectedRegion = newSelected
       renderItems()
