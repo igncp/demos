@@ -104,7 +104,7 @@ const d3js: D3JS = {
       "Added axis",
       "Changed direction and added color transition for wave effect",
       "Added transition in axis and the add item possibility",
-      "The interval stops when you place the mouse over a bar",
+      "The interval stops when you place the mouse over a bar, and there is a SVG filter",
     ],
     sources: ["http://codepen.io/basemoz/pen/mBoiL"],
     summary: [],

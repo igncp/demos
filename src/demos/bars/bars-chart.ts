@@ -8,10 +8,14 @@ import {
   scaleLinear,
   select,
 } from "d3"
+import { v1 as uuidv1 } from "uuid"
 
 import * as styles from "./bars.module.css"
 
-type ChartData = number
+type ChartData = {
+  id: number
+  metric: number
+}
 
 const height = 500
 const margin = { left: 160, top: 100 }
@@ -21,28 +25,30 @@ const barWidth = 30
 const barHeight = 7
 
 const colours = ["#323247", "#7C7CC9", "#72B66C", "#429742"]
-const barYFn = (barItem: ChartData) => floor - barHeight * barItem
-const barHeightFn = (barItem: ChartData) => barItem * barHeight
+const barYFn = (barItem: ChartData) => floor - barHeight * barItem.metric
+const barHeightFn = (barItem: ChartData) => barItem.metric * barHeight
 
-type BarsChartOpts = {
+export type ChartConfig = {
   bars: ChartData[]
   rootElId: string
 }
 
 type Interval = ReturnType<typeof setInterval>
-type Chart = Selection<SVGGElement, unknown, HTMLElement, unknown>
+type Chart = Selection<SVGGElement, ChartData, HTMLElement, unknown>
 type ColorFn = (c: ChartData) => string
 
 class BarsChart {
   private readonly bars: ChartData[]
   private readonly rootElId: string
   private interval: Interval | null
+  private readonly barClassName: string
   private chart: Chart | null
   private color: ColorFn | null
 
-  public constructor({ bars, rootElId }: BarsChartOpts) {
+  public constructor({ bars, rootElId }: ChartConfig) {
     this.bars = bars
     this.rootElId = rootElId
+    this.barClassName = `bars-${uuidv1().slice(0, 6)}`
 
     this.interval = null
     this.chart = null
@@ -56,22 +62,34 @@ class BarsChart {
     ).getBoundingClientRect()
 
     const colorScale = scaleLinear()
-      .domain(extent(bars) as [ChartData, ChartData])
+      .domain(extent(bars, (bar) => bar.metric) as [number, number])
       .range([0, 1])
-    const heatmapColour: ColorFn = scaleLinear<string>()
+    const heatmapColour = scaleLinear<string>()
       .domain(range(0, 1, 1.0 / colours.length))
       .range(colours)
 
-    const color = (barItem: ChartData) => heatmapColour(colorScale(barItem))
+    const color = (barItem: ChartData) =>
+      heatmapColour(colorScale(barItem.metric))
 
-    this.color = color as ColorFn
+    this.color = color
 
-    const svg = select(`#${rootElId}`).append("svg")
+    const svg = select<HTMLElement, ChartData>(`#${rootElId}`).append("svg")
 
     svg
       .attr("height", height)
       .attr("width", width)
       .attr("class", styles.barsChart)
+
+    svg
+      .append("g")
+      .append("filter")
+      .attr("height", "300%")
+      .attr("x", "-100%")
+      .attr("y", "-100%")
+      .attr("id", "blur")
+      .attr("width", "300%")
+      .append("feGaussianBlur")
+      .attr("stdDeviation", "2 2")
 
     const chart = svg.append("g")
 
@@ -86,8 +104,11 @@ class BarsChart {
       .range([1, barWidth * bars.length])
 
     const y = scaleLinear()
-      .domain([0, max(bars) as number])
-      .rangeRound([0, -1 * barHeight * (max(bars) as number)])
+      .domain([0, max(bars, (bar) => bar.metric) as number])
+      .rangeRound([
+        0,
+        -1 * barHeight * (max(bars, (bar) => bar.metric) as number),
+      ])
 
     const xAxisG = chart.append("g")
 
@@ -125,6 +146,14 @@ class BarsChart {
     this.drawRectangles()
   }
 
+  public addBar(newBar: ChartData) {
+    this.bars.push(newBar)
+  }
+
+  public getBars(): ChartData[] {
+    return this.bars.slice()
+  }
+
   public refresh() {
     this.drawRectangles()
     this.redraw()
@@ -136,11 +165,16 @@ class BarsChart {
     }
   }
 
-  private drawRectangles() {
-    const { bars, chart, color } = this
+  private getBarsSelection() {
+    const { chart } = this
 
-    ;(chart as Chart)
-      .selectAll("rect")
+    return (chart as Chart).selectAll<SVGRectElement, ChartData>("rect")
+  }
+
+  private drawRectangles() {
+    const { bars, color } = this
+
+    this.getBarsSelection()
       .data(bars)
       .enter()
       .append("rect")
@@ -148,16 +182,24 @@ class BarsChart {
       .attr("y", barYFn)
       .attr("width", barWidth)
       .attr("height", barHeightFn)
+      .attr("class", this.barClassName)
       .attr("fill", (barItem) => color!(barItem))
-      .on("mouseover", () => {
+      .on("mouseover", (...[, mouseBar]) => {
+        this.getBarsSelection().style("filter", (bar) =>
+          bar.id === mouseBar.id ? null : "url(#blur)"
+        )
         this.clearInterval()
       })
       .on("mouseleave", () => {
+        this.getBarsSelection().style("filter", null)
         this.clearInterval()
         this.interval = setInterval(this.getIntervalFn(), 1000)
       })
-      .append("title")
-      .text((barItem) => barItem)
+      .attr("title", (bar) => bar.metric)
+
+    $(`.${this.barClassName}`).tooltip({
+      track: true,
+    })
   }
 
   private getIntervalFn() {
@@ -198,9 +240,9 @@ class BarsChart {
       .duration(500)
       .attr("y", barYFn)
       .attr("height", barHeightFn)
-      .attr("fill", color as ColorFn)
+      .attr("fill", color!)
       .select("title")
-      .text((barItem) => barItem)
+      .text((barItem) => barItem.metric)
   }
 }
 

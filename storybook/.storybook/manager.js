@@ -1,5 +1,7 @@
 import { addons } from "@storybook/addons"
 
+import myTheme from "./myTheme"
+
 // https://storybook.js.org/docs/react/configure/features-and-behavior
 
 addons.setConfig({
@@ -15,7 +17,7 @@ addons.setConfig({
     collapsedRoots: ["other"],
     showRoots: false,
   },
-  theme: undefined,
+  theme: myTheme,
   toolbar: {
     copy: { hidden: false },
     eject: { hidden: false },

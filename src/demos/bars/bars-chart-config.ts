@@ -1,3 +1,5 @@
+import { ChartConfig } from "./bars-chart"
+
 export const CONTAINER_ID = "chart"
 
 type BarData = number
@@ -8,7 +10,14 @@ export const fetchData = async (): Promise<BarData[]> => {
   return rawData.json()
 }
 
-export const createChartConfig = ({ bars }: { bars: BarData[] }) => ({
+export const createChartConfig = ({
   bars,
+}: {
+  bars: BarData[]
+}): ChartConfig => ({
+  bars: bars.map((...[metric, metricIndex]) => ({
+    id: metricIndex,
+    metric,
+  })),
   rootElId: CONTAINER_ID,
 })

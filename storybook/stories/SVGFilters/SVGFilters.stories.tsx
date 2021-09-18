@@ -6,10 +6,12 @@ import { StoryInfo, createSelectControl } from "../common"
 const SHAPE_CONTAINER_ID = "example"
 
 enum FiltersNames {
+  BlendExclusion = "blend-exclusion",
   Blur12x12 = "blur12x12",
   Blur2x2 = "blur2x2",
   BlurShadow = "blur-shadow",
   None = "none",
+  Sample1 = "sample-1",
   TurbulenceBlue = "turbulence-blue",
 }
 
@@ -34,6 +36,12 @@ const commonFilterProps = {
 
 /* eslint-disable react/display-name */
 const filtersObj: FiltersObj = {
+  [FiltersNames.BlendExclusion]: ({ id }) => (
+    <filter {...commonFilterProps} id={id}>
+      <feOffset dx="20" dy="20" in="SourceGraphic" result="offOut" />
+      <feBlend in="SourceGraphic" in2="offOut" mode="exclusion" />
+    </filter>
+  ),
   [FiltersNames.Blur12x12]: ({ id }) => (
     <filter {...commonFilterProps} id={id}>
       <feGaussianBlur stdDeviation="12 12" />
@@ -57,6 +65,42 @@ const filtersObj: FiltersObj = {
     </filter>
   ),
   [FiltersNames.None]: () => <g />,
+  [FiltersNames.Sample1]: ({ id }) => (
+    <filter {...commonFilterProps} filterUnits="userSpaceOnUse" id={id}>
+      <feGaussianBlur in="SourceAlpha" result="blur" stdDeviation="4" />
+      <feOffset dx="4" dy="4" in="blur" result="offsetBlur" />
+      <feSpecularLighting
+        in="blur"
+        lightingColor="#bbbbbb"
+        result="specOut"
+        specularConstant=".75"
+        specularExponent="20"
+        surfaceScale="5"
+      >
+        <fePointLight x="-5000" y="-10000" z="20000" />
+      </feSpecularLighting>
+      <feComposite
+        in="specOut"
+        in2="SourceAlpha"
+        operator="in"
+        result="specOut"
+      />
+      <feComposite
+        in="SourceGraphic"
+        in2="specOut"
+        k1="0"
+        k2="1"
+        k3="1"
+        k4="0"
+        operator="arithmetic"
+        result="litPaint"
+      />
+      <feMerge>
+        <feMergeNode in="offsetBlur" />
+        <feMergeNode in="litPaint" />
+      </feMerge>
+    </filter>
+  ),
   [FiltersNames.TurbulenceBlue]: ({ id }) => (
     <filter {...commonFilterProps} id={id}>
       <feTurbulence
@@ -150,6 +194,7 @@ const SVGFilters = (props: Props) => {
         source={[
           "https://alligator.io/svg/svg-filters/",
           "https://www.smashingmagazine.com/2015/05/why-the-svg-filter-is-awesome/",
+          "https://www.w3.org/TR/SVG11/filters.html",
         ]}
         storyName="SVGFilters"
       />

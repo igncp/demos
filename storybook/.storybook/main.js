@@ -1,7 +1,15 @@
 const path = require("path")
 
 module.exports = {
-  addons: ["@storybook/addon-links", "@storybook/addon-essentials"],
+  addons: [
+    {
+      name: "@storybook/addon-essentials",
+      options: {
+        actions: false,
+      },
+    },
+  ],
+  brandUrl: "https://igncp.github.io/demos/",
   features: {
     postcss: false,
   },

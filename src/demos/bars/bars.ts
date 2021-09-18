@@ -5,9 +5,9 @@ import { CONTAINER_ID, createChartConfig, fetchData } from "./bars-chart-config"
 import * as styles from "./bars.module.css"
 
 const main = async () => {
-  const bars = await fetchData()
+  const initialBars = await fetchData()
 
-  const chartConfig = createChartConfig({ bars })
+  const chartConfig = createChartConfig({ bars: initialBars })
 
   const barsChart = new BarsChart(chartConfig)
 
@@ -16,7 +16,15 @@ const main = async () => {
   const addItemEl = document.getElementById(styles.addItemButton) as HTMLElement
 
   addItemEl.addEventListener("click", () => {
-    bars.push(Math.floor(Math.random() * (max(bars) as number)) + 1)
+    const bars = barsChart.getBars()
+    const newId = max(bars, (bar) => bar.id)! + 1
+
+    barsChart.addBar({
+      id: newId,
+      metric:
+        Math.floor(Math.random() * (max(bars, (bar) => bar.metric) as number)) +
+        1,
+    })
     barsChart.refresh()
 
     if (bars.length >= 20) {

@@ -17,6 +17,14 @@ type Props = {
 const StoryInfo = ({ docs, source, sourceText, storyName }: Props) => {
   const [isDocsBlockExpanded, setIsDocsBlockExpanded] = React.useState(false)
 
+  React.useEffect(() => {
+    const anchorElement = parent.document
+      .querySelector(".sidebar-header")
+      ?.querySelector("a")
+
+    anchorElement?.setAttribute("target", "_self")
+  }, [])
+
   const storyPath = Array.isArray(storyName)
     ? storyName.join("/")
     : `${storyName}/${storyName}`
@@ -26,18 +34,13 @@ const StoryInfo = ({ docs, source, sourceText, storyName }: Props) => {
       <p>
         {(Array.isArray(source) ? source : [source]).map(
           (...[sourceItem, sourceIndex, sourcesArray]) => (
-            <>
-              <a
-                href={sourceItem}
-                key={sourceIndex}
-                rel="noreferrer"
-                target="_blank"
-              >
+            <span key={sourceIndex}>
+              <a href={sourceItem} rel="noreferrer" target="_blank">
                 {(sourceText ?? "Source") +
                   (sourcesArray.length === 1 ? "" : ` ${sourceIndex + 1}`)}
               </a>
               <span> | </span>
-            </>
+            </span>
           )
         )}
         <a
