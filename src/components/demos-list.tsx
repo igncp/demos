@@ -20,7 +20,7 @@ const DemosList = ({ demos, indexOffset }: Props) => (
     {demos.map((...[demo, demoIndex]) => (
       <a
         className={`list-group-item ${
-          demo.key === STORYBOOK_DEMO_KEY ? "highlight" : ""
+          demo.key === STORYBOOK_DEMO_KEY ? styles.highlight : ""
         }`}
         href={demo.route}
         key={demo.name}

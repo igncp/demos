@@ -9,7 +9,7 @@ type Doc = {
 
 type Props = {
   docs?: Doc[]
-  source: string
+  source: string[] | string
   sourceText?: string
   storyName: string[] | string
 }
@@ -24,10 +24,22 @@ const StoryInfo = ({ docs, source, sourceText, storyName }: Props) => {
   return (
     <>
       <p>
-        <a href={source} rel="noreferrer" target="_blank">
-          {sourceText ?? "Source"}
-        </a>
-        <span> | </span>
+        {(Array.isArray(source) ? source : [source]).map(
+          (...[sourceItem, sourceIndex, sourcesArray]) => (
+            <>
+              <a
+                href={sourceItem}
+                key={sourceIndex}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {(sourceText ?? "Source") +
+                  (sourcesArray.length === 1 ? "" : ` ${sourceIndex + 1}`)}
+              </a>
+              <span> | </span>
+            </>
+          )
+        )}
         <a
           href={`https://github.com/igncp/demos/blob/main/storybook/stories/${storyPath}.stories.tsx`}
           rel="noreferrer"
