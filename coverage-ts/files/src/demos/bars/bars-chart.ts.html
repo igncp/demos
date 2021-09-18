@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars/bars-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">315</td><td class="">315</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars/bars-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">383</td><td class="">383</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Selection,
   axisBottom,
   axisLeft,
@@ -21,10 +21,14 @@
   scaleLinear,
   select,
 } from &quot;d3&quot;
+import { v1 as uuidv1 } from &quot;uuid&quot;
 
 import * as styles from &quot;./bars.module.css&quot;
 
-type ChartData = number
+type ChartData = {
+  id: number
+  metric: number
+}
 
 const height = 500
 const margin = { left: 160, top: 100 }
@@ -34,28 +38,30 @@ const barWidth = 30
 const barHeight = 7
 
 const colours = [&quot;#323247&quot;, &quot;#7C7CC9&quot;, &quot;#72B66C&quot;, &quot;#429742&quot;]
-const barYFn = (barItem: ChartData) =&gt; floor - barHeight * barItem
-const barHeightFn = (barItem: ChartData) =&gt; barItem * barHeight
+const barYFn = (barItem: ChartData) =&gt; floor - barHeight * barItem.metric
+const barHeightFn = (barItem: ChartData) =&gt; barItem.metric * barHeight
 
-type BarsChartOpts = {
+export type ChartConfig = {
   bars: ChartData[]
   rootElId: string
 }
 
 type Interval = ReturnType&lt;typeof setInterval&gt;
-type Chart = Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+type Chart = Selection&lt;SVGGElement, ChartData, HTMLElement, unknown&gt;
 type ColorFn = (c: ChartData) =&gt; string
 
 class BarsChart {
   private readonly bars: ChartData[]
   private readonly rootElId: string
   private interval: Interval | null
+  private readonly barClassName: string
   private chart: Chart | null
   private color: ColorFn | null
 
-  public constructor({ bars, rootElId }: BarsChartOpts) {
+  public constructor({ bars, rootElId }: ChartConfig) {
     this.bars = bars
     this.rootElId = rootElId
+    this.barClassName = `bars-${uuidv1().slice(0, 6)}`
 
     this.interval = null
     this.chart = null
@@ -69,22 +75,34 @@ class BarsChart {
     ).getBoundingClientRect()
 
     const colorScale = scaleLinear()
-      .domain(extent(bars) as [ChartData, ChartData])
+      .domain(extent(bars, (bar) =&gt; bar.metric) as [number, number])
       .range([0, 1])
-    const heatmapColour: ColorFn = scaleLinear&lt;string&gt;()
+    const heatmapColour = scaleLinear&lt;string&gt;()
       .domain(range(0, 1, 1.0 / colours.length))
       .range(colours)
 
-    const color = (barItem: ChartData) =&gt; heatmapColour(colorScale(barItem))
+    const color = (barItem: ChartData) =&gt;
+      heatmapColour(colorScale(barItem.metric))
 
-    this.color = color as ColorFn
+    this.color = color
 
-    const svg = select(`#${rootElId}`).append(&quot;svg&quot;)
+    const svg = select&lt;HTMLElement, ChartData&gt;(`#${rootElId}`).append(&quot;svg&quot;)
 
     svg
       .attr(&quot;height&quot;, height)
       .attr(&quot;width&quot;, width)
       .attr(&quot;class&quot;, styles.barsChart)
+
+    svg
+      .append(&quot;g&quot;)
+      .append(&quot;filter&quot;)
+      .attr(&quot;height&quot;, &quot;300%&quot;)
+      .attr(&quot;x&quot;, &quot;-100%&quot;)
+      .attr(&quot;y&quot;, &quot;-100%&quot;)
+      .attr(&quot;id&quot;, &quot;blur&quot;)
+      .attr(&quot;width&quot;, &quot;300%&quot;)
+      .append(&quot;feGaussianBlur&quot;)
+      .attr(&quot;stdDeviation&quot;, &quot;2 2&quot;)
 
     const chart = svg.append(&quot;g&quot;)
 
@@ -99,8 +117,11 @@ class BarsChart {
       .range([1, barWidth * bars.length])
 
     const y = scaleLinear()
-      .domain([0, max(bars) as number])
-      .rangeRound([0, -1 * barHeight * (max(bars) as number)])
+      .domain([0, max(bars, (bar) =&gt; bar.metric) as number])
+      .rangeRound([
+        0,
+        -1 * barHeight * (max(bars, (bar) =&gt; bar.metric) as number),
+      ])
 
     const xAxisG = chart.append(&quot;g&quot;)
 
@@ -138,6 +159,14 @@ class BarsChart {
     this.drawRectangles()
   }
 
+  public addBar(newBar: ChartData) {
+    this.bars.push(newBar)
+  }
+
+  public getBars(): ChartData[] {
+    return this.bars.slice()
+  }
+
   public refresh() {
     this.drawRectangles()
     this.redraw()
@@ -149,11 +178,16 @@ class BarsChart {
     }
   }
 
-  private drawRectangles() {
-    const { bars, chart, color } = this
+  private getBarsSelection() {
+    const { chart } = this
 
-    ;(chart as Chart)
-      .selectAll(&quot;rect&quot;)
+    return (chart as Chart).selectAll&lt;SVGRectElement, ChartData&gt;(&quot;rect&quot;)
+  }
+
+  private drawRectangles() {
+    const { bars, color } = this
+
+    this.getBarsSelection()
       .data(bars)
       .enter()
       .append(&quot;rect&quot;)
@@ -161,16 +195,24 @@ class BarsChart {
       .attr(&quot;y&quot;, barYFn)
       .attr(&quot;width&quot;, barWidth)
       .attr(&quot;height&quot;, barHeightFn)
+      .attr(&quot;class&quot;, this.barClassName)
       .attr(&quot;fill&quot;, (barItem) =&gt; color!(barItem))
-      .on(&quot;mouseover&quot;, () =&gt; {
+      .on(&quot;mouseover&quot;, (...[, mouseBar]) =&gt; {
+        this.getBarsSelection().style(&quot;filter&quot;, (bar) =&gt;
+          bar.id === mouseBar.id ? null : &quot;url(#blur)&quot;
+        )
         this.clearInterval()
       })
       .on(&quot;mouseleave&quot;, () =&gt; {
+        this.getBarsSelection().style(&quot;filter&quot;, null)
         this.clearInterval()
         this.interval = setInterval(this.getIntervalFn(), 1000)
       })
-      .append(&quot;title&quot;)
-      .text((barItem) =&gt; barItem)
+      .attr(&quot;title&quot;, (bar) =&gt; bar.metric)
+
+    $(`.${this.barClassName}`).tooltip({
+      track: true,
+    })
   }
 
   private getIntervalFn() {
@@ -211,15 +253,15 @@ class BarsChart {
       .duration(500)
       .attr(&quot;y&quot;, barYFn)
       .attr(&quot;height&quot;, barHeightFn)
-      .attr(&quot;fill&quot;, color as ColorFn)
+      .attr(&quot;fill&quot;, color!)
       .select(&quot;title&quot;)
-      .text((barItem) =&gt; barItem)
+      .text((barItem) =&gt; barItem.metric)
   }
 }
 
 export { BarsChart }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 18 Sep 2021 10:48:19 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 18 Sep 2021 14:42:05 GMT</p>
     </body>
   </html>
   
