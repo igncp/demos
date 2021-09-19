@@ -93,7 +93,7 @@ module.exports = {
       rules: {
         "@typescript-eslint/explicit-member-accessibility": 0,
         "@typescript-eslint/no-unused-vars": 0,
-        "no-shadow": 2, // using ts plugin one
+        "no-shadow": 2,
       },
     },
     {

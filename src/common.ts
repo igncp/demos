@@ -55,7 +55,10 @@ export type DemoPageProps = {
   }
 }
 
-export const STORYBOOK_DEMO_KEY = "storybook"
+export enum SPECIAL_DEMO_KEYS {
+  STORYBOOK = "storybook",
+  TESTING = "testing",
+}
 
 export const JQUERYUI = {
   SCRIPT: "/vendors/jquery-ui/jquery-ui.min.js",

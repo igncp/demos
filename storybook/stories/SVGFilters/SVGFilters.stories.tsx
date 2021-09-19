@@ -4,12 +4,29 @@ import React from "react"
 import { StoryInfo, createSelectControl } from "../common"
 
 const SHAPE_CONTAINER_ID = "example"
+const SVG_ID = "example-svg"
+
+// https://www.w3.org/TR/SVG2/shapes.html
+const starPolygon = [
+  [350],
+  [75, 379],
+  [161, 469],
+  [161, 397],
+  [215, 423],
+  [301, 350],
+  [250, 277],
+  [301, 303],
+  [215, 231],
+  [161, 321],
+  [161],
+]
 
 enum FiltersNames {
   BlendExclusion = "blend-exclusion",
   Blur12x12 = "blur12x12",
   Blur2x2 = "blur2x2",
   BlurShadow = "blur-shadow",
+  DiffuseLightning1 = "diffuse-lightning-1",
   None = "none",
   Sample1 = "sample-1",
   TurbulenceBlue = "turbulence-blue",
@@ -18,6 +35,7 @@ enum FiltersNames {
 enum ShapesNames {
   Circle = "circle",
   Rect = "rect",
+  Star = "star",
 }
 
 type Props = {
@@ -61,6 +79,26 @@ const filtersObj: FiltersObj = {
         floodColor="#777"
         floodOpacity="0.25"
         stdDeviation="5"
+      />
+    </filter>
+  ),
+  [FiltersNames.DiffuseLightning1]: ({ id }) => (
+    <filter {...commonFilterProps} id={id}>
+      <feDiffuseLighting
+        in="SourceGraphic"
+        lightingColor="white"
+        result="light"
+      >
+        <fePointLight x="150" y="60" z="40" />
+      </feDiffuseLighting>
+      <feComposite
+        in="SourceGraphic"
+        in2="light"
+        k1="1"
+        k2="0"
+        k3="0"
+        k4="0"
+        operator="arithmetic"
       />
     </filter>
   ),
@@ -137,10 +175,11 @@ const filters = Object.values(FiltersNames).map((filterName: FiltersNames) => ({
 }))
 
 const setupSVG = () => {
-  const container = document.getElementById(SHAPE_CONTAINER_ID) as HTMLElement
-  const { width } = container.getBoundingClientRect()
+  const { width } = document.body.getBoundingClientRect()
 
-  select(`#${SHAPE_CONTAINER_ID}`).text("").append("svg").attr("width", width)
+  select(`#${SVG_ID}`)
+    .attr("width", width - 100)
+    .attr("height", 300)
 }
 
 type GetShape = {
@@ -169,12 +208,25 @@ const getShape: GetShape = {
       .attr("x", 20)
       .attr("y", 20)
       .attr("fill", "blue"),
+  [ShapesNames.Star]: (svg) =>
+    svg
+      .append<SVGElement>("polygon")
+      .attr(
+        "points",
+        starPolygon
+          .map((subItem) => subItem.map((subNumber) => subNumber / 2).join(" "))
+          .join(", ")
+      )
+      .attr("fill", "yellow")
+      .attr("stroke-width", "2")
+      .attr("stroke", "orange"),
 }
 
 const demo = ({ filterName, shapeName }: Props) => {
   setupSVG()
 
   const svg = select<SVGGElement, unknown>(`#${SHAPE_CONTAINER_ID}`).text("")
+
   const shape = getShape[shapeName](svg)
 
   shape.style(
@@ -202,7 +254,7 @@ const SVGFilters = (props: Props) => {
         You can choose a wide options of SVG filters to apply in different
         shapes
       </p>
-      <svg>
+      <svg id={SVG_ID}>
         <g>
           {filters.map(({ comp: Filter, id }) => (
             <Filter id={id} key={id} />

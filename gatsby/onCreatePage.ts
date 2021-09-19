@@ -6,7 +6,7 @@ import {
   DemoPageProps,
   DemoSummary,
   IndexPageProps,
-  STORYBOOK_DEMO_KEY,
+  SPECIAL_DEMO_KEYS,
 } from "../src/common"
 
 import { ROOT_PATH } from "./constants"
@@ -127,10 +127,17 @@ for (const raphaelDemoName in raphaelData) {
 }
 
 const storybookSummary = {
-  category: STORYBOOK_DEMO_KEY,
-  key: STORYBOOK_DEMO_KEY,
+  category: SPECIAL_DEMO_KEYS.STORYBOOK,
+  key: SPECIAL_DEMO_KEYS.STORYBOOK,
   name: "Storybook Demos",
   route: `${ROOT_PATH}storybook`,
+}
+
+const testsSummary = {
+  category: SPECIAL_DEMO_KEYS.TESTING,
+  key: SPECIAL_DEMO_KEYS.TESTING,
+  name: "Testing Page",
+  route: `${ROOT_PATH}testing`,
 }
 
 const demosSummaries = d3jsDemosSummaries
@@ -142,7 +149,7 @@ const demosSummaries = d3jsDemosSummaries
 
     return demoSummaryA.name < demoSummaryB.name ? -1 : 1
   })
-  .concat(storybookSummary)
+  .concat([storybookSummary, testsSummary])
 
 const onCreatePage: GatsbyNode["onCreatePage"] = ({ actions, page }) => {
   const slugs = page.path.split("/").filter(Boolean)

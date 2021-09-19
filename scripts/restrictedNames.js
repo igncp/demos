@@ -38,6 +38,7 @@ module.exports = [
   "p2",
   "r",
   "result",
+  "results",
   "val",
   "vals",
   "value",

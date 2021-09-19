@@ -7,7 +7,8 @@ declare const styles: {
   readonly "demosLegend": string
   readonly "demosLists": string
   readonly "ghButtons": string
-  readonly "highlight": string
+  readonly "highlightStorybook": string
+  readonly "highlightTesting": string
   readonly "mainSource": string
   readonly "notes": string
   readonly "pageHeader": string
@@ -15,5 +16,6 @@ declare const styles: {
   readonly "sourceNumber": string
   readonly "sourcesList": string
   readonly "storybook": string
+  readonly "testing": string
 }
 export = styles

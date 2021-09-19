@@ -1,6 +1,6 @@
 import React from "react"
 
-import { DemoSummary, STORYBOOK_DEMO_KEY } from "@/common"
+import { DemoSummary, SPECIAL_DEMO_KEYS } from "@/common"
 
 import * as styles from "@/components/styles/styles.module.css"
 
@@ -9,10 +9,16 @@ type Props = {
   indexOffset: number
 }
 
-const categoryToStyleMap: { [key: string]: string } = {
+const categoryToBulletStyleMap: { [key: string]: string } = {
   d3js: styles.d3js,
   raphael: styles.raphael,
-  storybook: styles.storybook,
+  [SPECIAL_DEMO_KEYS.STORYBOOK]: styles.storybook,
+  [SPECIAL_DEMO_KEYS.TESTING]: styles.testing,
+}
+
+const specialHighlightStyle: { [key in SPECIAL_DEMO_KEYS]: string } = {
+  [SPECIAL_DEMO_KEYS.STORYBOOK]: styles.highlightStorybook,
+  [SPECIAL_DEMO_KEYS.TESTING]: styles.highlightTesting,
 }
 
 const DemosList = ({ demos, indexOffset }: Props) => (
@@ -20,7 +26,7 @@ const DemosList = ({ demos, indexOffset }: Props) => (
     {demos.map((...[demo, demoIndex]) => (
       <a
         className={`list-group-item ${
-          demo.key === STORYBOOK_DEMO_KEY ? styles.highlight : ""
+          specialHighlightStyle[demo.key as SPECIAL_DEMO_KEYS] || ""
         }`}
         href={demo.route}
         key={demo.name}
@@ -30,7 +36,9 @@ const DemosList = ({ demos, indexOffset }: Props) => (
         </span>{" "}
         <span className="home-demo-name-link">{demo.name}</span>
         <div
-          className={`${styles.bullet} ${categoryToStyleMap[demo.category]}`}
+          className={`${styles.bullet} ${
+            categoryToBulletStyleMap[demo.category]
+          }`}
         >
           &#8226;
         </div>

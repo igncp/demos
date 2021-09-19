@@ -19,12 +19,14 @@ import {
 import QUnitType from "qunit"
 
 const d3Tests = (QUnit: QUnitType) => {
+  // https://github.com/d3/d3-shape#arc
   QUnit.test("d3.arc", (assert) => {
     const arc = arcD3().outerRadius(10).innerRadius(0)
 
     assert.deepEqual(typeof arc({} as any), "string")
   })
 
+  // https://github.com/d3/d3-shape#arc_centroid
   QUnit.test("d3.arc#centroid", (assert) => {
     const arc = arcD3()
       .outerRadius(50)
@@ -99,6 +101,7 @@ const d3Tests = (QUnit: QUnitType) => {
     )
   })
 
+  // https://github.com/d3/d3-shape#pie
   QUnit.test("d3.pie generates the expected data", (assert) => {
     type Data = { val: number }
 
@@ -106,6 +109,7 @@ const d3Tests = (QUnit: QUnitType) => {
       .sort(null)
       .value((d) => d.val)
 
+    // two slices, each half of the circle, with equal angles
     assert.deepEqual(pie([{ val: 1 }, { val: 1 }]), [
       {
         data: {

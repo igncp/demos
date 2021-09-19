@@ -13,6 +13,10 @@
   &.storybook {
     color: purple;
   }
+
+  &.testing {
+    color: yellow;
+  }
 }
 
 .notes {
@@ -83,11 +87,19 @@
     padding-left: 20px;
     transition: 0.5s linear background-color;
 
-    &.highlight {
+    &.highlightStorybook {
       background-color: #fff4fe;
 
       &:hover {
         background-color: #ffe2f9;
+      }
+    }
+
+    &.highlightTesting {
+      background-color: #ffffe6;
+
+      &:hover {
+        background-color: #f5f59a;
       }
     }
 
