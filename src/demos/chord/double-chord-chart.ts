@@ -86,6 +86,7 @@ export type ChartConfig = {
     chordGroup: ChordGroup
   }) => string
   getRibbonTitle: (options: {
+    chartIndex: number
     sourceIndex: number
     sourceValue: number
     targetIndex: number
@@ -203,6 +204,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
       .style("stroke-width", 2)
       .attr("title", (ribbonItem) =>
         chartConfig.getRibbonTitle({
+          chartIndex,
           sourceIndex: ribbonItem.source.index,
           sourceValue: ribbonItem.source.value,
           targetIndex: ribbonItem.target.index,

@@ -7,6 +7,50 @@ type Doc = {
   name: string
 }
 
+type SourceLinkProps = {
+  onSeeLessClick?: () => void
+  onSeeMoreClick?: () => void
+  sourceIndex: number
+  sourceLink: string
+  sourceText?: string
+  sourcesLength: number
+}
+
+const SourceLink = ({
+  onSeeLessClick,
+  onSeeMoreClick,
+  sourceIndex,
+  sourceLink,
+  sourceText,
+  sourcesLength,
+}: SourceLinkProps) => (
+  <>
+    <a href={sourceLink} rel="noreferrer" target="_blank">
+      {(sourceText ?? "Source") +
+        (sourcesLength === 1 ? "" : ` ${sourceIndex + 1}`)}
+    </a>
+    {(onSeeMoreClick || onSeeLessClick) && (
+      <a
+        href="#"
+        onClick={(clickEvent) => {
+          clickEvent.stopPropagation()
+          clickEvent.preventDefault()
+
+          if (onSeeMoreClick) {
+            onSeeMoreClick()
+          } else {
+            onSeeLessClick!()
+          }
+        }}
+      >
+        {" "}
+        (See {onSeeMoreClick ? "more >>" : "less <<"})
+      </a>
+    )}
+    <span> | </span>
+  </>
+)
+
 type Props = {
   docs?: Doc[]
   source: string[] | string
@@ -16,6 +60,7 @@ type Props = {
 
 const StoryInfo = ({ docs, source, sourceText, storyName }: Props) => {
   const [isDocsBlockExpanded, setIsDocsBlockExpanded] = React.useState(false)
+  const [areSourcesExpanded, setAreSourcesExpanded] = React.useState(false)
 
   React.useEffect(() => {
     const anchorElement = parent.document
@@ -32,15 +77,35 @@ const StoryInfo = ({ docs, source, sourceText, storyName }: Props) => {
   return (
     <>
       <p>
-        {(Array.isArray(source) ? source : [source]).map(
-          (...[sourceItem, sourceIndex, sourcesArray]) => (
-            <span key={sourceIndex}>
-              <a href={sourceItem} rel="noreferrer" target="_blank">
-                {(sourceText ?? "Source") +
-                  (sourcesArray.length === 1 ? "" : ` ${sourceIndex + 1}`)}
-              </a>
-              <span> | </span>
-            </span>
+        {Array.isArray(source) && source.length > 1 && !areSourcesExpanded ? (
+          <SourceLink
+            onSeeMoreClick={() => {
+              setAreSourcesExpanded(true)
+            }}
+            sourceIndex={0}
+            sourceLink={source[0]}
+            sourceText={sourceText}
+            sourcesLength={source.length}
+          />
+        ) : (
+          (Array.isArray(source) ? source : [source]).map(
+            (...[sourceItem, sourceIndex, sourcesArray]) => (
+              <SourceLink
+                key={sourceIndex}
+                onSeeLessClick={
+                  sourcesArray.length > 1 &&
+                  sourceIndex === sourcesArray.length - 1
+                    ? () => {
+                        setAreSourcesExpanded(false)
+                      }
+                    : undefined
+                }
+                sourceIndex={sourceIndex}
+                sourceLink={sourceItem}
+                sourceText={sourceText}
+                sourcesLength={sourcesArray.length}
+              />
+            )
           )
         )}
         <a

@@ -3,6 +3,10 @@ import React from "react"
 
 import { StoryInfo, createSelectControl } from "../common"
 
+/**
+ * Spec: https://drafts.fxtf.org/filter-effects/#FilterPrimitivesOverview
+ */
+
 const SHAPE_CONTAINER_ID = "example"
 const SVG_ID = "example-svg"
 
@@ -26,6 +30,7 @@ enum FiltersNames {
   Blur12x12 = "blur12x12",
   Blur2x2 = "blur2x2",
   BlurShadow = "blur-shadow",
+  CompositeAnimated = "composite-animated-1",
   DiffuseLightning1 = "diffuse-lightning-1",
   None = "none",
   Sample1 = "sample-1",
@@ -82,6 +87,44 @@ const filtersObj: FiltersObj = {
       />
     </filter>
   ),
+  [FiltersNames.CompositeAnimated]: ({ id }) => (
+    <filter {...commonFilterProps} id={id}>
+      <feTurbulence
+        baseFrequency="0.2"
+        result="FRACTAL-TEXTURE_10"
+        type="fractalNoise"
+      />
+      <feComposite
+        in="FRACTAL-TEXTURE_10"
+        in2="SourceAlpha"
+        operator="in"
+        result="myComposite"
+      />
+      <feComposite
+        in="myComposite"
+        in2="SourceGraphic"
+        k1="1"
+        k2="2"
+        k3="0.8"
+        k4="-1"
+        operator="arithmetic"
+        result="noiseComposite"
+      >
+        <animate
+          attributeName="k1"
+          dur="4s"
+          repeatCount="indefinite"
+          values={[1, 4, 1].join(";")}
+        />
+        <animate
+          attributeName="k2"
+          dur="2s"
+          repeatCount="indefinite"
+          values={[1, 4, 1].join(";")}
+        />
+      </feComposite>
+    </filter>
+  ),
   [FiltersNames.DiffuseLightning1]: ({ id }) => (
     <filter {...commonFilterProps} id={id}>
       <feDiffuseLighting
@@ -89,7 +132,20 @@ const filtersObj: FiltersObj = {
         lightingColor="white"
         result="light"
       >
-        <fePointLight x="150" y="60" z="40" />
+        <fePointLight z="40">
+          <animate
+            attributeName="x"
+            dur="4s"
+            repeatCount="indefinite"
+            values={[50, 150, 50].join(";")}
+          />
+          <animate
+            attributeName="y"
+            dur="3s"
+            repeatCount="indefinite"
+            values={[20, 70, 20].join(";")}
+          />
+        </fePointLight>
       </feDiffuseLighting>
       <feComposite
         in="SourceGraphic"
@@ -247,6 +303,7 @@ const SVGFilters = (props: Props) => {
           "https://alligator.io/svg/svg-filters/",
           "https://www.smashingmagazine.com/2015/05/why-the-svg-filter-is-awesome/",
           "https://www.w3.org/TR/SVG11/filters.html",
+          "https://codepen.io/mullany/pens/public",
         ]}
         storyName="SVGFilters"
       />

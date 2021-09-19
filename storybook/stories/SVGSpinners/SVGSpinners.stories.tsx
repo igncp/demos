@@ -110,7 +110,7 @@ const thirdSpinnerFn: SpinnerFn = ({ svg }) => {
     svg
       .append("circle")
       .attr("stroke", "none")
-      .attr("cx", 26 * circleIndex)
+      .attr("cx", 26 * circleIndex + 20)
       .attr("cy", "50")
       .attr("r", "5")
       .append("animate")

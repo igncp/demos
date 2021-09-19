@@ -10,9 +10,13 @@ export const getChartConfig = (financialData: FinancialData): ChartConfig => {
   const credits = financialData.getCredits()
   const countriesList = financialData.getCountriesList()
 
-  const formatCurrency = format(",.3r")
+  const formatCurrencyNum = format(",.3r")
+
+  const formatCurrency = (currencyValue: number) =>
+    `$${formatCurrencyNum(currencyValue)}B.`
 
   const getRibbonTitle: ChartConfig["getRibbonTitle"] = ({
+    chartIndex,
     sourceIndex,
     sourceValue,
     targetIndex,
@@ -20,9 +24,13 @@ export const getChartConfig = (financialData: FinancialData): ChartConfig => {
     const { [sourceIndex]: sourceData, [targetIndex]: targetData } =
       countriesList
 
-    return `${sourceData.name} owes ${targetData.name} $${formatCurrency(
-      sourceValue
-    )}B.`
+    const names = [targetData.name, sourceData.name]
+
+    if (chartIndex) {
+      names.reverse()
+    }
+
+    return `${names[0]} owes ${names[1]} ${formatCurrency(sourceValue)}`
   }
 
   const getGroupTitle: ChartConfig["getGroupTitle"] = ({
@@ -31,7 +39,7 @@ export const getChartConfig = (financialData: FinancialData): ChartConfig => {
   }) =>
     `${countriesList[chordGroup.index].name} ${
       chartIndex ? "owes" : "is owed"
-    } $${formatCurrency(chordGroup.value)}B.`
+    } ${formatCurrency(chordGroup.value)}`
 
   const groupItems = countriesList.map((country) => ({
     id: country.id,
