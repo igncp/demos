@@ -11,10 +11,14 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/SVGFilters/SVGFilters.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">355</td><td class="">355</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Selection, select } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/SVGFilters/SVGFilters.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">405</td><td class="">405</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Selection, select } from &quot;d3&quot;
 import React from &quot;react&quot;
 
 import { StoryInfo, createSelectControl } from &quot;../common&quot;
+
+/**
+ * Spec: https://drafts.fxtf.org/filter-effects/#FilterPrimitivesOverview
+ */
 
 const SHAPE_CONTAINER_ID = &quot;example&quot;
 const SVG_ID = &quot;example-svg&quot;
@@ -39,6 +43,7 @@ enum FiltersNames {
   Blur12x12 = &quot;blur12x12&quot;,
   Blur2x2 = &quot;blur2x2&quot;,
   BlurShadow = &quot;blur-shadow&quot;,
+  CompositeAnimated = &quot;composite-animated-1&quot;,
   DiffuseLightning1 = &quot;diffuse-lightning-1&quot;,
   None = &quot;none&quot;,
   Sample1 = &quot;sample-1&quot;,
@@ -95,6 +100,44 @@ const filtersObj: FiltersObj = {
       /&gt;
     &lt;/filter&gt;
   ),
+  [FiltersNames.CompositeAnimated]: ({ id }) =&gt; (
+    &lt;filter {...commonFilterProps} id={id}&gt;
+      &lt;feTurbulence
+        baseFrequency=&quot;0.2&quot;
+        result=&quot;FRACTAL-TEXTURE_10&quot;
+        type=&quot;fractalNoise&quot;
+      /&gt;
+      &lt;feComposite
+        in=&quot;FRACTAL-TEXTURE_10&quot;
+        in2=&quot;SourceAlpha&quot;
+        operator=&quot;in&quot;
+        result=&quot;myComposite&quot;
+      /&gt;
+      &lt;feComposite
+        in=&quot;myComposite&quot;
+        in2=&quot;SourceGraphic&quot;
+        k1=&quot;1&quot;
+        k2=&quot;2&quot;
+        k3=&quot;0.8&quot;
+        k4=&quot;-1&quot;
+        operator=&quot;arithmetic&quot;
+        result=&quot;noiseComposite&quot;
+      &gt;
+        &lt;animate
+          attributeName=&quot;k1&quot;
+          dur=&quot;4s&quot;
+          repeatCount=&quot;indefinite&quot;
+          values={[1, 4, 1].join(&quot;;&quot;)}
+        /&gt;
+        &lt;animate
+          attributeName=&quot;k2&quot;
+          dur=&quot;2s&quot;
+          repeatCount=&quot;indefinite&quot;
+          values={[1, 4, 1].join(&quot;;&quot;)}
+        /&gt;
+      &lt;/feComposite&gt;
+    &lt;/filter&gt;
+  ),
   [FiltersNames.DiffuseLightning1]: ({ id }) =&gt; (
     &lt;filter {...commonFilterProps} id={id}&gt;
       &lt;feDiffuseLighting
@@ -102,7 +145,20 @@ const filtersObj: FiltersObj = {
         lightingColor=&quot;white&quot;
         result=&quot;light&quot;
       &gt;
-        &lt;fePointLight x=&quot;150&quot; y=&quot;60&quot; z=&quot;40&quot; /&gt;
+        &lt;fePointLight z=&quot;40&quot;&gt;
+          &lt;animate
+            attributeName=&quot;x&quot;
+            dur=&quot;4s&quot;
+            repeatCount=&quot;indefinite&quot;
+            values={[50, 150, 50].join(&quot;;&quot;)}
+          /&gt;
+          &lt;animate
+            attributeName=&quot;y&quot;
+            dur=&quot;3s&quot;
+            repeatCount=&quot;indefinite&quot;
+            values={[20, 70, 20].join(&quot;;&quot;)}
+          /&gt;
+        &lt;/fePointLight&gt;
       &lt;/feDiffuseLighting&gt;
       &lt;feComposite
         in=&quot;SourceGraphic&quot;
@@ -260,6 +316,7 @@ const SVGFilters = (props: Props) =&gt; {
           &quot;https://alligator.io/svg/svg-filters/&quot;,
           &quot;https://www.smashingmagazine.com/2015/05/why-the-svg-filter-is-awesome/&quot;,
           &quot;https://www.w3.org/TR/SVG11/filters.html&quot;,
+          &quot;https://codepen.io/mullany/pens/public&quot;,
         ]}
         storyName=&quot;SVGFilters&quot;
       /&gt;
@@ -304,7 +361,7 @@ export default {
   title: &quot;SVG/Filters&quot;,
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 19 Sep 2021 20:12:47 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 19 Sep 2021 22:45:45 GMT</p>
     </body>
   </html>
   

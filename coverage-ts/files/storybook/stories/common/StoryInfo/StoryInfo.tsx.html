@@ -11,7 +11,7 @@
 <link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/common/StoryInfo/StoryInfo.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">120</td><td class="">120</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/common/StoryInfo/StoryInfo.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">186</td><td class="">186</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
 
 import * as styles from &quot;./storyInfo.module.css&quot;
 
@@ -19,6 +19,50 @@ type Doc = {
   link: string
   name: string
 }
+
+type SourceLinkProps = {
+  onSeeLessClick?: () =&gt; void
+  onSeeMoreClick?: () =&gt; void
+  sourceIndex: number
+  sourceLink: string
+  sourceText?: string
+  sourcesLength: number
+}
+
+const SourceLink = ({
+  onSeeLessClick,
+  onSeeMoreClick,
+  sourceIndex,
+  sourceLink,
+  sourceText,
+  sourcesLength,
+}: SourceLinkProps) =&gt; (
+  &lt;&gt;
+    &lt;a href={sourceLink} rel=&quot;noreferrer&quot; target=&quot;_blank&quot;&gt;
+      {(sourceText ?? &quot;Source&quot;) +
+        (sourcesLength === 1 ? &quot;&quot; : ` ${sourceIndex + 1}`)}
+    &lt;/a&gt;
+    {(onSeeMoreClick || onSeeLessClick) &amp;&amp; (
+      &lt;a
+        href=&quot;#&quot;
+        onClick={(clickEvent) =&gt; {
+          clickEvent.stopPropagation()
+          clickEvent.preventDefault()
+
+          if (onSeeMoreClick) {
+            onSeeMoreClick()
+          } else {
+            onSeeLessClick!()
+          }
+        }}
+      &gt;
+        {&quot; &quot;}
+        (See {onSeeMoreClick ? &quot;more &gt;&gt;&quot; : &quot;less &lt;&lt;&quot;})
+      &lt;/a&gt;
+    )}
+    &lt;span&gt; | &lt;/span&gt;
+  &lt;/&gt;
+)
 
 type Props = {
   docs?: Doc[]
@@ -29,6 +73,7 @@ type Props = {
 
 const StoryInfo = ({ docs, source, sourceText, storyName }: Props) =&gt; {
   const [isDocsBlockExpanded, setIsDocsBlockExpanded] = React.useState(false)
+  const [areSourcesExpanded, setAreSourcesExpanded] = React.useState(false)
 
   React.useEffect(() =&gt; {
     const anchorElement = parent.document
@@ -45,15 +90,35 @@ const StoryInfo = ({ docs, source, sourceText, storyName }: Props) =&gt; {
   return (
     &lt;&gt;
       &lt;p&gt;
-        {(Array.isArray(source) ? source : [source]).map(
-          (...[sourceItem, sourceIndex, sourcesArray]) =&gt; (
-            &lt;span key={sourceIndex}&gt;
-              &lt;a href={sourceItem} rel=&quot;noreferrer&quot; target=&quot;_blank&quot;&gt;
-                {(sourceText ?? &quot;Source&quot;) +
-                  (sourcesArray.length === 1 ? &quot;&quot; : ` ${sourceIndex + 1}`)}
-              &lt;/a&gt;
-              &lt;span&gt; | &lt;/span&gt;
-            &lt;/span&gt;
+        {Array.isArray(source) &amp;&amp; source.length &gt; 1 &amp;&amp; !areSourcesExpanded ? (
+          &lt;SourceLink
+            onSeeMoreClick={() =&gt; {
+              setAreSourcesExpanded(true)
+            }}
+            sourceIndex={0}
+            sourceLink={source[0]}
+            sourceText={sourceText}
+            sourcesLength={source.length}
+          /&gt;
+        ) : (
+          (Array.isArray(source) ? source : [source]).map(
+            (...[sourceItem, sourceIndex, sourcesArray]) =&gt; (
+              &lt;SourceLink
+                key={sourceIndex}
+                onSeeLessClick={
+                  sourcesArray.length &gt; 1 &amp;&amp;
+                  sourceIndex === sourcesArray.length - 1
+                    ? () =&gt; {
+                        setAreSourcesExpanded(false)
+                      }
+                    : undefined
+                }
+                sourceIndex={sourceIndex}
+                sourceLink={sourceItem}
+                sourceText={sourceText}
+                sourcesLength={sourcesArray.length}
+              /&gt;
+            )
           )
         )}
         &lt;a
@@ -103,7 +168,7 @@ const StoryInfo = ({ docs, source, sourceText, storyName }: Props) =&gt; {
 
 export default StoryInfo
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 19 Sep 2021 20:12:47 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 19 Sep 2021 22:45:45 GMT</p>
     </body>
   </html>
   
