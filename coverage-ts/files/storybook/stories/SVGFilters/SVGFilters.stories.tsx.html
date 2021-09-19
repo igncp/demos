@@ -11,18 +11,35 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/SVGFilters/SVGFilters.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">312</td><td class="">312</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Selection, select } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/SVGFilters/SVGFilters.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">355</td><td class="">355</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Selection, select } from &quot;d3&quot;
 import React from &quot;react&quot;
 
 import { StoryInfo, createSelectControl } from &quot;../common&quot;
 
 const SHAPE_CONTAINER_ID = &quot;example&quot;
+const SVG_ID = &quot;example-svg&quot;
+
+// https://www.w3.org/TR/SVG2/shapes.html
+const starPolygon = [
+  [350],
+  [75, 379],
+  [161, 469],
+  [161, 397],
+  [215, 423],
+  [301, 350],
+  [250, 277],
+  [301, 303],
+  [215, 231],
+  [161, 321],
+  [161],
+]
 
 enum FiltersNames {
   BlendExclusion = &quot;blend-exclusion&quot;,
   Blur12x12 = &quot;blur12x12&quot;,
   Blur2x2 = &quot;blur2x2&quot;,
   BlurShadow = &quot;blur-shadow&quot;,
+  DiffuseLightning1 = &quot;diffuse-lightning-1&quot;,
   None = &quot;none&quot;,
   Sample1 = &quot;sample-1&quot;,
   TurbulenceBlue = &quot;turbulence-blue&quot;,
@@ -31,6 +48,7 @@ enum FiltersNames {
 enum ShapesNames {
   Circle = &quot;circle&quot;,
   Rect = &quot;rect&quot;,
+  Star = &quot;star&quot;,
 }
 
 type Props = {
@@ -74,6 +92,26 @@ const filtersObj: FiltersObj = {
         floodColor=&quot;#777&quot;
         floodOpacity=&quot;0.25&quot;
         stdDeviation=&quot;5&quot;
+      /&gt;
+    &lt;/filter&gt;
+  ),
+  [FiltersNames.DiffuseLightning1]: ({ id }) =&gt; (
+    &lt;filter {...commonFilterProps} id={id}&gt;
+      &lt;feDiffuseLighting
+        in=&quot;SourceGraphic&quot;
+        lightingColor=&quot;white&quot;
+        result=&quot;light&quot;
+      &gt;
+        &lt;fePointLight x=&quot;150&quot; y=&quot;60&quot; z=&quot;40&quot; /&gt;
+      &lt;/feDiffuseLighting&gt;
+      &lt;feComposite
+        in=&quot;SourceGraphic&quot;
+        in2=&quot;light&quot;
+        k1=&quot;1&quot;
+        k2=&quot;0&quot;
+        k3=&quot;0&quot;
+        k4=&quot;0&quot;
+        operator=&quot;arithmetic&quot;
       /&gt;
     &lt;/filter&gt;
   ),
@@ -150,10 +188,11 @@ const filters = Object.values(FiltersNames).map((filterName: FiltersNames) =&gt;
 }))
 
 const setupSVG = () =&gt; {
-  const container = document.getElementById(SHAPE_CONTAINER_ID) as HTMLElement
-  const { width } = container.getBoundingClientRect()
+  const { width } = document.body.getBoundingClientRect()
 
-  select(`#${SHAPE_CONTAINER_ID}`).text(&quot;&quot;).append(&quot;svg&quot;).attr(&quot;width&quot;, width)
+  select(`#${SVG_ID}`)
+    .attr(&quot;width&quot;, width - 100)
+    .attr(&quot;height&quot;, 300)
 }
 
 type GetShape = {
@@ -182,12 +221,25 @@ const getShape: GetShape = {
       .attr(&quot;x&quot;, 20)
       .attr(&quot;y&quot;, 20)
       .attr(&quot;fill&quot;, &quot;blue&quot;),
+  [ShapesNames.Star]: (svg) =&gt;
+    svg
+      .append&lt;SVGElement&gt;(&quot;polygon&quot;)
+      .attr(
+        &quot;points&quot;,
+        starPolygon
+          .map((subItem) =&gt; subItem.map((subNumber) =&gt; subNumber / 2).join(&quot; &quot;))
+          .join(&quot;, &quot;)
+      )
+      .attr(&quot;fill&quot;, &quot;yellow&quot;)
+      .attr(&quot;stroke-width&quot;, &quot;2&quot;)
+      .attr(&quot;stroke&quot;, &quot;orange&quot;),
 }
 
 const demo = ({ filterName, shapeName }: Props) =&gt; {
   setupSVG()
 
   const svg = select&lt;SVGGElement, unknown&gt;(`#${SHAPE_CONTAINER_ID}`).text(&quot;&quot;)
+
   const shape = getShape[shapeName](svg)
 
   shape.style(
@@ -215,7 +267,7 @@ const SVGFilters = (props: Props) =&gt; {
         You can choose a wide options of SVG filters to apply in different
         shapes
       &lt;/p&gt;
-      &lt;svg&gt;
+      &lt;svg id={SVG_ID}&gt;
         &lt;g&gt;
           {filters.map(({ comp: Filter, id }) =&gt; (
             &lt;Filter id={id} key={id} /&gt;
@@ -252,7 +304,7 @@ export default {
   title: &quot;SVG/Filters&quot;,
 }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 18 Sep 2021 14:42:05 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 19 Sep 2021 20:12:47 GMT</p>
     </body>
   </html>
   
