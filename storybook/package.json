@@ -5,8 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "storybook:build": "build-storybook",
-    "storybook:run": "start-storybook -p 6006"
+    "storybook:build": "build-storybook -s static",
+    "storybook:run": "start-storybook -s static -p 6006"
   },
   "author": "",
   "license": "ISC",
