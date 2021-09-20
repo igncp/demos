@@ -16,6 +16,13 @@
       "kind": 1
     },
     {
+      "file": "src/testing/threeJS.ts",
+      "line": 35,
+      "character": 43,
+      "text": "reflectivity",
+      "kind": 1
+    },
+    {
       "file": "src/demos/_utils/fish-eye.ts",
       "line": 5,
       "character": 2,
@@ -1183,10 +1190,80 @@
       "character": 40,
       "text": "getOrientation",
       "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSPostprocessing/Outline.stories.tsx",
+      "line": 245,
+      "character": 16,
+      "text": "geometry",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSPostprocessing/Outline.stories.tsx",
+      "line": 245,
+      "character": 25,
+      "text": "center",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSPostprocessing/Outline.stories.tsx",
+      "line": 246,
+      "character": 16,
+      "text": "geometry",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSPostprocessing/Outline.stories.tsx",
+      "line": 246,
+      "character": 25,
+      "text": "computeBoundingSphere",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSPostprocessing/Outline.stories.tsx",
+      "line": 247,
+      "character": 30,
+      "text": "geometry",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSPostprocessing/Outline.stories.tsx",
+      "line": 247,
+      "character": 39,
+      "text": "boundingSphere",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSPostprocessing/Outline.stories.tsx",
+      "line": 247,
+      "character": 54,
+      "text": "radius",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSPostprocessing/Outline.stories.tsx",
+      "line": 255,
+      "character": 16,
+      "text": "material",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSPostprocessing/Outline.stories.tsx",
+      "line": 333,
+      "character": 38,
+      "text": "value",
+      "kind": 1
+    },
+    {
+      "file": "storybook/stories/ThreeJSPostprocessing/Outline.stories.tsx",
+      "line": 333,
+      "character": 44,
+      "text": "set",
+      "kind": 1
     }
   ],
-  "percentage": 99.38052124188997,
-  "total": 27281,
-  "covered": 27112,
-  "uncovered": 169
+  "percentage": 99.35707397221131,
+  "total": 27997,
+  "covered": 27817,
+  "uncovered": 180
 }
