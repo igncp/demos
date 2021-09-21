@@ -1,7 +1,27 @@
 import QUnitType from "qunit"
-import { Color, MeshLambertMaterial, Vector3, WebGLRenderer } from "three"
+import {
+  Audio,
+  AudioListener,
+  Color,
+  MeshLambertMaterial,
+  Vector3,
+  WebGLRenderer,
+} from "three"
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js"
+import { Pass } from "three/examples/jsm/postprocessing/Pass"
 
 const threeJSTests = (QUnit: QUnitType) => {
+  // https://threejs.org/docs/#api/en/audio/Audio
+  QUnit.test("Audio", (assert) => {
+    const listener = new AudioListener()
+    const sound = new Audio(listener)
+
+    assert.deepEqual(sound.name, "")
+    assert.deepEqual(sound.autoplay, false)
+    assert.deepEqual(sound.isPlaying, false)
+    assert.deepEqual(sound.duration, undefined)
+  })
+
   // https://threejs.org/docs/#api/en/math/Color
   // https://en.wikipedia.org/wiki/X11_color_names#Color_name_chart
   QUnit.test("Color", (assert) => {
@@ -20,6 +40,23 @@ const threeJSTests = (QUnit: QUnitType) => {
     // the previous operation mutated only the colorA color
     assert.deepEqual(colorA.getHexString(), "00ff00")
     assert.deepEqual(colorRed.getHexString(), "ff0000")
+  })
+
+  // https://threejs.org/docs/#examples/en/postprocessing/EffectComposer
+  QUnit.test("EffectComposer", (assert) => {
+    const renderer = new WebGLRenderer()
+    const composer = new EffectComposer(renderer)
+    const fooPass = new Pass()
+
+    assert.deepEqual(composer.passes, [])
+
+    composer.addPass(fooPass)
+
+    assert.deepEqual(composer.passes, [fooPass])
+
+    composer.removePass(fooPass)
+
+    assert.deepEqual(composer.passes, [])
   })
 
   // https://threejs.org/docs/#api/en/materials/MeshLambertMaterial

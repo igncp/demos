@@ -29,14 +29,13 @@ export const createChartConfig = (schedules: MareysSchedules): ChartConfig => {
     position: station.distance,
   }))
 
-  const horizontalMarkerMap = horizontalMarkers.reduce(
-    (...[acc, horizontalMarker]) => {
-      acc[horizontalMarker.key] = horizontalMarker
+  const horizontalMarkerMap = horizontalMarkers.reduce<{
+    [key: string]: HorizontalMarker
+  }>((...[acc, horizontalMarker]) => {
+    acc[horizontalMarker.key] = horizontalMarker
 
-      return acc
-    },
-    {} as { [key: string]: HorizontalMarker }
-  )
+    return acc
+  }, {})
 
   const trains = schedules.getTrains()
 

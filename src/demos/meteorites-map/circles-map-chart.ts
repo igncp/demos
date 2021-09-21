@@ -162,11 +162,14 @@ export const renderChart = <CircleData extends ChartDataConstraint>(
       nearCircles.map((nearCircle) => getCircleId(nearCircle))
     )
 
-    const vectorsMap = nearCircles.reduce((...[acc, nearCircle]) => {
-      acc[getCircleId(nearCircle)] = nearCircle.vectorNormalized
+    const vectorsMap = nearCircles.reduce<Record<string, [number, number]>>(
+      (...[acc, nearCircle]) => {
+        acc[getCircleId(nearCircle)] = nearCircle.vectorNormalized
 
-      return acc
-    }, {} as Record<string, [number, number]>)
+        return acc
+      },
+      {}
+    )
 
     return {
       nearCircles,

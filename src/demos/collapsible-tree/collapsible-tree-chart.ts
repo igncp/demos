@@ -34,10 +34,10 @@ export const findNode = <NodeData>({
     return node
   }
 
-  return (node.children ?? []).reduce(
+  return (node.children ?? []).reduce<NodeShape<NodeData> | null>(
     (...[acc, otherNode]) =>
       acc ?? findNode({ getId, node: otherNode, nodeId }),
-    null as NodeShape<NodeData> | null
+    null
   )
 }
 
@@ -60,10 +60,10 @@ export const findParentNode = <NodeData>({
     return node
   }
 
-  return node.children.reduce(
+  return node.children.reduce<NodeShape<NodeData> | null>(
     (...[acc, otherNode]) =>
       acc ?? findParentNode({ getId, node: otherNode, nodeId }),
-    null as NodeShape<NodeData> | null
+    null
   )
 }
 

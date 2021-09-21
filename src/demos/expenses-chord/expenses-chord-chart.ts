@@ -217,11 +217,11 @@ export const renderChart = (chartConfig: ChartConfig) => {
     const initialRibbonsData = ribbonContainer
       .selectAll<SVGPathElement, Chord>(`.${styles.ribbon}`)
       .data()
-      .reduce((...[acc, ribbonNode]) => {
+      .reduce<{ [k: string]: Chord | undefined }>((...[acc, ribbonNode]) => {
         acc[getRibbonKey(ribbonNode)] = ribbonNode
 
         return acc
-      }, {} as { [k: string]: Chord | undefined })
+      }, {})
 
     const fillRibbon = (chordItem: Chord) =>
       color(

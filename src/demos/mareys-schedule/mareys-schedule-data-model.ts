@@ -132,11 +132,14 @@ class MareysSchedules {
   }
 
   public getTrainsMap() {
-    return this.schedulesData.trains.reduce((...[acc, train]) => {
-      acc[train.id] = train
+    return this.schedulesData.trains.reduce<{ [id: string]: Train }>(
+      (...[acc, train]) => {
+        acc[train.id] = train
 
-      return acc
-    }, {} as { [id: string]: Train })
+        return acc
+      },
+      {}
+    )
   }
 }
 

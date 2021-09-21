@@ -126,19 +126,22 @@ export const createChartConfig = ({
       return dataItem.count
     })
 
-    const valueToIdx = dataValues.reduce((...[acc, valueItem, valueIndex]) => {
-      acc[valueItem] = acc[valueIndex] ?? []
-      acc[valueItem]!.push(valueIndex)
+    const valueToIdx = dataValues.reduce<Record<string, number[] | undefined>>(
+      (...[acc, valueItem, valueIndex]) => {
+        acc[valueItem] = acc[valueIndex] ?? []
+        acc[valueItem]!.push(valueIndex)
 
-      return acc
-    }, {} as Record<string, number[] | undefined>)
+        return acc
+      },
+      {}
+    )
 
     const sortedDataValues = dataValues.sort(
       (...[municipalityAValue, municipalityBValue]) =>
         municipalityAValue - municipalityBValue
     )
 
-    const percentiles = sortedDataValues.reduce(
+    const percentiles = sortedDataValues.reduce<number[]>(
       (...[percentilesAcc, valueItem, valueIndex]) => {
         const percentile = valueIndex / sortedDataValues.length
         const { [valueItem]: unsortedIndexes } = valueToIdx
@@ -149,7 +152,7 @@ export const createChartConfig = ({
 
         return percentilesAcc
       },
-      [] as number[]
+      []
     )
 
     return itemsWithCount.filter((...[, percentileIndex]) => {

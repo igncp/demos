@@ -283,13 +283,16 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
     focus.append("text").attr("class", "text1").attr("y", -30)
     focus.append("text").attr("class", "text2").attr("y", -10)
 
-    const flatCityMetrics = usedCities.reduce((...[acc, city]) => {
-      city.metrics.forEach((cityMetric) => {
-        acc.push(cityMetric)
-      })
+    const flatCityMetrics = usedCities.reduce<CityMetric[]>(
+      (...[acc, city]) => {
+        city.metrics.forEach((cityMetric) => {
+          acc.push(cityMetric)
+        })
 
-      return acc
-    }, [] as CityMetric[])
+        return acc
+      },
+      []
+    )
 
     const voronoi = Delaunay.from(
       flatCityMetrics,
