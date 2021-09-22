@@ -522,7 +522,7 @@
     {
       "file": "src/demos/meteorites-map/circles-map-chart.ts",
       "line": 41,
-      "character": 46,
+      "character": 37,
       "text": "zoomEvent",
       "kind": 1
     },
@@ -1290,8 +1290,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.3520442300243,
-  "total": 28397,
-  "covered": 28213,
+  "percentage": 99.35268249780123,
+  "total": 28425,
+  "covered": 28241,
   "uncovered": 184
 }
