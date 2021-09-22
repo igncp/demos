@@ -49,10 +49,10 @@ const applyOpacityEffect = <ContainerEl extends BaseType, Datum>(
 ) => {
   elementsSelection
     .style("opacity", elementDefaultOpacity)
-    .on("mouseenter", function () {
+    .on("mouseenter", function onMouseEnter() {
       select(this).style("opacity", 1)
     })
-    .on("mouseleave", function () {
+    .on("mouseleave", function onMouseLeave() {
       select(this).style("opacity", elementDefaultOpacity)
     })
 }
@@ -321,7 +321,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
           chordItem.target.value
         )
       )
-      .on("click", function (...[, chordItem]) {
+      .on("click", function onChordClick(...[, chordItem]) {
         const chordSelection = select(this)
         const chordGroupId = `${chordGroupsIds[chordItem.source.index]}_${
           chordGroupsIds[chordItem.target.index]

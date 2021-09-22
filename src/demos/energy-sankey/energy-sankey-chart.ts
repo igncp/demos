@@ -228,7 +228,7 @@ export const renderChart = <NodeData, LinkData>(
       (sankeyNode: ChartSankeyNode) => sankeyNode.x1! - sankeyNode.x0!
     )
     .attr("fill", color)
-    .on("mouseenter", function () {
+    .on("mouseenter", function onMouseEnter() {
       lastAnime()
 
       const animationFirst = anime({
@@ -318,7 +318,7 @@ export const renderChart = <NodeData, LinkData>(
     })
     .attr("class", styles.chartLink)
     .attr("stroke-width", (sankeyLink) => Math.max(1, sankeyLink.width!))
-    .on("click", function () {
+    .on("click", function onLinkClick() {
       if (state.isInTransition) {
         return
       }
@@ -348,7 +348,7 @@ export const renderChart = <NodeData, LinkData>(
     track: true,
   })
 
-  nodeG.each(function (this) {
+  nodeG.each(function appendOnEnd(this) {
     const parentEl = this.parentNode as HTMLElement
 
     parentEl.appendChild(this)

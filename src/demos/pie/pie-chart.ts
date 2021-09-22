@@ -121,7 +121,7 @@ export const createChart = <SliceData>({
         .duration(transitionDuration)
         .ease(easeFn)
         .attr("transform", textTransform)
-        .each(function (slice) {
+        .each(function setupText(slice) {
           select(this).text(getSliceValue(slice.data))
         })
     }

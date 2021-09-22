@@ -66,7 +66,7 @@ enum DimensionType {
   String = "string",
 }
 
-const tooltipText = function (projectionItem: ProjectionItem) {
+const tooltipText = (projectionItem: ProjectionItem) => {
   const dimensionsNames = [
     DimensionName.Acc40,
     DimensionName.Scale,
@@ -284,7 +284,7 @@ const renderChart: RenderChart = ({ mapsDistorsions, rootElId }) => {
   dimensionSelection
     .append("g")
     .attr("class", styles.axis)
-    .each(function (dimensionItem: Dimension) {
+    .each(function setupVerticalAxis(dimensionItem: Dimension) {
       const yAxis = axisLeft(dimensionItem.scale)
 
       return select(this).call(yAxis)
@@ -304,7 +304,7 @@ const renderChart: RenderChart = ({ mapsDistorsions, rootElId }) => {
       colorFn(projectionIndex)
     )
 
-  const moveToFront = function (this: SVGElement) {
+  const moveToFront = function appendOnEnd(this: SVGElement) {
     const parentNode = this.parentNode as HTMLElement
 
     parentNode.appendChild(this)

@@ -39,7 +39,7 @@ const modalHiddenTop = 250
 const clickedCircleDistortion = 20
 
 // eslint-disable-next-line max-params,@typescript-eslint/no-explicit-any
-const zoomed = function (this: SVGSVGElement, zoomEvent: any) {
+function zoomed(this: SVGSVGElement, zoomEvent: any) {
   select(this).transition().duration(500).attr("transform", zoomEvent.transform)
 }
 

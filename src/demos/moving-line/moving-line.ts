@@ -52,7 +52,7 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
     return path
   }
 
-  const drawPoints = function () {
+  const drawPoints = () => {
     const radius = 6
     const { points } = graphData.charts[0]
 
@@ -121,7 +121,7 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
     )
   }
 
-  const advanceGraph = function () {
+  const advanceGraph = () => {
     if (graphData.current < graphData.charts.length - 1) {
       graphData.current += 1
     } else {
@@ -131,7 +131,7 @@ const renderChart = ({ graphData, rootElId }: RenderChartOpts) => {
     animateChart()
   }
 
-  const initLineGraph = function () {
+  const initLineGraph = () => {
     const rootEl = document.getElementById(rootElId) as HTMLElement
 
     rootEl.classList.add(styles.movingLineChart)

@@ -82,7 +82,7 @@ export const renderChart = <CircleData>(
 
   // this zoom function is not working well in all directions
   // eslint-disable-next-line max-params
-  const zoomed = function (
+  function zoomed(
     this: SVGSVGElement,
     zoomEvent: D3ZoomEvent<SVGSVGElement, unknown>
   ) {
@@ -193,7 +193,7 @@ export const renderChart = <CircleData>(
       .attr("class", "leaf")
       .attr("title", getTitle)
       .attr("transform", (node) => `translate(${node.x + 1},${node.y + 1})`)
-      .on("mouseenter", function (...[, node]) {
+      .on("mouseenter", function onMouseEnter(...[, node]) {
         const selection = select(this).select(`.${styles.circle}`)
 
         select(this)
@@ -212,7 +212,7 @@ export const renderChart = <CircleData>(
 
         hoverAnimations[id] = hoverAnimation
       })
-      .on("mouseleave", function (...[, node]) {
+      .on("mouseleave", function onMouseLeave(...[, node]) {
         const selection = select(this).select(`.${styles.circle}`)
 
         select(this).select(".letter").attr("filter", null)

@@ -156,10 +156,10 @@ const renderChart: RenderChart = ({ namesMetrics, rootElId }) => {
 
       return ""
     })
-    .on("mouseover", function () {
+    .on("mouseover", function onMouseOver() {
       select(this).style("stroke", "#D88021").style("stroke-width", "10px")
     })
-    .on("mouseleave", function () {
+    .on("mouseleave", function onMouseLeave() {
       select<SVGCircleElement, NamesMetric>(this)
         .style("stroke", (namesMetric) => colorize(namesMetric))
         .style("stroke-width", strokeWidth)

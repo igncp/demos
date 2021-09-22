@@ -221,7 +221,7 @@ const renderChart: RenderChart = ({ cities, months, rootElId }) => {
       .data(usedCities)
       .enter()
       .append("path")
-      .attr("d", function (city: City) {
+      .attr("d", function generateLine(city: City) {
         cityNameToLine[city.name] = this
 
         return line(city.metrics)

@@ -63,11 +63,11 @@ function circularArc(
   })
 }
 
-const addHoverHandlers = function (arcSelection: RaphaelPath) {
+const addHoverHandlers = (arcSelection: RaphaelPath) => {
   const widthMultiplier = 2.5
 
   arcSelection.hover(
-    function () {
+    function onHover() {
       this.attr("fill-opacity", 0.3)
 
       this.animate(
@@ -78,7 +78,7 @@ const addHoverHandlers = function (arcSelection: RaphaelPath) {
         "bounce"
       )
     },
-    function () {
+    function onHoverOut() {
       this.attr("fill-opacity", 0.2)
 
       this.animate(

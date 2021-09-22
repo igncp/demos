@@ -148,7 +148,7 @@ const renderGraph: RenderGraph = ({ forceData, rootElId }) => {
       .attr("cy", (forceNode) => forceNode.y)
       .attr("r", () => settings.circleRadius)
       .attr("fill", "black")
-      .each(function () {
+      .each(function setupMouseHandlers() {
         select<SVGCircleElement, ForceData["nodes"][0]>(this)
           .on("mouseover", (...[, forceNode]) => {
             select(`#node-text-${forceNode.index}`).style("opacity", 1)

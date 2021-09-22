@@ -223,14 +223,14 @@ const renderChart = ({ rootElId }) => {
       })
       .style("stroke", (d) => rgb(colors(d.id)).darker().toString())
       .classed("reflexive", (d) => d.reflexive)
-      .on("mouseover", function (d) {
+      .on("mouseover", function onMouseOver(d) {
         if (!mousedownNode || d === mousedownNode) {
           return
         }
 
         select(this).attr("transform", "scale(1.1)")
       })
-      .on("mouseout", function (d) {
+      .on("mouseout", function onMouseOut(d) {
         if (!mousedownNode || d === mousedownNode) {
           return
         }
@@ -261,7 +261,7 @@ const renderChart = ({ rootElId }) => {
 
         restart()
       })
-      .on("mouseup", function (d) {
+      .on("mouseup", function onMouseUp(d) {
         let direction = null
         let source = null
         let target = null
@@ -325,7 +325,7 @@ const renderChart = ({ rootElId }) => {
     force.start()
   }
 
-  const mousedownSVG = function () {
+  const mousedownSVG = function onSVGMouseDown() {
     svg.classed("active", true)
 
     if (d3.event.ctrlKey || mousedownNode || mousedownLink) {
@@ -348,7 +348,7 @@ const renderChart = ({ rootElId }) => {
     restart()
   }
 
-  const mousemoveSVG = function () {
+  const mousemoveSVG = function onSVGMouseMove() {
     if (!mousedownNode) {
       return
     }
@@ -363,7 +363,7 @@ const renderChart = ({ rootElId }) => {
     restart()
   }
 
-  const mouseupSVG = function () {
+  const mouseupSVG = function onSVGMouseUp() {
     if (mousedownNode) {
       dragLine.classed("hidden", true).style("marker-end", "")
     }
@@ -379,7 +379,7 @@ const renderChart = ({ rootElId }) => {
     return toSplice.map((l) => links.splice(links.indexOf(l), 1))
   }
 
-  const keydown = function (ev) {
+  const keydown = function onKeydown(ev) {
     ev.preventDefault()
 
     if (lastKeyDown !== -1) {
@@ -442,7 +442,7 @@ const renderChart = ({ rootElId }) => {
     }
   }
 
-  const keyup = function (ev) {
+  const keyup = (ev) => {
     lastKeyDown = -1
 
     if (ev.keyCode === 17) {

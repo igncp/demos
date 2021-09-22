@@ -215,7 +215,7 @@ const renderGraph: RenderGraph = ({ rootElId, vectorsData }) => {
       .attr("cy", (node) => node.y!)
       .attr("r", () => settings.circleRadius)
       .attr("fill", "#fff")
-      .each(function () {
+      .each(function setupMouseHandlers() {
         select<SVGCircleElement, VectorsData["nodes"][0]>(this)
           .on("mouseover", (...[, node]: [unknown, Node]) => {
             select(`#node-text-${node.index}`).style("opacity", 1)
@@ -256,11 +256,11 @@ const renderGraph: RenderGraph = ({ rootElId, vectorsData }) => {
     .attr("marker-end", "url(#end)")
     .attr("id", (...[, linkIndex]: [unknown, number]) => `link-${linkIndex}`)
 
-  const keydown = function () {
+  const keydown = () => {
     console.log("keydown") // eslint-disable-line no-console
   }
 
-  const keyup = function () {
+  const keyup = () => {
     console.log("keyup") // eslint-disable-line no-console
   }
 

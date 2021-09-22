@@ -24,7 +24,7 @@ const toYear = (date: Date) => {
   return bcString + Math.abs(year)
 }
 
-const parseDate = function (dateString: string) {
+const parseDate = (dateString: string) => {
   const format = timeParse("%Y-%m-%d")
 
   let date = format(dateString)

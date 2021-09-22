@@ -251,14 +251,14 @@ const renderChart: RenderChart = ({ partitionType, rootData, rootElId }) => {
     const updatedGroups = [pathEnter, textsEnter]
 
     updatedGroups.forEach((set) => {
-      set.on("mouseover", function () {
+      set.on("mouseover", function onMouseOver() {
         const nodeIndex = select(this).attr("data-index")
 
         select(`path[data-index="${nodeIndex}"]`).style("fill", overColor)
         select(`text[data-index="${nodeIndex}"]`).style("fill", "white")
       })
 
-      set.on("mouseout", function () {
+      set.on("mouseout", function onMouseOut() {
         const nodeIndex = select(this).attr("data-index")
 
         select<SVGPathElement, HierarchyRectNode>(

@@ -176,7 +176,7 @@ export const renderChart = (chartConfig: ChartConfig) => {
   const fillGroupIndex = (chordGroupIndex: number) =>
     heatmapColour(colorDomain(chordGroupIndex))
 
-  charts.each(function (...[numberMatrix, chartIndex]) {
+  charts.each(function renderSingleChart(...[numberMatrix, chartIndex]) {
     const svgComp = select(this)
 
     const chordData = chord()

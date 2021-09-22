@@ -214,7 +214,7 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
     hasDescendants: (node) => !!node.data.children?.length,
   })
 
-  const update = function (source: TreeNode) {
+  const update = (source: TreeNode) => {
     const nodes = rootTree.descendants().reverse()
     const links = rootTree.links()
 

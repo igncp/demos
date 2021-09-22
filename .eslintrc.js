@@ -141,6 +141,7 @@ module.exports = {
     "consistent-return": 2,
     "eqeqeq": 2,
     "eslint-comments/no-unused-disable": 2,
+    "func-names": 2,
     "id-denylist": [2, ...denyList],
 
     "import/no-namespace": [2, { ignore: ["*.module.css"] }],
@@ -261,6 +262,7 @@ module.exports = {
 
     "quote-props": [2, "consistent-as-needed"],
 
+    "react/jsx-fragments": [2, "syntax"],
     "react/jsx-handler-names": 2,
     "react/jsx-sort-props": 2,
     "react/self-closing-comp": 2,
@@ -274,6 +276,7 @@ module.exports = {
       },
     ],
     "sort-keys": 2,
+    "spaced-comment": 2,
 
     "typescript-sort-keys/interface": "error",
     "typescript-sort-keys/string-enum": "error",

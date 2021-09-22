@@ -8,7 +8,7 @@ import {
 import { CONTAINER_ID } from "./mareys-schedule-controls"
 import { MareysSchedules } from "./mareys-schedule-data-model"
 
-const formatAMPM = function (date: Date) {
+const formatAMPM = (date: Date) => {
   let hours = date.getHours()
   const ampm = hours >= 12 ? "PM" : "AM"
 

@@ -104,14 +104,13 @@ export const renderChart = <Properties>(
     .domain(range(0, 1, 1.0 / colorsScheme.length))
     .range(colorsScheme)
 
-  const colorFn = function (areaData: DataShape) {
-    return colorScaleConversion(colorScale(areaData.areaIndex))
-  }
+  const colorFn = (areaData: DataShape) =>
+    colorScaleConversion(colorScale(areaData.areaIndex))
 
   const svg = select(`#${rootElId}`)
 
-  const generateSvg = function (width: number) {
-    return svg
+  const generateSvg = (width: number) =>
+    svg
       .append("div")
       .style("display", "inline-block")
       .style("height", `${height + margin.top + margin.bottom}px`)
@@ -121,11 +120,9 @@ export const renderChart = <Properties>(
       .attr("height", height + margin.top + margin.bottom)
       .append("svg:g")
       .attr("transform", `translate(${width / 2},${height / 2 + margin.top})`)
-  }
 
-  const generatePath = function (projection: GeoProjection) {
-    return geoPath().projection(projection)
-  }
+  const generatePath = (projection: GeoProjection) =>
+    geoPath().projection(projection)
 
   const regionClass = `region-${uuidv1().slice(0, 6)}`
 
@@ -148,12 +145,12 @@ export const renderChart = <Properties>(
       .style("stroke", "#FFF")
       .style("stroke-width", strokeWidth)
       .style("filter", () => `url(#drop-shadow-${filterId})`)
-      .on("mouseover", function () {
+      .on("mouseover", function onMouseOver() {
         return select(this)
           .style("fill", "#FFB61A")
           .style("stroke-width", "1px")
       })
-      .on("mouseleave", function () {
+      .on("mouseleave", function onMouseLeave() {
         return select<SVGPathElement, DataShape>(this)
           .style("fill", colorFn)
           .style("stroke-width", strokeWidth)

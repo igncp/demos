@@ -149,7 +149,7 @@ export class UINode<Container extends BaseType, Datum> {
     }
 
     nodeEnter
-      .on("mouseenter", function (...[, focusedTreeNode]) {
+      .on("mouseenter", function onMouseEnter(...[, focusedTreeNode]) {
         hoveredItems.add(getNodeId(focusedTreeNode))
 
         select<SVGGElement, Datum>(this)
@@ -179,7 +179,7 @@ export class UINode<Container extends BaseType, Datum> {
           translateY: animePath("y"),
         })
       })
-      .on("mouseleave", function (...[, focusedTreeNode]) {
+      .on("mouseleave", function onMouseLeave(...[, focusedTreeNode]) {
         hoveredItems.delete(getNodeId(focusedTreeNode))
 
         select<SVGGElement, Datum>(this)
@@ -233,7 +233,7 @@ export class UINode<Container extends BaseType, Datum> {
         },
       })
 
-      nodeGroup.each(function (nodeDatum) {
+      nodeGroup.each(function setupHover(nodeDatum) {
         const isHovered = hoveredItems.has(getNodeId(nodeDatum))
 
         if (isHovered) {

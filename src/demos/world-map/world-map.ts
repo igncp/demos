@@ -112,11 +112,11 @@ const renderChart: RenderChart = ({ rootElId, world }) => {
     .style("stroke", "#FFF")
     .style("stroke-width", 0.2)
 
-  countries.on("mouseover", function () {
+  countries.on("mouseover", function onMouseOver() {
     return select(this).style("stroke", "black").style("stroke-width", "1px")
   })
 
-  countries.on("mouseout", function () {
+  countries.on("mouseout", function onMouseOut() {
     return select(this).style("stroke", "white").style('"stroke-width"', ".2px")
   })
 

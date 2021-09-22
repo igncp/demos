@@ -293,7 +293,7 @@ export class Timeline<ChartData extends ChartDataBase> {
       .attr("class", styles.axis)
       .attr("transform", `translate(0,${band.y + band.h})`)
 
-    xAxis.redraw = function () {
+    xAxis.redraw = () => {
       xAxis.call(axis)
     }
 
