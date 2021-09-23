@@ -1,0 +1,273 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>ThreeJSSpecialChars.stories.tsx</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/ThreeJSSpecialChars/ThreeJSSpecialChars.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">345</td><td class="">345</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+import {
+  Color,
+  Font,
+  FontLoader,
+  Mesh,
+  MeshBasicMaterial,
+  MeshPhongMaterial,
+  PerspectiveCamera,
+  PointLight,
+  Scene,
+  SphereGeometry,
+  TextGeometry,
+  WebGLRenderer,
+} from &quot;three&quot;
+import { OrbitControls } from &quot;three/examples/jsm/controls/OrbitControls.js&quot;
+
+import { StoryInfo } from &quot;../common&quot;
+
+const ROOT_ID = &quot;example&quot;
+const LOADING_ID = &quot;loading!&quot;
+
+type Props = {
+  text: string
+}
+
+type SimulationState = {
+  currentTime: number
+  font: Font | null
+  isStopped: boolean
+  textMeshId: string
+}
+
+class Simulation {
+  private props: Readonly&lt;Props&gt;
+  private readonly elements: Readonly&lt;{
+    camera: PerspectiveCamera
+    controls: OrbitControls
+    particleLightBlue: Mesh
+    particleLightGreen: Mesh
+    renderer: WebGLRenderer
+    scene: Scene
+  }&gt;
+
+  private readonly state: SimulationState = {
+    currentTime: 0,
+    font: null,
+    isStopped: false,
+    textMeshId: &quot;&quot;,
+  }
+
+  public constructor(props: Props) {
+    this.props = props
+
+    const container = document.getElementById(ROOT_ID) as HTMLElement
+    const { width } = container.getBoundingClientRect()
+    const height = 500
+
+    const fontLoader = new FontLoader()
+
+    const scene = new Scene()
+
+    scene.background = new Color(0xffffff)
+
+    const camera = new PerspectiveCamera(30, width / height, 1, 3000)
+
+    camera.position.set(100, 100, 1500)
+
+    const renderer = new WebGLRenderer({ antialias: true })
+
+    renderer.setSize(width, height)
+    renderer.render(scene, camera)
+    container.innerHTML = &quot;&quot;
+    container.appendChild(renderer.domElement)
+
+    const controls = new OrbitControls(camera, renderer.domElement)
+    const pointLightGreen = new PointLight(0x00ff00, 3)
+    const pointLightBlue = new PointLight(0x0000ff, 3)
+
+    pointLightGreen.position.set(10, 10, 9)
+    pointLightBlue.position.set(10, 10, 9)
+
+    const sphereGeometry = new SphereGeometry(10, 8, 8)
+
+    const particleLightGreen = new Mesh(
+      sphereGeometry,
+      new MeshBasicMaterial({ color: 0x00ff00 })
+    )
+    const particleLightBlue = new Mesh(
+      sphereGeometry,
+      new MeshBasicMaterial({ color: 0x0000ff })
+    )
+
+    particleLightGreen.add(pointLightGreen)
+    particleLightBlue.add(pointLightBlue)
+
+    scene.add(particleLightGreen)
+    scene.add(particleLightBlue)
+
+    controls.enablePan = false
+    controls.enableDamping = true
+    controls.dampingFactor = 0.05
+
+    this.elements = {
+      camera,
+      controls,
+      particleLightBlue,
+      particleLightGreen,
+      renderer,
+      scene,
+    }
+
+    fontLoader.load(&quot;/fonts/yahei.json&quot;, (font) =&gt; {
+      this.state.font = font
+      this.renderText()
+    })
+
+    this.animate()
+  }
+
+  public refresh(newProps: Props) {
+    this.props = newProps
+    this.renderText()
+  }
+
+  public stop() {
+    this.state.isStopped = true
+  }
+
+  private renderText() {
+    const {
+      elements: { scene },
+      state: { font, textMeshId },
+    } = this
+
+    if (!font) {
+      return
+    }
+
+    const loadingEl = document.getElementById(LOADING_ID)
+
+    loadingEl?.remove()
+
+    const textGeo = new TextGeometry(this.props.text, {
+      font,
+      height: 5,
+      size: 80,
+    })
+
+    if (textMeshId) {
+      const object = scene.getObjectByProperty(&quot;uuid&quot;, textMeshId) as Mesh
+
+      object.geometry.dispose()
+      ;(object.material as MeshPhongMaterial).dispose()
+      scene.remove(object)
+    }
+
+    const color = new Color(0x777777)
+
+    const textMaterial = new MeshPhongMaterial({ color })
+    const text = new Mesh(textGeo, textMaterial)
+
+    text.position.x = -400
+    text.position.y = 200
+    this.state.textMeshId = text.uuid
+
+    scene.add(text)
+  }
+
+  private animate() {
+    if (this.state.isStopped) {
+      return
+    }
+
+    requestAnimationFrame(() =&gt; {
+      this.animate()
+    })
+
+    const {
+      elements: {
+        camera,
+        controls,
+        particleLightBlue,
+        particleLightGreen,
+        renderer,
+        scene,
+      },
+    } = this
+
+    this.state.currentTime += 0.005
+
+    const {
+      state: { currentTime },
+    } = this
+
+    particleLightGreen.position.x = Math.sin(currentTime * 7) * 200
+    particleLightGreen.position.y = Math.cos(currentTime * 5) * 200
+    particleLightGreen.position.z = Math.cos(currentTime * 3) * 200
+
+    particleLightBlue.position.x = Math.cos(currentTime * 9) * 200
+    particleLightBlue.position.y = Math.sin(currentTime * 7) * 200
+    particleLightBlue.position.z = Math.sin(currentTime * 5) * 200
+
+    renderer.clear()
+    renderer.render(scene, camera)
+    controls.update()
+  }
+}
+
+const ThreeJSSpecialChars = (props: Props) =&gt; {
+  const simulation = React.useRef&lt;Simulation | null&gt;(null)
+
+  React.useEffect(() =&gt; {
+    simulation.current = new Simulation(props)
+  }, [props])
+
+  React.useEffect(() =&gt; () =&gt; {
+    simulation.current?.stop()
+  })
+
+  return (
+    &lt;div&gt;
+      &lt;StoryInfo
+        docs={[]}
+        source={[
+          &quot;https://blog.andrewray.me/creating-a-3d-font-in-three-js/&quot;,
+          &quot;https://gero3.github.io/facetype.js/&quot;,
+        ]}
+        storyName=&quot;ThreeJSSpecialChars&quot;
+      /&gt;
+      &lt;p id={LOADING_ID}&gt;Loading ...&lt;/p&gt;
+      &lt;p&gt;
+        This story shows how to display special fonts by using facetype to
+        support multiple unicode characters
+      &lt;/p&gt;
+      &lt;div id={ROOT_ID} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+const Common = (props: Props) =&gt; &lt;ThreeJSSpecialChars {...props} /&gt;
+
+const args = {
+  text: &quot;你好，世界\nこんにちわ\n還有粵語&quot;,
+}
+
+Common.args = args
+
+export default {
+  argTypes: {},
+  component: ThreeJSSpecialChars,
+  title: &quot;ThreeJS/SpecialChars&quot;,
+}
+
+export { Common }
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 23 Sep 2021 23:16:51 GMT</p>
+    </body>
+  </html>
+  
