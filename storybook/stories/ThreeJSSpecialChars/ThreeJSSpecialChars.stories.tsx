@@ -110,7 +110,7 @@ class Simulation {
       scene,
     }
 
-    fontLoader.load("/fonts/yahei.json", (font) => {
+    fontLoader.load("fonts/yahei.json", (font) => {
       this.state.font = font
       this.renderText()
     })
