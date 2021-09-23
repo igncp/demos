@@ -48,7 +48,7 @@ const d3DelaunayItems = [
   ],
 ]
 
-export type D3JS = {
+type D3JS = {
   "area": DemoBase
   "bars": DemoBase
   "chord": DemoBase
@@ -446,5 +446,7 @@ const d3js: D3JS = {
     summary: [],
   },
 }
+
+export { D3JS }
 
 export default d3js

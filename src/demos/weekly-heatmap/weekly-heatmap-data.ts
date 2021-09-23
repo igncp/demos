@@ -2,9 +2,9 @@ import { tsv } from "d3"
 
 import { ChartConfig } from "./weekly-heatmap-chart"
 
-export const CONTAINER_ID = "chart"
+const CONTAINER_ID = "chart"
 
-export type TimeItem = {
+type TimeItem = {
   arbitraryMetric: number
   day: number
   hour: number
@@ -33,7 +33,7 @@ const workingHourMax = 16
 const workingDayMin = 0
 const workingDayMax = 4
 
-export const fetchData = async (): Promise<TimeItem[]> => {
+const fetchData = async (): Promise<TimeItem[]> => {
   const weeklyTSVData = (await tsv(
     `${ROOT_PATH}data/d3js/weekly-heatmap/data.tsv`
   )) as unknown as TimeItemOriginal[]
@@ -66,7 +66,7 @@ const getIsVerticalLabelBold: Config["getIsVerticalLabelBold"] = (
 const getLegendText: Config["getLegendText"] = (arbitraryMetric) =>
   `≥ ${arbitraryMetric.toFixed(2)}`
 
-export const createChartConfig = (weeklyData: TimeItem[]): Config => ({
+const createChartConfig = (weeklyData: TimeItem[]): Config => ({
   getIsHorizontalLabelBold,
   getIsVerticalLabelBold,
   getItemHorizontalIndex,
@@ -79,3 +79,5 @@ export const createChartConfig = (weeklyData: TimeItem[]): Config => ({
   verticalLabels: days,
   weeklyData,
 })
+
+export { CONTAINER_ID, TimeItem, createChartConfig, fetchData }

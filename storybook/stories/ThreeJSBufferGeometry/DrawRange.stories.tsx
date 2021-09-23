@@ -412,7 +412,7 @@ const Template = ((props: Props) => (
   <DrawRange {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [particleCountArg, particleCountControls] = createRangeControl({
   diffMax: maxParticleCount - initialParticleCount,
@@ -454,3 +454,5 @@ export default {
   component: DrawRange,
   title: "ThreeJS/BufferGeometry/DrawRange",
 }
+
+export { Common }

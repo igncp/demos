@@ -23,12 +23,12 @@ import * as styles from "./expenses-chord.module.css"
 const height = 800
 const elementDefaultOpacity = 0.7
 
-export enum DisplayType {
+enum DisplayType {
   Source = "source",
   Target = "target",
 }
 
-export enum RibbonType {
+enum RibbonType {
   Arrow = "arrow",
   Common = "common",
 }
@@ -102,7 +102,7 @@ const setupDrag = ({
     })
 }
 
-export type ChartConfig = {
+type ChartConfig = {
   chordGroupsIds: string[]
   getChordGroupTitle: (groupId: string) => string
   getChordMatrix: () => number[][]
@@ -121,7 +121,7 @@ export type ChartConfig = {
   rootElId: string
 }
 
-export const renderChart = (chartConfig: ChartConfig) => {
+const renderChart = (chartConfig: ChartConfig) => {
   const { rootElId } = chartConfig
 
   const chartState: ChartState = {
@@ -478,3 +478,5 @@ export const renderChart = (chartConfig: ChartConfig) => {
     renderItems,
   }
 }
+
+export { DisplayType, RibbonType, ChartConfig, renderChart }

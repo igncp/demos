@@ -364,7 +364,7 @@ const Template = ((props: Props) => (
   <ThreeJSReflectiveSpheres {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [lightPointSpeedArg, lightPointSpeedControls] = createRangeControl({
   diffMin: 50,
@@ -386,3 +386,5 @@ export default {
   component: ThreeJSReflectiveSpheres,
   title: "ThreeJS/Reflective Spheres",
 }
+
+export { Common }

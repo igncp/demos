@@ -215,7 +215,7 @@ const Template = ((props: Props) => (
   <Points {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [speedArg, speedControls] = createRangeControl({
   diffMin: 100,
@@ -254,3 +254,5 @@ export default {
   component: Points,
   title: "ThreeJS/BufferGeometry/Points",
 }
+
+export { Common }

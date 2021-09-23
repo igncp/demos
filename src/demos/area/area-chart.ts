@@ -55,7 +55,7 @@ const filterBlackOpacity = ({
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-export type ChartConfig<AreaPoint> = {
+type ChartConfig<AreaPoint> = {
   areaPoints: AreaPoint[]
   chartTitle: string
   getItemId: (areaPoint: AreaPoint) => number
@@ -69,7 +69,7 @@ type ChartReturn = {
   toggleVoronoi: () => void
 }
 
-export const renderChart = <AreaPoint>(
+const renderChart = <AreaPoint>(
   chartConfig: ChartConfig<AreaPoint>
 ): ChartReturn => {
   const { areaPoints, rootElId } = chartConfig
@@ -259,3 +259,5 @@ export const renderChart = <AreaPoint>(
     },
   }
 }
+
+export { ChartConfig, renderChart }

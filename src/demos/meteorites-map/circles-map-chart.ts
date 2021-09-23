@@ -5,9 +5,9 @@ import { v1 as uuidv1 } from "uuid"
 import * as styles from "./circles-map-chart.module.css"
 
 type Point = [number, number]
-export type Geolocation = { coordinates: Point; type: "Point" }
+type Geolocation = { coordinates: Point; type: "Point" }
 
-export type MapLayout = {
+type MapLayout = {
   features: Array<{
     geometry: { coordinates: Point[]; type: "Polygon" } // eslint-disable-line id-denylist
     id: string
@@ -43,7 +43,7 @@ function zoomed(this: SVGSVGElement, zoomEvent: any) {
   select(this).transition().duration(500).attr("transform", zoomEvent.transform)
 }
 
-export type ChartConfig<CircleData> = {
+type ChartConfig<CircleData> = {
   chartHelpHTML: string
   chartTitle: string
   circlesData: CircleData[]
@@ -54,7 +54,7 @@ export type ChartConfig<CircleData> = {
   rootElId: string
 }
 
-export const renderChart = <CircleData extends ChartDataConstraint>(
+const renderChart = <CircleData extends ChartDataConstraint>(
   chartConfig: ChartConfig<CircleData>
 ) => {
   const { circlesData, getCircleId, mapLayout, rootElId } = chartConfig
@@ -374,3 +374,5 @@ export const renderChart = <CircleData extends ChartDataConstraint>(
     track: true,
   })
 }
+
+export { ChartConfig, Geolocation, MapLayout, renderChart }

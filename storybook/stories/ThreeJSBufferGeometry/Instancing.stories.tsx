@@ -365,7 +365,7 @@ const Template = ((props: Props) => (
   <Instancing {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [speedArg, speedControls] = createRangeControl({
   diffMin: 100,
@@ -396,3 +396,5 @@ export default {
   component: Instancing,
   title: "ThreeJS/BufferGeometry/Instancing",
 }
+
+export { Common }

@@ -409,7 +409,7 @@ const Template = ((props: Props) => (
   <ThreeJSTerrain {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [lightLevelArg, lightLevelControl] = createRangeControl({
   diffMin: 50,
@@ -452,3 +452,5 @@ export default {
   component: ThreeJSTerrain,
   title: "ThreeJS/Terrain",
 }
+
+export { Common }

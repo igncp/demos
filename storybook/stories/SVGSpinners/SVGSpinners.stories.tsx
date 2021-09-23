@@ -181,9 +181,9 @@ const createStory = (spinnerType: SpinnerType) => {
   return story
 }
 
-export const First = createStory(SpinnerType.First)
-export const Second = createStory(SpinnerType.Second)
-export const Third = createStory(SpinnerType.Third)
+const First = createStory(SpinnerType.First)
+const Second = createStory(SpinnerType.Second)
+const Third = createStory(SpinnerType.Third)
 
 export default {
   argTypes: {
@@ -193,3 +193,5 @@ export default {
   component: SVGSpinners,
   title: "SVG/Spinners",
 }
+
+export { First, Second, Third }

@@ -28,7 +28,7 @@ const colours = ["#323247", "#7C7CC9", "#72B66C", "#429742"]
 const barYFn = (barItem: ChartData) => floor - barHeight * barItem.metric
 const barHeightFn = (barItem: ChartData) => barItem.metric * barHeight
 
-export type ChartConfig = {
+type ChartConfig = {
   bars: ChartData[]
   rootElId: string
 }
@@ -246,4 +246,4 @@ class BarsChart {
   }
 }
 
-export { BarsChart }
+export { BarsChart, ChartConfig }

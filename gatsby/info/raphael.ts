@@ -1,6 +1,6 @@
 import { DemoBase } from "@/common"
 
-export type Raphael = {
+type Raphael = {
   "bars-3dimensional": DemoBase
   "circular-arcs": DemoBase
   "moving-line": DemoBase
@@ -45,5 +45,7 @@ const raphael: Raphael = {
     summary: [],
   },
 }
+
+export { Raphael }
 
 export default raphael

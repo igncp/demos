@@ -58,9 +58,9 @@ const addDropShadowFilter = ({
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-export type AreasData = Topology<Objects<GeoJsonProperties>>
+type AreasData = Topology<Objects<GeoJsonProperties>>
 
-export type ChartConfig<Properties> = {
+type ChartConfig<Properties> = {
   areasData: AreasData
   getTitleText: (properties: Properties) => string
   getWidths: (chartWidth: number) => number[]
@@ -68,9 +68,7 @@ export type ChartConfig<Properties> = {
   rootElId: string
 }
 
-export const renderChart = <Properties>(
-  chartConfig: ChartConfig<Properties>
-) => {
+const renderChart = <Properties>(chartConfig: ChartConfig<Properties>) => {
   const { areasData, rootElId } = chartConfig
 
   type DataShape = GeoPermissibleObjects & {
@@ -197,3 +195,5 @@ export const renderChart = <Properties>(
     track: true,
   })
 }
+
+export { AreasData, ChartConfig, renderChart }

@@ -2,8 +2,10 @@ import { Redraw } from "./crossing-lines-chart"
 import { MareysSchedules } from "./mareys-schedule-data-model"
 
 type ScheduleLimits = [number, number]
-export const CONTAINER_ID = "chart"
-export const RANGE_ID = "schedule-range"
+
+const CONTAINER_ID = "chart"
+
+const RANGE_ID = "schedule-range"
 
 const convertLimitsToTimes = (limits: ScheduleLimits): [string, string] => {
   const times: string[] = []
@@ -48,7 +50,7 @@ const convertLimitsToTimes = (limits: ScheduleLimits): [string, string] => {
   return times as [string, string]
 }
 
-export const setupControls = (updateScheduleLimits: Redraw) => {
+const setupControls = (updateScheduleLimits: Redraw) => {
   const slider = $(`#${RANGE_ID}`)
 
   slider.slider({
@@ -65,3 +67,5 @@ export const setupControls = (updateScheduleLimits: Redraw) => {
 
   slider.slider("values", [10, 50])
 }
+
+export { CONTAINER_ID, RANGE_ID, setupControls }

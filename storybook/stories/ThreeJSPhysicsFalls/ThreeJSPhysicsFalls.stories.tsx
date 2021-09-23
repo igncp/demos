@@ -310,7 +310,7 @@ const Template = ((props: Props) => (
   <ThreeJSPhysicsFalls {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [speedArgs, speedControls] = createRangeControl({
   diffMin: 100,
@@ -339,3 +339,5 @@ export default {
   component: ThreeJSPhysicsFalls,
   title: "ThreeJS/Physics Falls",
 }
+
+export { Common }

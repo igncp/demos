@@ -265,7 +265,7 @@ const Template = ((props: Props) => (
   <CanvasOrbitParticles {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const args: Props = {
   clearAlpha: 10,
@@ -287,3 +287,5 @@ export default {
   component: CanvasOrbitParticles,
   title: "Canvas/OrbitParticles",
 }
+
+export { Common }

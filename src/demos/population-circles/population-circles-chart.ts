@@ -28,7 +28,7 @@ const margin = {
 }
 const height = 400
 
-export type ChartConfig<CircleData> = {
+type ChartConfig<CircleData> = {
   colorDomain: string[]
   getChartItems: () => CircleData[]
   getEmptyItem: () => CircleData
@@ -70,7 +70,7 @@ const addDropShadow: AddDropShadow = ({ deviation, name, slope, svg }) => {
 `)
 }
 
-export const renderChart = <CircleData>(
+const renderChart = <CircleData>(
   chartConfig: ChartConfig<CircleData>
 ): RenderChartReturn => {
   type ChartNode = HierarchyCircularNode<CircleData>
@@ -297,3 +297,5 @@ export const renderChart = <CircleData>(
     updateChart: transitionChart,
   }
 }
+
+export { ChartConfig, renderChart }

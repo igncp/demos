@@ -14,7 +14,7 @@ import * as styles from "./crossing-lines-chart.module.css"
 
 // @TODO make it more generic to allow other y type in addition to Date
 
-export type HorizontalMarker = {
+type HorizontalMarker = {
   key: string
   label: string
   position: number
@@ -26,7 +26,7 @@ type Point = {
   x: Date | null
 }
 
-export enum LineStyle {
+enum LineStyle {
   Black = "Black",
   Orange = "Orange",
   Red = "Red",
@@ -42,7 +42,7 @@ type CrossingLines = {
   lines: Line[]
 }
 
-export type Redraw = (range: [Date, Date]) => void
+type Redraw = (range: [Date, Date]) => void
 
 const lineStyleToClassName: { [key in LineStyle]: string } = {
   [LineStyle.Red]: styles.redLine,
@@ -98,7 +98,7 @@ const margin = {
 
 const height = 600 - margin.top - margin.bottom
 
-export type ChartConfig = {
+type ChartConfig = {
   chartTitle: string
   crossingLinesData: CrossingLines
   getLineStyle: (line: Line) => LineStyle
@@ -109,7 +109,7 @@ export type ChartConfig = {
   rootElId: string
 }
 
-export const renderChart = (chartConfig: ChartConfig) => {
+const renderChart = (chartConfig: ChartConfig) => {
   const { crossingLinesData, rootElId } = chartConfig
   const { horizontalMarkers, lines } = crossingLinesData
   const rootEl = document.getElementById(rootElId) as HTMLElement
@@ -265,3 +265,5 @@ export const renderChart = (chartConfig: ChartConfig) => {
     },
   }
 }
+
+export { ChartConfig, HorizontalMarker, LineStyle, Redraw, renderChart }

@@ -8,7 +8,7 @@ const getCommonSVGAttribute = (name: string) => [
   `https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/${name}`,
 ]
 
-export const chromaItems = [
+const chromaItems = [
   ["chroma-js API reference", "https://vis4.net/chromajs/#api"],
   [
     "chroma-js Types",
@@ -16,7 +16,7 @@ export const chromaItems = [
   ],
 ]
 
-export const animeItems = [
+const animeItems = [
   ["animejs API reference", "https://animejs.com/documentation/"],
   [
     "animejs Types",
@@ -24,7 +24,7 @@ export const animeItems = [
   ],
 ]
 
-export const hotkeysItems = [
+const hotkeysItems = [
   [
     "hotkeys API reference",
     "https://github.com/jaywcjlove/hotkeys#api-reference",
@@ -35,7 +35,17 @@ export const hotkeysItems = [
   ],
 ]
 
-export const mixBlendModeCSS = getCommonCSS("mix-blend-mode")
+const mixBlendModeCSS = getCommonCSS("mix-blend-mode")
 
-export const gradientUnitsSVGAttribute = getCommonSVGAttribute("gradientUnits")
-export const viewBoxSVGAttribute = getCommonSVGAttribute("viewBox")
+const gradientUnitsSVGAttribute = getCommonSVGAttribute("gradientUnits")
+
+const viewBoxSVGAttribute = getCommonSVGAttribute("viewBox")
+
+export {
+  animeItems,
+  chromaItems,
+  gradientUnitsSVGAttribute,
+  hotkeysItems,
+  mixBlendModeCSS,
+  viewBoxSVGAttribute,
+}

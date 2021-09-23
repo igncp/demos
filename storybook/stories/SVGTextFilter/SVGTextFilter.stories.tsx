@@ -175,7 +175,7 @@ const Template = ((props: Props) => (
   <SVGTextFilter {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [fontsArgs, fontsControls] = createSelectControl(["sans-serif", "serif"])
 const [fontSizeArgs, fontSizeControls] = createRangeControl({
@@ -208,3 +208,5 @@ export default {
   component: SVGTextFilter,
   title: "SVG/Text Filter",
 }
+
+export { Common }

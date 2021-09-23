@@ -75,7 +75,8 @@ const Template = ((props: Props) => (
   <SVGUnderlineBorder {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
+
 Common.args = {
   infinite: false,
 }
@@ -84,3 +85,5 @@ export default {
   component: SVGUnderlineBorder,
   title: "SVG/Underline Border",
 }
+
+export { Common }

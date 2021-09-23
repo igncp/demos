@@ -256,7 +256,7 @@ const Template = ((props: Props) => (
   <CanvasMolecules {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const args: Props = {
   count: 500,
@@ -273,3 +273,5 @@ export default {
   component: CanvasMolecules,
   title: "Canvas/Molecules",
 }
+
+export { Common }

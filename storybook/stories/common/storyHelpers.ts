@@ -1,4 +1,4 @@
-export const createRangeControl = ({
+const createRangeControl = ({
   diffMax,
   diffMin,
   initialValue,
@@ -21,9 +21,7 @@ export const createRangeControl = ({
     },
   ] as const
 
-export const createSelectControl = <SelectOption>(
-  selectOptions: SelectOption[]
-) =>
+const createSelectControl = <SelectOption>(selectOptions: SelectOption[]) =>
   [
     selectOptions[0],
     {
@@ -31,3 +29,5 @@ export const createSelectControl = <SelectOption>(
       options: selectOptions,
     },
   ] as const
+
+export { createRangeControl, createSelectControl }

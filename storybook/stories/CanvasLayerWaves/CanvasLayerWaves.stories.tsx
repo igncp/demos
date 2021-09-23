@@ -219,7 +219,7 @@ const Template = ((props: Props) => (
   <CanvasLayerWaves {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [rowsArgs, rowsControls] = createRangeControl({
   diffMin: 20,
@@ -264,3 +264,5 @@ export default {
   component: CanvasLayerWaves,
   title: "Canvas/LayerWaves",
 }
+
+export { Common }

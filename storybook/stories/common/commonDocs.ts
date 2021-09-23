@@ -25,7 +25,7 @@ const getThreeExampleDoc = (path: string[]) => ({
   name: `${path.join(".")} example source code`,
 })
 
-export const webAPIDocs = {
+const webAPIDocs = {
   GLSLShaders: {
     link: "https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders",
     name: "GLSL Shaders",
@@ -36,7 +36,7 @@ export const webAPIDocs = {
   },
 }
 
-export const canvasDocs = {
+const canvasDocs = {
   arc: getCanvasRenderingDoc("arc"),
   beginPath: getCanvasRenderingDoc("beginPath"),
   clearRect: getCanvasRenderingDoc("clearRect"),
@@ -45,7 +45,7 @@ export const canvasDocs = {
   strokeStyle: getCanvasRenderingDoc("strokeStyle"),
 } as const
 
-export const svgDocs = {
+const svgDocs = {
   animateTransform: getSVGElementDoc("animateTransform"),
   begin: getSVGAttributeDoc("begin"),
   feConvolveMatrix: getSVGElementDoc("feConvolveMatrix"),
@@ -54,7 +54,7 @@ export const svgDocs = {
   fePointLight: getSVGElementDoc("fePointLight"),
 } as const
 
-export const threeDocs = {
+const threeDocs = {
   canvasTexture: getThreeDoc(["textures", "CanvasTexture"]),
   color: getThreeDoc(["math", "color"]),
   improveNoiseExample: getThreeExampleDoc(["math", "ImprovedNoise"]),
@@ -64,3 +64,5 @@ export const threeDocs = {
   vector3: getThreeDoc(["math", "Vector3"]),
   webGLRenderer: getThreeDoc(["renderers", "WebGLRenderer"]),
 }
+
+export { canvasDocs, svgDocs, threeDocs, webAPIDocs }

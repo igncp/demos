@@ -383,6 +383,15 @@ const Outline = (props: Props) => {
     }
   }, [props])
 
+  React.useEffect(
+    () => () => {
+      const container = getContainer()
+
+      container.innerHTML = ""
+    },
+    []
+  )
+
   return (
     <div>
       <StoryInfo
@@ -411,7 +420,7 @@ const Template = ((props: Props) => (
   <Outline {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [edgeStrengthArg, edgeStrengthControls] = createRangeControl({
   diffMax: 5,
@@ -462,3 +471,5 @@ export default {
   component: Outline,
   title: "ThreeJS/Postprocessing/Outline",
 }
+
+export { Common }

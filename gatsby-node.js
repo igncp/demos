@@ -9,5 +9,7 @@ require("ts-node").register({
 const { onCreateWebpackConfig } = require("./gatsby/onCreateWebpackConfig.ts")
 const { onCreatePage } = require("./gatsby/onCreatePage.ts")
 
-exports.onCreateWebpackConfig = onCreateWebpackConfig
-exports.onCreatePage = onCreatePage
+module.exports = {
+  onCreatePage,
+  onCreateWebpackConfig,
+}

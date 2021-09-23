@@ -4,14 +4,14 @@ import qs from "query-string"
 
 import { ChartConfig } from "./population-circles-chart"
 
-export const CONTAINER_ID = "chart"
+const CONTAINER_ID = "chart"
 
 type PopulationRecord = {
   count: number
   date: string
 }
 
-export type Municipality = {
+type Municipality = {
   metrics: {
     females: PopulationRecord[]
     males: PopulationRecord[]
@@ -28,13 +28,13 @@ type State = {
   timeRangeIndex: number
 }
 
-export const createState = (): State => ({
+const createState = (): State => ({
   populationRange: [0, 1],
   populationType: "total",
   timeRangeIndex: 0,
 })
 
-export const fetchData = async () => {
+const fetchData = async () => {
   type OriginalMunicipality = {
     [key in keyof Omit<Municipality, "metrics">]: Municipality[key]
   } & {
@@ -67,7 +67,7 @@ const typeNouns: Record<string, string> = {
 
 const getYearStr = (dateStr: string) => new Date(dateStr).getFullYear()
 
-export const createChartConfig = ({
+const createChartConfig = ({
   municipalities,
   state,
 }: {
@@ -257,3 +257,5 @@ export const createChartConfig = ({
     rootElId: CONTAINER_ID,
   }
 }
+
+export { CONTAINER_ID, Municipality, createChartConfig, createState, fetchData }

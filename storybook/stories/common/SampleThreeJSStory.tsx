@@ -134,7 +134,7 @@ const Template = ((props: Props) => (
   <SampleThreeJSStory {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [speedArg, speedControls] = createRangeControl({
   diffMin: 100,
@@ -155,3 +155,5 @@ export default {
   component: SampleThreeJSStory,
   title: "",
 }
+
+export { Common }

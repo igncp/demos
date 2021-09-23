@@ -1,7 +1,7 @@
 import { ChartConfig } from "./area-chart"
 import { IncomeItem } from "./income-item-model"
 
-export const CONTAINER_ID = "chart"
+const CONTAINER_ID = "chart"
 
 type Config = ChartConfig<IncomeItem>
 
@@ -14,7 +14,7 @@ const getItemTitle: Config["getItemTitle"] = (incomeItem: IncomeItem) =>
   incomeItem.getSummary()
 const chartTitle = "Share of top decile [aka top 10%] in national income"
 
-export const createChartConfig = (
+const createChartConfig = (
   dataPoints: IncomeItem[]
 ): ChartConfig<IncomeItem> => ({
   areaPoints: dataPoints,
@@ -25,3 +25,5 @@ export const createChartConfig = (
   getItemYValue,
   rootElId: CONTAINER_ID,
 })
+
+export { CONTAINER_ID, createChartConfig }

@@ -7,18 +7,18 @@ type State = {
   timeIndex: number
 }
 
-export const CONTAINER_ID = "chart"
-export const SLIDER_TIME_ID = "slider-time"
-export const COUNTRIES_SELECT_ID = "countries-select"
-export const REGIONS_SELECT_ID = "regions-select"
+const CONTAINER_ID = "chart"
+const SLIDER_TIME_ID = "slider-time"
+const COUNTRIES_SELECT_ID = "countries-select"
+const REGIONS_SELECT_ID = "regions-select"
 
-export const createInitialState = (): State => ({
+const createInitialState = (): State => ({
   selectedCountry: Expenses.ALL_ID,
   selectedRegion: Expenses.ALL_ID,
   timeIndex: 0,
 })
 
-export const createChartConfig = ({
+const createChartConfig = ({
   expenses,
   state,
 }: {
@@ -72,7 +72,7 @@ export const createChartConfig = ({
   }
 }
 
-export const setupChartForm = ({
+const setupChartForm = ({
   expenses,
   renderItems,
   state,
@@ -136,4 +136,14 @@ export const setupChartForm = ({
     },
     selectOptions: expenses.getRegionsList(),
   })
+}
+
+export {
+  CONTAINER_ID,
+  COUNTRIES_SELECT_ID,
+  REGIONS_SELECT_ID,
+  SLIDER_TIME_ID,
+  createChartConfig,
+  createInitialState,
+  setupChartForm,
 }

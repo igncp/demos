@@ -17,11 +17,11 @@ const inlineStyles = {
   linkDefaultColor: "#555",
 } as const
 
-export type NodeShape<Content> = Content & {
+type NodeShape<Content> = Content & {
   children?: Array<NodeShape<Content>>
 }
 
-export const findNode = <NodeData>({
+const findNode = <NodeData>({
   getId,
   node,
   nodeId,
@@ -41,7 +41,7 @@ export const findNode = <NodeData>({
   )
 }
 
-export const findParentNode = <NodeData>({
+const findParentNode = <NodeData>({
   getId,
   node,
   nodeId,
@@ -135,7 +135,7 @@ const setupDrag = <SelectionData>(
   svg.style("cursor", "move").call(dragHandler)
 }
 
-export type ChartConfig<BaseData> = {
+type ChartConfig<BaseData> = {
   canBeRemoved: (node: ChartNode<BaseData>) => boolean
   getNodeId: (node: ChartNode<BaseData>) => number
   getNodeLabel: (node: ChartNode<BaseData>) => string
@@ -145,7 +145,7 @@ export type ChartConfig<BaseData> = {
   rootElId: string
 }
 
-export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
+const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
   const { rootData, rootElId } = chartConfig
 
   const rootEl = document.getElementById(rootElId) as HTMLElement
@@ -293,3 +293,5 @@ export const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
 
   update(rootTree)
 }
+
+export { NodeShape, findNode, findParentNode, ChartConfig, renderChart }

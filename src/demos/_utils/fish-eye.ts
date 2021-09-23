@@ -68,7 +68,7 @@ function createFishEyeScale({
   return fishEyeScale
 }
 
-export type FishEyeScale = ReturnType<typeof createFishEyeScale>
+type FishEyeScale = ReturnType<typeof createFishEyeScale>
 
 // https://github.com/d3/d3-plugins/blob/master/fisheye/fisheye.js
 const d3Fisheye = {
@@ -81,5 +81,7 @@ const d3Fisheye = {
     })
   },
 }
+
+export { FishEyeScale }
 
 export default d3Fisheye

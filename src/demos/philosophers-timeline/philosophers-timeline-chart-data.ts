@@ -3,9 +3,9 @@ import qs from "query-string"
 
 import { ChartConfig, SortOrder } from "./timeline-bands-brush-chart"
 
-export const CONTAINER_ID = "chart"
+const CONTAINER_ID = "chart"
 
-export type TimeBandItem = {
+type TimeBandItem = {
   end: Date
   instant: boolean
   label: string
@@ -51,7 +51,7 @@ const parseDate = (dateString: string) => {
 
 const yearMillis = 31622400000
 
-export const fetchData = async (): Promise<TimeBandItem[]> => {
+const fetchData = async (): Promise<TimeBandItem[]> => {
   const timeBandItems = (await csv(
     `${ROOT_PATH}data/d3js/philosophers-timeline/data.csv`
   )) as unknown as TimeBandItem[]
@@ -135,7 +135,7 @@ const onChartItemClick: Config["onChartItemClick"] = (timelineChart) => {
 
 const chartTitle = "Philosophers through History"
 
-export const getChartConfig = (): Config => ({
+const getChartConfig = (): Config => ({
   chartTitle,
   getItemLimitLeft,
   getItemLimitRight,
@@ -145,3 +145,5 @@ export const getChartConfig = (): Config => ({
   onChartItemClick,
   rootElId: CONTAINER_ID,
 })
+
+export { CONTAINER_ID, TimeBandItem, fetchData, getChartConfig }

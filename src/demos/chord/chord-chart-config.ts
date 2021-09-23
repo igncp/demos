@@ -3,9 +3,9 @@ import { format } from "d3"
 import { FinancialData, FinancialMatrix } from "./chord-data-model"
 import { ChartConfig } from "./double-chord-chart"
 
-export const CONTAINER_ID = "chart"
+const CONTAINER_ID = "chart"
 
-export const getChartConfig = (financialData: FinancialData): ChartConfig => {
+const getChartConfig = (financialData: FinancialData): ChartConfig => {
   const debits = financialData.getDebits()
   const credits = financialData.getCredits()
   const countriesList = financialData.getCountriesList()
@@ -61,3 +61,5 @@ export const getChartConfig = (financialData: FinancialData): ChartConfig => {
     rootElId: CONTAINER_ID,
   }
 }
+
+export { CONTAINER_ID, getChartConfig }

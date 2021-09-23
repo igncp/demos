@@ -1,11 +1,11 @@
 type DocName = string
 type DocLink = string
 
-export type Meta = {
+type Meta = {
   description: string
 }
 
-export type DemoBase = {
+type DemoBase = {
   dataFiles: string[]
   docs: Array<[DocName, DocLink]>
   isCompleted: boolean
@@ -20,7 +20,7 @@ type DemoFile = {
   fileName: string
 }
 
-export type DemoInfo = DemoBase & {
+type DemoInfo = DemoBase & {
   category: string
   files: {
     demoCSS: DemoFile[]
@@ -33,14 +33,14 @@ export type DemoInfo = DemoBase & {
   key: string
 }
 
-export type DemoSummary = {
+type DemoSummary = {
   category: string
   key: string
   name: DemoBase["name"]
   route: string
 }
 
-export type IndexPageProps = {
+type IndexPageProps = {
   pageContext: {
     groupedDemos: DemoSummary[][]
     meta: Meta
@@ -48,19 +48,30 @@ export type IndexPageProps = {
   }
 }
 
-export type DemoPageProps = {
+type DemoPageProps = {
   pageContext: {
     demoInfo: DemoInfo
     meta: Meta
   }
 }
 
-export enum SPECIAL_DEMO_KEYS {
+enum SPECIAL_DEMO_KEYS {
   STORYBOOK = "storybook",
   TESTING = "testing",
 }
 
-export const JQUERYUI = {
+const JQUERYUI = {
   SCRIPT: "/vendors/jquery-ui/jquery-ui.min.js",
   STYLE: "/vendors/jquery-ui/themes/base/jquery-ui.min.css",
+}
+
+export {
+  DemoBase,
+  DemoInfo,
+  DemoPageProps,
+  DemoSummary,
+  IndexPageProps,
+  JQUERYUI,
+  Meta,
+  SPECIAL_DEMO_KEYS,
 }

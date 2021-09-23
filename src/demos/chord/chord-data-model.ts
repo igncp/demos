@@ -22,7 +22,7 @@ type CSVParsedItem = {
   risk: string
 }
 
-export type FinancialMatrix = Array<Array<CSVParsedItem | null>>
+type FinancialMatrix = Array<Array<CSVParsedItem | null>>
 
 class FinancialData {
   private readonly credits: FinancialMatrix
@@ -118,4 +118,4 @@ class FinancialData {
   }
 }
 
-export { FinancialData }
+export { FinancialData, FinancialMatrix }

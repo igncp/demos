@@ -144,6 +144,8 @@ module.exports = {
     "func-names": 2,
     "id-denylist": [2, ...denyList],
 
+    "import/exports-last": 2,
+    "import/group-exports": 2,
     "import/no-namespace": [2, { ignore: ["*.module.css"] }],
 
     "init-declarations": [2, "always"],

@@ -61,7 +61,7 @@ type SimulationElements = {
   renderer: WebGLRenderer
   scene: Scene
   sky: Sky
-  sun: THREE.Vector3
+  sun: Vector3
   water: Water
 }
 
@@ -292,7 +292,7 @@ const Template = ((props: Props) => (
   <ThreeJSCubeWater {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [speedArgs, speedControls] = createRangeControl({
   diffMin: 100,
@@ -313,3 +313,5 @@ export default {
   component: ThreeJSCubeWater,
   title: "ThreeJS/Cube Water",
 }
+
+export { Common }

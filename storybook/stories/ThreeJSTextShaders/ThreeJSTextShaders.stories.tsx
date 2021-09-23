@@ -328,7 +328,7 @@ const [speedArgs, speedControls] = createRangeControl({
   step: 0.01,
 })
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const args: Props = {
   blending: blendingArgs,
@@ -346,3 +346,5 @@ export default {
   component: ThreeJSTextShaders,
   title: "ThreeJS/Text Shaders",
 }
+
+export { Common }

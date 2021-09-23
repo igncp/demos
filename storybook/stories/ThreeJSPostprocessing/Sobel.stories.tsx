@@ -314,7 +314,7 @@ const Sobel = (props: Props) => {
 
 const Template = ((props: Props) => <Sobel {...props} />) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const args: Props = {
   enable: false,
@@ -328,3 +328,5 @@ export default {
   component: Sobel,
   title: "ThreeJS/Postprocessing/Sobel",
 }
+
+export { Common }

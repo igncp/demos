@@ -7,7 +7,7 @@ import {
   findParentNode,
 } from "./collapsible-tree-chart"
 
-export const CONTAINER_ID = "chart"
+const CONTAINER_ID = "chart"
 
 type RawData = {
   name: string
@@ -46,7 +46,7 @@ const findMaxId = (node: BaseNode): BaseNode["id"] =>
     node.id
   )
 
-export const fetchData = async (): Promise<BaseNode> => {
+const fetchData = async (): Promise<BaseNode> => {
   const rawNode = (await json(
     `${ROOT_PATH}data/d3js/collapsible-tree/data.json`
   )) as RawNode
@@ -60,7 +60,7 @@ const getNodeLabel: Config["getNodeLabel"] = (node) => node.name
 const getNodeId: Config["getNodeId"] = (node) => node.id
 const canBeRemoved: Config["canBeRemoved"] = (node) => node.id !== 0
 
-export const createChartConfig = (rootData: BaseNode): Config => {
+const createChartConfig = (rootData: BaseNode): Config => {
   const onNodeAdd: Config["onNodeAdd"] = (clickedNode) => {
     const maxId = findMaxId(rootData)
     const baseNode = findNode({
@@ -117,3 +117,5 @@ export const createChartConfig = (rootData: BaseNode): Config => {
     rootElId: CONTAINER_ID,
   }
 }
+
+export { CONTAINER_ID, fetchData, createChartConfig }

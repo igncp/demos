@@ -449,7 +449,7 @@ const Template = ((props: Props) => (
   <CanvasTearableCloth {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [clothHeightArgs, clothHeightControls] = createRangeControl({
   diffMin: 25,
@@ -485,3 +485,5 @@ export default {
   component: CanvasTearableCloth,
   title: "Canvas/Cloth",
 }
+
+export { Common }

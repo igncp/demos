@@ -372,7 +372,7 @@ const Template = ((props: Props) => (
   <ColorWaves {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [cubeSizeArg, cubeSizeControls] = createRangeControl({
   diffMin: 500,
@@ -444,3 +444,5 @@ export default {
   component: ColorWaves,
   title: "ThreeJS/BufferGeometry/ColorWaves",
 }
+
+export { Common }

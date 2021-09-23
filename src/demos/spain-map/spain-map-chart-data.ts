@@ -2,9 +2,9 @@ import { json } from "d3"
 
 import { AreasData, ChartConfig } from "./spain-map-chart"
 
-export const CONTAINER_ID = "chart"
+const CONTAINER_ID = "chart"
 
-export type Properties = {
+type Properties = {
   ENGTYPE_3: string // e.g. Comarca
   HASC_3: string
   ID_0: number
@@ -48,7 +48,7 @@ const projectionsCenters: Config["projectionsCenters"] = [
   [10, 35.5],
 ]
 
-export const createChartConfig = (areasData: AreasData): Config => ({
+const createChartConfig = (areasData: AreasData): Config => ({
   areasData,
   getTitleText,
   getWidths,
@@ -56,7 +56,9 @@ export const createChartConfig = (areasData: AreasData): Config => ({
   rootElId: CONTAINER_ID,
 })
 
-export const fetchAreasData = () =>
+const fetchAreasData = () =>
   json(
     `${ROOT_PATH}data/d3js/spain-map/data.json`
   ) as unknown as Promise<AreasData>
+
+export { CONTAINER_ID, Properties, createChartConfig, fetchAreasData }

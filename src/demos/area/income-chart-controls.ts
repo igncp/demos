@@ -1,6 +1,6 @@
-export const BUTTON_ID = "toggle-voronoi"
+const BUTTON_ID = "toggle-voronoi"
 
-export const setupChartControls = (onToggleVoronoiClick: () => void) => {
+const setupChartControls = (onToggleVoronoiClick: () => void) => {
   const buttonElement = document.getElementById("toggle-voronoi") as HTMLElement
 
   buttonElement.addEventListener("click", (clickEvent: MouseEvent) => {
@@ -9,3 +9,5 @@ export const setupChartControls = (onToggleVoronoiClick: () => void) => {
     onToggleVoronoiClick()
   })
 }
+
+export { BUTTON_ID, setupChartControls }

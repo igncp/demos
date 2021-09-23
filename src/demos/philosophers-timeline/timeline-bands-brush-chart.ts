@@ -12,7 +12,7 @@ import {
 
 import * as styles from "./timeline-bands-brush-chart.module.css"
 
-export enum SortOrder {
+enum SortOrder {
   Ascending = "ascending",
   Descending = "descending",
 }
@@ -108,7 +108,7 @@ type ChartDataBase = {
   track: number
 }
 
-export type ChartConfig<ChartData extends ChartDataBase> = {
+type ChartConfig<ChartData extends ChartDataBase> = {
   chartTitle: string
   getItemLimitLeft: (chartItem: ChartData) => Date
   getItemLimitRight: (chartItem: ChartData) => Date
@@ -124,7 +124,7 @@ export type ChartConfig<ChartData extends ChartDataBase> = {
   rootElId: string
 }
 
-export class Timeline<ChartData extends ChartDataBase> {
+class Timeline<ChartData extends ChartDataBase> {
   private readonly chart: Selection<SVGGElement, unknown, HTMLElement, unknown>
 
   private bandY: number
@@ -595,3 +595,5 @@ export class Timeline<ChartData extends ChartDataBase> {
     return this
   }
 }
+
+export { ChartConfig, SortOrder, Timeline }

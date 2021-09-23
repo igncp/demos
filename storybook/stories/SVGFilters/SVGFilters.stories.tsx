@@ -330,7 +330,7 @@ const [shapesArgs, shapesControls] = createSelectControl(
   Object.values(ShapesNames)
 )
 
-export const Common = (props: Props) => <SVGFilters {...props} />
+const Common = (props: Props) => <SVGFilters {...props} />
 
 const commonArgs: Props = {
   filterName: filtersArgs,
@@ -347,3 +347,5 @@ export default {
   component: SVGFilters,
   title: "SVG/Filters",
 }
+
+export { Common }

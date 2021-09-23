@@ -402,7 +402,7 @@ const Template = ((props: Props) => (
   <Interactive {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [speedArg, speedControls] = createRangeControl({
   diffMin: 100,
@@ -434,3 +434,5 @@ export default {
   component: Interactive,
   title: "ThreeJS/BufferGeometry/Interactive",
 }
+
+export { Common }

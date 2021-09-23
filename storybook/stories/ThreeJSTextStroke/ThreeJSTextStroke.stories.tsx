@@ -205,7 +205,7 @@ const Template = ((props: Props) => (
   <ThreeJSTextStroke {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const args: Props = {
   text: "Demos\nExample",
@@ -218,3 +218,5 @@ export default {
   component: ThreeJSTextStroke,
   title: "ThreeJS/Text Stroke",
 }
+
+export { Common }

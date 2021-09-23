@@ -65,7 +65,8 @@ const Template = ((props: Props) => (
   <SVGFlip {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
+
 Common.args = {
   color: "green",
   infinite: false,
@@ -78,3 +79,5 @@ export default {
   component: SVGFlip,
   title: "SVG/Flip",
 }
+
+export { Common }

@@ -1,9 +1,9 @@
-export const BUTTON_ID = "change-data"
+const BUTTON_ID = "change-data"
 
 const MAX_NEW_VAL = 46
 const MIN_NEW_VAL = 2
 
-export const setupChartControls = (updateChart: (newValue: number) => void) => {
+const setupChartControls = (updateChart: (newValue: number) => void) => {
   const buttonElement = document.getElementById(BUTTON_ID) as HTMLElement
 
   buttonElement.addEventListener("click", () => {
@@ -13,3 +13,5 @@ export const setupChartControls = (updateChart: (newValue: number) => void) => {
     updateChart(newSliceValue)
   })
 }
+
+export { BUTTON_ID, setupChartControls }

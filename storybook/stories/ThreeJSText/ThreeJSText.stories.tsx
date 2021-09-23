@@ -366,7 +366,7 @@ const Template = ((props: Props) => (
   <ThreeJSText {...props} />
 )) as TemplateType<Props>
 
-export const Common = Template.bind({})
+const Common = Template.bind({})
 
 const [fontNameArg, fontNameControl] = createSelectControl(
   Object.values(FontName)
@@ -400,3 +400,5 @@ export default {
   component: ThreeJSText,
   title: "ThreeJS/Text",
 }
+
+export { Common }

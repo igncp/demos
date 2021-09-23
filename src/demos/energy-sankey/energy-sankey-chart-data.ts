@@ -2,7 +2,7 @@ import { format as formatD3, json } from "d3"
 
 import { ChartConfig } from "./energy-sankey-chart"
 
-export const CONTAINER_ID = "chart"
+const CONTAINER_ID = "chart"
 
 type EnergyDataLink = {
   source: string
@@ -21,7 +21,7 @@ type EnergyData = {
   units: string
 }
 
-export const fetchData = () =>
+const fetchData = () =>
   json(`${ROOT_PATH}data/d3js/energy-sankey/data.json`) as Promise<EnergyData>
 
 type Config = ChartConfig<EnergyDataNode, EnergyDataLink>
@@ -29,7 +29,7 @@ type Config = ChartConfig<EnergyDataNode, EnergyDataLink>
 const getNodeId: Config["getNodeId"] = (energyNode) => energyNode.name
 const getNodeText: Config["getNodeText"] = (energyNode) => energyNode.name
 
-export const createChartConfig = ({
+const createChartConfig = ({
   energySankeyData,
   onNodeClick,
 }: {
@@ -71,3 +71,5 @@ export const createChartConfig = ({
     rootElId: CONTAINER_ID,
   }
 }
+
+export { CONTAINER_ID, createChartConfig, fetchData }

@@ -1,4 +1,4 @@
-export const vertexShader = `
+const vertexShader = `
   uniform float amplitude;
 
   attribute vec3 displacement;
@@ -15,7 +15,7 @@ export const vertexShader = `
   }
 `
 
-export const fragmentShader = `
+const fragmentShader = `
   uniform vec3 color;
   uniform float opacity;
 
@@ -25,3 +25,5 @@ export const fragmentShader = `
     gl_FragColor = vec4(vColor * color, opacity);
   }
 `
+
+export { fragmentShader, vertexShader }

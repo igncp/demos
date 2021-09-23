@@ -27,9 +27,9 @@ const perm = Array.from({ length: 512 }).map(
   (_: unknown, index: number) => p[index & 255]
 )
 
-export const noiseFactor = 1 / 50
+const noiseFactor = 1 / 50
 
-export const noise = (xin: number, yin: number) => {
+const noise = (xin: number, yin: number) => {
   let n0 = 0
   let n1 = 0
   let n2 = 0
@@ -98,3 +98,5 @@ export const noise = (xin: number, yin: number) => {
 }
 
 /* eslint-enable max-params, id-denylist */
+
+export { noise, noiseFactor }
