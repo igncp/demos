@@ -264,10 +264,13 @@ module.exports = {
 
     "quote-props": [2, "consistent-as-needed"],
 
+    "react/jsx-boolean-value": 2,
     "react/jsx-fragments": [2, "syntax"],
     "react/jsx-handler-names": 2,
     "react/jsx-sort-props": 2,
     "react/self-closing-comp": 2,
+
+    "require-atomic-updates": 2,
 
     "sort-destructure-keys/sort-destructure-keys": 2,
 
