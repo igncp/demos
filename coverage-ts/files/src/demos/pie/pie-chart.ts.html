@@ -11,8 +11,10 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/pie/pie-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">272</td><td class="">272</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/pie/pie-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">424</td><td class="">424</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Arc,
   DefaultArcObject,
+  Pie,
   PieArcDatum,
   Selection,
   arc as arcD3,
@@ -35,7 +37,62 @@ const transitionDuration = 3000
 const colorScale = scaleOrdinal(schemePastel2)
 const easeFn = easeBack
 
-export type ChartConfig&lt;SliceData&gt; = {
+const renderShadowFilter = &lt;T&gt;(
+  svg: Selection&lt;SVGGElement, T, HTMLElement, unknown&gt;
+) =&gt;
+  svg.append(&quot;g&quot;).html(`
+    &lt;filter height=&quot;300%&quot;width=&quot;300%&quot;x=&quot;-100%&quot;y=&quot;-100%&quot; filterUnits=&quot;userSpaceOnUse&quot; id=&quot;shadow-filter&quot;&gt;
+      &lt;feGaussianBlur in=&quot;SourceAlpha&quot; result=&quot;blur&quot; stdDeviation=&quot;4&quot; /&gt;
+      &lt;feOffset dx=&quot;4&quot; dy=&quot;4&quot; in=&quot;blur&quot; result=&quot;offsetBlur&quot; /&gt;
+      &lt;feSpecularLighting
+        in=&quot;blur&quot;
+        lightingColor=&quot;#bbbbbb&quot;
+        result=&quot;specOut&quot;
+        specularConstant=&quot;.75&quot;
+        specularExponent=&quot;50&quot;
+        surfaceScale=&quot;5&quot;
+      &gt;
+        &lt;fePointLight x=&quot;-5000&quot; y=&quot;-10000&quot; z=&quot;20000&quot; /&gt;
+      &lt;/feSpecularLighting&gt;
+      &lt;feComposite
+        in=&quot;specOut&quot;
+        in2=&quot;SourceAlpha&quot;
+        operator=&quot;in&quot;
+        result=&quot;specOut&quot;
+      /&gt;
+      &lt;feComposite
+        in=&quot;SourceGraphic&quot;
+        in2=&quot;specOut&quot;
+        k1=&quot;0&quot;
+        k2=&quot;1&quot;
+        k3=&quot;1&quot;
+        k4=&quot;0&quot;
+        operator=&quot;arithmetic&quot;
+        result=&quot;litPaint&quot;
+      /&gt;
+      &lt;feMerge&gt;
+        &lt;feMergeNode in=&quot;offsetBlur&quot; /&gt;
+        &lt;feMergeNode in=&quot;litPaint&quot; /&gt;
+      &lt;/feMerge&gt;
+    &lt;/filter&gt;
+  `)
+
+const renderBlurFilter = &lt;T&gt;(
+  svg: Selection&lt;SVGGElement, T, HTMLElement, unknown&gt;
+) =&gt; {
+  svg
+    .append(&quot;g&quot;)
+    .append(&quot;filter&quot;)
+    .attr(&quot;height&quot;, &quot;300%&quot;)
+    .attr(&quot;x&quot;, &quot;-100%&quot;)
+    .attr(&quot;y&quot;, &quot;-100%&quot;)
+    .attr(&quot;id&quot;, &quot;blur&quot;)
+    .attr(&quot;width&quot;, &quot;300%&quot;)
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;stdDeviation&quot;, &quot;1 1&quot;)
+}
+
+type ChartConfig&lt;SliceData&gt; = {
   getSliceTitle: (sliceData: SliceData) =&gt; string
   getSliceValue: (sliceData: SliceData) =&gt; number
   pieSlices: SliceData[]
@@ -46,47 +103,179 @@ export type ChartConfig&lt;SliceData&gt; = {
   }) =&gt; void
 }
 
-export const createChart = &lt;SliceData&gt;({
-  getSliceTitle,
-  getSliceValue,
-  pieSlices,
-  rootElId,
-  updateSliceValue,
-}: ChartConfig&lt;SliceData&gt;) =&gt; {
-  type Slice = SliceData &amp; {
-    ea0?: PieArcDatum&lt;Slice&gt;
+type Slice&lt;SliceData&gt; = SliceData &amp; {
+  ea0?: PieArcDatum&lt;Slice&lt;SliceData&gt;&gt;
+}
+
+type SliceArc&lt;SliceData&gt; = PieArcDatum&lt;Slice&lt;SliceData&gt;&gt;
+
+type ArcDatum&lt;SliceData&gt; = Omit&lt;
+  DefaultArcObject &amp; SliceArc&lt;SliceData&gt;,
+  &quot;innerRadius&quot; | &quot;outerRadius&quot;
+&gt;
+
+type ChartPaths&lt;SliceData&gt; = Selection&lt;
+  SVGPathElement,
+  SliceArc&lt;SliceData&gt;,
+  SVGGElement,
+  unknown
+&gt;
+type ChartLabels&lt;SliceData&gt; = Selection&lt;
+  SVGTextElement,
+  SliceArc&lt;SliceData&gt;,
+  SVGGElement,
+  unknown
+&gt;
+
+class PieChart&lt;SliceData&gt; {
+  private readonly slices: Array&lt;Slice&lt;SliceData&gt;&gt;
+  private readonly config: ChartConfig&lt;SliceData&gt;
+  private readonly sliceClass: string
+
+  private readonly arc: Arc&lt;any, SliceArc&lt;SliceData&gt;&gt; // eslint-disable-line @typescript-eslint/no-explicit-any
+  private readonly pie: Pie&lt;any, Slice&lt;SliceData&gt;&gt; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+  private paths: ChartPaths&lt;SliceData&gt; | null
+  private labels: ChartLabels&lt;SliceData&gt; | null
+
+  public constructor(config: ChartConfig&lt;SliceData&gt;) {
+    this.config = config
+    this.slices = config.pieSlices
+    this.sliceClass = `slice-${uuidv1().slice(0, 6)}`
+
+    this.arc = arcD3&lt;SliceArc&lt;SliceData&gt;&gt;()
+      .outerRadius(outerRadius)
+      .innerRadius(0)
+
+    this.pie = pieD3&lt;Slice&lt;SliceData&gt;&gt;()
+      .sort(null)
+      .value((slice: Slice&lt;SliceData&gt;) =&gt; config.getSliceValue(slice))
+
+    this.paths = null
+    this.labels = null
+
+    this.render()
   }
 
-  const sliceClass = `slice-${uuidv1().slice(0, 6)}`
-
-  type SliceArc = PieArcDatum&lt;Slice&gt;
-
-  const stashArcs = (arcItem: SliceArc) =&gt; {
+  private static stashArcs&lt;SliceData&gt;(arcItem: SliceArc&lt;SliceData&gt;) {
     arcItem.data.ea0 = cloneDeep(arcItem)
   }
 
-  const arc = arcD3&lt;SliceArc&gt;().outerRadius(outerRadius).innerRadius(0)
+  public update({
+    newValue,
+    newValueIndex,
+  }: {
+    newValue: number
+    newValueIndex: number
+  }) {
+    const { config, labels, paths, slices } = this
 
-  type ArcDatum = Omit&lt;
-    DefaultArcObject &amp; SliceArc,
-    &quot;innerRadius&quot; | &quot;outerRadius&quot;
-  &gt;
+    config.updateSliceValue({
+      newValue,
+      sliceData: slices[newValueIndex],
+    })
+    ;(paths as ChartPaths&lt;SliceData&gt;)
+      .data(this.pie(slices))
+      .transition()
+      .duration(transitionDuration)
+      .ease(easeFn)
+      .attrTween(&quot;d&quot;, this.arcTween.bind(this))
+    ;(labels as ChartLabels&lt;SliceData&gt;)
+      .data(this.pie(slices))
+      .transition()
+      .duration(transitionDuration)
+      .ease(easeFn)
+      .attrTween(&quot;transform&quot;, this.textTransformTween.bind(this))
+      .each(function setupText(slice) {
+        select(this).text(config.getSliceValue(slice.data))
+      })
+      .style(&quot;opacity&quot;, (slice) =&gt; {
+        const sliceAngle = Math.abs(slice.startAngle - slice.endAngle)
 
-  const textTransform = (arcData: ArcDatum): string =&gt; {
+        return sliceAngle &lt; 0.4 ? 0 : 1
+      })
+  }
+
+  private render() {
+    const { config, slices } = this
+    const { width } = (
+      document.getElementById(config.rootElId) as HTMLElement
+    ).getBoundingClientRect()
+
+    const svg = select&lt;SVGSVGElement, Slice&lt;SliceData&gt;&gt;(`#${config.rootElId}`)
+      .append(&quot;svg:svg&quot;)
+      .attr(&quot;height&quot;, height)
+      .attr(&quot;width&quot;, width)
+      .append(&quot;g&quot;)
+      .attr(&quot;transform&quot;, `translate(${width / 2},${height / 2})`)
+
+    renderShadowFilter(svg)
+    renderBlurFilter(svg)
+
+    svg.style(&quot;filter&quot;, `url(#shadow-filter`)
+
+    const slicesEls = svg
+      .selectAll(`.${this.sliceClass}`)
+      .data(this.pie(slices))
+      .enter()
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, this.sliceClass)
+      .attr(&quot;title&quot;, (slice) =&gt; this.config.getSliceTitle(slice.data))
+      .on(&quot;mouseenter&quot;, function handleMouseEnter() {
+        slicesEls.style(&quot;filter&quot;, `url(#blur)`)
+        select(this).style(&quot;filter&quot;, &quot;none&quot;)
+      })
+      .on(&quot;mouseleave&quot;, () =&gt; {
+        slicesEls.style(&quot;filter&quot;, null)
+      })
+
+    $(`.${this.sliceClass}`).tooltip({
+      track: true,
+    })
+
+    this.paths = slicesEls
+      .append(&quot;path&quot;)
+      .attr(&quot;d&quot;, this.arc)
+      .attr(&quot;fill&quot;, (...[, sliceIndex]) =&gt; colorScale(sliceIndex.toString()))
+      .attr(&quot;stroke&quot;, &quot;#777&quot;)
+      .each((slice) =&gt; PieChart.stashArcs&lt;SliceData&gt;(slice))
+
+    this.labels = slicesEls
+      .filter(
+        (slice: SliceArc&lt;SliceData&gt;) =&gt; slice.endAngle - slice.startAngle &gt; 0.2
+      )
+      .append(&quot;text&quot;)
+      .attr(&quot;dy&quot;, &quot;0.35em&quot;)
+      .attr(&quot;dx&quot;, &quot;0.35em&quot;)
+      .attr(&quot;class&quot;, styles.label)
+      .attr(&quot;transform&quot;, this.textTransform.bind(this))
+      .text((slice) =&gt; this.config.getSliceValue(slice.data))
+  }
+
+  private textTransform(arcData: ArcDatum&lt;SliceData&gt;): string {
     const centroidD = {
       ...arcData,
       innerRadius: outerRadius / 2,
       outerRadius,
     }
 
-    return `translate(${arc.centroid(centroidD)})`
+    return `translate(${this.arc.centroid(centroidD)})`
   }
 
-  const pie = pieD3&lt;Slice&gt;()
-    .sort(null)
-    .value((slice: Slice) =&gt; getSliceValue(slice))
+  private textTransformTween(finalSlice: SliceArc&lt;SliceData&gt;) {
+    const {
+      data: { ea0: initialSlice },
+    } = finalSlice
+    const interpolateFn = interpolate(initialSlice, finalSlice)
 
-  const arcTween = (finalSlice: SliceArc) =&gt; {
+    return (time: number) =&gt; {
+      const arcData = interpolateFn(time)
+
+      return this.textTransform(arcData)
+    }
+  }
+
+  private arcTween(finalSlice: SliceArc&lt;SliceData&gt;) {
     const {
       data: { ea0: initialSlice },
     } = finalSlice
@@ -94,97 +283,16 @@ export const createChart = &lt;SliceData&gt;({
 
     finalSlice.data.ea0 = interpolateFn(0)
 
-    return (normalizedTime: number) =&gt; arc(interpolateFn(normalizedTime))!
+    return (normalizedTime: number) =&gt; this.arc(interpolateFn(normalizedTime))!
   }
-
-  type ChartPaths = Selection&lt;SVGPathElement, SliceArc, SVGGElement, unknown&gt;
-  type ChartLabels = Selection&lt;SVGTextElement, SliceArc, SVGGElement, unknown&gt;
-
-  class PieChart {
-    private readonly slices: Slice[]
-    private paths: ChartPaths | null
-    private labels: ChartLabels | null
-
-    public constructor() {
-      this.slices = pieSlices
-
-      this.paths = null
-      this.labels = null
-
-      this.render()
-    }
-
-    public update(newSliceValue: number) {
-      const { labels, paths, slices } = this
-      const sliceIndex = Math.floor(Math.random() * slices.length)
-
-      updateSliceValue({
-        newValue: newSliceValue,
-        sliceData: slices[sliceIndex],
-      })
-      ;(paths as ChartPaths)
-        .data(pie(slices))
-        .transition()
-        .duration(transitionDuration)
-        .ease(easeFn)
-        .attrTween(&quot;d&quot;, arcTween)
-      ;(labels as ChartLabels)
-        .data(pie(slices))
-        .transition()
-        .duration(transitionDuration)
-        .ease(easeFn)
-        .attr(&quot;transform&quot;, textTransform)
-        .each(function setupText(slice) {
-          select(this).text(getSliceValue(slice.data))
-        })
-    }
-
-    private render() {
-      const { slices } = this
-      const { width } = (
-        document.getElementById(rootElId) as HTMLElement
-      ).getBoundingClientRect()
-
-      const svg = select(`#${rootElId}`)
-        .append(&quot;svg:svg&quot;)
-        .attr(&quot;height&quot;, height)
-        .attr(&quot;width&quot;, width)
-        .append(&quot;g&quot;)
-        .attr(&quot;transform&quot;, `translate(${width / 2},${height / 2})`)
-
-      const slicesEls = svg
-        .selectAll(`.${sliceClass}`)
-        .data(pie(slices))
-        .enter()
-        .append(&quot;g&quot;)
-        .attr(&quot;class&quot;, sliceClass)
-        .attr(&quot;title&quot;, (slice) =&gt; getSliceTitle(slice.data))
-
-      $(`.${sliceClass}`).tooltip({
-        track: true,
-      })
-
-      this.paths = slicesEls
-        .append(&quot;path&quot;)
-        .attr(&quot;d&quot;, arc)
-        .attr(&quot;fill&quot;, (...[, sliceIndex]) =&gt; colorScale(sliceIndex.toString()))
-        .each(stashArcs)
-
-      this.labels = slicesEls
-        .filter((slice: SliceArc) =&gt; slice.endAngle - slice.startAngle &gt; 0.2)
-        .append(&quot;text&quot;)
-        .attr(&quot;dy&quot;, &quot;0.35em&quot;)
-        .attr(&quot;dx&quot;, &quot;0.35em&quot;)
-        .attr(&quot;class&quot;, styles.label)
-        .attr(&quot;transform&quot;, textTransform)
-        .text((slice) =&gt; getSliceValue(slice.data))
-    }
-  }
-
-  return new PieChart()
 }
+
+const createChart = &lt;SliceData&gt;(config: ChartConfig&lt;SliceData&gt;) =&gt;
+  new PieChart(config)
+
+export { ChartConfig, createChart }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 25 Sep 2021 15:30:53 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 28 Oct 2021 22:58:40 GMT</p>
     </body>
   </html>
   
