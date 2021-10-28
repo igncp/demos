@@ -9,8 +9,11 @@ const main = async () => {
 
   const chart = createChart(chartConfig)
 
-  setupChartControls((newValue) => {
-    chart.update(newValue)
+  setupChartControls({
+    getChartValues: () => techItems,
+    onUpdateChart: (updateValue) => {
+      chart.update(updateValue)
+    },
   })
 }
 

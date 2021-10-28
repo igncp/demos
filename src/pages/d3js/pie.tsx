@@ -5,6 +5,7 @@ import { DemoPageProps, JQUERYUI } from "@/common"
 import Demo from "@/components/demo"
 
 import main, { BUTTON_ID, CONTAINER_ID } from "@/demos/pie/pie"
+import * as styles from "@/demos/pie/pie-chart.module.css"
 
 const Pie = ({ pageContext }: DemoPageProps) => (
   <Demo
@@ -13,9 +14,9 @@ const Pie = ({ pageContext }: DemoPageProps) => (
     pageContext={pageContext}
     scripts={[JQUERYUI.SCRIPT]}
   >
-    <form>
+    <form className={styles.form}>
       <button className="btn btn-success" id={BUTTON_ID} type="button">
-        Change
+        Update Slice
       </button>
     </form>
     <div id={CONTAINER_ID} />
