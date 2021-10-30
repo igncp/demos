@@ -1,5 +1,4 @@
 declare const styles: {
-  readonly "back-home": string
   readonly "bs-callout": string
   readonly "bs-callout-info": string
   readonly "bs-callout-primary": string
@@ -10,6 +9,7 @@ declare const styles: {
   readonly "code": string
   readonly "container": string
   readonly "hide-mobile": string
+  readonly "hide-tablet": string
   readonly "home-demo-name-link": string
   readonly "home-demo-number": string
   readonly "row": string

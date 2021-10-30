@@ -13,12 +13,14 @@ const getItemId: Config["getItemId"] = (incomeItem) => incomeItem.getId()
 const getItemTitle: Config["getItemTitle"] = (incomeItem: IncomeItem) =>
   incomeItem.getSummary()
 const chartTitle = "Share of top decile [aka top 10%] in national income"
+const chartTitleShort = chartTitle.replace(" [aka top 10%]", "")
 
 const createChartConfig = (
   dataPoints: IncomeItem[]
 ): ChartConfig<IncomeItem> => ({
   areaPoints: dataPoints,
   chartTitle,
+  chartTitleShort,
   getItemId,
   getItemTitle,
   getItemXValue,

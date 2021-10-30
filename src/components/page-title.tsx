@@ -7,7 +7,7 @@ const PageTitle = () => (
     <h1 className="row">
       <span className="col-sm-8 col-xs-8">
         <a href={ROOT_PATH}>Demos</a>{" "}
-        <small className="hide-mobile">
+        <small className="hide-tablet">
           interactive data visualization examples
         </small>
       </span>

@@ -1,4 +1,5 @@
 declare const styles: {
+  readonly "automaticTime": string
   readonly "chartWrapper": string
   readonly "chordGroup": string
   readonly "countriesSelect": string

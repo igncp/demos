@@ -57,6 +57,45 @@ const applyOpacityEffect = <ContainerEl extends BaseType, Datum>(
     })
 }
 
+const filterBlackOpacity = ({
+  deviation,
+  id,
+  slope,
+  svg,
+}: {
+  deviation: number
+  id: string
+  slope: number
+  svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
+}) => {
+  const defs = svg.append("defs")
+  const filter = defs
+    .append("filter")
+    .attr("height", "500%")
+    .attr("id", `drop-shadow-${id}`)
+    .attr("width", "500%")
+    .attr("x", "-200%")
+    .attr("y", "-200%")
+
+  filter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", deviation)
+
+  filter.append("feOffset").attr("dx", 1).attr("dy", 1)
+  filter
+    .append("feComponentTransfer")
+    .append("feFuncA")
+    .attr("slope", slope)
+    .attr("type", "linear")
+
+  const feMerge = filter.append("feMerge")
+
+  feMerge.append("feMergeNode")
+
+  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
+}
+
 // @TODO: setup drag with zoom
 const setupDrag = ({
   svgDrag,
@@ -153,6 +192,13 @@ const renderChart = (chartConfig: ChartConfig) => {
     .append("svg")
     .attr("width", width)
     .attr("height", totalHeight)
+
+  filterBlackOpacity({
+    deviation: 2,
+    id: "groups",
+    slope: 0.5,
+    svg: svgTop,
+  })
 
   const svgCenter = svgTop
     .append("g")
@@ -364,6 +410,7 @@ const renderChart = (chartConfig: ChartConfig) => {
             .attr("title", (groupItem) =>
               chartConfig.getChordGroupTitle(chordGroupsIds[groupItem.index])
             )
+            .style("filter", "url(#drop-shadow-groups)")
 
           applyOpacityEffect(groupSelection)
 

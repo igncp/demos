@@ -1,4 +1,5 @@
 declare const styles: {
+  readonly "backHome": string
   readonly "bullet": string
   readonly "d3js": string
   readonly "dataList": string

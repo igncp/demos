@@ -9,7 +9,13 @@ For new charts using data, they should cover most of these points
     - Use title, legends and modals for explaining content and interactions
 - Add visual cues for all interactions: animations or other changes in CSS properties
 - Format raw numbers (e.g. add commas, remove extra decimals, etc.)
-- It should look professional
+- It should look professional: svg filters, complex styles
+- Be able to tear down and cleanup its content and other generated components
+- They should look good on mobile device by using responsive units or rendering less data
+- Should be possible to have the same chart several times on the same page
+- They should update on window resize keeping state
+- It should be possible to update the chart with different data after the initial render keeping state
+- Ideally it should reuse elements when refreshing the chart, either on resize or new data
 
 ## Code requirements for new charts
 
@@ -26,9 +32,9 @@ For new charts using data, they should cover most of these points
 - Remove mutations of original data
 - Avoid circular structures on original data
 - Use CSS modules which supports TypeScript
+- Favor data properties over propery functions in the chart configuration, as long as the data is not mutated
 - Make charts reusable components:
     - Make the charts data-agnostic, and supply the data via config functions
-    - Favor data properties over propery functions in the chart configuration, as long as the data is not mutated
     - Any interaction with extra page elements should be outside of the chart
     - Remove page's unnecessary classes: when used by style, add them by code
     - When selecting over classes globally (e.g. with tooltip), use CSS modules or uuids
@@ -39,11 +45,9 @@ For new charts using data, they should cover most of these points
         - Chart rendering: is not coupled to a specific data type, uses generics and its configuration API for rendering the content
         - Application state: controls and settings, which are handled by the chart config and not the chart itself
         - File names should also reflect this limited knowledge of each file
-- Move as static styles to the `.module.css` sheet inside classes
+- Move all static styles to the `.module.css` sheet inside classes
 - Use new styling features, and document them, like filters, animations, svg, etc
 
 ## Future Requirements Under Consideration
 
-- Be able to tear down and cleanup its content and other generated components
-- They should update on window resize (at least complete rerender, losing state)
-- They should look good on mobile device by using responsive units or rendering less data
+- Add accessibility features to charts

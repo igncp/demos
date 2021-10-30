@@ -86,7 +86,7 @@ const d3js: D3JS = {
     ] as DemoBase["docs"],
     isCompleted: true,
     name: "Area",
-    notes: ["Changed style", "Added point and voronoi functionality"],
+    notes: [],
     sources: ["http://codepen.io/notno/pen/ilvsd"],
     summary: [
       "This chart is a mix of a common area + line chart plus Voronoi to properly display the points on mouse move. For the x and y axis, it uses two linear scales. It uses a SVG 'path' for printing the area, and a different SVG 'path' to print the line.",

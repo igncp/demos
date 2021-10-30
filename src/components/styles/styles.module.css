@@ -1,3 +1,14 @@
+.backHome {
+  padding: 0;
+  text-align: right;
+
+  @media only screen and (max-width: 520px) {
+    & {
+      display: none;
+    }
+  }
+}
+
 .bullet {
   font-size: 30px;
   text-shadow: 0.5px 0.5px 1px #444;

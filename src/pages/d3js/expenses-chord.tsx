@@ -5,6 +5,7 @@ import { DemoPageProps, JQUERYUI } from "@/common"
 import Demo from "@/components/demo"
 
 import main, {
+  AUTOMATIC_TIME_ID,
   CONTAINER_ID,
   COUNTRIES_SELECT_ID,
   REGIONS_SELECT_ID,
@@ -26,6 +27,8 @@ const ExpensesChord = ({ pageContext }: DemoPageProps) => (
       <select className={styles.countriesSelect} id={COUNTRIES_SELECT_ID} />
       <span>Regions:</span>
       <select id={REGIONS_SELECT_ID} />
+      <span className={styles.automaticTime}>Automatic Time Change:</span>
+      <input id={AUTOMATIC_TIME_ID} type="checkbox" />
     </p>
     <div id={CONTAINER_ID} />
   </Demo>

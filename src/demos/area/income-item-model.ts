@@ -14,6 +14,7 @@ class IncomeItem {
 
   private constructor(incomeItemData: IncomeItemData) {
     this.incomeItemData = incomeItemData
+    this.incomeItemData.percent = Number(this.incomeItemData.percent)
   }
 
   public static async fetchAndCreateCollection(): Promise<IncomeItem[]> {
@@ -35,6 +36,16 @@ class IncomeItem {
     return this.incomeItemData.year
   }
 
+  public changePercent(percentChange: number) {
+    const valueWithLowerBound = Math.max(
+      this.incomeItemData.percent + percentChange,
+      0
+    )
+    const newValue = Math.min(100, valueWithLowerBound)
+
+    this.incomeItemData.percent = newValue
+  }
+
   public getNormalizedValue() {
     return this.incomeItemData.percent / 100
   }
@@ -46,7 +57,9 @@ class IncomeItem {
   public getSummary(): string {
     const { incomeItemData } = this
 
-    return `Year: ${incomeItemData.year}, Percent: ${incomeItemData.percent}%`
+    return `Year: ${
+      incomeItemData.year
+    }, Percent: ${incomeItemData.percent.toFixed(2)}%`
   }
 }
 

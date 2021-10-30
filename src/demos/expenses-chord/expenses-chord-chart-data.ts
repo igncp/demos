@@ -8,6 +8,7 @@ type State = {
 }
 
 const CONTAINER_ID = "chart"
+const AUTOMATIC_TIME_ID = "automatic-time"
 const SLIDER_TIME_ID = "slider-time"
 const COUNTRIES_SELECT_ID = "countries-select"
 const REGIONS_SELECT_ID = "regions-select"
@@ -17,6 +18,43 @@ const createInitialState = (): State => ({
   selectedRegion: Expenses.ALL_ID,
   timeIndex: 0,
 })
+
+class CheckboxHandler {
+  private readonly checkbox: HTMLInputElement
+  private readonly onChecked: () => void
+  private readonly onUnchecked: () => void
+
+  public constructor({
+    onChecked,
+    onUnchecked,
+  }: {
+    onChecked: CheckboxHandler["onChecked"]
+    onUnchecked: CheckboxHandler["onUnchecked"]
+  }) {
+    this.onChecked = onChecked
+    this.onUnchecked = onUnchecked
+    this.checkbox = document.getElementById(
+      AUTOMATIC_TIME_ID
+    ) as HTMLInputElement
+  }
+
+  public init() {
+    this.checkbox.setAttribute("checked", "checked")
+    this.onChecked()
+    this.checkbox.addEventListener("change", () => {
+      if (this.checkbox.checked) {
+        this.onChecked()
+      } else {
+        this.onUnchecked()
+      }
+    })
+  }
+
+  public uncheck() {
+    this.checkbox.checked = false
+    this.onUnchecked()
+  }
+}
 
 const createChartConfig = ({
   expenses,
@@ -81,6 +119,8 @@ const setupChartForm = ({
   renderItems: () => void
   state: State
 }) => {
+  const sliderMaxValue = expenses.getTimeFramesNumber()
+
   $(`#${SLIDER_TIME_ID}`).slider({
     change: (...[, { value: timeValue }]) => {
       if (timeValue === 3) {
@@ -91,7 +131,7 @@ const setupChartForm = ({
       state.timeIndex = timeValue!
       renderItems()
     },
-    max: expenses.getTimeFramesNumber(),
+    max: sliderMaxValue,
     min: 0,
   })
 
@@ -136,9 +176,32 @@ const setupChartForm = ({
     },
     selectOptions: expenses.getRegionsList(),
   })
+
+  let timeoutId: number | null = null
+  const checkboxHandler = new CheckboxHandler({
+    onChecked: () => {
+      clearInterval(timeoutId!)
+      timeoutId = window.setInterval(() => {
+        const currentValue = $(`#${SLIDER_TIME_ID}`).slider("value")
+        const nextValue = currentValue + 1
+
+        $(`#${SLIDER_TIME_ID}`).slider("value", nextValue)
+
+        if (nextValue >= sliderMaxValue) {
+          checkboxHandler.uncheck()
+        }
+      }, 2000)
+    },
+    onUnchecked: () => {
+      clearInterval(timeoutId!)
+    },
+  })
+
+  checkboxHandler.init()
 }
 
 export {
+  AUTOMATIC_TIME_ID,
   CONTAINER_ID,
   COUNTRIES_SELECT_ID,
   REGIONS_SELECT_ID,

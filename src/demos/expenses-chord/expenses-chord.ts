@@ -1,5 +1,6 @@
 import { renderChart } from "./expenses-chord-chart"
 import {
+  AUTOMATIC_TIME_ID,
   CONTAINER_ID,
   COUNTRIES_SELECT_ID,
   REGIONS_SELECT_ID,
@@ -28,6 +29,12 @@ const main = async () => {
   })
 }
 
-export { CONTAINER_ID, SLIDER_TIME_ID, COUNTRIES_SELECT_ID, REGIONS_SELECT_ID }
+export {
+  AUTOMATIC_TIME_ID,
+  CONTAINER_ID,
+  COUNTRIES_SELECT_ID,
+  REGIONS_SELECT_ID,
+  SLIDER_TIME_ID,
+}
 
 export default main

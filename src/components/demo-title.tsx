@@ -21,7 +21,7 @@ const DemoTitle = ({ isCompleted, mainSource, name }: Props) => (
         </small>
       )}
     </span>
-    <span className="col-sm-2 col-xs-12 back-home">
+    <span className={`col-sm-2 d-xs-none ${styles.backHome}`}>
       <a className="btn btn-default" href={ROOT_PATH}>
         <span className="glyphicon glyphicon-home" /> Home
       </a>
