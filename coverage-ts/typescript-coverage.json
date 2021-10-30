@@ -367,84 +367,84 @@
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 142,
+      "line": 181,
       "character": 24,
       "text": "ribbonType",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 143,
+      "line": 182,
       "character": 4,
       "text": "ribbonType",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 143,
+      "line": 182,
       "character": 15,
       "text": "radius",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 143,
+      "line": 182,
       "character": 41,
       "text": "padAngle",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 145,
+      "line": 184,
       "character": 8,
       "text": "ribbonArrow",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 146,
+      "line": 185,
       "character": 8,
       "text": "ribbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 210,
+      "line": 256,
       "character": 10,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 211,
+      "line": 257,
       "character": 58,
       "text": "ribbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 211,
+      "line": 257,
       "character": 67,
       "text": "ribbonArrow",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 274,
+      "line": 320,
       "character": 23,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 288,
+      "line": 334,
       "character": 29,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 306,
+      "line": 352,
       "character": 23,
       "text": "usedRibbon",
       "kind": 1
@@ -1290,8 +1290,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.36774104872518,
-  "total": 29102,
-  "covered": 28918,
+  "percentage": 99.38011656503723,
+  "total": 29683,
+  "covered": 29499,
   "uncovered": 184
 }

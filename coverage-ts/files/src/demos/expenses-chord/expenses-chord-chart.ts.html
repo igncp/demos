@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/expenses-chord/expenses-chord-chart.ts</td><td class="">98.17%</td><td class="">95%</td><td class="">654</td><td class="">642</td><td class="">12</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/expenses-chord/expenses-chord-chart.ts</td><td class="">98.31%</td><td class="">95%</td><td class="">708</td><td class="">696</td><td class="">12</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   BaseType,
   Chord,
   ChordGroup,
@@ -68,6 +68,45 @@ const applyOpacityEffect = &lt;ContainerEl extends BaseType, Datum&gt;(
     .on(&quot;mouseleave&quot;, function onMouseLeave() {
       select(this).style(&quot;opacity&quot;, elementDefaultOpacity)
     })
+}
+
+const filterBlackOpacity = ({
+  deviation,
+  id,
+  slope,
+  svg,
+}: {
+  deviation: number
+  id: string
+  slope: number
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+}) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs
+    .append(&quot;filter&quot;)
+    .attr(&quot;height&quot;, &quot;500%&quot;)
+    .attr(&quot;id&quot;, `drop-shadow-${id}`)
+    .attr(&quot;width&quot;, &quot;500%&quot;)
+    .attr(&quot;x&quot;, &quot;-200%&quot;)
+    .attr(&quot;y&quot;, &quot;-200%&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
 }
 
 // @TODO: setup drag with zoom
@@ -166,6 +205,13 @@ const renderChart = (chartConfig: ChartConfig) =&gt; {
     .append(&quot;svg&quot;)
     .attr(&quot;width&quot;, width)
     .attr(&quot;height&quot;, totalHeight)
+
+  filterBlackOpacity({
+    deviation: 2,
+    id: &quot;groups&quot;,
+    slope: 0.5,
+    svg: svgTop,
+  })
 
   const svgCenter = svgTop
     .append(&quot;g&quot;)
@@ -377,6 +423,7 @@ const renderChart = (chartConfig: ChartConfig) =&gt; {
             .attr(&quot;title&quot;, (groupItem) =&gt;
               chartConfig.getChordGroupTitle(chordGroupsIds[groupItem.index])
             )
+            .style(&quot;filter&quot;, &quot;url(#drop-shadow-groups)&quot;)
 
           applyOpacityEffect(groupSelection)
 
@@ -493,8 +540,8 @@ const renderChart = (chartConfig: ChartConfig) =&gt; {
 }
 
 export { DisplayType, RibbonType, ChartConfig, renderChart }
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:142,&quot;character&quot;:24,&quot;text&quot;:&quot;ribbonType&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:4,&quot;text&quot;:&quot;ribbonType&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:15,&quot;text&quot;:&quot;radius&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:143,&quot;character&quot;:41,&quot;text&quot;:&quot;padAngle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:145,&quot;character&quot;:8,&quot;text&quot;:&quot;ribbonArrow&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:146,&quot;character&quot;:8,&quot;text&quot;:&quot;ribbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:210,&quot;character&quot;:10,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:211,&quot;character&quot;:58,&quot;text&quot;:&quot;ribbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:211,&quot;character&quot;:67,&quot;text&quot;:&quot;ribbonArrow&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:274,&quot;character&quot;:23,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:288,&quot;character&quot;:29,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:306,&quot;character&quot;:23,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 28 Oct 2021 22:58:40 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:181,&quot;character&quot;:24,&quot;text&quot;:&quot;ribbonType&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:182,&quot;character&quot;:4,&quot;text&quot;:&quot;ribbonType&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:182,&quot;character&quot;:15,&quot;text&quot;:&quot;radius&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:182,&quot;character&quot;:41,&quot;text&quot;:&quot;padAngle&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:184,&quot;character&quot;:8,&quot;text&quot;:&quot;ribbonArrow&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:185,&quot;character&quot;:8,&quot;text&quot;:&quot;ribbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:256,&quot;character&quot;:10,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:257,&quot;character&quot;:58,&quot;text&quot;:&quot;ribbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:257,&quot;character&quot;:67,&quot;text&quot;:&quot;ribbonArrow&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:320,&quot;character&quot;:23,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:334,&quot;character&quot;:29,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/expenses-chord/expenses-chord-chart.ts&quot;,&quot;line&quot;:352,&quot;character&quot;:23,&quot;text&quot;:&quot;usedRibbon&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 30 Oct 2021 16:04:18 GMT</p>
     </body>
   </html>
   

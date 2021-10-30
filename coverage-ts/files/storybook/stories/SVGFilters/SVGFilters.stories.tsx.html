@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/SVGFilters/SVGFilters.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">406</td><td class="">406</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Selection, select } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">storybook/stories/SVGFilters/SVGFilters.stories.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">557</td><td class="">557</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { Selection, select } from &quot;d3&quot;
 import React from &quot;react&quot;
 
 import { StoryInfo, createSelectControl } from &quot;../common&quot;
@@ -45,9 +45,12 @@ enum FiltersNames {
   BlurShadow = &quot;blur-shadow&quot;,
   CompositeAnimated = &quot;composite-animated-1&quot;,
   DiffuseLightning1 = &quot;diffuse-lightning-1&quot;,
+  Glitch = &quot;glitch&quot;,
+  Motion = &quot;motion&quot;,
   None = &quot;none&quot;,
   Sample1 = &quot;sample-1&quot;,
   TurbulenceBlue = &quot;turbulence-blue&quot;,
+  Waves = &quot;waves&quot;,
 }
 
 enum ShapesNames {
@@ -70,7 +73,6 @@ const commonFilterProps = {
   y: &quot;-100%&quot;,
 } as const
 
-/* eslint-disable react/display-name */
 const filtersObj: FiltersObj = {
   [FiltersNames.BlendExclusion]: ({ id }) =&gt; (
     &lt;filter {...commonFilterProps} id={id}&gt;
@@ -171,6 +173,88 @@ const filtersObj: FiltersObj = {
       /&gt;
     &lt;/filter&gt;
   ),
+  [FiltersNames.Glitch]: ({ id }) =&gt; (
+    &lt;filter
+      colorInterpolationFilters=&quot;sRGB&quot;
+      {...commonFilterProps}
+      filterUnits=&quot;objectBoundingBox&quot;
+      id={id}
+      primitiveUnits=&quot;userSpaceOnUse&quot;
+    &gt;
+      &lt;feFlood floodColor=&quot;white&quot; result=&quot;black&quot; /&gt;
+      &lt;feFlood floodColor=&quot;red&quot; result=&quot;flood1&quot; /&gt;
+      &lt;feFlood floodColor=&quot;limegreen&quot; result=&quot;flood2&quot; /&gt;
+      &lt;feOffset dx=&quot;3&quot; dy=&quot;0&quot; in=&quot;SourceGraphic&quot; result=&quot;off1a&quot; /&gt;
+      &lt;feOffset dx=&quot;2&quot; dy=&quot;0&quot; in=&quot;SourceGraphic&quot; result=&quot;off1b&quot; /&gt;
+      &lt;feOffset dx=&quot;-3&quot; dy=&quot;0&quot; in=&quot;SourceGraphic&quot; result=&quot;off2a&quot; /&gt;
+      &lt;feOffset dx=&quot;-2&quot; dy=&quot;0&quot; in=&quot;SourceGraphic&quot; result=&quot;off2b&quot; /&gt;
+      &lt;feComposite in=&quot;flood1&quot; in2=&quot;off1a&quot; operator=&quot;in&quot; result=&quot;comp1&quot; /&gt;
+      &lt;feComposite in=&quot;flood2&quot; in2=&quot;off2a&quot; operator=&quot;in&quot; result=&quot;comp2&quot; /&gt;
+
+      &lt;feMerge result=&quot;merge1&quot; width=&quot;100%&quot; x=&quot;0&quot;&gt;
+        &lt;feMergeNode in=&quot;black&quot; /&gt;
+        &lt;feMergeNode in=&quot;comp1&quot; /&gt;
+        &lt;feMergeNode in=&quot;off1b&quot; /&gt;
+
+        &lt;animate
+          attributeName=&quot;y&quot;
+          dur=&quot;4s&quot;
+          id=&quot;y&quot;
+          keyTimes=&quot;0; 0.362; 0.368; 0.421; 0.440; 0.477; 0.518; 0.564; 0.593; 0.613; 0.644; 0.693; 0.721; 0.736; 0.772; 0.818; 0.844; 0.894; 0.925; 0.939; 1&quot;
+          repeatCount=&quot;indefinite&quot;
+          values=&quot;104px; 104px; 30px; 105px; 30px; 2px; 2px; 50px; 40px; 105px; 105px; 20px; 6ßpx; 40px; 104px; 40px; 70px; 10px; 30px; 104px; 102px&quot;
+        /&gt;
+
+        &lt;animate
+          attributeName=&quot;height&quot;
+          dur=&quot;4s&quot;
+          id=&quot;h&quot;
+          keyTimes=&quot;0; 0.362; 0.368; 0.421; 0.440; 0.477; 0.518; 0.564; 0.593; 0.613; 0.644; 0.693; 0.721; 0.736; 0.772; 0.818; 0.844; 0.894; 0.925; 0.939; 1&quot;
+          repeatCount=&quot;indefinite&quot;
+          values=&quot;10px; 0px; 10px; 30px; 50px; 0px; 10px; 0px; 0px; 0px; 10px; 50px; 40px; 0px; 0px; 0px; 40px; 30px; 10px; 0px; 50px&quot;
+        /&gt;
+      &lt;/feMerge&gt;
+
+      &lt;feMerge height=&quot;65px&quot; result=&quot;merge2&quot; width=&quot;100%&quot; x=&quot;0&quot; y=&quot;60px&quot;&gt;
+        &lt;feMergeNode in=&quot;black&quot; /&gt;
+        &lt;feMergeNode in=&quot;comp2&quot; /&gt;
+        &lt;feMergeNode in=&quot;off2b&quot; /&gt;
+
+        &lt;animate
+          attributeName=&quot;y&quot;
+          dur=&quot;4s&quot;
+          id=&quot;y&quot;
+          keyTimes=&quot;0; 0.055; 0.100; 0.125; 0.159; 0.182; 0.202; 0.236; 0.268; 0.326; 0.357; 0.400; 0.408; 0.461; 0.493; 0.513; 0.548; 0.577; 0.613; 1&quot;
+          repeatCount=&quot;indefinite&quot;
+          values=&quot;103px; 104px; 69px; 53px; 42px; 104px; 78px; 89px; 96px; 100px; 67px; 50px; 96px; 66px; 88px; 42px; 13px; 100px; 100px; 104px;&quot;
+        /&gt;
+
+        &lt;animate
+          attributeName=&quot;height&quot;
+          dur=&quot;4s&quot;
+          id=&quot;h&quot;
+          keyTimes=&quot;0; 0.055; 0.100; 0.125; 0.159; 0.182; 0.202; 0.236; 0.268; 0.326; 0.357; 0.400; 0.408; 0.461; 0.493; 0.513;  1&quot;
+          repeatCount=&quot;indefinite&quot;
+          values=&quot;0px; 0px; 0px; 16px; 16px; 12px; 12px; 0px; 0px; 5px; 10px; 22px; 33px; 11px; 0px; 0px; 10px&quot;
+        /&gt;
+      &lt;/feMerge&gt;
+
+      &lt;feMerge&gt;
+        &lt;feMergeNode in=&quot;SourceGraphic&quot; /&gt;
+
+        &lt;feMergeNode in=&quot;merge1&quot; /&gt;
+        &lt;feMergeNode in=&quot;merge2&quot; /&gt;
+      &lt;/feMerge&gt;
+    &lt;/filter&gt;
+  ),
+  [FiltersNames.Motion]: ({ id }) =&gt; (
+    &lt;filter id={id} {...commonFilterProps}&gt;
+      &lt;feConvolveMatrix
+        kernelMatrix=&quot;1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1&quot;
+        order=&quot;20, 1&quot;
+      /&gt;
+    &lt;/filter&gt;
+  ),
   [FiltersNames.None]: () =&gt; &lt;g /&gt;,
   [FiltersNames.Sample1]: ({ id }) =&gt; (
     &lt;filter {...commonFilterProps} filterUnits=&quot;userSpaceOnUse&quot; id={id}&gt;
@@ -235,8 +319,40 @@ const filtersObj: FiltersObj = {
       /&gt;
     &lt;/filter&gt;
   ),
+  [FiltersNames.Waves]: ({ id }) =&gt; (
+    &lt;filter
+      {...commonFilterProps}
+      colorInterpolationFilters=&quot;linearRGB&quot;
+      id={id}
+    &gt;
+      &lt;feTurbulence
+        baseFrequency=&quot;0.01 0.01&quot;
+        numOctaves=&quot;1&quot;
+        result=&quot;turbulence&quot;
+        seed=&quot;1&quot;
+        stitchTiles=&quot;noStitch&quot;
+        type=&quot;turbulence&quot;
+      &gt;
+        &lt;animate
+          attributeName=&quot;baseFrequency&quot;
+          dur=&quot;4s&quot;
+          repeatCount=&quot;indefinite&quot;
+          values={[&quot;0.01 0.01&quot;, &quot;0.01 0.04&quot;, &quot;0.04 0.01&quot;, &quot;0.01 0.01&quot;].join(
+            &quot;;&quot;
+          )}
+        /&gt;
+      &lt;/feTurbulence&gt;
+      &lt;feDisplacementMap
+        in=&quot;SourceGraphic&quot;
+        in2=&quot;turbulence&quot;
+        result=&quot;displacementMap&quot;
+        scale=&quot;20&quot;
+        xChannelSelector=&quot;G&quot;
+        yChannelSelector=&quot;A&quot;
+      /&gt;
+    &lt;/filter&gt;
+  ),
 }
-/* eslint-enable react/display-name */
 
 const filters = Object.values(FiltersNames).map((filterName: FiltersNames) =&gt; ({
   comp: filtersObj[filterName],
@@ -363,7 +479,7 @@ export default {
 
 export { Common }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 28 Oct 2021 22:58:40 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 30 Oct 2021 16:04:18 GMT</p>
     </body>
   </html>
   
