@@ -379,10 +379,7 @@ const d3js: D3JS = {
     docs: [],
     isCompleted: true,
     name: "Spanish Map",
-    notes: [
-      "For this chart I reused the code from the World Map chart and other demos",
-      "Added drop shadow for 3D effect",
-    ],
+    notes: [],
     sources: ["http://www.diva-gis.org/datadown"],
     summary: [],
   },

@@ -1,8 +1,9 @@
 import { json } from "d3"
 
-import { AreasData, ChartConfig } from "./spain-map-chart"
+import { AreasData, ChartConfig } from "./n-map-chart"
 
 const CONTAINER_ID = "chart"
+const UPDATE_BUTTON_ID = "update-button"
 
 type Properties = {
   ENGTYPE_3: string // e.g. Comarca
@@ -36,24 +37,24 @@ const getTitleText: Config["getTitleText"] = (areaProperties) =>
     .filter((v) => !!v)
     .join(", ")
 
-const getWidths: Config["getWidths"] = (chartWidth) => {
-  const widthCanarias = chartWidth / 3.5
-  const widthPeninsula = chartWidth - widthCanarias - 10
+const widths: Config["widths"] = (() => {
+  const widthPeninsula = 0.8
+  const widthCanarias = 0.3
 
-  return [widthCanarias, widthPeninsula]
-}
+  return [widthPeninsula, widthCanarias]
+})()
 
 const projectionsCenters: Config["projectionsCenters"] = [
-  [-13, 23],
-  [10, 35.5],
+  [12, 31.5],
+  [4, 20],
 ]
 
 const createChartConfig = (areasData: AreasData): Config => ({
   areasData,
   getTitleText,
-  getWidths,
   projectionsCenters,
   rootElId: CONTAINER_ID,
+  widths,
 })
 
 const fetchAreasData = () =>
@@ -61,4 +62,10 @@ const fetchAreasData = () =>
     `${ROOT_PATH}data/d3js/spain-map/data.json`
   ) as unknown as Promise<AreasData>
 
-export { CONTAINER_ID, Properties, createChartConfig, fetchAreasData }
+export {
+  CONTAINER_ID,
+  Properties,
+  UPDATE_BUTTON_ID,
+  createChartConfig,
+  fetchAreasData,
+}
