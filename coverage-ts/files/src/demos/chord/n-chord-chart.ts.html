@@ -1,0 +1,387 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>n-chord-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/chord/n-chord-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">601</td><td class="">601</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  BaseType,
+  Chord,
+  ChordGroup,
+  ScaleOrdinal,
+  Selection,
+  arc as arcD3,
+  chord,
+  descending,
+  interpolate,
+  rgb,
+  ribbon as ribbonD3,
+  scaleOrdinal,
+  schemePastel2,
+  select,
+} from &quot;d3&quot;
+import { v1 as uuidv1 } from &quot;uuid&quot;
+
+import * as styles from &quot;./chord.module.css&quot;
+
+const getRibbonKey = (ribbonNode: Chord) =&gt;
+  `${ribbonNode.source.index}_${ribbonNode.target.index}`
+
+const getChordGroupKey = (chordGroup: ChordGroup) =&gt; chordGroup.index
+
+const addDropShadowFilter = &lt;SVGData&gt;({
+  charts,
+  deviation,
+  name,
+  slope,
+}: {
+  charts: Selection&lt;SVGGElement, SVGData, BaseType, unknown&gt;
+  deviation: number
+  name: string
+  slope: number
+}) =&gt; {
+  const defs = charts.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, name)
+
+  filter
+    .append(&quot;feOffset&quot;)
+    .attr(&quot;dx&quot;, 0.5)
+    .attr(&quot;dy&quot;, 0.5)
+    .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+    .attr(&quot;result&quot;, &quot;offOut&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;offOut&quot;)
+    .attr(&quot;result&quot;, &quot;blurOut&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter
+    .append(&quot;feBlend&quot;)
+    .attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+    .attr(&quot;in2&quot;, &quot;blurOut&quot;)
+    .attr(&quot;mode&quot;, &quot;normal&quot;)
+
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+}
+
+const margin = {
+  bottom: 20,
+  top: 50,
+}
+
+type GroupItem = {
+  id: number
+  label: string
+}
+type ChordMatrix = number[][]
+
+type ChartConfig = {
+  chords: ChordMatrix[]
+  chordsTitles: string[]
+  getGroupTitle: (options: {
+    chartIndex: number
+    chordGroup: ChordGroup
+  }) =&gt; string
+  getRibbonTitle: (options: {
+    chartIndex: number
+    sourceIndex: number
+    sourceValue: number
+    targetIndex: number
+    targetValue: number
+  }) =&gt; string
+  groupItems: GroupItem[]
+  rootElId: string
+}
+
+type ChartElements = Readonly&lt;{
+  charts: Selection&lt;SVGGElement, ChordMatrix, BaseType, unknown&gt;
+  chartsDivs: Selection&lt;HTMLDivElement, ChordMatrix, BaseType, unknown&gt;
+  chartsSVGs: Selection&lt;SVGSVGElement, ChordMatrix, BaseType, unknown&gt;
+  root: Selection&lt;BaseType, unknown, HTMLElement, unknown&gt;
+}&gt;
+
+interface BaseChart {
+  refresh: () =&gt; void
+  tearDown: () =&gt; void
+}
+
+class NChordChart implements BaseChart {
+  private readonly config: ChartConfig
+  private readonly dropShadowGroupsId: string
+  private readonly ribbonItemClass: string
+  private readonly chordGroupClass: string
+  private readonly elements: ChartElements
+  private readonly colorScale: ScaleOrdinal&lt;number, string&gt;
+
+  private constructor(chartConfig: ChartConfig) {
+    this.config = chartConfig
+
+    const {
+      config: { chords, rootElId },
+    } = this
+
+    this.dropShadowGroupsId = `drop-shadow-groups-${uuidv1().slice(0, 6)}`
+    this.ribbonItemClass = `ribbon-item-${uuidv1().slice(0, 6)}`
+    this.chordGroupClass = `chord-group-${uuidv1().slice(0, 6)}`
+
+    const root = select(`#${rootElId}`)
+      .style(&quot;width&quot;, &quot;100%&quot;)
+      .style(&quot;justify-content&quot;, &quot;space-evenly&quot;)
+
+    root.selectAll(&quot;div&quot;).data(chords).enter().append(&quot;div&quot;)
+
+    const chartsDivs = root.selectAll&lt;HTMLDivElement, ChordMatrix&gt;(&quot;div&quot;)
+    const chartsSVGs = chartsDivs.append(&quot;svg&quot;)
+    const charts = chartsSVGs.append(&quot;g&quot;)
+
+    this.elements = {
+      charts,
+      chartsDivs,
+      chartsSVGs,
+      root,
+    }
+
+    charts.each((...[, chartIndex]) =&gt; {
+      const chart = charts.filter(
+        (...[, chartIndexInner]) =&gt; chartIndex === chartIndexInner
+      )
+      const {
+        chordsTitles: { [chartIndex]: label },
+      } = chartConfig
+
+      chart
+        .append(&quot;text&quot;)
+        .text(label)
+        .attr(&quot;class&quot;, styles.chartTitle)
+        .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+    })
+
+    addDropShadowFilter({
+      charts,
+      deviation: 3,
+      name: this.dropShadowGroupsId,
+      slope: 0.5,
+    })
+
+    this.colorScale = scaleOrdinal&lt;number, string&gt;(schemePastel2)
+
+    this.render()
+
+    window.addEventListener(&quot;resize&quot;, this.handleWindowResize)
+  }
+
+  public static renderChart(chartConfig: ChartConfig) {
+    return new NChordChart(chartConfig)
+  }
+
+  public tearDown() {
+    window.removeEventListener(&quot;resize&quot;, this.handleWindowResize)
+  }
+
+  public refresh() {
+    this.render(true)
+  }
+
+  private render(withAnimation?: boolean) {
+    const {
+      colorScale,
+      config: { chords, getGroupTitle, getRibbonTitle, groupItems, rootElId },
+    } = this
+
+    const animationDuration = withAnimation ? 1000 : 0
+    const rootEl = document.getElementById(rootElId) as HTMLElement
+    const { width: fullWidth } = rootEl.getBoundingClientRect()
+    const width = fullWidth / chords.length - 20
+    const isSmallDevice = fullWidth &lt; 768
+    const height = isSmallDevice ? fullWidth : width
+    const {
+      elements: { charts, chartsDivs, chartsSVGs, root },
+    } = this
+
+    const outerRadius =
+      Math.min(width, height) / (isSmallDevice ? 1 : chords.length) -
+      (isSmallDevice ? 0 : 20)
+    const innerRadius = outerRadius - 20
+
+    const chordGroupArc = arcD3&lt;ChordGroup&gt;()
+      .innerRadius(innerRadius)
+      .outerRadius(outerRadius)
+
+    root
+      .style(&quot;display&quot;, isSmallDevice ? &quot;flex&quot; : &quot;inline-flex&quot;)
+      .style(&quot;flex-direction&quot;, isSmallDevice ? &quot;column&quot; : &quot;row&quot;)
+
+    chartsDivs
+      .attr(&quot;width&quot;, isSmallDevice ? fullWidth : width)
+      .style(&quot;height&quot;, `${height + margin.top + margin.bottom}px`)
+
+    chartsSVGs
+      .attr(&quot;width&quot;, isSmallDevice ? fullWidth : width)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+
+    charts.attr(
+      &quot;transform&quot;,
+      isSmallDevice
+        ? `translate(${fullWidth / 2},${height / 2 + margin.top})`
+        : `translate(${width / 2},${height / 2 + margin.top})`
+    )
+
+    charts.each((...[, chartIndex]) =&gt; {
+      const chart = charts.filter(
+        (...[, chartIndexInner]) =&gt; chartIndex === chartIndexInner
+      )
+
+      chart
+        .select(`.${styles.chartTitle}`)
+        .attr(&quot;transform&quot;, `translate(0,${(-1 * height) / 2 - 0})`)
+    })
+
+    const { chordGroupClass, dropShadowGroupsId, ribbonItemClass } = this
+
+    charts.each(function renderSingleChart(...[numberMatrix, chartIndex]) {
+      const chartSel = select(this)
+
+      const chordData = chord().sortChords(descending)(numberMatrix)
+
+      const ribbonPath = ribbonD3&lt;Chord, Chord&gt;().radius(innerRadius)
+
+      const initialRibbonsData = chartSel
+        .selectAll&lt;SVGPathElement, Chord&gt;(`.${styles.chord}`)
+        .data()
+        .reduce&lt;{ [k: string]: Chord | undefined }&gt;((...[acc, ribbonNode]) =&gt; {
+          acc[getRibbonKey(ribbonNode)] = ribbonNode
+
+          return acc
+        }, {})
+
+      const chordUpdated = chartSel
+        .selectAll(`.${styles.chord}`)
+        .data(chordData, (...[, ribbonIndex]) =&gt; ribbonIndex)
+
+      chordUpdated
+        .enter()
+        .append(&quot;path&quot;)
+        .attr(&quot;class&quot;, `${styles.chord} ${ribbonItemClass}`)
+      chordUpdated.exit().remove()
+
+      chartSel
+        .selectAll&lt;SVGPathElement, Chord&gt;(`path.${styles.chord}`)
+        .style(&quot;fill&quot;, (chordItem) =&gt; colorScale(chordItem.target.index))
+        .style(&quot;stroke&quot;, (ribbonItem) =&gt; {
+          const originalColor = colorScale(ribbonItem.target.index)
+          const newColor = rgb(originalColor).darker()
+
+          return newColor.formatHex()
+        })
+        .style(&quot;stroke-width&quot;, 2)
+        .attr(&quot;title&quot;, (ribbonItem) =&gt;
+          getRibbonTitle({
+            chartIndex,
+            sourceIndex: ribbonItem.source.index,
+            sourceValue: ribbonItem.source.value,
+            targetIndex: ribbonItem.target.index,
+            targetValue: ribbonItem.source.value,
+          })
+        )
+        .transition()
+        .duration(animationDuration)
+        .attrTween(&quot;d&quot;, (finalRibbon) =&gt; {
+          const { [getRibbonKey(finalRibbon)]: initialRibbon } =
+            initialRibbonsData
+          const interpolateFn = interpolate(
+            initialRibbon ?? finalRibbon,
+            finalRibbon
+          )
+
+          return (time) =&gt; {
+            const interpolatedRibbon = interpolateFn(time)
+
+            return ribbonPath(interpolatedRibbon)!
+          }
+        })
+
+      const newGroupsSel = chartSel
+        .selectAll&lt;SVGGElement, ChordGroup&gt;(`.${styles.group}`)
+        .data(chordData.groups, getChordGroupKey)
+        .enter()
+        .append(&quot;g&quot;)
+        .attr(&quot;class&quot;, styles.group)
+
+      newGroupsSel.append(&quot;path&quot;).attr(&quot;class&quot;, chordGroupClass)
+      newGroupsSel
+        .append(&quot;text&quot;)
+        .attr(&quot;class&quot;, &quot;group-text&quot;)
+        .attr(&quot;x&quot;, 6)
+        .attr(&quot;dy&quot;, 15)
+        .append(&quot;textPath&quot;)
+        .attr(
+          &quot;xlink:href&quot;,
+          (chordGroup) =&gt; `#group${chordGroup.index}-${chartIndex}`
+        )
+        .attr(&quot;class&quot;, styles.groupLabel)
+        .text((chordGroup) =&gt; groupItems[chordGroup.index].label)
+
+      const initialGroupsData = chartSel.selectAll(`.${chordGroupClass}`).data()
+      const groupsSel = chartSel.selectAll(`.${styles.group}`)
+
+      groupsSel
+        .selectAll&lt;SVGPathElement, ChordGroup&gt;(`.${chordGroupClass}`)
+        .data(chordData.groups, getChordGroupKey)
+        .style(&quot;fill&quot;, (chordGroup) =&gt; colorScale(chordGroup.index))
+        .attr(&quot;id&quot;, (chordGroup) =&gt; `group${chordGroup.index}-${chartIndex}`)
+        .style(&quot;filter&quot;, () =&gt; `url(#${dropShadowGroupsId})`)
+        .attr(&quot;title&quot;, (chordGroup) =&gt;
+          getGroupTitle({
+            chartIndex,
+            chordGroup,
+          })
+        )
+        .transition()
+        .duration(animationDuration)
+        .attrTween(&quot;d&quot;, (finalGroup) =&gt; {
+          const { [finalGroup.index]: initialGroup } = initialGroupsData
+          const interpolateFn = interpolate(initialGroup, finalGroup)
+
+          return (t) =&gt; chordGroupArc(interpolateFn(t))!
+        })
+
+      groupsSel
+        .selectAll&lt;SVGTextElement, ChordGroup&gt;(&quot;.group-text&quot;)
+        .selectAll&lt;SVGTextPathElement, ChordGroup&gt;(&quot;textPath&quot;)
+        .data(chordData.groups, getChordGroupKey)
+        .transition()
+        .duration(animationDuration)
+        .style(&quot;opacity&quot;, (chordGroup) =&gt;
+          Math.abs(chordGroup.startAngle - chordGroup.endAngle) &gt; 0.4 ? 1 : 0
+        )
+      ;[ribbonItemClass, chordGroupClass].forEach((className) =&gt; {
+        $(`.${className}`).tooltip({
+          track: true,
+        })
+      })
+    })
+  }
+
+  private readonly handleWindowResize = () =&gt; {
+    this.render()
+  }
+}
+
+export { NChordChart, ChartConfig }
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 31 Oct 2021 10:26:44 GMT</p>
+    </body>
+  </html>
+  

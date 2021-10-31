@@ -11,8 +11,9 @@
 <link href="../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/pages/index.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">74</td><td class="">74</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/pages/index.tsx</td><td class="">100.00%</td><td class="">95%</td><td class="">95</td><td class="">95</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import React from &quot;react&quot;
 import { Helmet } from &quot;react-helmet&quot;
+import { useMediaQuery } from &quot;react-responsive&quot;
 
 import { IndexPageProps } from &quot;@/common&quot;
 
@@ -20,53 +21,81 @@ import DemosList from &quot;@/components/demos-list&quot;
 import Layout from &quot;@/components/layout&quot;
 import * as styles from &quot;@/components/styles/styles.module.css&quot;
 
+const colClassName = &quot;col-xs-offset-1 col-xs-11 col-lg-offset-2 col-lg-3&quot;
+
 const IndexPage = ({
   pageContext: { groupedDemos, meta, numberPerGroup },
-}: IndexPageProps) =&gt; (
-  &lt;Layout&gt;
-    &lt;Helmet
-      meta={[
-        {
-          content: meta.description,
-          name: &quot;description&quot;,
-        },
-      ]}
-      title={&quot;Demos - igncp&quot;}
-    /&gt;
-    &lt;div className=&quot;bs-callout bs-callout-info&quot;&gt;
-      Here are some &lt;i&gt;interactive data visualization demos&lt;/i&gt; that are built
-      with examples found on the web, which I&#x27;ve rewritten with ideas from other
-      examples. The sources are always available. The idea is to try things
-      using libraries like D3.js or Raphaël, and extensions of those.
-    &lt;/div&gt;
+}: IndexPageProps) =&gt; {
+  const isMobile = useMediaQuery({ maxWidth: 767 })
 
-    &lt;div id={styles.demosLegend}&gt;
-      &lt;ul className=&quot;bs-callout bs-callout-warning&quot;&gt;
-        &lt;li&gt;
-          &lt;span className={`${styles.bullet} ${styles.d3js}`}&gt;&amp;#8226;&lt;/span&gt;{&quot; &quot;}
-          D3js
-        &lt;/li&gt;
-        &lt;li&gt;
-          &lt;span className={`${styles.bullet} ${styles.raphael}`}&gt;&amp;#8226;&lt;/span&gt;{&quot; &quot;}
-          Raphaël
-        &lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
+  return (
+    &lt;Layout&gt;
+      &lt;Helmet
+        meta={[
+          {
+            content: meta.description,
+            name: &quot;description&quot;,
+          },
+        ]}
+        title={&quot;Demos - igncp&quot;}
+      /&gt;
+      &lt;div className=&quot;bs-callout bs-callout-info&quot;&gt;
+        Here are some &lt;i&gt;interactive data visualization demos&lt;/i&gt; that are built
+        with examples found on the web, which I&#x27;ve rewritten with ideas from
+        other examples.
+        {isMobile ? (
+          &lt;&gt;
+            &lt;br /&gt;
+            &lt;br /&gt;
+          &lt;/&gt;
+        ) : (
+          &quot; &quot;
+        )}
+        The sources are always available. The idea is to try things using
+        libraries like D3.js or Raphaël, and extensions of those.
+      &lt;/div&gt;
 
-    &lt;div className=&quot;row&quot; id={styles.demosLists}&gt;
-      &lt;div className=&quot;col-lg-offset-2 col-lg-3&quot;&gt;
-        &lt;DemosList demos={groupedDemos[0]} indexOffset={0} /&gt;
+      &lt;div id={styles.demosLegend}&gt;
+        &lt;ul className=&quot;bs-callout bs-callout-warning&quot;&gt;
+          &lt;li&gt;
+            &lt;span className={`${styles.bullet} ${styles.d3js}`}&gt;&amp;#8226;&lt;/span&gt;{&quot; &quot;}
+            D3js
+          &lt;/li&gt;
+          &lt;li&gt;
+            &lt;span className={`${styles.bullet} ${styles.raphael}`}&gt;
+              &amp;#8226;
+            &lt;/span&gt;{&quot; &quot;}
+            Raphaël
+          &lt;/li&gt;
+        &lt;/ul&gt;
       &lt;/div&gt;
-      &lt;div className=&quot;col-lg-offset-2 col-lg-3&quot;&gt;
-        &lt;DemosList demos={groupedDemos[1]} indexOffset={numberPerGroup} /&gt;
+
+      &lt;div className=&quot;row&quot; id={styles.demosLists}&gt;
+        {isMobile ? (
+          &lt;div className={colClassName}&gt;
+            &lt;DemosList
+              demos={groupedDemos[0].concat(groupedDemos[1])}
+              indexOffset={0}
+            /&gt;
+          &lt;/div&gt;
+        ) : (
+          &lt;&gt;
+            &lt;div className={colClassName}&gt;
+              &lt;DemosList demos={groupedDemos[0]} indexOffset={0} /&gt;
+            &lt;/div&gt;
+            &lt;div className={colClassName}&gt;
+              &lt;DemosList demos={groupedDemos[1]} indexOffset={numberPerGroup} /&gt;
+            &lt;/div&gt;
+          &lt;/&gt;
+        )}
       &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/Layout&gt;
-)
+    &lt;/Layout&gt;
+  )
+}
 
 export default IndexPage
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 30 Oct 2021 16:04:18 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 31 Oct 2021 10:26:44 GMT</p>
     </body>
   </html>
   

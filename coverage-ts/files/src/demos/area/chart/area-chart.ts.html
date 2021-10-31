@@ -7,11 +7,11 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
-<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
-<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/area/area-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">627</td><td class="">627</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/area/chart/area-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">637</td><td class="">637</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   BaseType,
   Selection,
   area as areaD3,
@@ -25,12 +25,10 @@
   scaleQuantize,
   select,
 } from &quot;d3&quot;
-import { Delaunay } from &quot;d3-delaunay&quot;
 import { v1 as uuidv1 } from &quot;uuid&quot;
 
 import * as styles from &quot;./area-chart.module.css&quot;
-
-const animationDuration = 1000
+import { VoronoiGroup } from &quot;./voronoi-group&quot;
 
 const filterBlackOpacity = ({
   deviation,
@@ -95,34 +93,24 @@ type CommonSelection&lt;El extends BaseType&gt; = Selection&lt;
   unknown
 &gt;
 
+type ChartElements&lt;AreaPoint&gt; = Readonly&lt;{
+  areaSel: CommonSelection&lt;SVGPathElement&gt;
+  backgroundBands: CommonSelection&lt;SVGGElement&gt;
+  chartTitleSel: CommonSelection&lt;SVGTextElement&gt;
+  clipRect: CommonSelection&lt;SVGRectElement&gt;
+  clipTopRect: CommonSelection&lt;SVGRectElement&gt;
+  lineSel: CommonSelection&lt;SVGPathElement&gt;
+  svg: CommonSelection&lt;SVGSVGElement&gt;
+  svgG: CommonSelection&lt;SVGGElement&gt;
+  voronoiGroup: VoronoiGroup&lt;AreaPoint&gt;
+  xAxisSel: CommonSelection&lt;SVGGElement&gt;
+  yAxisSel: CommonSelection&lt;SVGGElement&gt;
+}&gt;
+
 class AreaChart&lt;AreaPoint&gt; implements BaseChart {
   private readonly config: ChartConfig&lt;AreaPoint&gt;
-  private readonly elements: {
-    areaSel: CommonSelection&lt;SVGPathElement&gt;
-    chartTitleSel: CommonSelection&lt;SVGTextElement&gt;
-    clipRect: CommonSelection&lt;SVGRectElement&gt;
-    lineSel: CommonSelection&lt;SVGPathElement&gt;
-    svg: CommonSelection&lt;SVGSVGElement&gt;
-    svgG: CommonSelection&lt;SVGGElement&gt;
-    voronoiGroup: CommonSelection&lt;SVGGElement&gt;
-    xAxisSel: CommonSelection&lt;SVGGElement&gt;
-    yAxisSel: CommonSelection&lt;SVGGElement&gt;
-  }
-
-  private hasVoronoi = false
-
-  private dimensions!: {
-    height: number
-    innerWidth: number
-    isSmallDevice: boolean
-    margin: {
-      bottom: number
-      left: number
-      right: number
-      top: number
-    }
-    width: number
-  }
+  private readonly svgOpacityFilter: string
+  private readonly elements: ChartElements&lt;AreaPoint&gt;
 
   private constructor(chartConfig: ChartConfig&lt;AreaPoint&gt;) {
     this.config = chartConfig
@@ -131,6 +119,7 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
 
     const svg = select(`#${rootElId}`).append(&quot;svg&quot;)
     const svgG = svg.append(&quot;g&quot;).attr(&quot;class&quot;, styles.areaChart)
+    const backgroundBands = svgG.append(&quot;g&quot;)
     const chartTitleSel = svgG
       .append(&quot;text&quot;)
       .attr(&quot;class&quot;, styles.chartTitle)
@@ -140,20 +129,30 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
     const yAxisSel = svgG.append(&quot;g&quot;)
     const lineSel = svgG.append(&quot;path&quot;)
     const areaSel = svgG.append(&quot;path&quot;)
-    const voronoiGroup = svgG.append(&quot;g&quot;)
+    const voronoiGroup = new VoronoiGroup&lt;AreaPoint&gt;(svgG)
     const clipRect = svgG.append(&quot;clipPath&quot;).attr(&quot;id&quot;, &quot;clip&quot;).append(&quot;rect&quot;)
+
+    // This is exclusively for clipping the vertical axis
+    const clipTopRect = svgG
+      .append(&quot;clipPath&quot;)
+      .attr(&quot;id&quot;, &quot;clip-top&quot;)
+      .append(&quot;rect&quot;)
+
+    this.svgOpacityFilter = `opacity-${uuidv1().slice(0, 6)}`
 
     filterBlackOpacity({
       deviation: 2,
-      id: &quot;points&quot;,
+      id: this.svgOpacityFilter,
       slope: 0.5,
       svg: svgG,
     })
 
     this.elements = {
       areaSel,
+      backgroundBands,
       chartTitleSel,
       clipRect,
+      clipTopRect,
       lineSel,
       svg,
       svgG,
@@ -162,7 +161,7 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
       yAxisSel,
     }
 
-    this.render()
+    this.render(true)
 
     window.addEventListener(&quot;resize&quot;, this.handleWindowResize)
   }
@@ -171,21 +170,37 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
     return new AreaChart(chartConfig)
   }
 
-  public toggleVoronoi() {
-    this.hasVoronoi = !this.hasVoronoi
-    this.setVoronoi()
-  }
-
   public refresh() {
-    this.render()
+    this.render(false)
   }
 
   public tearDown() {
     window.removeEventListener(&quot;resize&quot;, this.handleWindowResize)
   }
 
-  private render() {
-    this.setDimensions()
+  public toggleVoronoi() {
+    this.elements.voronoiGroup.toggleVoronoi()
+  }
+
+  private render(cancelAnimation: boolean) {
+    const animationDuration = cancelAnimation ? 0 : 1000
+    const {
+      config: { rootElId },
+    } = this
+    const { width } = (
+      document.getElementById(rootElId) as HTMLElement
+    ).getBoundingClientRect()
+    const isSmallDevice = width &lt; 500
+
+    const margin = {
+      bottom: 50,
+      left: isSmallDevice ? 50 : 70,
+      right: isSmallDevice ? 10 : 50,
+      top: 50,
+    }
+
+    const innerWidth = width - margin.left - margin.right
+    const height = 400 - margin.top - margin.bottom
 
     const { config: chartConfig } = this
 
@@ -197,11 +212,12 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
     const axisTickSize = 10
 
     const {
-      dimensions: { height, innerWidth, isSmallDevice, margin, width },
       elements: {
         areaSel,
+        backgroundBands,
         chartTitleSel,
         clipRect,
+        clipTopRect,
         lineSel,
         svg,
         svgG,
@@ -239,6 +255,7 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
 
     const extractXScale = (areaPoint: AreaPoint) =&gt;
       xScale(chartConfig.getItemXValue(areaPoint))
+
     const extractYScale = (areaPoint: AreaPoint) =&gt;
       yScale(chartConfig.getItemYValue(areaPoint))
 
@@ -263,6 +280,9 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
 
     yAxisSel
       .attr(&quot;class&quot;, `${styles.y} ${styles.axis}`)
+      .attr(&quot;clip-path&quot;, &quot;url(#clip-top)&quot;)
+      .transition()
+      .duration(animationDuration)
       .call(yAxis)
       .selectAll(&quot;text&quot;)
       .attr(&quot;dx&quot;, &quot;-.25em&quot;)
@@ -283,6 +303,11 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
 
     clipRect.attr(&quot;height&quot;, height).attr(&quot;width&quot;, innerWidth)
 
+    clipTopRect
+      .attr(&quot;height&quot;, height)
+      .attr(&quot;width&quot;, innerWidth)
+      .attr(&quot;transform&quot;, &quot;translate(-50,-5)&quot;)
+
     areaSel
       .datum(areaPoints)
       .attr(&quot;class&quot;, styles.area)
@@ -290,17 +315,6 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
       .transition()
       .duration(animationDuration)
       .attr(&quot;d&quot;, area)
-
-    const voronoi = Delaunay.from(
-      areaPoints,
-      extractXScale,
-      extractYScale
-    ).voronoi([
-      -margin.left,
-      -margin.top,
-      innerWidth + margin.right,
-      height + margin.bottom,
-    ])
 
     const mouseenter = (...[, areaPoint]: [unknown, AreaPoint]) =&gt; {
       select(`.${pointClassPrefix}${chartConfig.getItemId(areaPoint)}`).style(
@@ -316,6 +330,31 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
       )
     }
 
+    const bandsPercentage = 2.5
+    const bandsData = Array.from({ length: 100 / bandsPercentage }).map(
+      (...[, bandIndex]) =&gt; (bandIndex * bandsPercentage) / 100
+    )
+    const bandHeight = Math.abs(yScale(bandsPercentage / 100) - yScale(0))
+
+    const bands = backgroundBands.selectAll(&quot;rect&quot;).data(bandsData)
+
+    bands.enter().append(&quot;rect&quot;)
+    bands.exit().remove()
+
+    backgroundBands
+      .selectAll&lt;SVGRectElement, number&gt;(&quot;rect&quot;)
+      .attr(&quot;clip-path&quot;, &quot;url(#clip)&quot;)
+      .attr(&quot;x&quot;, 0)
+      .attr(&quot;width&quot;, innerWidth)
+      .attr(&quot;fill&quot;, (...[, bandIndex]) =&gt;
+        bandIndex % 2 ? &quot;#f7f7f7&quot; : &quot;#ffffff&quot;
+      )
+      .attr(&quot;class&quot;, &quot;backgroundBands&quot;)
+      .transition()
+      .duration(animationDuration)
+      .attr(&quot;height&quot;, bandHeight)
+      .attr(&quot;y&quot;, (bandPercentage) =&gt; yScale(bandPercentage))
+
     const circleData = svgG.selectAll(&quot;circle&quot;).data(areaPoints)
 
     circleData.enter().append(&quot;circle&quot;)
@@ -324,7 +363,7 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
     svgG
       .selectAll&lt;SVGCircleElement, AreaPoint&gt;(&quot;circle&quot;)
       .attr(&quot;r&quot;, &quot;5px&quot;)
-      .style(&quot;filter&quot;, &quot;url(#drop-shadow-points)&quot;)
+      .style(&quot;filter&quot;, `url(#drop-shadow-${this.svgOpacityFilter})`)
       .attr(
         &quot;transform&quot;,
         (areaPoint: AreaPoint) =&gt;
@@ -343,88 +382,39 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
       .on(&quot;mouseleave&quot;, mouseleave)
       .attr(&quot;title&quot;, chartConfig.getItemTitle)
 
-    const voronoiData = voronoiGroup
-      .selectAll&lt;SVGPathElement, AreaPoint&gt;(&quot;path&quot;)
-      .data(areaPoints, (point) =&gt; chartConfig.getItemId(point))
-
-    voronoiData.enter().append(&quot;path&quot;)
-    voronoiData.exit().remove()
-
-    voronoiGroup
-      .attr(&quot;class&quot;, styles.voronoi)
-      .selectAll&lt;SVGPathElement, AreaPoint&gt;(&quot;path&quot;)
-      .on(&quot;mouseenter&quot;, mouseenter)
-      .on(&quot;mouseleave&quot;, mouseleave)
-      .attr(&quot;class&quot;, tooltipItemClass)
-      .attr(&quot;title&quot;, chartConfig.getItemTitle)
-      .transition()
-      .duration(animationDuration)
-      .attr(&quot;d&quot;, (areaPoint) =&gt;
-        voronoi.renderCell(chartConfig.getItemId(areaPoint))
-      )
+    voronoiGroup.render({
+      animationDuration,
+      boundaries: [
+        -margin.left,
+        -margin.top,
+        innerWidth + margin.right,
+        height + margin.bottom,
+      ],
+      className: tooltipItemClass,
+      clipPath: &quot;url(#clip)&quot;,
+      extractXScale,
+      extractYScale,
+      filter: `url(#drop-shadow-${this.svgOpacityFilter})`,
+      getItemId: chartConfig.getItemId,
+      getTitle: chartConfig.getItemTitle,
+      mouseenter,
+      mouseleave,
+      points: areaPoints,
+    })
 
     $(`.${tooltipItemClass}`).tooltip({
       track: true,
     })
-
-    this.setVoronoi()
-  }
-
-  private setVoronoi() {
-    const {
-      elements: { voronoiGroup },
-      hasVoronoi,
-    } = this
-    const currentClass = voronoiGroup.attr(&quot;class&quot;)
-    const { showVoronoi } = styles
-
-    const currentClassWithoutVoronoi = currentClass
-      .replace(showVoronoi, &quot;&quot;)
-      .trim()
-
-    const newClass = hasVoronoi
-      ? `${currentClassWithoutVoronoi} ${showVoronoi}`
-      : currentClassWithoutVoronoi
-
-    voronoiGroup.attr(&quot;class&quot;, newClass)
-  }
-
-  private setDimensions() {
-    const {
-      config: { rootElId },
-    } = this
-    const { width } = (
-      document.getElementById(rootElId) as HTMLElement
-    ).getBoundingClientRect()
-    const isSmallDevice = width &lt; 500
-
-    const margin = {
-      bottom: 50,
-      left: isSmallDevice ? 50 : 70,
-      right: isSmallDevice ? 10 : 50,
-      top: 50,
-    }
-
-    const innerWidth = width - margin.left - margin.right
-    const height = 400 - margin.top - margin.bottom
-
-    this.dimensions = {
-      height,
-      innerWidth,
-      isSmallDevice,
-      margin,
-      width,
-    }
   }
 
   private readonly handleWindowResize = () =&gt; {
-    this.render()
+    this.render(true)
   }
 }
 
 export { ChartConfig, AreaChart }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 30 Oct 2021 16:04:18 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 31 Oct 2021 10:26:44 GMT</p>
     </body>
   </html>
   
