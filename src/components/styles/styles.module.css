@@ -1,11 +1,11 @@
 .backHome {
   padding: 0;
   text-align: right;
+}
 
-  @media only screen and (max-width: 520px) {
-    & {
-      display: none;
-    }
+@media screen and (max-width: 530px) {
+  .backHome {
+    display: none;
   }
 }
 

@@ -114,10 +114,7 @@ const d3js: D3JS = {
     docs: [],
     isCompleted: true,
     name: "Chord",
-    notes: [
-      "Added filters with drop shadow and low opacity",
-      "Changed scheme and match each color with a country",
-    ],
+    notes: [],
     sources: ["http://bl.ocks.org/mbostock/1308257"],
     summary: [],
   },

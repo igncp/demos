@@ -12,12 +12,10 @@ import {
   scaleQuantize,
   select,
 } from "d3"
-import { Delaunay } from "d3-delaunay"
 import { v1 as uuidv1 } from "uuid"
 
 import * as styles from "./area-chart.module.css"
-
-const animationDuration = 1000
+import { VoronoiGroup } from "./voronoi-group"
 
 const filterBlackOpacity = ({
   deviation,
@@ -82,34 +80,24 @@ type CommonSelection<El extends BaseType> = Selection<
   unknown
 >
 
+type ChartElements<AreaPoint> = Readonly<{
+  areaSel: CommonSelection<SVGPathElement>
+  backgroundBands: CommonSelection<SVGGElement>
+  chartTitleSel: CommonSelection<SVGTextElement>
+  clipRect: CommonSelection<SVGRectElement>
+  clipTopRect: CommonSelection<SVGRectElement>
+  lineSel: CommonSelection<SVGPathElement>
+  svg: CommonSelection<SVGSVGElement>
+  svgG: CommonSelection<SVGGElement>
+  voronoiGroup: VoronoiGroup<AreaPoint>
+  xAxisSel: CommonSelection<SVGGElement>
+  yAxisSel: CommonSelection<SVGGElement>
+}>
+
 class AreaChart<AreaPoint> implements BaseChart {
   private readonly config: ChartConfig<AreaPoint>
-  private readonly elements: {
-    areaSel: CommonSelection<SVGPathElement>
-    chartTitleSel: CommonSelection<SVGTextElement>
-    clipRect: CommonSelection<SVGRectElement>
-    lineSel: CommonSelection<SVGPathElement>
-    svg: CommonSelection<SVGSVGElement>
-    svgG: CommonSelection<SVGGElement>
-    voronoiGroup: CommonSelection<SVGGElement>
-    xAxisSel: CommonSelection<SVGGElement>
-    yAxisSel: CommonSelection<SVGGElement>
-  }
-
-  private hasVoronoi = false
-
-  private dimensions!: {
-    height: number
-    innerWidth: number
-    isSmallDevice: boolean
-    margin: {
-      bottom: number
-      left: number
-      right: number
-      top: number
-    }
-    width: number
-  }
+  private readonly svgOpacityFilter: string
+  private readonly elements: ChartElements<AreaPoint>
 
   private constructor(chartConfig: ChartConfig<AreaPoint>) {
     this.config = chartConfig
@@ -118,6 +106,7 @@ class AreaChart<AreaPoint> implements BaseChart {
 
     const svg = select(`#${rootElId}`).append("svg")
     const svgG = svg.append("g").attr("class", styles.areaChart)
+    const backgroundBands = svgG.append("g")
     const chartTitleSel = svgG
       .append("text")
       .attr("class", styles.chartTitle)
@@ -127,20 +116,30 @@ class AreaChart<AreaPoint> implements BaseChart {
     const yAxisSel = svgG.append("g")
     const lineSel = svgG.append("path")
     const areaSel = svgG.append("path")
-    const voronoiGroup = svgG.append("g")
+    const voronoiGroup = new VoronoiGroup<AreaPoint>(svgG)
     const clipRect = svgG.append("clipPath").attr("id", "clip").append("rect")
+
+    // This is exclusively for clipping the vertical axis
+    const clipTopRect = svgG
+      .append("clipPath")
+      .attr("id", "clip-top")
+      .append("rect")
+
+    this.svgOpacityFilter = `opacity-${uuidv1().slice(0, 6)}`
 
     filterBlackOpacity({
       deviation: 2,
-      id: "points",
+      id: this.svgOpacityFilter,
       slope: 0.5,
       svg: svgG,
     })
 
     this.elements = {
       areaSel,
+      backgroundBands,
       chartTitleSel,
       clipRect,
+      clipTopRect,
       lineSel,
       svg,
       svgG,
@@ -149,7 +148,7 @@ class AreaChart<AreaPoint> implements BaseChart {
       yAxisSel,
     }
 
-    this.render()
+    this.render(true)
 
     window.addEventListener("resize", this.handleWindowResize)
   }
@@ -158,21 +157,37 @@ class AreaChart<AreaPoint> implements BaseChart {
     return new AreaChart(chartConfig)
   }
 
-  public toggleVoronoi() {
-    this.hasVoronoi = !this.hasVoronoi
-    this.setVoronoi()
-  }
-
   public refresh() {
-    this.render()
+    this.render(false)
   }
 
   public tearDown() {
     window.removeEventListener("resize", this.handleWindowResize)
   }
 
-  private render() {
-    this.setDimensions()
+  public toggleVoronoi() {
+    this.elements.voronoiGroup.toggleVoronoi()
+  }
+
+  private render(cancelAnimation: boolean) {
+    const animationDuration = cancelAnimation ? 0 : 1000
+    const {
+      config: { rootElId },
+    } = this
+    const { width } = (
+      document.getElementById(rootElId) as HTMLElement
+    ).getBoundingClientRect()
+    const isSmallDevice = width < 500
+
+    const margin = {
+      bottom: 50,
+      left: isSmallDevice ? 50 : 70,
+      right: isSmallDevice ? 10 : 50,
+      top: 50,
+    }
+
+    const innerWidth = width - margin.left - margin.right
+    const height = 400 - margin.top - margin.bottom
 
     const { config: chartConfig } = this
 
@@ -184,11 +199,12 @@ class AreaChart<AreaPoint> implements BaseChart {
     const axisTickSize = 10
 
     const {
-      dimensions: { height, innerWidth, isSmallDevice, margin, width },
       elements: {
         areaSel,
+        backgroundBands,
         chartTitleSel,
         clipRect,
+        clipTopRect,
         lineSel,
         svg,
         svgG,
@@ -226,6 +242,7 @@ class AreaChart<AreaPoint> implements BaseChart {
 
     const extractXScale = (areaPoint: AreaPoint) =>
       xScale(chartConfig.getItemXValue(areaPoint))
+
     const extractYScale = (areaPoint: AreaPoint) =>
       yScale(chartConfig.getItemYValue(areaPoint))
 
@@ -250,6 +267,9 @@ class AreaChart<AreaPoint> implements BaseChart {
 
     yAxisSel
       .attr("class", `${styles.y} ${styles.axis}`)
+      .attr("clip-path", "url(#clip-top)")
+      .transition()
+      .duration(animationDuration)
       .call(yAxis)
       .selectAll("text")
       .attr("dx", "-.25em")
@@ -270,6 +290,11 @@ class AreaChart<AreaPoint> implements BaseChart {
 
     clipRect.attr("height", height).attr("width", innerWidth)
 
+    clipTopRect
+      .attr("height", height)
+      .attr("width", innerWidth)
+      .attr("transform", "translate(-50,-5)")
+
     areaSel
       .datum(areaPoints)
       .attr("class", styles.area)
@@ -277,17 +302,6 @@ class AreaChart<AreaPoint> implements BaseChart {
       .transition()
       .duration(animationDuration)
       .attr("d", area)
-
-    const voronoi = Delaunay.from(
-      areaPoints,
-      extractXScale,
-      extractYScale
-    ).voronoi([
-      -margin.left,
-      -margin.top,
-      innerWidth + margin.right,
-      height + margin.bottom,
-    ])
 
     const mouseenter = (...[, areaPoint]: [unknown, AreaPoint]) => {
       select(`.${pointClassPrefix}${chartConfig.getItemId(areaPoint)}`).style(
@@ -303,6 +317,31 @@ class AreaChart<AreaPoint> implements BaseChart {
       )
     }
 
+    const bandsPercentage = 2.5
+    const bandsData = Array.from({ length: 100 / bandsPercentage }).map(
+      (...[, bandIndex]) => (bandIndex * bandsPercentage) / 100
+    )
+    const bandHeight = Math.abs(yScale(bandsPercentage / 100) - yScale(0))
+
+    const bands = backgroundBands.selectAll("rect").data(bandsData)
+
+    bands.enter().append("rect")
+    bands.exit().remove()
+
+    backgroundBands
+      .selectAll<SVGRectElement, number>("rect")
+      .attr("clip-path", "url(#clip)")
+      .attr("x", 0)
+      .attr("width", innerWidth)
+      .attr("fill", (...[, bandIndex]) =>
+        bandIndex % 2 ? "#f7f7f7" : "#ffffff"
+      )
+      .attr("class", "backgroundBands")
+      .transition()
+      .duration(animationDuration)
+      .attr("height", bandHeight)
+      .attr("y", (bandPercentage) => yScale(bandPercentage))
+
     const circleData = svgG.selectAll("circle").data(areaPoints)
 
     circleData.enter().append("circle")
@@ -311,7 +350,7 @@ class AreaChart<AreaPoint> implements BaseChart {
     svgG
       .selectAll<SVGCircleElement, AreaPoint>("circle")
       .attr("r", "5px")
-      .style("filter", "url(#drop-shadow-points)")
+      .style("filter", `url(#drop-shadow-${this.svgOpacityFilter})`)
       .attr(
         "transform",
         (areaPoint: AreaPoint) =>
@@ -330,82 +369,33 @@ class AreaChart<AreaPoint> implements BaseChart {
       .on("mouseleave", mouseleave)
       .attr("title", chartConfig.getItemTitle)
 
-    const voronoiData = voronoiGroup
-      .selectAll<SVGPathElement, AreaPoint>("path")
-      .data(areaPoints, (point) => chartConfig.getItemId(point))
-
-    voronoiData.enter().append("path")
-    voronoiData.exit().remove()
-
-    voronoiGroup
-      .attr("class", styles.voronoi)
-      .selectAll<SVGPathElement, AreaPoint>("path")
-      .on("mouseenter", mouseenter)
-      .on("mouseleave", mouseleave)
-      .attr("class", tooltipItemClass)
-      .attr("title", chartConfig.getItemTitle)
-      .transition()
-      .duration(animationDuration)
-      .attr("d", (areaPoint) =>
-        voronoi.renderCell(chartConfig.getItemId(areaPoint))
-      )
+    voronoiGroup.render({
+      animationDuration,
+      boundaries: [
+        -margin.left,
+        -margin.top,
+        innerWidth + margin.right,
+        height + margin.bottom,
+      ],
+      className: tooltipItemClass,
+      clipPath: "url(#clip)",
+      extractXScale,
+      extractYScale,
+      filter: `url(#drop-shadow-${this.svgOpacityFilter})`,
+      getItemId: chartConfig.getItemId,
+      getTitle: chartConfig.getItemTitle,
+      mouseenter,
+      mouseleave,
+      points: areaPoints,
+    })
 
     $(`.${tooltipItemClass}`).tooltip({
       track: true,
     })
-
-    this.setVoronoi()
-  }
-
-  private setVoronoi() {
-    const {
-      elements: { voronoiGroup },
-      hasVoronoi,
-    } = this
-    const currentClass = voronoiGroup.attr("class")
-    const { showVoronoi } = styles
-
-    const currentClassWithoutVoronoi = currentClass
-      .replace(showVoronoi, "")
-      .trim()
-
-    const newClass = hasVoronoi
-      ? `${currentClassWithoutVoronoi} ${showVoronoi}`
-      : currentClassWithoutVoronoi
-
-    voronoiGroup.attr("class", newClass)
-  }
-
-  private setDimensions() {
-    const {
-      config: { rootElId },
-    } = this
-    const { width } = (
-      document.getElementById(rootElId) as HTMLElement
-    ).getBoundingClientRect()
-    const isSmallDevice = width < 500
-
-    const margin = {
-      bottom: 50,
-      left: isSmallDevice ? 50 : 70,
-      right: isSmallDevice ? 10 : 50,
-      top: 50,
-    }
-
-    const innerWidth = width - margin.left - margin.right
-    const height = 400 - margin.top - margin.bottom
-
-    this.dimensions = {
-      height,
-      innerWidth,
-      isSmallDevice,
-      margin,
-      width,
-    }
   }
 
   private readonly handleWindowResize = () => {
-    this.render()
+    this.render(true)
   }
 }
 

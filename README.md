@@ -29,6 +29,7 @@ https://igncp.github.io/demos/
     - [typed-css-modules](https://github.com/Quramy/typed-css-modules) script: [scripts/ts_css.sh](scripts/ts_css.sh)
 - There is an [internal checklist](./research/charts-checklist.md) which aims to improve the quality and reusability of the charts
     - New charts should follow it completely but older charts (pre-2021) are still being updated to comply with it
+    - The charts are in the process to become responsive
 - Version from 2016 using [CoffeeScript](https://coffeescript.org/) and [Sail.js](https://sailsjs.com/): 
     - http://igncp-demos.herokuapp.com/
     - [Github Branch](https://github.com/igncp/demos/tree/2016-version)

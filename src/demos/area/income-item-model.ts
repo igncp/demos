@@ -5,7 +5,8 @@ type IncomeItemBase = {
   year: number
 }
 
-type IncomeItemData = IncomeItemBase & {
+type IncomeItemData = Omit<IncomeItemBase, "percent"> & {
+  percentage: number
   pointIndex: number
 }
 
@@ -14,7 +15,7 @@ class IncomeItem {
 
   private constructor(incomeItemData: IncomeItemData) {
     this.incomeItemData = incomeItemData
-    this.incomeItemData.percent = Number(this.incomeItemData.percent)
+    this.incomeItemData.percentage = Number(this.incomeItemData.percentage)
   }
 
   public static async fetchAndCreateCollection(): Promise<IncomeItem[]> {
@@ -24,6 +25,7 @@ class IncomeItem {
 
     const incomeItemsData = response.map((...[point, pointIndex]) => ({
       ...point,
+      percentage: point.percent,
       pointIndex,
     }))
 
@@ -36,18 +38,18 @@ class IncomeItem {
     return this.incomeItemData.year
   }
 
-  public changePercent(percentChange: number) {
+  public changePercentage(percentageChange: number) {
     const valueWithLowerBound = Math.max(
-      this.incomeItemData.percent + percentChange,
+      this.incomeItemData.percentage + percentageChange,
       0
     )
     const newValue = Math.min(100, valueWithLowerBound)
 
-    this.incomeItemData.percent = newValue
+    this.incomeItemData.percentage = newValue
   }
 
   public getNormalizedValue() {
-    return this.incomeItemData.percent / 100
+    return this.incomeItemData.percentage / 100
   }
 
   public getId() {
@@ -59,7 +61,7 @@ class IncomeItem {
 
     return `Year: ${
       incomeItemData.year
-    }, Percent: ${incomeItemData.percent.toFixed(2)}%`
+    }, Percentage: ${incomeItemData.percentage.toFixed(2)}%`
   }
 }
 

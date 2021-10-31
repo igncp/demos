@@ -1,5 +1,6 @@
 import fs from "fs"
 import { GatsbyNode } from "gatsby"
+import path from "path"
 
 import {
   DemoBase,
@@ -29,17 +30,38 @@ const readIfExists = (filePath: string) => {
   }
 }
 
+const getFilesRecursiveSync = (dir: string): string[] => {
+  const filesList: string[] = []
+  const list = fs.readdirSync(dir)
+
+  list.forEach((fileName) => {
+    const file = `${dir}/${fileName}`
+    const stat = fs.statSync(file)
+
+    if (stat.isDirectory()) {
+      const newResults = getFilesRecursiveSync(file)
+
+      filesList.push(...newResults)
+    } else {
+      filesList.push(file)
+    }
+  })
+
+  return filesList
+    .map((filePath) => path.resolve(filePath).replace(`${process.cwd()}/`, ""))
+    .sort()
+}
+
 const getDemoTSFiles = (demoName: string) => {
-  const tsFiles = fs
-    .readdirSync(`${__dirname}/../src/demos/${demoName}`)
+  const tsFiles = getFilesRecursiveSync(`${__dirname}/../src/demos/${demoName}`)
     .filter((file) => /\.ts$/.test(file))
     .filter((file) => !file.includes(".css") && file !== demoName)
   const mainStr = "export default main" // move the main demo file to the top
 
   return tsFiles
-    .map((fileName) => ({
-      content: readIfExists(`src/demos/${demoName}/${fileName}`),
-      fileName,
+    .map((filePath) => ({
+      content: readIfExists(filePath),
+      filePath,
     }))
     .filter((file) => !!file.content)
     .sort((...[fileA, fileB]) => {
@@ -52,14 +74,14 @@ const getDemoTSFiles = (demoName: string) => {
 }
 
 const getDemoCSSFiles = (demoName: string) => {
-  const cssFiles = fs
-    .readdirSync(`${__dirname}/../src/demos/${demoName}`)
-    .filter((file) => /\.css$/.test(file))
+  const cssFiles = getFilesRecursiveSync(
+    `${__dirname}/../src/demos/${demoName}`
+  ).filter((file) => /\.css$/.test(file))
 
   return cssFiles
-    .map((fileName) => ({
-      content: readIfExists(`src/demos/${demoName}/${fileName}`),
-      fileName,
+    .map((filePath) => ({
+      content: readIfExists(filePath),
+      filePath,
     }))
     .filter((file) => !!file.content)
 }

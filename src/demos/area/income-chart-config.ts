@@ -1,4 +1,4 @@
-import { ChartConfig } from "./area-chart"
+import { ChartConfig } from "./chart/area-chart"
 import { IncomeItem } from "./income-item-model"
 
 const CONTAINER_ID = "chart"

@@ -1,24 +1,21 @@
-.chordChart {
-  path.chord {
-    fill-opacity: 0.75;
-    stroke-width: 0.75;
-  }
+.chartTitle {
+  font-weight: bold;
+}
 
-  .chartTitle {
-    font-weight: bold;
-  }
+.chord {
+  fill-opacity: 0.75;
+  stroke-width: 0.75;
+}
 
-  .group text {
-    font: 11px sans-serif;
-    pointer-events: none;
-  }
+.group text {
+  font: 10rem sans-serif;
+  pointer-events: none;
+}
 
-  .group path {
-    stroke: #000;
-  }
+.group path {
+  stroke: #000;
+}
 
-  .headingTitle {
-    font-size: 15px;
-    font-weight: bold;
-  }
+.groupLabel {
+  font-size: 14px;
 }

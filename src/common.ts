@@ -17,7 +17,7 @@ type DemoBase = {
 
 type DemoFile = {
   content: string
-  fileName: string
+  filePath: string
 }
 
 type DemoInfo = DemoBase & {

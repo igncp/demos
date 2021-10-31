@@ -14,7 +14,7 @@ const CodeInGH = ({ filePath }: { filePath: string }) => (
   <>
     <span>| </span>
     <a
-      href={`https://github.com/igncp/demos/blob/main/src/${filePath}`}
+      href={`https://github.com/igncp/demos/blob/main/${filePath}`}
       rel="noreferrer"
       target="_blank"
     >
@@ -26,7 +26,7 @@ const CoverageReport = ({ filePath }: { filePath: string }) => (
   <>
     <span>| </span>
     <a
-      href={`https://igncp.github.io/demos/coverage-ts/files/src/${filePath}.html`}
+      href={`https://igncp.github.io/demos/coverage-ts/files/${filePath}.html`}
       rel="noreferrer"
       target="_blank"
     >
@@ -134,20 +134,16 @@ const FilesDetails = ({ demoInfo }: Props) => {
           <strong>Code:</strong>
         </p>
         <ul>
-          {demoInfo.files.demoTS.map(({ content, fileName }) => (
-            <li key={fileName}>
+          {demoInfo.files.demoTS.map(({ content, filePath }) => (
+            <li key={filePath}>
               <p>
-                {fileName}{" "}
-                {(() => {
-                  const filePath = `demos/${demoInfo.key}/${fileName}`
-
-                  return (
-                    <>
-                      <CodeInGH filePath={filePath} />{" "}
-                      <CoverageReport filePath={filePath} />
-                    </>
-                  )
-                })()}
+                {filePath}{" "}
+                {(() => (
+                  <>
+                    <CodeInGH filePath={filePath} />{" "}
+                    <CoverageReport filePath={filePath} />
+                  </>
+                ))()}
               </p>
               <pre>
                 <code
@@ -179,15 +175,13 @@ const FilesDetails = ({ demoInfo }: Props) => {
               />
             </pre>
           </li>
-          {demoInfo.files.demoCSS.map(({ content, fileName }) => (
-            <li key={fileName}>
+          {demoInfo.files.demoCSS.map(({ content, filePath }) => (
+            <li key={filePath}>
               <p>
-                {`${fileName}`}{" "}
-                {(() => {
-                  const filePath = `demos/${demoInfo.key}/${fileName}`
-
-                  return <CodeInGH filePath={filePath} />
-                })()}
+                {filePath}{" "}
+                {(() => (
+                  <CodeInGH filePath={filePath} />
+                ))()}
               </p>
               <pre>
                 <code
