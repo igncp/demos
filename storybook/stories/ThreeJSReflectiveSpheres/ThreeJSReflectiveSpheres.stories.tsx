@@ -5,7 +5,6 @@ import {
   AmbientLight,
   Color,
   DirectionalLight,
-  Font,
   Mesh,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
@@ -14,7 +13,6 @@ import {
   Raycaster,
   Scene,
   SphereGeometry,
-  TextGeometry,
   Vector2,
   Vector3,
   WebGLRenderer,
@@ -22,6 +20,8 @@ import {
 } from "three"
 import fontData from "three/examples/fonts/gentilis_regular.typeface.json"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 
 import {
   StoryInfo,

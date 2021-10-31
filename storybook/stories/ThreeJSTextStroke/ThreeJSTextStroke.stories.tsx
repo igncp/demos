@@ -2,7 +2,6 @@ import React from "react"
 import {
   Color,
   DoubleSide,
-  Font,
   Group,
   Mesh,
   MeshBasicMaterial,
@@ -15,6 +14,7 @@ import {
 } from "three"
 import FontData from "three/examples/fonts/helvetiker_regular.typeface.json"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js"
 
 import { StoryInfo, TemplateType } from "../common"

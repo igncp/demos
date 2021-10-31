@@ -3,7 +3,6 @@ import {
   Color,
   DirectionalLight,
   Fog,
-  Font,
   Group,
   Mesh,
   MeshBasicMaterial,
@@ -12,10 +11,11 @@ import {
   PlaneGeometry,
   PointLight,
   Scene,
-  TextGeometry,
   Vector3,
   WebGLRenderer,
 } from "three"
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 
 import {
   StoryInfo,

@@ -1,8 +1,6 @@
 import React from "react"
 import {
   Color,
-  Font,
-  FontLoader,
   Mesh,
   MeshBasicMaterial,
   MeshPhongMaterial,
@@ -10,10 +8,11 @@ import {
   PointLight,
   Scene,
   SphereGeometry,
-  TextGeometry,
   WebGLRenderer,
 } from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry"
+import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader"
 
 import { StoryInfo } from "../common"
 

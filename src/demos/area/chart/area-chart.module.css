@@ -7,7 +7,7 @@
 
   path.area {
     fill: #6e6ea7;
-    opacity: 0.5;
+    opacity: 50%;
   }
 
   .axis {
@@ -39,13 +39,13 @@
   }
 
   .voronoi {
-    opacity: 0;
+    opacity: 0%;
     stroke: #999;
     stroke-width: 0.1;
   }
 
   .voronoi.showVoronoi {
-    opacity: 1;
+    opacity: 100%;
     stroke-width: 1;
   }
 

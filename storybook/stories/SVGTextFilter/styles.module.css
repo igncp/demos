@@ -1,6 +1,5 @@
 $baseColor: #4cfed7;
 
-::-moz-selection,
 ::selection {
   background: $baseColor;
 }
@@ -16,5 +15,5 @@ $baseColor: #4cfed7;
 .filtered {
   color: $baseColor;
   fill: $baseColor;
-  filter: url(#filter);
+  filter: "url(#filter)";
 }

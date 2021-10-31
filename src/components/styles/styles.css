@@ -1,15 +1,10 @@
 /* stylelint-disable selector-id-pattern, selector-class-pattern */
 
-@import './_callout.css';
-@import './_sticky_footer.css';
-
-::-moz-selection {
-  background-color: rgba(0, 0, 0, 0);
-  color: #ccc;
-}
+@import "./_callout.css";
+@import "./_sticky_footer.css";
 
 ::selection {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0 0 0 / 0%);
   color: #ccc;
 }
 
@@ -25,7 +20,7 @@ body {
 form {
   text-align: center;
 
-  input[type=radio] {
+  input[type="radio"] {
     margin-left: 20px;
   }
 }

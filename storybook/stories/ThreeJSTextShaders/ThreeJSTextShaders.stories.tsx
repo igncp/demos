@@ -5,18 +5,18 @@ import {
   Blending,
   Color,
   Float32BufferAttribute,
-  Font,
   Line,
   NoBlending,
   NormalBlending,
   PerspectiveCamera,
   Scene,
   ShaderMaterial,
-  TextGeometry,
   WebGLRenderer,
 } from "three"
 import FontData from "three/examples/fonts/helvetiker_bold.typeface.json"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry"
+import { Font } from "three/examples/jsm/loaders/FontLoader"
 
 import {
   StoryInfo,

@@ -431,10 +431,7 @@ const d3js: D3JS = {
     docs: [],
     isCompleted: true,
     name: "World Map",
-    notes: [
-      "Added the mouse over stroke and the zooming-unzooming when clicking in countries (from third source)",
-      "Click a country to zoom, click in the water or the same country to set zoom back to normal",
-    ],
+    notes: [],
     sources: [
       "http://bost.ocks.org/mike/map/",
       "http://bl.ocks.org/mbostock/raw/4090846/world-50m.json",

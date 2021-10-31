@@ -16,6 +16,8 @@ module.exports = {
     "block-closing-brace-newline-before": "always",
     "block-opening-brace-newline-after": "always",
 
+    "keyframes-name-pattern": commonPattern,
+
     "order/order": [
       "custom-properties",
       "dollar-variables",

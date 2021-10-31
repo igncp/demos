@@ -1,13 +1,5 @@
 declare const styles: {
-  readonly "bs-callout": string
-  readonly "bs-callout-info": string
-  readonly "bs-callout-primary": string
-  readonly "bs-callout-secondary": string
-  readonly "bs-callout-success": string
-  readonly "bs-callout-summary": string
-  readonly "bs-callout-warning": string
   readonly "code": string
-  readonly "container": string
   readonly "hide-mobile": string
   readonly "hide-tablet": string
   readonly "home-demo-name-link": string

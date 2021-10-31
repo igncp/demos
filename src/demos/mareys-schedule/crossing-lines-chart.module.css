@@ -42,11 +42,11 @@
 
     .blackLine {
       path {
-        stroke: rgb(34, 34, 34);
+        stroke: rgb(34 34 34);
       }
 
       circle {
-        fill: rgb(34, 34, 34);
+        fill: rgb(34 34 34);
       }
     }
 
@@ -56,17 +56,17 @@
       }
 
       circle {
-        fill: rgb(183, 116, 9);
+        fill: rgb(183 116 9);
       }
     }
 
     .redLine {
       path {
-        stroke: rgb(192, 62, 29);
+        stroke: rgb(192 62 29);
       }
 
       circle {
-        fill: rgb(192, 62, 29);
+        fill: rgb(192 62 29);
       }
     }
   }
