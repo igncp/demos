@@ -597,44 +597,51 @@
       "kind": 1
     },
     {
-      "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 87,
-      "character": 20,
+      "file": "src/demos/spain-map/n-map-chart.ts",
+      "line": 37,
+      "character": 14,
+      "text": "featureData",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/spain-map/n-map-chart.ts",
+      "line": 135,
+      "character": 22,
       "text": "dataGeo",
       "kind": 1
     },
     {
-      "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 89,
-      "character": 8,
+      "file": "src/demos/spain-map/n-map-chart.ts",
+      "line": 137,
+      "character": 10,
       "text": "dataGeoParsed",
       "kind": 1
     },
     {
-      "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 89,
-      "character": 24,
+      "file": "src/demos/spain-map/n-map-chart.ts",
+      "line": 137,
+      "character": 26,
       "text": "dataGeo",
       "kind": 1
     },
     {
-      "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 89,
-      "character": 32,
+      "file": "src/demos/spain-map/n-map-chart.ts",
+      "line": 137,
+      "character": 34,
       "text": "map",
       "kind": 1
     },
     {
-      "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 98,
-      "character": 34,
+      "file": "src/demos/spain-map/n-map-chart.ts",
+      "line": 302,
+      "character": 36,
       "text": "geometries",
       "kind": 1
     },
     {
-      "file": "src/demos/spain-map/spain-map-chart.ts",
-      "line": 98,
-      "character": 45,
+      "file": "src/demos/spain-map/n-map-chart.ts",
+      "line": 302,
+      "character": 47,
       "text": "length",
       "kind": 1
     },
@@ -1297,8 +1304,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.39469292935902,
-  "total": 30563,
-  "covered": 30378,
-  "uncovered": 185
+  "percentage": 99.39864209505335,
+  "total": 30930,
+  "covered": 30744,
+  "uncovered": 186
 }

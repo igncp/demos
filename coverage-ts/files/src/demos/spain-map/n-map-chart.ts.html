@@ -1,0 +1,441 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>n-map-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/spain-map/n-map-chart.ts</td><td class="">98.90%</td><td class="">95%</td><td class="">638</td><td class="">631</td><td class="">7</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  BaseType,
+  D3DragEvent,
+  GeoPath,
+  GeoPermissibleObjects,
+  GeoProjection,
+  Selection,
+  drag as dragD3,
+  geoMercator,
+  geoPath,
+  range,
+  scaleLinear,
+  select,
+} from &quot;d3&quot;
+import { GeoJsonProperties } from &quot;geojson&quot;
+import { feature } from &quot;topojson-client&quot;
+import { Objects, Topology } from &quot;topojson-specification&quot;
+import { v1 as uuidv1 } from &quot;uuid&quot;
+
+const colorsScheme = [&quot;#323247&quot;, &quot;#7c7cc9&quot;, &quot;#72b66c&quot;, &quot;#429742&quot;]
+const height = 500
+const margin = {
+  bottom: 20,
+  top: 50,
+}
+const strokeWidth = 0.4
+
+type Bounds = [[number, number], [number, number]]
+
+const calculateBounds = ({
+  featuresData,
+  projectionPath,
+}: {
+  featuresData: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
+  projectionPath: GeoPath
+}) =&gt;
+  featuresData.reduce&lt;Bounds&gt;(
+    (...[acc, featureData]) =&gt; {
+      const dataBounds = projectionPath.bounds(featureData)
+
+      acc[0][0] = Math.min(acc[0][0], dataBounds[0][0])
+      acc[0][1] = Math.min(acc[0][1], dataBounds[0][1])
+      acc[1][0] = Math.max(acc[1][0], dataBounds[1][0])
+      acc[1][1] = Math.max(acc[1][1], dataBounds[1][1])
+
+      return acc
+    },
+    [
+      [Infinity, Infinity],
+      [-Infinity, -Infinity],
+    ]
+  )
+
+type AreasData = Topology&lt;Objects&lt;GeoJsonProperties&gt;&gt;
+
+type ChartConfig&lt;Properties&gt; = Readonly&lt;{
+  areasData: AreasData
+  getTitleText: (properties: Properties) =&gt; string
+  projectionsCenters: Array&lt;[number, number]&gt;
+  rootElId: string
+  widths: number[]
+}&gt;
+
+type DataShape&lt;Properties&gt; = GeoPermissibleObjects &amp; {
+  areaIndex: number
+  properties: Properties
+}
+
+type ChartElements = Readonly&lt;{
+  divsSel: Selection&lt;HTMLDivElement, unknown, HTMLElement, unknown&gt;
+  innerGroupsSel: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  rootSel: Selection&lt;HTMLDivElement, unknown, HTMLElement, unknown&gt;
+  svgsDragsSel: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  svgsSel: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+}&gt;
+
+const addDropShadowFilter = &lt;Parent extends BaseType | null&gt;({
+  deviation,
+  id,
+  slope,
+  svg,
+}: {
+  deviation: number
+  id: number
+  slope: number
+  svg: Selection&lt;SVGGElement, unknown, Parent, unknown&gt;
+}) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, `drop-shadow-${id}`)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, deviation)
+
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, slope)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+}
+
+class NMapChart&lt;Properties&gt; {
+  private readonly config: ChartConfig&lt;Properties&gt;
+  private readonly elements: ChartElements
+  private readonly regionClass: string
+  private readonly state: {
+    drags: Array&lt;{ x: number; y: number }&gt;
+    // Shared marks between all subcharts, could also have different marks per
+    // subchart although UX seems better like this
+    marks: Record&lt;string, boolean&gt;
+  } = {
+    drags: [],
+    marks: {},
+  }
+
+  private constructor(chartConfig: ChartConfig&lt;Properties&gt;) {
+    this.config = chartConfig
+
+    const { areasData, rootElId } = chartConfig
+
+    this.regionClass = `region-${uuidv1().slice(0, 6)}`
+
+    const {
+      objects: { data1: dataRoot },
+    } = areasData
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { features: dataGeo } = feature(areasData, dataRoot) as any
+
+    const dataGeoParsed = dataGeo.map(
+      (...[areaData, areaIndex]: [DataShape&lt;Properties&gt;, number]) =&gt; ({
+        ...areaData,
+        areaIndex,
+      })
+    )
+
+    const rootSel = select&lt;HTMLDivElement, unknown&gt;(`#${rootElId}`)
+
+    const divsSel = rootSel
+      .selectAll(&quot;div&quot;)
+      .data&lt;unknown&gt;(chartConfig.projectionsCenters)
+      .enter()
+      .append(&quot;div&quot;)
+      .style(&quot;border&quot;, &quot;1px dashed #777&quot;)
+      .style(&quot;margin&quot;, &quot;5px&quot;)
+    const svgsSel = divsSel.append(&quot;svg&quot;)
+    const svgsDragsSel = svgsSel.append(&quot;g&quot;)
+    const innerGroupsSel = svgsDragsSel.append(&quot;g&quot;)
+
+    const colorFn = this.areaFillColor.bind(this)
+    const toggleMark = this.toggleMark.bind(this)
+    const refreshAllColors = this.refreshAllColors.bind(this)
+
+    const generateAreas = &lt;Parent extends BaseType | null&gt;({
+      filterId,
+      path,
+      svgComp,
+    }: {
+      filterId: number
+      path: GeoPath&lt;SVGPathElement&gt;
+      svgComp: Selection&lt;SVGGElement, unknown, Parent, unknown&gt;
+    }) =&gt; {
+      const svgUpdateSel = svgComp
+        .selectAll(&quot;.area&quot;)
+        .data&lt;DataShape&lt;Properties&gt;&gt;(dataGeoParsed)
+
+      svgUpdateSel.exit().remove()
+      svgUpdateSel
+        .enter()
+        .append(&quot;path&quot;)
+        .style(&quot;stroke&quot;, &quot;#fff&quot;)
+        .style(&quot;cursor&quot;, &quot;pointer&quot;)
+        .style(&quot;filter&quot;, `url(#drop-shadow-${filterId})`)
+        .attr(&quot;title&quot;, (areaData) =&gt;
+          this.config.getTitleText(areaData.properties)
+        )
+        .attr(&quot;class&quot;, `${this.regionClass} area`)
+        .call(() =&gt; {
+          $(`.${this.regionClass}`).tooltip({
+            track: true,
+          })
+        })
+        .on(&quot;click&quot;, function handleClick(...[, area]) {
+          toggleMark(area)
+          select&lt;SVGPathElement, DataShape&lt;Properties&gt;&gt;(this).style(
+            &quot;fill&quot;,
+            colorFn
+          )
+
+          requestAnimationFrame(() =&gt; {
+            // Reflect in both charts
+            refreshAllColors()
+          })
+        })
+        .on(&quot;mouseover&quot;, function onMouseOver() {
+          select(this).style(&quot;fill&quot;, &quot;#ffb61a&quot;).style(&quot;stroke-width&quot;, &quot;1px&quot;)
+        })
+        .on(&quot;mouseleave&quot;, function onMouseLeave() {
+          select&lt;SVGPathElement, DataShape&lt;Properties&gt;&gt;(this)
+            .style(&quot;fill&quot;, colorFn)
+            .style(&quot;stroke-width&quot;, strokeWidth)
+        })
+
+      svgComp
+        .selectAll&lt;SVGPathElement, DataShape&lt;Properties&gt;&gt;(&quot;.area&quot;)
+        .attr(&quot;d&quot;, path)
+        .style(&quot;fill&quot;, colorFn)
+        .style(&quot;stroke-width&quot;, strokeWidth)
+    }
+
+    const generateProjection = (...[center]: [[number, number], number]) =&gt; {
+      // Keep the same scale for all dimensions to improve render performance
+      const scale = 2400
+
+      return geoMercator().center(center).scale(scale)
+    }
+
+    const generatePath = (projection: GeoProjection) =&gt;
+      geoPath().projection(projection)
+
+    const areasPaths = this.config.projectionsCenters
+      .map(generateProjection)
+      .map(generatePath)
+
+    const boundsList = areasPaths.map((projectionPath) =&gt;
+      calculateBounds({
+        featuresData: dataGeoParsed,
+        projectionPath,
+      })
+    )
+
+    innerGroupsSel
+      .data(boundsList)
+      .attr(
+        &quot;transform&quot;,
+        (bounds) =&gt;
+          `translate(${(bounds[1][0] - bounds[0][0]) / 2},${
+            (bounds[1][1] - bounds[0][1]) / 2
+          })`
+      )
+
+    innerGroupsSel.each(function setupFilter(...[, groupIndex]) {
+      const svgItem = select(this)
+
+      addDropShadowFilter({
+        deviation: 2,
+        id: groupIndex + 1,
+        slope: 0.3,
+        svg: svgItem,
+      })
+
+      generateAreas({
+        filterId: groupIndex + 1,
+        path: areasPaths[groupIndex],
+        svgComp: svgItem,
+      })
+    })
+
+    this.elements = {
+      divsSel,
+      innerGroupsSel,
+      rootSel,
+      svgsDragsSel,
+      svgsSel,
+    }
+
+    this.render()
+    this.setupDrag()
+
+    window.addEventListener(&quot;resize&quot;, this.handleResize)
+  }
+
+  public static renderChart&lt;Properties&gt;(chartConfig: ChartConfig&lt;Properties&gt;) {
+    return new NMapChart(chartConfig)
+  }
+
+  public teardown() {
+    window.removeEventListener(&quot;resize&quot;, this.handleResize)
+  }
+
+  public clearMarked() {
+    this.state.marks = {}
+    this.refreshAllColors()
+  }
+
+  private areaFillColor(area: DataShape&lt;Properties&gt;): string {
+    const {
+      config: { areasData },
+    } = this
+    const {
+      objects: { data1: dataRoot },
+    } = areasData
+    const colorScale = scaleLinear()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .domain([0, (dataRoot as any).geometries.length])
+      .range([0, 1])
+
+    const colorScaleConversion = scaleLinear&lt;string&gt;()
+      .domain(range(0, 1, 1.0 / colorsScheme.length))
+      .range(colorsScheme)
+
+    if (this.state.marks[area.areaIndex]) {
+      return &quot;#f00&quot;
+    }
+
+    return colorScaleConversion(colorScale(area.areaIndex))
+  }
+
+  private refreshAllColors() {
+    const {
+      elements: { innerGroupsSel },
+    } = this
+
+    innerGroupsSel
+      .selectAll&lt;SVGPathElement, DataShape&lt;Properties&gt;&gt;(&quot;.area&quot;)
+      .style(&quot;fill&quot;, (area) =&gt; this.areaFillColor(area))
+  }
+
+  private render() {
+    const {
+      config: { rootElId, widths },
+      elements: { divsSel, rootSel, svgsSel },
+    } = this
+
+    const widthsTotal = widths.reduce((...[acc, curr]) =&gt; acc + curr, 0)
+
+    const { width: chartWidth } = (
+      document.getElementById(rootElId) as HTMLElement
+    ).getBoundingClientRect()
+
+    const isSmallDevice = chartWidth &lt; 600
+
+    const getSubChartWidth = (width: number) =&gt; {
+      if (isSmallDevice) {
+        return chartWidth
+      }
+
+      return (width / widthsTotal) * chartWidth
+    }
+
+    rootSel
+      .style(&quot;width&quot;, `100%`)
+      .style(&quot;justify-content&quot;, &quot;space-evenly&quot;)
+      .style(&quot;display&quot;, isSmallDevice ? &quot;flex&quot; : &quot;inline-flex&quot;)
+      .style(&quot;flex-direction&quot;, isSmallDevice ? &quot;column&quot; : &quot;&quot;)
+
+    divsSel
+      .data(widths)
+      .style(&quot;display&quot;, &quot;inline-block&quot;)
+      .style(&quot;height&quot;, `${height + margin.top + margin.bottom}px`)
+      .style(&quot;width&quot;, (width) =&gt; `${getSubChartWidth(width)}px`)
+
+    svgsSel
+      .data(widths)
+      .attr(&quot;width&quot;, (width) =&gt; getSubChartWidth(width))
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+  }
+
+  private toggleMark(area: DataShape&lt;Properties&gt;) {
+    this.state.marks[area.areaIndex] = !this.state.marks[area.areaIndex]
+  }
+
+  private updateDrags() {
+    const {
+      elements: { svgsDragsSel },
+    } = this
+
+    const getTranslate = (chartIndex: number) =&gt;
+      `translate(${this.state.drags[chartIndex].x},${this.state.drags[chartIndex].y})`
+
+    svgsDragsSel.each(function updateDrag(...[, chartIndex]) {
+      select(this).attr(&quot;transform&quot;, getTranslate(chartIndex))
+    })
+  }
+
+  private setupDrag() {
+    const {
+      elements: { svgsSel },
+    } = this
+
+    const getDragHandler =
+      (chartIndex: number) =&gt;
+      (dragEvent: D3DragEvent&lt;SVGSVGElement, unknown, unknown&gt;) =&gt; {
+        this.state.drags[chartIndex].x += dragEvent.dx
+        this.state.drags[chartIndex].y += dragEvent.dy
+
+        this.updateDrags()
+      }
+
+    const addDrag = (chartIndex: number) =&gt; {
+      this.state.drags[chartIndex] = {
+        x: 0,
+        y: 0,
+      }
+    }
+
+    svgsSel.each(function handleSVG(...[, chartIndex]) {
+      addDrag(chartIndex)
+
+      const handler = getDragHandler(chartIndex)
+      const dragBehavior = dragD3&lt;SVGSVGElement, unknown&gt;().on(&quot;drag&quot;, handler)
+
+      select(this)
+        .style(&quot;cursor&quot;, &quot;move&quot;)
+        .call(dragBehavior)
+        .on(&quot;drag&quot;, handler)
+    })
+  }
+
+  private readonly handleResize = () =&gt; {
+    this.render()
+  }
+}
+
+export { AreasData, ChartConfig, NMapChart }
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/spain-map/n-map-chart.ts&quot;,&quot;line&quot;:37,&quot;character&quot;:14,&quot;text&quot;:&quot;featureData&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/n-map-chart.ts&quot;,&quot;line&quot;:135,&quot;character&quot;:22,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/n-map-chart.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:10,&quot;text&quot;:&quot;dataGeoParsed&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/n-map-chart.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:26,&quot;text&quot;:&quot;dataGeo&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/n-map-chart.ts&quot;,&quot;line&quot;:137,&quot;character&quot;:34,&quot;text&quot;:&quot;map&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/n-map-chart.ts&quot;,&quot;line&quot;:302,&quot;character&quot;:36,&quot;text&quot;:&quot;geometries&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/spain-map/n-map-chart.ts&quot;,&quot;line&quot;:302,&quot;character&quot;:47,&quot;text&quot;:&quot;length&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 01 Nov 2021 00:06:47 GMT</p>
+    </body>
+  </html>
+  
