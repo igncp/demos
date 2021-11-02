@@ -11,7 +11,14 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/weekly-heatmap/weekly-heatmap-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">280</td><td class="">280</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { max as maxD3, scaleQuantile, select } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/weekly-heatmap/weekly-heatmap-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">506</td><td class="">506</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  D3DragEvent,
+  Selection,
+  drag as dragD3,
+  max as maxD3,
+  scaleQuantile,
+  select,
+} from &quot;d3&quot;
 
 import * as styles from &quot;./weekly-heatmap.module.css&quot;
 
@@ -34,6 +41,8 @@ const margin = {
   right: 50,
   top: 50,
 }
+const minHeight = 250
+const minWidth = 850
 
 const rectRadiusSize = 100
 const extraHeight = 60
@@ -41,7 +50,7 @@ const axisOffset = -6
 
 const legendStroke = &quot;#ccc&quot;
 
-export type ChartConfig&lt;ChartData&gt; = {
+type ChartConfig&lt;ChartData&gt; = Readonly&lt;{
   getIsHorizontalLabelBold: (label: string, labelIndex: number) =&gt; boolean
   getIsVerticalLabelBold: (label: string, labelIndex: number) =&gt; boolean
   getItemHorizontalIndex: (cell: ChartData) =&gt; number
@@ -53,140 +62,272 @@ export type ChartConfig&lt;ChartData&gt; = {
   rootElId: string
   verticalLabels: string[]
   weeklyData: ChartData[]
+}&gt;
+
+type ChartElements&lt;ChartData&gt; = Readonly&lt;{
+  cellsSel: Selection&lt;SVGGElement, ChartData, SVGGElement, unknown&gt;
+  gSel: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  legendSel: Selection&lt;SVGGElement, number, SVGGElement, unknown&gt;
+  svgDragSel: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  svgSel: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+}&gt;
+
+type ChartClasses = Readonly&lt;{
+  cell: string
+  legend: string
+}&gt;
+
+class HeatmapChart&lt;ChartData&gt; {
+  private readonly config: ChartConfig&lt;ChartData&gt;
+  private readonly elements: ChartElements&lt;ChartData&gt;
+  private readonly classes: ChartClasses
+  private readonly state = {
+    drag: {
+      x: 0,
+      y: 0,
+    },
+    width: 0,
+  }
+
+  private constructor(chartConfig: ChartConfig&lt;ChartData&gt;) {
+    this.config = chartConfig
+
+    const { rootElId } = chartConfig
+
+    const svgSel = select(`#${rootElId}`).append(&quot;svg&quot;)
+    const svgDragSel = svgSel.append(&quot;g&quot;)
+    const gSel = svgDragSel.append(&quot;g&quot;)
+
+    const chartClasses = {
+      cell: &quot;cell&quot;,
+      legend: &quot;legend&quot;,
+    }
+
+    this.classes = chartClasses
+
+    this.elements = {
+      get cellsSel() {
+        return gSel.selectAll&lt;SVGGElement, ChartData&gt;(`.${chartClasses.cell}`)
+      },
+      gSel,
+      get legendSel() {
+        return gSel.selectAll&lt;SVGGElement, number&gt;(`.${chartClasses.legend}`)
+      },
+      svgDragSel,
+      svgSel,
+    }
+
+    this.render()
+
+    window.addEventListener(&quot;resize&quot;, this.handleResize)
+  }
+
+  public static renderChart&lt;ChartData&gt;(chartConfig: ChartConfig&lt;ChartData&gt;) {
+    return new HeatmapChart&lt;ChartData&gt;(chartConfig)
+  }
+
+  public teardown() {
+    window.removeEventListener(&quot;resize&quot;, this.handleResize)
+  }
+
+  public refresh() {
+    this.render()
+  }
+
+  private render() {
+    const { config, elements } = this
+    const { horizontalLabels, rootElId, verticalLabels, weeklyData } = config
+    const rootEl = document.getElementById(rootElId) as HTMLElement
+
+    rootEl.classList.add(styles.weeklyHeatmapChart)
+
+    const fullWidth =
+      rootEl.getBoundingClientRect().width - margin.left - margin.right
+    const width = Math.max(fullWidth, minWidth)
+
+    this.state.width = fullWidth
+
+    const height = Math.max(
+      Math.ceil((width * 10) / horizontalLabels.length) -
+        margin.top -
+        margin.bottom +
+        extraHeight,
+      minHeight
+    )
+    const cellSize = Math.floor(width / horizontalLabels.length)
+    const legendElementWidth = cellSize * 2
+
+    const max = maxD3(weeklyData, (cell) =&gt; config.getItemValue(cell))
+
+    const colorScale = scaleQuantile&lt;string&gt;()
+      .domain([0, buckets - 1, max])
+      .range(colors)
+
+    elements.svgSel
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+      .attr(&quot;width&quot;, width + margin.left + margin.right)
+
+    elements.gSel.attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+
+    elements.gSel
+      .selectAll(&quot;.verticalLabel&quot;)
+      .data(verticalLabels)
+      .enter()
+      .append(&quot;text&quot;)
+      .attr(
+        &quot;class&quot;,
+        (...[label, labelIndex]) =&gt;
+          `verticalLabel ${styles.mono} axis${
+            config.getIsVerticalLabelBold(label, labelIndex)
+              ? ` ${styles.axisBold}`
+              : &quot;&quot;
+          }`
+      )
+
+    elements.gSel
+      .selectAll&lt;SVGTextElement, string&gt;(&quot;.verticalLabel&quot;)
+      .text((label) =&gt; label)
+      .attr(&quot;transform&quot;, `translate(${axisOffset},${cellSize / 1.5})`)
+      .attr(&quot;x&quot;, 0)
+      .attr(&quot;y&quot;, (...[, labelIndex]) =&gt; labelIndex * cellSize)
+      .style(&quot;text-anchor&quot;, &quot;end&quot;)
+
+    elements.gSel
+      .selectAll(&quot;.horizontalLabel&quot;)
+      .data(horizontalLabels)
+      .enter()
+      .append(&quot;text&quot;)
+      .text((label) =&gt; label)
+      .style(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .attr(
+        &quot;class&quot;,
+        (...[label, labelIndex]) =&gt;
+          `horizontalLabel ${styles.mono} axis${
+            config.getIsHorizontalLabelBold(label, labelIndex)
+              ? ` ${styles.axisBold}`
+              : &quot;&quot;
+          }`
+      )
+
+    elements.gSel
+      .selectAll&lt;SVGTextElement, string&gt;(&quot;.horizontalLabel&quot;)
+      .attr(&quot;transform&quot;, `translate(${cellSize / 2}, ${axisOffset})`)
+      .attr(&quot;x&quot;, (...[, labelIndex]) =&gt; labelIndex * cellSize)
+      .attr(&quot;y&quot;, 0)
+
+    elements.cellsSel
+      .data(weeklyData)
+      .enter()
+      .append(&quot;rect&quot;)
+      .attr(&quot;class&quot;, `${this.classes.cell} ${styles.bordered}`)
+      .style(&quot;fill&quot;, colors[0])
+
+    elements.cellsSel
+      .transition()
+      .duration(2000)
+      .style(&quot;fill&quot;, (cellItem) =&gt; colorScale(config.getItemValue(cellItem)))
+
+    elements.cellsSel
+      .attr(&quot;height&quot;, cellSize)
+      .attr(&quot;rx&quot;, rectRadiusSize)
+      .attr(&quot;ry&quot;, rectRadiusSize)
+      .attr(&quot;width&quot;, cellSize)
+      .attr(
+        &quot;x&quot;,
+        (cellItem) =&gt; config.getItemHorizontalIndex(cellItem) * cellSize
+      )
+      .attr(&quot;y&quot;, (cellItem) =&gt; config.getItemVerticalIndex(cellItem) * cellSize)
+      .attr(&quot;title&quot;, config.getItemTooltip)
+
+    $(`.${this.classes.cell}`).tooltip()
+
+    const legendData = [0].concat(colorScale.quantiles())
+
+    const legendNew = elements.legendSel
+      .data(legendData)
+      .enter()
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, this.classes.legend)
+
+    legendNew
+      .append(&quot;rect&quot;)
+      .style(&quot;fill&quot;, (...[, valueIndex]) =&gt; colors[valueIndex])
+      .style(&quot;stroke&quot;, legendStroke)
+
+    legendNew
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, styles.mono)
+      .style(&quot;text-anchor&quot;, &quot;middle&quot;)
+
+    elements.legendSel.each(function handleLegendItem(
+      ...[valueItem, valueIndex]
+    ) {
+      select(this)
+        .selectAll(&quot;rect&quot;)
+        .attr(&quot;x&quot;, legendElementWidth * valueIndex)
+        .attr(&quot;y&quot;, height)
+        .attr(&quot;width&quot;, legendElementWidth)
+        .attr(&quot;height&quot;, cellSize / 2)
+
+      select(this)
+        .selectAll&lt;SVGTextElement, unknown&gt;(`.${styles.mono}`)
+        .attr(&quot;x&quot;, legendElementWidth * valueIndex + legendElementWidth / 2)
+        .text(config.getLegendText(valueItem))
+        .attr(&quot;y&quot;, height + cellSize)
+    })
+
+    this.setupDrag()
+  }
+
+  private setupDrag() {
+    const { elements } = this
+
+    const updateDrag = () =&gt; {
+      this.elements.svgDragSel.attr(
+        &quot;transform&quot;,
+        `translate(${this.state.drag.x},${this.state.drag.y})`
+      )
+    }
+
+    const canUseDrag = this.state.width &lt; minWidth
+
+    const dragHandler = (
+      dragEvent: D3DragEvent&lt;SVGSVGElement, unknown, unknown&gt;
+    ) =&gt; {
+      if (!canUseDrag) {
+        return
+      }
+
+      this.state.drag.x += dragEvent.dx
+      this.state.drag.y += dragEvent.dy
+
+      updateDrag()
+    }
+
+    const dragBehavior = dragD3&lt;SVGSVGElement, unknown&gt;().on(
+      &quot;drag&quot;,
+      dragHandler
+    )
+
+    elements.svgSel.style(&quot;cursor&quot;, canUseDrag ? &quot;move&quot; : &quot;default&quot;)
+
+    if (!canUseDrag) {
+      this.state.drag = { x: 0, y: 0 }
+    }
+
+    elements.svgSel.call(dragBehavior).on(&quot;drag&quot;, dragHandler)
+
+    updateDrag()
+  }
+
+  private readonly handleResize = () =&gt; {
+    this.render()
+  }
 }
 
-export const renderChart = &lt;ChartData&gt;(chartConfig: ChartConfig&lt;ChartData&gt;) =&gt; {
-  const { rootElId, weeklyData } = chartConfig
-  const rootEl = document.getElementById(rootElId) as HTMLElement
-
-  rootEl.classList.add(styles.weeklyHeatmapChart)
-
-  const { horizontalLabels, verticalLabels } = chartConfig
-
-  const width =
-    rootEl.getBoundingClientRect().width - margin.left - margin.right
-  const height =
-    Math.ceil((width * 10) / horizontalLabels.length) -
-    margin.top -
-    margin.bottom +
-    extraHeight
-  const cellSize = Math.floor(width / horizontalLabels.length)
-  const legendElementWidth = cellSize * 2
-
-  const max = maxD3(weeklyData, (cell) =&gt; chartConfig.getItemValue(cell))
-
-  const colorScale = scaleQuantile&lt;string&gt;()
-    .domain([0, buckets - 1, max])
-    .range(colors)
-
-  const svg = select(`#${rootElId}`)
-    .append(&quot;svg&quot;)
-    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
-    .attr(&quot;width&quot;, width + margin.left + margin.right)
-    .append(&quot;g&quot;)
-    .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
-
-  svg
-    .selectAll(&quot;.verticalLabel&quot;)
-    .data(verticalLabels)
-    .enter()
-    .append(&quot;text&quot;)
-    .text((label) =&gt; label)
-    .attr(
-      &quot;class&quot;,
-      (...[label, labelIndex]) =&gt;
-        `verticalLabel ${styles.mono} axis${
-          chartConfig.getIsVerticalLabelBold(label, labelIndex)
-            ? ` ${styles.axisBold}`
-            : &quot;&quot;
-        }`
-    )
-    .attr(&quot;transform&quot;, `translate(${axisOffset},${cellSize / 1.5})`)
-    .attr(&quot;x&quot;, 0)
-    .attr(&quot;y&quot;, (...[, labelIndex]) =&gt; labelIndex * cellSize)
-    .style(&quot;text-anchor&quot;, &quot;end&quot;)
-
-  svg
-    .selectAll(&quot;.horizontalLabel&quot;)
-    .data(horizontalLabels)
-    .enter()
-    .append(&quot;text&quot;)
-    .text((label) =&gt; label)
-    .attr(
-      &quot;class&quot;,
-      (...[label, labelIndex]) =&gt;
-        `horizontalLabel ${styles.mono} axis${
-          chartConfig.getIsHorizontalLabelBold(label, labelIndex)
-            ? ` ${styles.axisBold}`
-            : &quot;&quot;
-        }`
-    )
-    .attr(&quot;transform&quot;, `translate(${cellSize / 2}, ${axisOffset})`)
-    .attr(&quot;x&quot;, (...[, labelIndex]) =&gt; labelIndex * cellSize)
-    .attr(&quot;y&quot;, 0)
-    .style(&quot;text-anchor&quot;, &quot;middle&quot;)
-
-  const heatMap = svg
-    .selectAll(&quot;.cell&quot;)
-    .data(weeklyData)
-    .enter()
-    .append(&quot;rect&quot;)
-    .attr(&quot;class&quot;, `cell ${styles.bordered}`)
-    .attr(&quot;height&quot;, cellSize)
-    .attr(&quot;rx&quot;, rectRadiusSize)
-    .attr(&quot;ry&quot;, rectRadiusSize)
-    .attr(&quot;width&quot;, cellSize)
-    .attr(
-      &quot;x&quot;,
-      (cellItem) =&gt; chartConfig.getItemHorizontalIndex(cellItem) * cellSize
-    )
-    .attr(
-      &quot;y&quot;,
-      (cellItem) =&gt; chartConfig.getItemVerticalIndex(cellItem) * cellSize
-    )
-    .attr(&quot;title&quot;, chartConfig.getItemTooltip)
-    .style(&quot;fill&quot;, colors[0])
-
-  heatMap
-    .transition()
-    .duration(6000)
-    .style(&quot;fill&quot;, (cellItem) =&gt; colorScale(chartConfig.getItemValue(cellItem)))
-
-  $(&quot;.cell&quot;).tooltip()
-
-  const legend = svg
-    .selectAll(&quot;.legend&quot;)
-    .data(
-      [0].concat(colorScale.quantiles()),
-      (legendValue) =&gt; legendValue as number
-    )
-    .enter()
-    .append(&quot;g&quot;)
-    .attr(&quot;class&quot;, &quot;legend&quot;)
-
-  legend
-    .append(&quot;rect&quot;)
-    .attr(&quot;x&quot;, (...[, valueIndex]) =&gt; legendElementWidth * valueIndex)
-    .attr(&quot;y&quot;, height)
-    .attr(&quot;width&quot;, legendElementWidth)
-    .attr(&quot;height&quot;, cellSize / 2)
-    .style(&quot;fill&quot;, (...[, valueIndex]) =&gt; colors[valueIndex])
-    .style(&quot;stroke&quot;, legendStroke)
-
-  legend
-    .append(&quot;text&quot;)
-    .attr(&quot;class&quot;, styles.mono)
-    .text(chartConfig.getLegendText)
-    .style(&quot;text-anchor&quot;, &quot;middle&quot;)
-    .attr(
-      &quot;x&quot;,
-      (...[, valueIndex]) =&gt;
-        legendElementWidth * valueIndex + legendElementWidth / 2
-    )
-    .attr(&quot;y&quot;, height + cellSize)
-}
+export { HeatmapChart, ChartConfig }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 01 Nov 2021 00:06:47 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 02 Nov 2021 00:16:54 GMT</p>
     </body>
   </html>
   

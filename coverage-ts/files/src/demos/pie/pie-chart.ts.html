@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/pie/pie-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">424</td><td class="">424</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/pie/pie-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">462</td><td class="">462</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Arc,
   DefaultArcObject,
   Pie,
@@ -114,18 +114,10 @@ type ArcDatum&lt;SliceData&gt; = Omit&lt;
   &quot;innerRadius&quot; | &quot;outerRadius&quot;
 &gt;
 
-type ChartPaths&lt;SliceData&gt; = Selection&lt;
-  SVGPathElement,
-  SliceArc&lt;SliceData&gt;,
-  SVGGElement,
-  unknown
-&gt;
-type ChartLabels&lt;SliceData&gt; = Selection&lt;
-  SVGTextElement,
-  SliceArc&lt;SliceData&gt;,
-  SVGGElement,
-  unknown
-&gt;
+type ChartElements = Readonly&lt;{
+  gSel: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  svgSel: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+}&gt;
 
 class PieChart&lt;SliceData&gt; {
   private readonly slices: Array&lt;Slice&lt;SliceData&gt;&gt;
@@ -135,8 +127,7 @@ class PieChart&lt;SliceData&gt; {
   private readonly arc: Arc&lt;any, SliceArc&lt;SliceData&gt;&gt; // eslint-disable-line @typescript-eslint/no-explicit-any
   private readonly pie: Pie&lt;any, Slice&lt;SliceData&gt;&gt; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  private paths: ChartPaths&lt;SliceData&gt; | null
-  private labels: ChartLabels&lt;SliceData&gt; | null
+  private readonly elements: ChartElements
 
   public constructor(config: ChartConfig&lt;SliceData&gt;) {
     this.config = config
@@ -151,14 +142,30 @@ class PieChart&lt;SliceData&gt; {
       .sort(null)
       .value((slice: Slice&lt;SliceData&gt;) =&gt; config.getSliceValue(slice))
 
-    this.paths = null
-    this.labels = null
+    const svgSel = select&lt;HTMLDivElement, unknown&gt;(
+      `#${config.rootElId}`
+    ).append(&quot;svg&quot;)
+    const gSel = svgSel.append(&quot;g&quot;)
+
+    renderShadowFilter(gSel)
+    renderBlurFilter(gSel)
+
+    this.elements = {
+      gSel,
+      svgSel,
+    }
 
     this.render()
+
+    window.addEventListener(&quot;resize&quot;, this.handleResize)
   }
 
   private static stashArcs&lt;SliceData&gt;(arcItem: SliceArc&lt;SliceData&gt;) {
     arcItem.data.ea0 = cloneDeep(arcItem)
+  }
+
+  public teardown() {
+    window.removeEventListener(&quot;resize&quot;, this.handleResize)
   }
 
   public update({
@@ -168,53 +175,84 @@ class PieChart&lt;SliceData&gt; {
     newValue: number
     newValueIndex: number
   }) {
-    const { config, labels, paths, slices } = this
+    const {
+      config,
+      elements: { gSel },
+      slices,
+    } = this
 
     config.updateSliceValue({
       newValue,
       sliceData: slices[newValueIndex],
     })
-    ;(paths as ChartPaths&lt;SliceData&gt;)
+
+    const paths = gSel.selectAll&lt;SVGPathElement, Slice&lt;SliceData&gt;&gt;(
+      `.slice-path`
+    )
+    const labels = gSel.selectAll&lt;SVGTextElement, Slice&lt;SliceData&gt;&gt;(
+      `.${styles.label}`
+    )
+
+    paths
       .data(this.pie(slices))
       .transition()
       .duration(transitionDuration)
       .ease(easeFn)
       .attrTween(&quot;d&quot;, this.arcTween.bind(this))
-    ;(labels as ChartLabels&lt;SliceData&gt;)
-      .data(this.pie(slices))
-      .transition()
+
+    const labelsUpdate = labels.data(this.pie(slices))
+
+    labelsUpdate
+      .transition(&quot;transitionWithEase&quot;)
       .duration(transitionDuration)
       .ease(easeFn)
       .attrTween(&quot;transform&quot;, this.textTransformTween.bind(this))
-      .each(function setupText(slice) {
-        select(this).text(config.getSliceValue(slice.data))
-      })
       .style(&quot;opacity&quot;, (slice) =&gt; {
         const sliceAngle = Math.abs(slice.startAngle - slice.endAngle)
 
         return sliceAngle &lt; 0.4 ? 0 : 1
       })
+
+    labelsUpdate
+      .transition(&quot;textTransition&quot;)
+      .duration(transitionDuration)
+      .tween(&quot;text&quot;, function tweenText(slice) {
+        const currentText = Number(select(this).text())
+        const newText = Number(config.getSliceValue(slice.data))
+
+        if (currentText === newText) {
+          return () =&gt; newText
+        }
+
+        const interpolateFn = interpolate(currentText, newText)
+
+        return (time: number) =&gt; {
+          this.textContent = interpolateFn(time).toFixed(0).toString()
+        }
+      })
+  }
+
+  private readonly handleResize = () =&gt; {
+    this.render()
   }
 
   private render() {
-    const { config, slices } = this
+    const {
+      config,
+      elements: { gSel, svgSel },
+      slices,
+    } = this
     const { width } = (
       document.getElementById(config.rootElId) as HTMLElement
     ).getBoundingClientRect()
 
-    const svg = select&lt;SVGSVGElement, Slice&lt;SliceData&gt;&gt;(`#${config.rootElId}`)
-      .append(&quot;svg:svg&quot;)
-      .attr(&quot;height&quot;, height)
-      .attr(&quot;width&quot;, width)
-      .append(&quot;g&quot;)
+    svgSel.attr(&quot;height&quot;, height).attr(&quot;width&quot;, width)
+
+    gSel
       .attr(&quot;transform&quot;, `translate(${width / 2},${height / 2})`)
+      .style(&quot;filter&quot;, `url(#shadow-filter`)
 
-    renderShadowFilter(svg)
-    renderBlurFilter(svg)
-
-    svg.style(&quot;filter&quot;, `url(#shadow-filter`)
-
-    const slicesEls = svg
+    const slicesEls = gSel
       .selectAll(`.${this.sliceClass}`)
       .data(this.pie(slices))
       .enter()
@@ -233,14 +271,15 @@ class PieChart&lt;SliceData&gt; {
       track: true,
     })
 
-    this.paths = slicesEls
+    slicesEls
       .append(&quot;path&quot;)
       .attr(&quot;d&quot;, this.arc)
       .attr(&quot;fill&quot;, (...[, sliceIndex]) =&gt; colorScale(sliceIndex.toString()))
+      .attr(&quot;class&quot;, &quot;slice-path&quot;)
       .attr(&quot;stroke&quot;, &quot;#777&quot;)
       .each((slice) =&gt; PieChart.stashArcs&lt;SliceData&gt;(slice))
 
-    this.labels = slicesEls
+    slicesEls
       .filter(
         (slice: SliceArc&lt;SliceData&gt;) =&gt; slice.endAngle - slice.startAngle &gt; 0.2
       )
@@ -292,7 +331,7 @@ const createChart = &lt;SliceData&gt;(config: ChartConfig&lt;SliceData&gt;) =&gt
 
 export { ChartConfig, createChart }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 01 Nov 2021 00:06:47 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 02 Nov 2021 00:16:53 GMT</p>
     </body>
   </html>
   
