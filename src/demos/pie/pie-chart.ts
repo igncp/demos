@@ -101,18 +101,10 @@ type ArcDatum<SliceData> = Omit<
   "innerRadius" | "outerRadius"
 >
 
-type ChartPaths<SliceData> = Selection<
-  SVGPathElement,
-  SliceArc<SliceData>,
-  SVGGElement,
-  unknown
->
-type ChartLabels<SliceData> = Selection<
-  SVGTextElement,
-  SliceArc<SliceData>,
-  SVGGElement,
-  unknown
->
+type ChartElements = Readonly<{
+  gSel: Selection<SVGGElement, unknown, HTMLElement, unknown>
+  svgSel: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
+}>
 
 class PieChart<SliceData> {
   private readonly slices: Array<Slice<SliceData>>
@@ -122,8 +114,7 @@ class PieChart<SliceData> {
   private readonly arc: Arc<any, SliceArc<SliceData>> // eslint-disable-line @typescript-eslint/no-explicit-any
   private readonly pie: Pie<any, Slice<SliceData>> // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  private paths: ChartPaths<SliceData> | null
-  private labels: ChartLabels<SliceData> | null
+  private readonly elements: ChartElements
 
   public constructor(config: ChartConfig<SliceData>) {
     this.config = config
@@ -138,14 +129,30 @@ class PieChart<SliceData> {
       .sort(null)
       .value((slice: Slice<SliceData>) => config.getSliceValue(slice))
 
-    this.paths = null
-    this.labels = null
+    const svgSel = select<HTMLDivElement, unknown>(
+      `#${config.rootElId}`
+    ).append("svg")
+    const gSel = svgSel.append("g")
+
+    renderShadowFilter(gSel)
+    renderBlurFilter(gSel)
+
+    this.elements = {
+      gSel,
+      svgSel,
+    }
 
     this.render()
+
+    window.addEventListener("resize", this.handleResize)
   }
 
   private static stashArcs<SliceData>(arcItem: SliceArc<SliceData>) {
     arcItem.data.ea0 = cloneDeep(arcItem)
+  }
+
+  public teardown() {
+    window.removeEventListener("resize", this.handleResize)
   }
 
   public update({
@@ -155,53 +162,84 @@ class PieChart<SliceData> {
     newValue: number
     newValueIndex: number
   }) {
-    const { config, labels, paths, slices } = this
+    const {
+      config,
+      elements: { gSel },
+      slices,
+    } = this
 
     config.updateSliceValue({
       newValue,
       sliceData: slices[newValueIndex],
     })
-    ;(paths as ChartPaths<SliceData>)
+
+    const paths = gSel.selectAll<SVGPathElement, Slice<SliceData>>(
+      `.slice-path`
+    )
+    const labels = gSel.selectAll<SVGTextElement, Slice<SliceData>>(
+      `.${styles.label}`
+    )
+
+    paths
       .data(this.pie(slices))
       .transition()
       .duration(transitionDuration)
       .ease(easeFn)
       .attrTween("d", this.arcTween.bind(this))
-    ;(labels as ChartLabels<SliceData>)
-      .data(this.pie(slices))
-      .transition()
+
+    const labelsUpdate = labels.data(this.pie(slices))
+
+    labelsUpdate
+      .transition("transitionWithEase")
       .duration(transitionDuration)
       .ease(easeFn)
       .attrTween("transform", this.textTransformTween.bind(this))
-      .each(function setupText(slice) {
-        select(this).text(config.getSliceValue(slice.data))
-      })
       .style("opacity", (slice) => {
         const sliceAngle = Math.abs(slice.startAngle - slice.endAngle)
 
         return sliceAngle < 0.4 ? 0 : 1
       })
+
+    labelsUpdate
+      .transition("textTransition")
+      .duration(transitionDuration)
+      .tween("text", function tweenText(slice) {
+        const currentText = Number(select(this).text())
+        const newText = Number(config.getSliceValue(slice.data))
+
+        if (currentText === newText) {
+          return () => newText
+        }
+
+        const interpolateFn = interpolate(currentText, newText)
+
+        return (time: number) => {
+          this.textContent = interpolateFn(time).toFixed(0).toString()
+        }
+      })
+  }
+
+  private readonly handleResize = () => {
+    this.render()
   }
 
   private render() {
-    const { config, slices } = this
+    const {
+      config,
+      elements: { gSel, svgSel },
+      slices,
+    } = this
     const { width } = (
       document.getElementById(config.rootElId) as HTMLElement
     ).getBoundingClientRect()
 
-    const svg = select<SVGSVGElement, Slice<SliceData>>(`#${config.rootElId}`)
-      .append("svg:svg")
-      .attr("height", height)
-      .attr("width", width)
-      .append("g")
+    svgSel.attr("height", height).attr("width", width)
+
+    gSel
       .attr("transform", `translate(${width / 2},${height / 2})`)
+      .style("filter", `url(#shadow-filter`)
 
-    renderShadowFilter(svg)
-    renderBlurFilter(svg)
-
-    svg.style("filter", `url(#shadow-filter`)
-
-    const slicesEls = svg
+    const slicesEls = gSel
       .selectAll(`.${this.sliceClass}`)
       .data(this.pie(slices))
       .enter()
@@ -220,14 +258,15 @@ class PieChart<SliceData> {
       track: true,
     })
 
-    this.paths = slicesEls
+    slicesEls
       .append("path")
       .attr("d", this.arc)
       .attr("fill", (...[, sliceIndex]) => colorScale(sliceIndex.toString()))
+      .attr("class", "slice-path")
       .attr("stroke", "#777")
       .each((slice) => PieChart.stashArcs<SliceData>(slice))
 
-    this.labels = slicesEls
+    slicesEls
       .filter(
         (slice: SliceArc<SliceData>) => slice.endAngle - slice.startAngle > 0.2
       )

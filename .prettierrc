@@ -1,5 +1,5 @@
 {
-  "experimentalBabelParserPluginsList": ["jsx", "typescript"],
+  "importOrderParserPlugins": ["jsx", "typescript", "classProperties"],
   "importOrder": [
     "^[^.@]",
     "^@[^/]",

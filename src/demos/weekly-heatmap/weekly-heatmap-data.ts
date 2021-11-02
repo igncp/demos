@@ -3,6 +3,7 @@ import { tsv } from "d3"
 import { ChartConfig } from "./weekly-heatmap-chart"
 
 const CONTAINER_ID = "chart"
+const UPDATE_BUTTON_ID = "update-random"
 
 type TimeItem = {
   arbitraryMetric: number
@@ -22,7 +23,7 @@ const hours = Array.from({ length: 24 }).map(
   (...[, hourIndex]: [unknown, number]) => {
     const normalizedHour = hourIndex % 12
 
-    return `${normalizedHour + 1} ${
+    return `${normalizedHour + 1}${
       hourIndex >= 11 && hourIndex !== 23 ? "pm" : "am"
     }`
   }
@@ -49,12 +50,16 @@ type Config = ChartConfig<TimeItem>
 
 const getItemValue: Config["getItemValue"] = (timeItem) =>
   timeItem.arbitraryMetric
+
 const getItemTooltip: Config["getItemTooltip"] = (timeItem) =>
-  `Arbitrary Metric: ${timeItem.arbitraryMetric}`
+  `Arbitrary Metric: ${timeItem.arbitraryMetric.toFixed(2)}`
+
 const getItemHorizontalIndex: Config["getItemHorizontalIndex"] = (timeItem) =>
   timeItem.hour - 1
+
 const getItemVerticalIndex: Config["getItemVerticalIndex"] = (timeItem) =>
   timeItem.day - 1
+
 const getIsHorizontalLabelBold: Config["getIsHorizontalLabelBold"] = (
   ...[, hourIndex]
 ) => hourIndex >= workingHourMin && hourIndex <= workingHourMax
@@ -80,4 +85,10 @@ const createChartConfig = (weeklyData: TimeItem[]): Config => ({
   weeklyData,
 })
 
-export { CONTAINER_ID, TimeItem, createChartConfig, fetchData }
+export {
+  CONTAINER_ID,
+  TimeItem,
+  UPDATE_BUTTON_ID,
+  createChartConfig,
+  fetchData,
+}
