@@ -136,7 +136,7 @@ const d3js: D3JS = {
   "concentric-circles": {
     dataFiles: [],
     docs: [],
-    isCompleted: true,
+    isCompleted: false,
     name: "Concentric Circles",
     notes: [
       "Data of baby names in New York 2012",
