@@ -11,198 +11,45 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/concentric-circles/concentric-circles.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">260</td><td class="">260</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
-  Selection,
-  csv,
-  extent,
-  max,
-  range,
-  scaleLinear,
-  scalePow,
-  select,
-} from &quot;d3&quot;
-
-const CONTAINER_ID = &quot;chart&quot;
-
-type NamesMetric = {
-  count: string
-  name: string
-  sex: string
-  year: string
-}
-type NamesMetrics = NamesMetric[]
-type SVG = Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
-
-const fetchData = async (): Promise&lt;NamesMetrics&gt; =&gt; {
-  const response = await csv(
-    `${ROOT_PATH}data/d3js/concentric-circles/data.csv`
-  )
-
-  return response as unknown as NamesMetrics
-}
-
-const colours = [&quot;#7C7CC9&quot;, &quot;#52D552&quot;, &quot;#337233&quot;, &quot;#323247&quot;]
-
-const margin = {
-  bottom: 20,
-  left: 20,
-  right: 20,
-  top: 20,
-}
-const strokeWidth = &quot;2px&quot;
-
-const addFilter = (svg: SVG) =&gt; {
-  const defs = svg.append(&quot;defs&quot;)
-  const filter = defs.append(&quot;filter&quot;)
-
-  filter.attr(&quot;id&quot;, &quot;drop-shadow&quot;)
-  filter
-    .append(&quot;feGaussianBlur&quot;)
-    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
-    .attr(&quot;stdDeviation&quot;, 9)
-  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 5).attr(&quot;dy&quot;, 5)
-  filter
-    .append(&quot;feComponentTransfer&quot;)
-    .append(&quot;feFuncA&quot;)
-    .attr(&quot;slope&quot;, &quot;.3&quot;)
-    .attr(&quot;type&quot;, &quot;linear&quot;)
-
-  const feMerge = filter.append(&quot;feMerge&quot;)
-
-  feMerge.append(&quot;feMergeNode&quot;)
-  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
-}
-
-type AddDescription = (options: {
-  height: number
-  svg: SVG
-  width: number
-}) =&gt; void
-
-const addDescription: AddDescription = ({ height, svg, width }) =&gt; {
-  svg
-    .append(&quot;text&quot;)
-    .text(
-      &quot;Circles radius are proportional to the count of times the name appears&quot;
-    )
-    .attr(&quot;transform&quot;, `translate(${width / 2},${height - 10})`)
-    .attr(&quot;width&quot;, &quot;20px&quot;)
-}
-
-type RenderChart = (chartConfig: {
-  namesMetrics: NamesMetrics
-  rootElId: string
-}) =&gt; void
-
-const renderChart: RenderChart = ({ namesMetrics, rootElId }) =&gt; {
-  const c = scaleLinear()
-    .domain(
-      extent(namesMetrics, (namesMetric) =&gt; +namesMetric.count) as [
-        number,
-        number
-      ]
-    )
-    .range([0, 1])
-
-  const heatmapColour = scaleLinear&lt;string&gt;()
-    .domain(range(0, 1, 1.0 / colours.length))
-    .range(colours)
-
-  const colorize = (namesMetric: NamesMetric) =&gt; {
-    const colorNormalized = c(+namesMetric.count)
-
-    return heatmapColour(colorNormalized)
-  }
-
-  const rootEl = document.getElementById(rootElId) as HTMLElement
-  const { width: elWidth } = rootEl.getBoundingClientRect()
-
-  const width = elWidth - margin.left - margin.right
-  const height =
-    (max(namesMetrics, (namesMetric) =&gt; +namesMetric.count) as number) * 2.5
-
-  const svg: SVG = select(`#${rootElId}`)
-    .append(&quot;svg&quot;)
-    .attr(&quot;width&quot;, width + margin.left + margin.right)
-    .attr(&quot;height&quot;, height + margin.left + margin.right)
-    .append(&quot;g&quot;)
-
-  addFilter(svg)
-
-  const circleGroup = svg
-    .selectAll&lt;SVGGElement, NamesMetric&gt;(&quot;g&quot;)
-    .data(namesMetrics, (namesMetric: NamesMetric) =&gt; namesMetric.name)
-    .enter()
-    .append(&quot;g&quot;)
-
-  const circles = circleGroup.append&lt;SVGCircleElement&gt;(&quot;svg:circle&quot;)
-  const rScale = scalePow()
-    .exponent(0.9)
-    .range([5, 300])
-    .domain(
-      extent(namesMetrics, (namesMetric) =&gt; +namesMetric.count) as [
-        number,
-        number
-      ]
-    )
-
-  const getTitle = (namesMetric: NamesMetrics[number]) =&gt;
-    `${namesMetric.name}: ${namesMetric.count}`
-  const dataMax = max(
-    namesMetrics,
-    (namesMetric) =&gt; +namesMetric.count
-  ) as number
-
-  circles
-    .attr(&quot;cx&quot;, width / 2)
-    .attr(&quot;cy&quot;, height / 2)
-    .attr(&quot;r&quot;, (namesMetric) =&gt; rScale(+namesMetric.count))
-    .attr(&quot;class&quot;, &quot;name-circle&quot;)
-    .attr(&quot;title&quot;, getTitle)
-    .style(&quot;fill&quot;, &quot;#fff&quot;)
-    .style(&quot;stroke&quot;, (namesMetric) =&gt; colorize(namesMetric))
-    .style(&quot;stroke-width&quot;, strokeWidth)
-    .style(&quot;filter&quot;, (namesMetric) =&gt; {
-      if (+namesMetric.count &gt; dataMax / 2.5) {
-        return &quot;url(#drop-shadow)&quot;
-      }
-
-      return &quot;&quot;
-    })
-    .on(&quot;mouseover&quot;, function onMouseOver() {
-      select(this).style(&quot;stroke&quot;, &quot;#D88021&quot;).style(&quot;stroke-width&quot;, &quot;10px&quot;)
-    })
-    .on(&quot;mouseleave&quot;, function onMouseLeave() {
-      select&lt;SVGCircleElement, NamesMetric&gt;(this)
-        .style(&quot;stroke&quot;, (namesMetric) =&gt; colorize(namesMetric))
-        .style(&quot;stroke-width&quot;, strokeWidth)
-    })
-
-  $(&quot;.name-circle&quot;).tooltip({
-    track: true,
-  })
-
-  addDescription({
-    height,
-    svg,
-    width,
-  })
-}
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/concentric-circles/concentric-circles.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">40</td><td class="">40</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { CirclesChart } from &quot;./circles-chart&quot;
+import {
+  CONTAINER_ID,
+  State,
+  VALUES_SLIDER_ID,
+  fetchData,
+  getChartConfig,
+} from &quot;./concentric-circles-config&quot;
 
 const main = async () =&gt; {
   const namesMetrics = await fetchData()
+  const defaultPercentage = 100
+  const state: State = {
+    percentage: defaultPercentage,
+  }
 
-  renderChart({
+  const chartConfig = getChartConfig({
     namesMetrics,
-    rootElId: CONTAINER_ID,
+    state,
+  })
+
+  const chart = CirclesChart.renderChart(chartConfig)
+
+  $(`#${VALUES_SLIDER_ID}`).slider({
+    change: (...[, { value: percentageValue }]) =&gt; {
+      state.percentage = percentageValue as number
+      chart.refresh()
+    },
+    max: 100,
+    min: 0,
+    value: defaultPercentage, // eslint-disable-line id-denylist
   })
 }
 
-export { CONTAINER_ID }
+export { CONTAINER_ID, VALUES_SLIDER_ID }
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 02 Nov 2021 00:16:53 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Fri, 05 Nov 2021 00:36:52 GMT</p>
     </body>
   </html>
   
