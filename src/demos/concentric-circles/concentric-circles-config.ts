@@ -3,7 +3,7 @@ import { csv } from "d3"
 import { ChartConfig } from "./circles-chart"
 
 const CONTAINER_ID = "chart"
-const VALUES_SLIDER_ID = "year-slider"
+const ZOOM_SLIDER_ID = "year-slider"
 
 type NamesMetric = {
   count: number
@@ -12,10 +12,6 @@ type NamesMetric = {
 }
 
 type NamesMetrics = NamesMetric[]
-
-type State = {
-  percentage: number
-}
 
 const fetchData = async (): Promise<NamesMetrics> => {
   const response = (await csv(
@@ -37,20 +33,15 @@ const getCircleTitle: Config["getCircleTitle"] = (circle) =>
   `${circle.name}: ${circle.count}`
 
 const chartDescription =
-  "Circles radius are proportional to order in the ranking"
+  "Circles radius are proportional to order in the ranking, click to select"
 
 const getChartConfig = ({
   namesMetrics,
-  state,
 }: {
   namesMetrics: NamesMetrics
-  state: State
 }): Config => ({
   chartDescription,
-  getCircleId,
-  getCircleTitle,
-  getCircleValue,
-  getCirclesData: () => {
+  circlesData: (() => {
     const addedNames = new Set()
 
     return namesMetrics
@@ -64,13 +55,12 @@ const getChartConfig = ({
 
         return true
       })
-      .filter(
-        (...[, nameObjIndex, nameObjArr]) =>
-          (100 * nameObjIndex) / nameObjArr.length <= state.percentage
-      )
       .reverse()
-  },
+  })(),
+  getCircleId,
+  getCircleTitle,
+  getCircleValue,
   rootElId: CONTAINER_ID,
 })
 
-export { CONTAINER_ID, State, VALUES_SLIDER_ID, fetchData, getChartConfig }
+export { CONTAINER_ID, ZOOM_SLIDER_ID, fetchData, getChartConfig }

@@ -16,6 +16,10 @@ jobs:
           npm install
           cd storybook && npm install
 
+      - name: Test ✔️
+        run: |
+          npm test
+
       - name: Lint 🔎
         run: |
           npm run lint

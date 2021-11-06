@@ -55,7 +55,12 @@ const getFilesRecursiveSync = (dir: string): string[] => {
 const getDemoTSFiles = (demoName: string) => {
   const tsFiles = getFilesRecursiveSync(`${__dirname}/../src/demos/${demoName}`)
     .filter((file) => /\.ts$/.test(file))
-    .filter((file) => !file.includes(".css") && file !== demoName)
+    .filter(
+      (file) =>
+        !file.includes(".css") &&
+        file !== demoName &&
+        !file.includes("__tests__")
+    )
   const mainStr = "export default main" // move the main demo file to the top
 
   return tsFiles

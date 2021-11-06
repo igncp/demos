@@ -6,7 +6,7 @@ import Demo from "@/components/demo"
 
 import main, {
   CONTAINER_ID,
-  VALUES_SLIDER_ID,
+  ZOOM_SLIDER_ID,
 } from "@/demos/concentric-circles/concentric-circles"
 
 const ConcentricCircles = ({ pageContext }: DemoPageProps) => (
@@ -17,8 +17,8 @@ const ConcentricCircles = ({ pageContext }: DemoPageProps) => (
     scripts={[JQUERYUI.SCRIPT]}
   >
     <div style={{ marginBottom: 20 }}>
-      <p>Values</p>
-      <div id={VALUES_SLIDER_ID} />
+      <p>Zoom</p>
+      <div id={ZOOM_SLIDER_ID} />
     </div>
     <div id={CONTAINER_ID} />
   </Demo>

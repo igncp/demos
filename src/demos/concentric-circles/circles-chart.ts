@@ -1,7 +1,14 @@
-import { Selection, extent, max, range, scaleLinear, select } from "d3"
+import {
+  D3DragEvent,
+  Selection,
+  drag,
+  interpolateCool,
+  max,
+  scaleLinear,
+  scaleOrdinal,
+  select,
+} from "d3"
 import { v1 as uuidv1 } from "uuid"
-
-const colours = ["#7c7cc9", "#52d552", "#337233", "#323247"]
 
 const margin = {
   bottom: 20,
@@ -9,59 +16,75 @@ const margin = {
   right: 20,
   top: 20,
 }
-const strokeWidth = "2px"
 
-const addFilter = <ChartData>(
-  svg: Selection<SVGGElement, ChartData, HTMLElement, unknown>
-) => {
-  const defs = svg.append("defs")
-  const filter = defs.append("filter")
+// https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
+const getNewDrag = ({
+  baseZoom,
+  newZoom,
+  prevDragX,
+  prevDragY,
+  prevZoom,
+  zoomPoint,
+}: {
+  baseZoom: number
+  newZoom: number
+  prevDragX: number
+  prevDragY: number
+  prevZoom: number
+  zoomPoint: { x: number; y: number }
+}) => {
+  const scalechange = (newZoom - prevZoom) / baseZoom
+  const offsetX = -(zoomPoint.x * scalechange)
+  const offsetY = -(zoomPoint.y * scalechange)
 
-  filter.attr("id", "drop-shadow")
-  filter
-    .append("feGaussianBlur")
-    .attr("in", "SourceAlpha")
-    .attr("stdDeviation", 9)
-  filter.append("feOffset").attr("dx", 5).attr("dy", 5)
-  filter
-    .append("feComponentTransfer")
-    .append("feFuncA")
-    .attr("slope", ".3")
-    .attr("type", "linear")
-
-  const feMerge = filter.append("feMerge")
-
-  feMerge.append("feMergeNode")
-  feMerge.append("feMergeNode").attr("in", "SourceGraphic")
+  return {
+    x: prevDragX + offsetX,
+    y: prevDragY + offsetY,
+  }
 }
 
 type ChartConfig<ChartData> = Readonly<{
   chartDescription: string
+  circlesData: ChartData[]
   getCircleId: (circle: ChartData) => string
   getCircleTitle: (circle: ChartData) => string
   getCircleValue: (circle: ChartData) => number
-  getCirclesData: () => ChartData[]
   rootElId: string
 }>
 
 type ChartElements<ChartData> = Readonly<{
   descriptionSel: Selection<SVGTextElement, ChartData, HTMLElement, unknown>
+  dragSel: Selection<SVGGElement, ChartData, HTMLElement, unknown>
   gSel: Selection<SVGGElement, ChartData, HTMLElement, unknown>
+  rootSel: Selection<HTMLElement, ChartData, HTMLElement, unknown>
   svgSel: Selection<SVGSVGElement, ChartData, HTMLElement, unknown>
 }>
 
 class CirclesChart<ChartData> {
+  public static defaultZoom = 10
+
   private readonly config: ChartConfig<ChartData>
   private readonly elements: ChartElements<ChartData>
   private readonly circleClass: string
+  private readonly state: {
+    dragX: number
+    dragY: number
+    selectedCircles: Record<string, boolean>
+    zoom: number
+  } = {
+    dragX: 0,
+    dragY: 0,
+    selectedCircles: {},
+    zoom: CirclesChart.defaultZoom,
+  }
 
   private constructor(config: ChartConfig<ChartData>) {
     this.config = config
 
-    const svgSel = select<HTMLElement, ChartData>(`#${config.rootElId}`).append(
-      "svg"
-    )
-    const gSel = svgSel.append("g")
+    const rootSel = select<HTMLElement, ChartData>(`#${config.rootElId}`)
+    const svgSel = rootSel.append("svg")
+    const dragSel = svgSel.append("g")
+    const gSel = dragSel.append("g")
     const descriptionSel = gSel
       .append("text")
       .attr("text-anchor", "middle")
@@ -71,12 +94,13 @@ class CirclesChart<ChartData> {
 
     this.elements = {
       descriptionSel,
+      dragSel,
       gSel,
+      rootSel,
       svgSel,
     }
 
-    addFilter<ChartData>(gSel)
-
+    this.setupDrag()
     this.render()
 
     window.addEventListener("resize", this.handleResize)
@@ -90,55 +114,123 @@ class CirclesChart<ChartData> {
     window.removeEventListener("resize", this.handleResize)
   }
 
-  public refresh() {
-    this.render()
+  public setZoom(zoom: number) {
+    const { height, width } = this.getDimensions()
+
+    const newDrag = getNewDrag({
+      baseZoom: CirclesChart.defaultZoom,
+      newZoom: zoom,
+      prevDragX: this.state.dragX,
+      prevDragY: this.state.dragY,
+      prevZoom: this.state.zoom,
+      zoomPoint: { x: width / 2, y: height / 2 },
+    })
+
+    this.state.zoom = zoom
+    this.state.dragX = newDrag.x
+    this.state.dragY = newDrag.y
+
+    this.updateDrag()
   }
 
-  private render() {
+  private updateDrag() {
     const {
-      config: {
-        chartDescription,
-        getCircleId,
-        getCircleTitle,
-        getCircleValue,
-        getCirclesData,
-        rootElId,
-      },
-      elements,
+      elements: { dragSel },
     } = this
 
-    const circlesData = getCirclesData()
+    dragSel.attr(
+      "transform",
+      `translate(${this.state.dragX},${this.state.dragY}) scale(${
+        this.state.zoom / CirclesChart.defaultZoom
+      })`
+    )
+  }
 
-    const colorScale = scaleLinear()
-      .domain(extent(circlesData, getCircleValue) as [number, number])
-      .range([0, 1])
+  private setupDrag() {
+    const {
+      elements: { svgSel },
+    } = this
 
-    const heatmapColour = scaleLinear<string>()
-      .domain(range(0, 1, 1.0 / colours.length))
-      .range(colours)
+    const dragHandler = drag<SVGSVGElement, ChartData>().on(
+      "drag",
+      (dragEvent: D3DragEvent<SVGSVGElement, unknown, unknown>) => {
+        this.state.dragX += dragEvent.dx
+        this.state.dragY += dragEvent.dy
 
-    const colorize = (circle: ChartData) => {
-      const circleValue = getCircleValue(circle)
-      const colorNormalized = colorScale(circleValue)
+        this.updateDrag()
+      }
+    )
 
-      return heatmapColour(colorNormalized)
-    }
+    svgSel.style("cursor", "move").call(dragHandler).on("wheel", null)
+  }
 
-    const dataMax = max(circlesData, getCircleValue) as number
-
+  private getDimensions() {
+    const {
+      config: { circlesData, getCircleValue, rootElId },
+    } = this
     const rootEl = document.getElementById(rootElId) as HTMLElement
     const { width: elWidth } = rootEl.getBoundingClientRect()
 
     const width = elWidth - margin.left - margin.right
     const height = max(circlesData, getCircleValue)! * 2.5
 
+    return {
+      height,
+      width,
+    }
+  }
+
+  private render() {
+    const {
+      config: {
+        chartDescription,
+        circlesData,
+        getCircleId,
+        getCircleTitle,
+        getCircleValue,
+      },
+      elements,
+    } = this
+
+    this.updateDrag()
+
+    const maxValue = max(circlesData, getCircleValue) as number
+    const colorScale = scaleOrdinal<number, number>()
+      .domain([0, maxValue])
+      .range([0, 0.5])
+    const clickedColor = "orange"
+
+    const colorize = (circle: ChartData) => {
+      const circleId = getCircleId(circle)
+
+      if (this.state.selectedCircles[circleId]) {
+        return clickedColor
+      }
+
+      const circleValue = getCircleValue(circle)
+
+      const normalized = colorScale(circleValue)
+
+      return interpolateCool(normalized)
+    }
+
+    const { height, width } = this.getDimensions()
+
     elements.svgSel
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.left + margin.right)
 
+    // It sorts from bigger to smaller value for the hover to work
+    const sortedData = circlesData
+      .slice(0)
+      .sort(
+        (...[circleA, circleB]) =>
+          getCircleValue(circleB) - getCircleValue(circleA)
+      )
+
     const groupUpdates = elements.gSel
       .selectAll<SVGGElement, ChartData>(".circle-group")
-      .data(circlesData, getCircleId)
+      .data(sortedData, getCircleId)
 
     groupUpdates
       .enter()
@@ -149,34 +241,59 @@ class CirclesChart<ChartData> {
 
     groupUpdates.exit().remove()
 
-    elements.gSel
-      .selectAll<SVGCircleElement, ChartData>(`.${this.circleClass}`)
+    const maxRadius = Math.min(height / 2, width / 2)
+    const scaleRadius = scaleLinear()
+      .domain([0, maxValue])
+      .range([0, maxRadius])
+
+    const circles = elements.gSel.selectAll<SVGCircleElement, ChartData>(
+      `.${this.circleClass}`
+    )
+
+    const {
+      state: { selectedCircles },
+    } = this
+
+    const bigStroke = "4px"
+
+    const getStrokeWidth = (circle: ChartData) => {
+      const id = getCircleId(circle)
+
+      return selectedCircles[id] ? bigStroke : "2px"
+    }
+
+    circles
       .attr("cx", width / 2)
       .attr("cy", height / 2)
-      .attr("title", getCircleTitle)
-      .style("fill", "none")
+      .style("fill", "rgba(0, 0, 0, 0)")
       .style("stroke", colorize)
-      .style("stroke-width", strokeWidth)
-      .style("filter", (circle) =>
-        getCircleValue(circle) > dataMax / 2.5 ? "url(#drop-shadow)" : ""
-      )
-      .on("mouseenter", function onMouseOver() {
-        select(this).style("stroke", "#D88021").style("stroke-width", "10px")
+      .style("stroke-width", getStrokeWidth)
+      .attr("r", (circle) => scaleRadius(getCircleValue(circle)))
+      .on("mouseenter", function handleMouseEnter() {
+        select<SVGCircleElement, ChartData>(this)
+          .style("stroke", clickedColor)
+          .style("stroke-width", bigStroke)
       })
-      .on("mouseleave", function onMouseLeave() {
+      .on("mouseleave", function handleMouseLeave() {
         select<SVGCircleElement, ChartData>(this)
           .style("stroke", colorize)
-          .style("stroke-width", strokeWidth)
+          .style("stroke-width", getStrokeWidth)
       })
-      .attr("r", (...[, circleIndex]) => `${circleIndex / 5}px`)
+      .on("click", function handleClick(...[, circle]) {
+        const id = getCircleId(circle)
 
-    $(`.${this.circleClass}`).tooltip({
-      track: true,
-    })
+        selectedCircles[id] = !selectedCircles[id]
+
+        select<SVGCircleElement, ChartData>(this)
+          .style("stroke", colorize)
+          .style("stroke-width", getStrokeWidth)
+      })
+      .append("title")
+      .text(getCircleTitle)
 
     elements.descriptionSel
       .text(chartDescription)
-      .attr("transform", `translate(${width / 2},${height - 10})`)
+      .attr("transform", `translate(${width / 2},${height + 25})`)
   }
 
   private readonly handleResize = () => {
@@ -184,4 +301,6 @@ class CirclesChart<ChartData> {
   }
 }
 
-export { CirclesChart, ChartConfig }
+const _test = process.env.NODE_ENV === "test" ? { getNewDrag } : null
+
+export { CirclesChart, ChartConfig, _test }
