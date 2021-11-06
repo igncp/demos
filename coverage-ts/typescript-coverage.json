@@ -2,6 +2,258 @@
   "fileCounts": {},
   "anys": [
     {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 7,
+      "character": 8,
+      "text": "config",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 10,
+      "character": 7,
+      "text": "Rule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 12,
+      "character": 2,
+      "text": "config",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 12,
+      "character": 9,
+      "text": "module",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 12,
+      "character": 16,
+      "text": "rules",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 12,
+      "character": 22,
+      "text": "forEach",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 12,
+      "character": 31,
+      "text": "topRule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 12,
+      "character": 40,
+      "text": "Rule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 13,
+      "character": 10,
+      "text": "areCssRules",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 13,
+      "character": 24,
+      "text": "topRule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 13,
+      "character": 32,
+      "text": "oneOf",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 13,
+      "character": 39,
+      "text": "some",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 13,
+      "character": 45,
+      "text": "rule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 13,
+      "character": 51,
+      "text": "Rule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 14,
+      "character": 6,
+      "text": "rule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 14,
+      "character": 11,
+      "text": "test",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 14,
+      "character": 16,
+      "text": "test",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 17,
+      "character": 9,
+      "text": "areCssRules",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 21,
+      "character": 4,
+      "text": "topRule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 21,
+      "character": 12,
+      "text": "oneOf",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 21,
+      "character": 18,
+      "text": "forEach",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 21,
+      "character": 27,
+      "text": "rule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 21,
+      "character": 33,
+      "text": "Rule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 22,
+      "character": 6,
+      "text": "rule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 22,
+      "character": 11,
+      "text": "use",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 22,
+      "character": 15,
+      "text": "forEach",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 22,
+      "character": 24,
+      "text": "innerRule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 22,
+      "character": 35,
+      "text": "Rule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 23,
+      "character": 13,
+      "text": "innerRule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 23,
+      "character": 23,
+      "text": "options",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 23,
+      "character": 32,
+      "text": "modules",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 23,
+      "character": 41,
+      "text": "localIdentName",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 28,
+      "character": 8,
+      "text": "innerRule",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 28,
+      "character": 18,
+      "text": "options",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 28,
+      "character": 26,
+      "text": "modules",
+      "kind": 1
+    },
+    {
+      "file": "gatsby/onCreateWebpackConfig.ts",
+      "line": 28,
+      "character": 34,
+      "text": "localIdentName",
+      "kind": 1
+    },
+    {
       "file": "src/components/demo.tsx",
       "line": 35,
       "character": 18,
@@ -1304,8 +1556,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.41219227001233,
-  "total": 31643,
-  "covered": 31457,
-  "uncovered": 186
+  "percentage": 99.29950776221128,
+  "total": 31692,
+  "covered": 31470,
+  "uncovered": 222
 }
