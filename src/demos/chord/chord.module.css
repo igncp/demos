@@ -7,13 +7,15 @@
   stroke-width: 0.75;
 }
 
-.group text {
-  font: 10rem sans-serif;
-  pointer-events: none;
-}
+.group {
+  text {
+    font: 10rem sans-serif;
+    pointer-events: none;
+  }
 
-.group path {
-  stroke: #000;
+  path {
+    stroke: #000;
+  }
 }
 
 .groupLabel {
