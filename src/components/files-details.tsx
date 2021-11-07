@@ -137,7 +137,7 @@ const FilesDetails = ({ demoInfo }: Props) => {
           {demoInfo.files.demoTS.map(({ content, filePath }) => (
             <li key={filePath}>
               <p>
-                {filePath}{" "}
+                <span className={styles.fileNameWrapper}>{filePath}</span>{" "}
                 {(() => (
                   <>
                     <CodeInGH filePath={filePath} />{" "}
@@ -160,7 +160,8 @@ const FilesDetails = ({ demoInfo }: Props) => {
           ))}
           <li>
             <p>
-              {pageFilePath} <CodeInGH filePath={pageFilePath} />{" "}
+              <span className={styles.fileNameWrapper}>{pageFilePath}</span>{" "}
+              <CodeInGH filePath={pageFilePath} />{" "}
               <CoverageReport filePath={pageFilePath} />
             </p>
             <pre>
@@ -178,7 +179,7 @@ const FilesDetails = ({ demoInfo }: Props) => {
           {demoInfo.files.demoCSS.map(({ content, filePath }) => (
             <li key={filePath}>
               <p>
-                {filePath}{" "}
+                <span className={styles.fileNameWrapper}>{filePath}</span>{" "}
                 {(() => (
                   <CodeInGH filePath={filePath} />
                 ))()}

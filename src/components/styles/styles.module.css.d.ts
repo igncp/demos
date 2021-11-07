@@ -7,6 +7,7 @@ declare const styles: {
   readonly "demoWip": string
   readonly "demosLegend": string
   readonly "demosLists": string
+  readonly "fileNameWrapper": string
   readonly "ghButtons": string
   readonly "highlightStorybook": string
   readonly "highlightTesting": string

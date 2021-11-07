@@ -1,6 +1,5 @@
 import {
   GeoProjection,
-  ScaleOrdinal,
   Selection,
   geoOrthographic,
   polygonArea,
@@ -24,73 +23,56 @@ type Point2D = [number, number]
 
 type Hull = Point2D[]
 type Face = Hull
-type Faces = Face[]
 type FaceWithPolygon = Face & {
-  polygon: Hull
+  faceIndex: number
+  polygon?: Hull
 }
-
-type SvgSelection = Selection<
-  SVGSVGElement,
-  FaceWithPolygon,
-  HTMLElement,
-  unknown
->
 
 class Icosahedron {
   private readonly rootElId: string
 
-  private config!: {
-    color: ScaleOrdinal<string, string>
+  private readonly config: Readonly<{
     defaultVelocity: number[]
     height: number
     rotationFactor1: number
     rotationFactor2: number
     t0: number
-    width: number
     zeroVelocity: number[]
-  }
+  }>
 
   private dom!: {
-    faces: Selection<
-      SVGPathElement,
-      FaceWithPolygon,
-      SVGSVGElement,
-      unknown
-    > | null
+    faces: Selection<SVGPathElement, FaceWithPolygon, SVGGElement, unknown>
+    gSel: Selection<SVGGElement, unknown, HTMLElement, unknown>
     projection: GeoProjection
-    svg: SvgSelection
+    svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
   }
 
   private vars!: {
+    selectedIndex: number | null
     velocity: number[] | null
   }
 
   public constructor(opts: IcosahedronOpts) {
     this.rootElId = opts.rootElId
-    this.setConfig()
-    this.setDom()
+
+    this.config = {
+      defaultVelocity: [1, 0.4, 0.07],
+      height: 500,
+      rotationFactor1: 1 / 1000,
+      rotationFactor2: 4,
+      t0: Date.now(),
+      zeroVelocity: [0, 0, 0],
+    }
+
     this.setVars()
+    this.setDom()
+    this.setDimensions()
 
-    const faces = this.dom.svg
-      .selectAll("path")
-      .data(Icosahedron.getIcosahedronFaces() as FaceWithPolygon[])
-      .enter()
-      .append("path")
-      .each((face) => {
-        face.polygon = polygonHull(
-          face.map(this.dom.projection) as Faces[0]
-        ) as Hull
-      })
-      .style("fill", (...[, faceIndex]: [unknown, number]) =>
-        this.config.color(faceIndex.toString())
-      )
-
-    this.dom.faces = faces
-    this.vars.velocity = this.config.defaultVelocity
+    window.addEventListener("resize", this.handleResize)
   }
 
-  private static getIcosahedronFaces(): Faces {
-    const faces: Faces = []
+  private static getIcosahedronFaces(): FaceWithPolygon[] {
+    const faces: Face[] = []
     const y = (Math.atan2(1, 2) * 180) / Math.PI
 
     for (let x = 0; x < 360; x += 360 / 5) {
@@ -118,28 +100,19 @@ class Icosahedron {
       )
     }
 
-    return faces
+    return faces.map((...[face, faceIndex]) =>
+      Object.assign(face, {
+        faceIndex,
+      })
+    )
   }
 
   public start() {
     timer(() => this.timer())
   }
 
-  private setConfig() {
-    const color = scaleOrdinal(schemePastel2)
-
-    this.config = {
-      color,
-      defaultVelocity: [1, 0.4, 0.07],
-      height: 500,
-      rotationFactor1: 1 / 1000,
-      rotationFactor2: 4,
-      t0: Date.now(),
-      width: (
-        document.getElementById(this.rootElId) as HTMLElement
-      ).getBoundingClientRect().width,
-      zeroVelocity: [0, 0, 0],
-    }
+  public teardown() {
+    window.removeEventListener("resize", this.handleResize)
   }
 
   private setDom() {
@@ -150,25 +123,80 @@ class Icosahedron {
     const projection = geoOrthographic().scale(this.config.height / 2 - 10)
     const svg = select(`#${this.rootElId}`)
       .append("svg")
-      .attr("width", this.config.width)
       .attr("height", this.config.height)
-      .on("click", () => {
-        this.vars.velocity =
-          this.vars.velocity?.toString() === this.config.zeroVelocity.toString()
-            ? this.config.defaultVelocity
-            : this.config.zeroVelocity
-      }) as SvgSelection
+
+    const gSel = svg.append("g")
+
+    const color = scaleOrdinal<number, string>(schemePastel2)
+    const highlightColor = "orange"
+    const { vars } = this
+
+    const setColor = (faceData: FaceWithPolygon) => {
+      if (vars.selectedIndex === faceData.faceIndex) {
+        return highlightColor
+      }
+
+      return color(faceData.faceIndex)
+    }
+
+    const faces = gSel
+      .selectAll("path")
+      .data<FaceWithPolygon>(Icosahedron.getIcosahedronFaces())
+      .enter()
+      .append("path")
+      .each((face) => {
+        face.polygon = polygonHull(face.map(projection) as Face)!
+      })
+      .style("fill", setColor)
+      .on("mouseenter", function handleMouseEnter() {
+        select(this).style("fill", highlightColor)
+      })
+      .on("mouseleave", function handleMouseLeave() {
+        select<SVGPathElement, FaceWithPolygon>(this).style("fill", setColor)
+      })
+      .on("click", (...[, face]) => {
+        if (this.vars.selectedIndex === face.faceIndex) {
+          this.vars.velocity = this.config.defaultVelocity
+          this.vars.selectedIndex = null
+        } else {
+          this.vars.velocity = this.config.zeroVelocity
+          this.vars.selectedIndex = face.faceIndex
+        }
+
+        faces.style("fill", setColor)
+      })
 
     this.dom = {
-      faces: null,
+      faces,
+      gSel,
       projection,
       svg,
     }
   }
 
+  private setDimensions() {
+    const polygonSize = 475
+    const { width } = (
+      document.getElementById(this.rootElId) as HTMLElement
+    ).getBoundingClientRect()
+
+    this.dom.svg.attr("width", width)
+
+    const scale = width < polygonSize ? 0.5 : 1
+    const verticalTranslate = scale !== 1 ? (polygonSize * scale) / 2 : 0
+
+    this.dom.gSel.attr(
+      "transform",
+      `translate(${
+        width / 2 - polygonSize * scale
+      }, ${verticalTranslate}) scale(${scale})`
+    )
+  }
+
   private setVars() {
     this.vars = {
-      velocity: null,
+      selectedIndex: null,
+      velocity: this.config.defaultVelocity,
     }
   }
 
@@ -202,16 +230,17 @@ class Icosahedron {
     this.dom.projection.rotate(
       this.calcNewPosition({ position: originalPos, time })
     )
-    this.dom
-      .faces!.each((face) => {
+
+    this.dom.faces
+      .each((face) => {
         face.forEach((...[point, pointIndex]: [Point2D, number]) => {
-          face.polygon[pointIndex] = this.dom.projection(point) as Point2D
+          face.polygon![pointIndex] = this.dom.projection(point) as Point2D
 
           return null
         })
       })
       .style("display", (face) => {
-        const area = polygonArea(face.polygon)
+        const area = polygonArea(face.polygon!)
 
         if (area > 0) {
           return null
@@ -219,9 +248,13 @@ class Icosahedron {
 
         return "none"
       })
-      .attr("d", (face) => `M${face.polygon.join("L")}Z`)
+      .attr("d", (face) => `M${face.polygon!.join("L")}Z`)
 
     return null
+  }
+
+  private readonly handleResize = () => {
+    this.setDimensions()
   }
 }
 
