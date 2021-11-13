@@ -17,6 +17,7 @@ module.exports = [
   "e",
   "el",
   "els",
+  "ev",
   "event",
   "geometry",
   "i",

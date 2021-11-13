@@ -194,12 +194,7 @@ const d3js: D3JS = {
     docs: [],
     isCompleted: true,
     name: "Fish Eye",
-    notes: [
-      "Uses the Fish Eye plugin",
-      "Changed style",
-      "Click to stop and show a pointer",
-      "Extended the title information",
-    ],
+    notes: [],
     sources: ["http://bost.ocks.org/mike/fisheye/"],
     summary: [],
   },
