@@ -11,95 +11,128 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="negative"><td class="">src/demos/_utils/fish-eye.ts</td><td class="">68.64%</td><td class="">95%</td><td class="">118</td><td class="">81</td><td class="">37</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { extent } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/_utils/fish-eye.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">167</td><td class="">167</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { AxisScale, ScaleLinear, extent, scaleLinear } from &quot;d3&quot;
 
-function createFishEyeScale({
-  initialDistortion,
-  initialFocus,
+type ScaleFn = typeof scaleLinear
+type Scale = ScaleLinear&lt;number, number&gt;
+
+const d3Rebind = &lt;
+  MethodArgs extends any[], // eslint-disable-line @typescript-eslint/no-explicit-any
+  Method extends string,
+  Source extends { [k in Method]: (...args: MethodArgs) =&gt; Source },
+  Target
+&gt;({
+  method,
+  source,
+  target,
+}: {
+  method: Method
+  source: Source
+  target: Target
+}) =&gt;
+  function boundMethod(...args: MethodArgs) {
+    const methodResult = source[method](...args)
+
+    return methodResult === source ? target : methodResult
+  }
+
+const fishEyeScale = ({
+  distortion: initialDistortion,
+  focus: initialFocus,
   scale,
 }: {
-  initialDistortion: number
-  initialFocus: number
-  scale: any // eslint-disable-line @typescript-eslint/no-explicit-any
-}) {
+  distortion: number
+  focus: number
+  scale: Scale
+}) =&gt; {
   let distortion = initialDistortion
   let focus = initialFocus
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const fishEyeScale = (xValue: any): number =&gt; {
-    const x = scale(xValue)
-    const isLeft = x &lt; focus
-    const range = extent&lt;number&gt;(scale.range()) as [number, number]
-    const min = range[0]
-    const max = range[1]
+  function fisheye(scaleArgs: Parameters&lt;Scale&gt;[0]) {
+    const x = scale(scaleArgs)
+    const left = x &lt; focus
+    const [min, max] = extent&lt;number&gt;(scale.range()) as [number, number]
+    let m = left ? focus - min : max - focus
 
-    const focusDiff = isLeft ? focus - min : max - focus
-    const diff = focusDiff === 0 ? max - min : focusDiff
+    if (m === 0) {
+      m = max - min
+    }
 
     return (
-      ((isLeft ? -1 : 1) * diff * (distortion + 1)) /
-        (distortion + diff / Math.abs(x - focus)) +
+      ((left ? -1 : 1) * m * (distortion + 1)) /
+        (distortion + m / Math.abs(x - focus)) +
       focus
     )
   }
 
-  fishEyeScale.distortion = (newDistortion: number) =&gt; {
-    distortion = newDistortion
-
-    return fishEyeScale
+  type FisheyeFn = {
+    (newValue: number): typeof fisheye
+    (): number
   }
 
-  fishEyeScale.focus = (newFocus: number) =&gt; {
-    focus = newFocus
+  const createFisheyeFn = (cb: (newValue: number) =&gt; void): FisheyeFn =&gt;
+    ((newValue?: number) =&gt; {
+      if (typeof newValue === &quot;undefined&quot;) {
+        return distortion
+      }
 
-    return fishEyeScale
-  }
+      cb(newValue)
 
-  fishEyeScale.copy = () =&gt;
-    createFishEyeScale({
-      initialDistortion,
-      initialFocus,
+      return fisheye
+    }) as FisheyeFn
+
+  fisheye.distortion = createFisheyeFn((newDistortion) =&gt; {
+    distortion = +newDistortion
+  })
+
+  fisheye.focus = createFisheyeFn((newFocus) =&gt; {
+    focus = +newFocus
+  })
+
+  fisheye.copy = function fisheyeCopy() {
+    return fishEyeScale({
+      distortion,
+      focus,
       scale: scale.copy(),
     })
-
-  fishEyeScale.domain = (...args: [[number, number]] | []) =&gt; {
-    const domainResult = scale.domain(...args)
-
-    return domainResult === scale ? fishEyeScale : domainResult
   }
 
-  fishEyeScale.range = (...args: [[number, number]] | []) =&gt; {
-    const rangeResult = scale.range(...args)
+  fisheye.nice = scale.nice
+  fisheye.ticks = scale.ticks
+  fisheye.tickFormat = scale.tickFormat
 
-    return rangeResult === scale ? fishEyeScale : rangeResult
-  }
+  fisheye.domain = d3Rebind({
+    method: &quot;domain&quot;,
+    source: scale,
+    target: fisheye,
+  })
 
-  fishEyeScale.nice = scale.nice
-  fishEyeScale.ticks = scale.ticks
-  fishEyeScale.tickFormat = scale.tickFormat
+  fisheye.range = d3Rebind({
+    method: &quot;range&quot;,
+    source: scale,
+    target: fisheye,
+  })
 
-  return fishEyeScale
+  return fisheye
 }
 
-type FishEyeScale = ReturnType&lt;typeof createFishEyeScale&gt;
-
-// https://github.com/d3/d3-plugins/blob/master/fisheye/fisheye.js
-const d3Fisheye = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  scale(createScale: any): FishEyeScale {
-    return createFishEyeScale({
-      initialDistortion: 3,
-      initialFocus: 0,
-      scale: createScale(),
+const fisheye = {
+  scale(scaleType: ScaleFn) {
+    return fishEyeScale({
+      distortion: 3,
+      focus: 0,
+      scale: scaleType(),
     })
   },
 }
 
-export { FishEyeScale }
+export type FishEyeScale = AxisScale&lt;number&gt; &amp;
+  ReturnType&lt;typeof fisheye.scale&gt; &amp;
+  Scale
 
-export default d3Fisheye
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:5,&quot;character&quot;:2,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:9,&quot;character&quot;:2,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:15,&quot;character&quot;:24,&quot;text&quot;:&quot;xValue&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:10,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:14,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:16,&quot;character&quot;:20,&quot;text&quot;:&quot;xValue&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:17,&quot;character&quot;:19,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:33,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:18,&quot;character&quot;:39,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:27,&quot;character&quot;:38,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:6,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:13,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:48,&quot;character&quot;:19,&quot;text&quot;:&quot;copy&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:10,&quot;text&quot;:&quot;domainResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:25,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:52,&quot;character&quot;:31,&quot;text&quot;:&quot;domain&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:11,&quot;text&quot;:&quot;domainResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:28,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:54,&quot;character&quot;:51,&quot;text&quot;:&quot;domainResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:58,&quot;character&quot;:10,&quot;text&quot;:&quot;rangeResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:58,&quot;character&quot;:24,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:58,&quot;character&quot;:30,&quot;text&quot;:&quot;range&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:60,&quot;character&quot;:11,&quot;text&quot;:&quot;rangeResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:60,&quot;character&quot;:27,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:60,&quot;character&quot;:50,&quot;text&quot;:&quot;rangeResult&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:63,&quot;character&quot;:15,&quot;text&quot;:&quot;nice&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:63,&quot;character&quot;:22,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:63,&quot;character&quot;:28,&quot;text&quot;:&quot;nice&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:15,&quot;text&quot;:&quot;ticks&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:23,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:64,&quot;character&quot;:29,&quot;text&quot;:&quot;ticks&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:15,&quot;text&quot;:&quot;tickFormat&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:28,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:65,&quot;character&quot;:34,&quot;text&quot;:&quot;tickFormat&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:75,&quot;character&quot;:8,&quot;text&quot;:&quot;createScale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:79,&quot;character&quot;:6,&quot;text&quot;:&quot;scale&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/_utils/fish-eye.ts&quot;,&quot;line&quot;:79,&quot;character&quot;:13,&quot;text&quot;:&quot;createScale&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 07 Nov 2021 17:37:25 GMT</p>
+export default fisheye
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 13 Nov 2021 11:53:10 GMT</p>
     </body>
   </html>
   

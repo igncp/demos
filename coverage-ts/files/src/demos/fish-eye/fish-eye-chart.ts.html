@@ -1,0 +1,377 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>fish-eye-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye-chart.ts</td><td class="">99.84%</td><td class="">95%</td><td class="">607</td><td class="">606</td><td class="">1</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Axis,
+  AxisScale,
+  ScaleOrdinal,
+  ScalePower,
+  Selection,
+  axisBottom,
+  axisLeft,
+  format,
+  pointer as pointerD3,
+  scaleLinear,
+  scaleLog,
+  scaleOrdinal,
+  scaleSqrt,
+  schemePastel2,
+  select,
+} from &quot;d3&quot;
+
+import d3Fisheye, { FishEyeScale } from &quot;@/demos/_utils/fish-eye&quot;
+
+import * as styles from &quot;./fish-eye.module.css&quot;
+
+const margin = {
+  bottom: 70,
+  left: 70,
+  right: 50,
+  top: 80,
+}
+const height = 700 - margin.top - margin.bottom
+
+type FishEyeChartOpts&lt;ChartData&gt; = Readonly&lt;{
+  chartItems: ChartData[]
+  chartTitle: string
+  colorDomain: string[]
+  getCircleTitle: (chartItem: ChartData) =&gt; string
+  getColorValue: (chartItem: ChartData) =&gt; string
+  getRadiusValue: (chartItem: ChartData) =&gt; number
+  getXValue: (chartItem: ChartData) =&gt; number
+  getYValue: (chartItem: ChartData) =&gt; number
+  rootElId: string
+  xAxisLabel: string
+  yAxisLabel: string
+}&gt;
+
+class FishEyeChart&lt;ChartData&gt; {
+  private readonly config: FishEyeChartOpts&lt;ChartData&gt;
+
+  private width = 0
+
+  private dom!: {
+    dot?: Selection&lt;SVGCircleElement, ChartData, SVGGElement, unknown&gt;
+    pointer?: Selection&lt;SVGTextElement, unknown, HTMLElement, unknown&gt;
+    svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+    svgG: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+    xAxis?: Axis&lt;number&gt;
+    yAxis?: Axis&lt;number&gt;
+  }
+
+  private vars!: {
+    colorScale: ScaleOrdinal&lt;string, string&gt;
+    focused: boolean
+    radiusScale: ScalePower&lt;number, number&gt;
+    xScale: FishEyeScale
+    yScale: FishEyeScale
+  }
+
+  public constructor(chartConfig: FishEyeChartOpts&lt;ChartData&gt;) {
+    this.config = chartConfig
+
+    this.setupRootEl()
+    this.setVars()
+    this.setDom()
+  }
+
+  public render() {
+    this.setChartTitle()
+    this.setBackground()
+    this.setPointer()
+    this.setAxis()
+    this.setLabels()
+    this.setDots()
+    this.setTitles()
+    this.updateDimensions()
+    this.bindMousemove()
+    this.bindMouseLeave()
+    this.bindClick()
+    this.bindResize()
+  }
+
+  private setupRootEl() {
+    const rootEl = document.getElementById(this.config.rootElId) as HTMLElement
+
+    rootEl.classList.add(styles.fishEyeChart)
+
+    this.width =
+      rootEl.getBoundingClientRect().width - margin.left - margin.right
+  }
+
+  private setDom() {
+    const svg = select(`#${this.config.rootElId}`).append(&quot;svg&quot;)
+    const svgG = svg
+      .append(&quot;g&quot;)
+      .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+
+    this.dom = {
+      svg,
+      svgG,
+    }
+  }
+
+  private setChartTitle() {
+    this.dom.svgG
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, styles.chartTitle)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .text(this.config.chartTitle)
+      .style(&quot;font-weight&quot;, &quot;bold&quot;)
+  }
+
+  private setVars() {
+    const colorScale = scaleOrdinal&lt;string&gt;()
+      .domain(this.config.colorDomain)
+      .range(schemePastel2)
+
+    const radiusScale = scaleSqrt().domain([0, 5e8]).range([5, 60])
+    const xScale = d3Fisheye
+      .scale(scaleLog)
+      .domain([300, 1e5])
+      .range([0, this.width]) as FishEyeScale
+    const yScale = d3Fisheye
+      .scale(scaleLinear)
+      .domain([20, 90])
+      .range([height, 0]) as FishEyeScale
+
+    this.vars = {
+      colorScale,
+      focused: false,
+      radiusScale,
+      xScale,
+      yScale,
+    }
+  }
+
+  private setAxis() {
+    const formatFn = format(&quot;,d&quot;)
+
+    this.dom.xAxis = axisBottom(this.vars.xScale as AxisScale&lt;number&gt;)
+      .tickFormat((tickNumber) =&gt; {
+        if (tickNumber &lt; 1000) {
+          return formatFn(tickNumber)
+        }
+
+        const reducedNum = Math.round(tickNumber / 1000)
+
+        return `${formatFn(reducedNum)}k`
+      })
+      .tickSize(-height)
+    this.dom.yAxis = axisLeft(this.vars.yScale as AxisScale&lt;number&gt;).tickSize(
+      -this.width
+    )
+    this.dom.svgG
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, `x ${styles.axis}`)
+      .attr(&quot;transform&quot;, `translate(0,${height})`)
+      .call(this.dom.xAxis)
+    this.dom.svgG
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, `y ${styles.axis}`)
+      .call(this.dom.yAxis)
+  }
+
+  private setBackground() {
+    return this.dom.svgG.append(&quot;rect&quot;).attr(&quot;class&quot;, styles.background)
+  }
+
+  private setLabels() {
+    this.dom.svgG
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, &quot;x label&quot;)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .text(this.config.xAxisLabel)
+
+    this.dom.svgG
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, &quot;y label&quot;)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .attr(&quot;x&quot;, -height / 2)
+      .attr(&quot;y&quot;, -40)
+      .attr(&quot;dy&quot;, &quot;.75em&quot;)
+      .attr(&quot;transform&quot;, &quot;rotate(-90)&quot;)
+      .text(this.config.yAxisLabel)
+  }
+
+  private position(animationDuration: number) {
+    this.dom
+      .dot!.transition()
+      .duration(animationDuration)
+      .attr(&quot;cx&quot;, (chartItem) =&gt; {
+        const xValue = this.config.getXValue(chartItem)
+
+        return this.vars.xScale(xValue) as number
+      })
+      .attr(&quot;cy&quot;, (chartItem) =&gt; {
+        const yValue = this.config.getYValue(chartItem)
+
+        return this.vars.yScale(yValue) as number
+      })
+      .attr(&quot;r&quot;, (chartItem) =&gt; {
+        const radiusValue = this.config.getRadiusValue(chartItem)
+
+        return this.vars.radiusScale(radiusValue)
+      })
+    this.dom.svgG
+      .select&lt;SVGGElement&gt;(`.x.${styles.axis}`)
+      .transition()
+      .duration(animationDuration)
+      .call(this.dom.xAxis!)
+    this.dom.svgG
+      .select&lt;SVGGElement&gt;(`.y.${styles.axis}`)
+      .transition()
+      .duration(animationDuration)
+      .call(this.dom.yAxis!)
+  }
+
+  private setDots() {
+    this.dom.dot = this.dom.svgG
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, &quot;dots&quot;)
+      .selectAll(&quot;.dot&quot;)
+      .data&lt;ChartData&gt;(this.config.chartItems)
+      .enter()
+      .append(&quot;circle&quot;)
+      .attr(&quot;class&quot;, &quot;dot&quot;)
+      .style(&quot;fill&quot;, (chartItem) =&gt; {
+        const colorValue = this.config.getColorValue(chartItem)
+
+        return this.vars.colorScale(colorValue)
+      })
+      .style(&quot;stroke&quot;, &quot;black&quot;)
+      .style(&#x27;&quot;stroke-width&quot;&#x27;, &quot;1px&quot;)
+      .sort(
+        (...[chartItemA, chartItemB]) =&gt;
+          this.config.getRadiusValue(chartItemB) -
+          this.config.getRadiusValue(chartItemA)
+      )
+
+    this.position(0)
+  }
+
+  private setTitles() {
+    this.dom
+      .dot!.append(&quot;title&quot;)
+      .text((chartItem) =&gt; this.config.getCircleTitle(chartItem))
+  }
+
+  private setZoom({
+    animationDuration,
+    distortion,
+    focus,
+  }: {
+    animationDuration: number
+    distortion: number
+    focus: [number, number]
+  }) {
+    this.vars.xScale.distortion(distortion).focus(focus[0])
+    this.vars.yScale.distortion(distortion).focus(focus[1])
+    this.position(animationDuration)
+  }
+
+  private zoom(interactionEvent: Event) {
+    const focus = pointerD3(interactionEvent)
+
+    this.setZoom({
+      animationDuration: 0,
+      distortion: 2.5,
+      focus,
+    })
+  }
+
+  private setPointer() {
+    this.dom.pointer = this.dom.svgG
+      .append(&quot;text&quot;)
+      .text(&quot;+&quot;)
+      .attr(&quot;class&quot;, styles.pointer)
+  }
+
+  private bindMousemove() {
+    return this.dom.svgG.on(&quot;mousemove&quot;, (interactionEvent) =&gt; {
+      if (!this.vars.focused) {
+        this.zoom(interactionEvent)
+      }
+    })
+  }
+
+  private bindMouseLeave() {
+    return this.dom.svgG.on(&quot;mouseleave&quot;, () =&gt; {
+      if (!this.vars.focused) {
+        this.setZoom({
+          animationDuration: 1000,
+          distortion: 0,
+          focus: [0, 0],
+        })
+      }
+    })
+  }
+
+  private bindClick() {
+    this.dom.svgG.on(&quot;click&quot;, (interactionEvent: Event) =&gt; {
+      this.vars.focused = !this.vars.focused
+
+      if (this.vars.focused) {
+        const pointer = pointerD3(this)
+
+        this.dom
+          .pointer!.attr(&quot;x&quot;, pointer[0])
+          .attr(&quot;y&quot;, pointer[1])
+          .style(&quot;opacity&quot;, 1)
+
+        return
+      }
+
+      this.dom.pointer!.style(&quot;opacity&quot;, 0)
+
+      this.zoom(interactionEvent)
+    })
+  }
+
+  private updateDimensions() {
+    this.setupRootEl()
+    // this.vars.xScale.range([0, this.width])
+    this.dom.svg
+      .attr(&quot;width&quot;, this.width + margin.left + margin.right)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+    this.dom.svgG
+      .select(`.${styles.chartTitle}`)
+      .attr(&quot;transform&quot;, `translate(${this.width / 2},-40)`)
+
+    this.dom.svgG
+      .select(`.${styles.background}`)
+      .attr(&quot;width&quot;, this.width)
+      .attr(&quot;height&quot;, height)
+
+    this.dom.svgG
+      .select(&quot;.x.label&quot;)
+      .attr(&quot;y&quot;, height + 26)
+      .attr(&quot;x&quot;, this.width / 2)
+
+    this.vars.xScale.range([0, this.width])
+    this.position(0)
+  }
+
+  private bindResize() {
+    window.addEventListener(&quot;resize&quot;, () =&gt; {
+      this.updateDimensions()
+    })
+  }
+}
+
+export { FishEyeChart, FishEyeChartOpts }
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye-chart.ts&quot;,&quot;line&quot;:287,&quot;character&quot;:42,&quot;text&quot;:&quot;interactionEvent&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 13 Nov 2021 11:53:10 GMT</p>
+    </body>
+  </html>
+  
