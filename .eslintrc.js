@@ -5,7 +5,9 @@ const isFindRules = process.env.FIND_RULES === "true"
 const disabledRules = {
   "@typescript-eslint/ban-ts-comment": 0,
   "@typescript-eslint/explicit-module-boundary-types": 0,
+  "@typescript-eslint/no-confusing-void-expression": 0,
   "@typescript-eslint/no-empty-function": 0,
+  "@typescript-eslint/no-invalid-this": 0,
   "@typescript-eslint/no-non-null-assertion": 0,
   "@typescript-eslint/no-unsafe-assignment": 0,
   "@typescript-eslint/no-unsafe-call": 0,
@@ -52,11 +54,17 @@ const tsRules = {
       typedefs: true,
     },
   ],
+  "@typescript-eslint/no-useless-constructor": 2,
+  "@typescript-eslint/prefer-includes": 2,
   "@typescript-eslint/prefer-nullish-coalescing": 2,
   "@typescript-eslint/prefer-optional-chain": 2,
   "@typescript-eslint/prefer-readonly": 2,
   "@typescript-eslint/prefer-reduce-type-parameter": 2,
+  "@typescript-eslint/prefer-return-this-type": 2,
+  "@typescript-eslint/prefer-ts-expect-error": 2,
   "@typescript-eslint/sort-type-union-intersection-members": 2,
+  "@typescript-eslint/switch-exhaustiveness-check": 2,
+  "@typescript-eslint/unified-signatures": 2,
 }
 
 const commonExtends = [

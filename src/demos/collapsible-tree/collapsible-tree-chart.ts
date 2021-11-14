@@ -232,7 +232,7 @@ const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
           newDataNode
         ) as TreeNode
 
-        // @ts-ignore
+        // @ts-expect-error
         newNodeHirarchy.depth = clickedTreeNode.depth + 1
         newNodeHirarchy.parent = clickedTreeNode
 

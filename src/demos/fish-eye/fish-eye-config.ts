@@ -3,6 +3,7 @@ import { json } from "d3"
 import { FishEyeChartOpts } from "./fish-eye-chart"
 
 const CONTAINER_ID = "chart"
+const RANDOM_UPDATE_ID = "random-update"
 
 type IncomeMetric = {
   income: number
@@ -26,7 +27,7 @@ const getColorValue: Opts["getColorValue"] = (incomeMetric) =>
   incomeMetric.region
 
 const humanizeNumber = (initialN: number): string => {
-  let numStr = initialN.toString()
+  let numStr = initialN.toFixed(0)
 
   while (true) {
     const numStrFormatted = numStr.replace(/(\d)(\d{3})($|,|\.)/g, "$1,$2$3")
@@ -57,16 +58,16 @@ const regions = [
   "East Asia & Pacific",
 ]
 
-const title =
+const longTitle =
   "Income Per Capita vs " +
   "Life Expectancy vs Population vs Region - 180 Countries"
+const shortTitle = "Income Per Capita vs Life Expectancy"
 
 const xAxisLabel = "income per capita, inflation-adjusted (dollars)"
 const yAxisLabel = "life expectancy (years)"
 
 const getChartConfig = (incomeMetrics: IncomeMetric[]): Opts => ({
   chartItems: incomeMetrics,
-  chartTitle: title,
   colorDomain: regions,
   getCircleTitle,
   getColorValue,
@@ -74,8 +75,12 @@ const getChartConfig = (incomeMetrics: IncomeMetric[]): Opts => ({
   getXValue,
   getYValue,
   rootElId: CONTAINER_ID,
+  titles: {
+    long: longTitle,
+    short: shortTitle,
+  },
   xAxisLabel,
   yAxisLabel,
 })
 
-export { CONTAINER_ID, getChartConfig, fetchData }
+export { CONTAINER_ID, RANDOM_UPDATE_ID, fetchData, getChartConfig }

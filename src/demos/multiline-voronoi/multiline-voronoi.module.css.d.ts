@@ -1,10 +1,10 @@
 declare const styles: {
   readonly "axis": string
-  readonly "cities": string
-  readonly "cityHover": string
-  readonly "focus": string
   readonly "formVoronoi": string
+  readonly "lineHover": string
+  readonly "lines": string
   readonly "multilineVoronoiChart": string
+  readonly "tooltip": string
   readonly "voronoi": string
   readonly "voronoiShow": string
 }

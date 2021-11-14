@@ -222,7 +222,7 @@ class Chart {
       dom: { paper },
     } = this
 
-    return countriesMetrics.keys.forEach((...[countryName, countryIndex]) => {
+    countriesMetrics.keys.forEach((...[countryName, countryIndex]) => {
       this.dom.elements[countryName].inner = paper.path(
         this.calcInnerPath({ countryName, serieIndex })
       )

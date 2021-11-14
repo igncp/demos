@@ -264,7 +264,9 @@ class PieChart<SliceData> {
       .attr("fill", (...[, sliceIndex]) => colorScale(sliceIndex.toString()))
       .attr("class", "slice-path")
       .attr("stroke", "#777")
-      .each((slice) => PieChart.stashArcs<SliceData>(slice))
+      .each((slice) => {
+        PieChart.stashArcs<SliceData>(slice)
+      })
 
     slicesEls
       .filter(

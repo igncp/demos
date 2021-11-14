@@ -96,7 +96,9 @@ const animate = (simulation: Simulation) => {
     return
   }
 
-  requestAnimationFrame(() => animate(simulation))
+  requestAnimationFrame(() => {
+    animate(simulation)
+  })
 
   simulation.state.currentTime +=
     speedScale(simulation.props.lightPointSpeed) / 1_000_000

@@ -1,9 +1,17 @@
+$mobileBreakpoint: 530px;
+
+@define-mixin mobile-only {
+  @media (max-width: $mobileBreakpoint) {
+    @mixin-content;
+  }
+}
+
 .backHome {
   padding: 0;
   text-align: right;
 }
 
-@media screen and (max-width: 530px) {
+@mixin mobile-only {
   .backHome {
     display: none;
   }
@@ -27,6 +35,14 @@
 
   &.testing {
     color: yellow;
+  }
+}
+
+.demoName {
+  font-size: 30px;
+
+  @mixin mobile-only {
+    font-size: 20px;
   }
 }
 
@@ -146,6 +162,11 @@
 
 #mainSource {
   color: #bbb;
+
+  @mixin mobile-only {
+    font-size: 18px;
+    font-weight: bold;
+  }
 }
 
 #dataList,

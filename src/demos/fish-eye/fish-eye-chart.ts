@@ -26,11 +26,11 @@ const margin = {
   right: 50,
   top: 80,
 }
+const LEFT_OFFSET_SMALL_DEVICE = 20
 const height = 700 - margin.top - margin.bottom
 
 type FishEyeChartOpts<ChartData> = Readonly<{
   chartItems: ChartData[]
-  chartTitle: string
   colorDomain: string[]
   getCircleTitle: (chartItem: ChartData) => string
   getColorValue: (chartItem: ChartData) => string
@@ -38,6 +38,10 @@ type FishEyeChartOpts<ChartData> = Readonly<{
   getXValue: (chartItem: ChartData) => number
   getYValue: (chartItem: ChartData) => number
   rootElId: string
+  titles: {
+    long: string
+    short: string
+  }
   xAxisLabel: string
   yAxisLabel: string
 }>
@@ -70,9 +74,7 @@ class FishEyeChart<ChartData> {
     this.setupRootEl()
     this.setVars()
     this.setDom()
-  }
 
-  public render() {
     this.setChartTitle()
     this.setBackground()
     this.setPointer()
@@ -85,6 +87,24 @@ class FishEyeChart<ChartData> {
     this.bindMouseLeave()
     this.bindClick()
     this.bindResize()
+
+    this.setZoom({
+      animationDuration: 0,
+      distortion: 0,
+      focus: [0, 0],
+    })
+  }
+
+  private static isTouchDevice() {
+    return (
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      (navigator as any).msMaxTouchPoints > 0 // eslint-disable-line @typescript-eslint/no-explicit-any
+    )
+  }
+
+  public refresh() {
+    this.updateDimensions(1000)
   }
 
   private setupRootEl() {
@@ -96,11 +116,13 @@ class FishEyeChart<ChartData> {
       rootEl.getBoundingClientRect().width - margin.left - margin.right
   }
 
+  private isSmallDevice() {
+    return this.width < 500
+  }
+
   private setDom() {
     const svg = select(`#${this.config.rootElId}`).append("svg")
-    const svgG = svg
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`)
+    const svgG = svg.append("g")
 
     this.dom = {
       svg,
@@ -113,7 +135,6 @@ class FishEyeChart<ChartData> {
       .append("text")
       .attr("class", styles.chartTitle)
       .attr("text-anchor", "middle")
-      .text(this.config.chartTitle)
       .style("font-weight", "bold")
   }
 
@@ -125,7 +146,7 @@ class FishEyeChart<ChartData> {
     const radiusScale = scaleSqrt().domain([0, 5e8]).range([5, 60])
     const xScale = d3Fisheye
       .scale(scaleLog)
-      .domain([300, 1e5])
+      .domain([200, 1e5])
       .range([0, this.width]) as FishEyeScale
     const yScale = d3Fisheye
       .scale(scaleLinear)
@@ -192,8 +213,20 @@ class FishEyeChart<ChartData> {
   }
 
   private position(animationDuration: number) {
+    this.dom.svgG.attr(
+      "transform",
+      `translate(${
+        margin.left - (this.isSmallDevice() ? LEFT_OFFSET_SMALL_DEVICE : 0)
+      },${margin.top})`
+    )
     this.dom
-      .dot!.transition()
+      // Sort the circles by radius, so the largest circles appear below
+      .dot!.sort(
+        (...[chartItemA, chartItemB]) =>
+          this.config.getRadiusValue(chartItemB) -
+          this.config.getRadiusValue(chartItemA)
+      )
+      .transition()
       .duration(animationDuration)
       .attr("cx", (chartItem) => {
         const xValue = this.config.getXValue(chartItem)
@@ -208,8 +241,11 @@ class FishEyeChart<ChartData> {
       .attr("r", (chartItem) => {
         const radiusValue = this.config.getRadiusValue(chartItem)
 
-        return this.vars.radiusScale(radiusValue)
+        return (
+          this.vars.radiusScale(radiusValue) / (this.isSmallDevice() ? 2 : 1)
+        )
       })
+    this.dom.xAxis!.ticks(this.isSmallDevice() ? 2 : undefined)
     this.dom.svgG
       .select<SVGGElement>(`.x.${styles.axis}`)
       .transition()
@@ -238,19 +274,13 @@ class FishEyeChart<ChartData> {
       })
       .style("stroke", "black")
       .style('"stroke-width"', "1px")
-      .sort(
-        (...[chartItemA, chartItemB]) =>
-          this.config.getRadiusValue(chartItemB) -
-          this.config.getRadiusValue(chartItemA)
-      )
 
     this.position(0)
   }
 
   private setTitles() {
-    this.dom
-      .dot!.append("title")
-      .text((chartItem) => this.config.getCircleTitle(chartItem))
+    this.dom.dot!.append("title").attr("class", "dot-title")
+    this.updateTitles()
   }
 
   private setZoom({
@@ -267,11 +297,31 @@ class FishEyeChart<ChartData> {
     this.position(animationDuration)
   }
 
-  private zoom(interactionEvent: Event) {
+  private updateTitles() {
+    this.dom
+      .dot!.selectAll<SVGTitleElement, ChartData>(".dot-title")
+      .text((chartItem) => this.config.getCircleTitle(chartItem))
+
+    this.dom.svgG
+      .select<SVGTitleElement>(`.${styles.chartTitle}`)
+      .text(
+        this.isSmallDevice()
+          ? this.config.titles.short
+          : this.config.titles.long
+      )
+  }
+
+  private zoom({
+    animationDuration,
+    interactionEvent,
+  }: {
+    animationDuration: number
+    interactionEvent: Event
+  }) {
     const focus = pointerD3(interactionEvent)
 
     this.setZoom({
-      animationDuration: 0,
+      animationDuration,
       distortion: 2.5,
       focus,
     })
@@ -286,8 +336,15 @@ class FishEyeChart<ChartData> {
 
   private bindMousemove() {
     return this.dom.svgG.on("mousemove", (interactionEvent) => {
+      if (FishEyeChart.isTouchDevice()) {
+        return
+      }
+
       if (!this.vars.focused) {
-        this.zoom(interactionEvent)
+        this.zoom({
+          animationDuration: 0,
+          interactionEvent,
+        })
       }
     })
   }
@@ -306,34 +363,45 @@ class FishEyeChart<ChartData> {
 
   private bindClick() {
     this.dom.svgG.on("click", (interactionEvent: Event) => {
-      this.vars.focused = !this.vars.focused
+      const isTouchDevice = FishEyeChart.isTouchDevice()
 
-      if (this.vars.focused) {
-        const pointer = pointerD3(this)
+      if (!isTouchDevice) {
+        this.vars.focused = !this.vars.focused
 
-        this.dom
-          .pointer!.attr("x", pointer[0])
-          .attr("y", pointer[1])
-          .style("opacity", 1)
+        if (this.vars.focused) {
+          const pointer = pointerD3(this)
 
-        return
+          this.dom
+            .pointer!.attr("x", pointer[0])
+            .attr("y", pointer[1])
+            .style("opacity", 1)
+
+          return
+        }
       }
 
       this.dom.pointer!.style("opacity", 0)
 
-      this.zoom(interactionEvent)
+      this.zoom({
+        animationDuration: isTouchDevice ? 1000 : 0,
+        interactionEvent,
+      })
     })
   }
 
-  private updateDimensions() {
+  private updateDimensions(animationDuration = 0) {
     this.setupRootEl()
-    // this.vars.xScale.range([0, this.width])
+
+    const isSmallDevice = this.isSmallDevice()
+    const widthOffset = isSmallDevice ? LEFT_OFFSET_SMALL_DEVICE : 0
+    const totalWidth = this.width + widthOffset
+
     this.dom.svg
       .attr("width", this.width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     this.dom.svgG
       .select(`.${styles.chartTitle}`)
-      .attr("transform", `translate(${this.width / 2},-40)`)
+      .attr("transform", `translate(${totalWidth / 2},-40)`)
 
     this.dom.svgG
       .select(`.${styles.background}`)
@@ -345,8 +413,9 @@ class FishEyeChart<ChartData> {
       .attr("y", height + 26)
       .attr("x", this.width / 2)
 
-    this.vars.xScale.range([0, this.width])
-    this.position(0)
+    this.vars.xScale.range([0, totalWidth])
+    this.updateTitles()
+    this.position(animationDuration)
   }
 
   private bindResize() {

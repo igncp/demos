@@ -10,8 +10,8 @@ type Props = {
 
 const DemoTitle = ({ isCompleted, mainSource, name }: Props) => (
   <h2 className="row" id={styles.demoTitle}>
-    <span className="col-xs-10">
-      {name} Chart{" "}
+    <span className="col-xs-12 col-sm-10">
+      <span className={styles.demoName}>{name} Chart </span>
       <small id={styles.mainSource} title="Main Source">
         <a href={mainSource}>···</a>
       </small>

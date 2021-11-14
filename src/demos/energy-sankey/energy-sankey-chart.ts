@@ -258,12 +258,12 @@ export const renderChart = <NodeData, LinkData>(
     .on("mouseleave", () => {
       lastAnime()
     })
-    .on("click", (...[, sankeyNode]) =>
+    .on("click", (...[, sankeyNode]) => {
       nodeClickHandler({
         linkPath, // eslint-disable-line @typescript-eslint/no-use-before-define
         sankeyNode,
       })
-    )
+    })
 
   node.attr("title", (sankeyNode) =>
     chartConfig.getNodeTitle({

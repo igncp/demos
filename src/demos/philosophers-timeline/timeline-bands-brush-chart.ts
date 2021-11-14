@@ -404,9 +404,9 @@ class Timeline<ChartData extends ChartDataBase> {
     const itemsSelections = [intervals, instants]
 
     itemsSelections.forEach((selection) => {
-      selection.on("click", (...[, chartItem]) =>
+      selection.on("click", (...[, chartItem]) => {
         this.chartConfig.onChartItemClick(chartItem)
-      )
+      })
       selection.style("cursor", "pointer")
     })
 
@@ -435,7 +435,9 @@ class Timeline<ChartData extends ChartDataBase> {
           return this.chartConfig.getItemText({ chartItem, maxLetters })
         })
 
-      band.parts!.forEach((part) => part.redraw!())
+      band.parts!.forEach((part) => {
+        part.redraw!()
+      })
     }
 
     this.bands[bandName] = band as Band
@@ -590,7 +592,9 @@ class Timeline<ChartData extends ChartDataBase> {
   }
 
   public redraw() {
-    this.components.forEach((component: RedrawComp) => component.redraw!())
+    this.components.forEach((component: RedrawComp) => {
+      component.redraw!()
+    })
 
     return this
   }

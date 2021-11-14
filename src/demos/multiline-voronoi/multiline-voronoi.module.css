@@ -8,7 +8,7 @@
     stroke: #000;
   }
 
-  .cities {
+  .lines {
     fill: none;
     stroke: #aaa;
     stroke-linecap: round;
@@ -16,11 +16,11 @@
     stroke-width: 1.5px;
   }
 
-  .cityHover {
+  .lineHover {
     stroke: #000;
   }
 
-  .focus text {
+  .tooltip text {
     text-anchor: middle;
     text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
   }

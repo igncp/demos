@@ -240,7 +240,9 @@ const renderChart = (chartConfig: ChartConfig) => {
       .enter()
       .append("circle")
       .style("cursor", "pointer")
-      .on("click", (...[, point]) => chartConfig.onPointClick(point))
+      .on("click", (...[, point]) => {
+        chartConfig.onPointClick(point)
+      })
       .attr(
         "transform",
         (point) =>

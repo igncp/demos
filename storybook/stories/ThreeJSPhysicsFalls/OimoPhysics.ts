@@ -9,7 +9,7 @@ import {
   Shape,
   ShapeConfig,
   Vec3,
-  World, // @ts-ignore
+  World, // @ts-expect-error
 } from "three/examples/jsm/libs/OimoPhysics/index.js"
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

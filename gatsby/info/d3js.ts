@@ -283,11 +283,7 @@ const d3js: D3JS = {
     ] as DemoBase["docs"],
     isCompleted: true,
     name: "Multi-Line Voronoi",
-    notes: [
-      "Click one time to just show a line, click again to sho all",
-      "Added color and dropshadow for 3D effect",
-      "Added label data and clicked function",
-    ],
+    notes: [],
     sources: ["http://bl.ocks.org/mbostock/8033015"],
     summary: [],
   },

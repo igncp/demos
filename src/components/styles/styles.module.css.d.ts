@@ -3,6 +3,7 @@ declare const styles: {
   readonly "bullet": string
   readonly "d3js": string
   readonly "dataList": string
+  readonly "demoName": string
   readonly "demoTitle": string
   readonly "demoWip": string
   readonly "demosLegend": string
