@@ -11,355 +11,32 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/multiline-voronoi/multiline-voronoi.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">537</td><td class="">537</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
-  Selection,
-  axisBottom,
-  axisLeft,
-  extent,
-  line as lineD3,
-  max,
-  scaleLinear,
-  scaleOrdinal,
-  scaleTime,
-  schemePastel2,
-  select,
-  selectAll,
-  timeFormat,
-  timeParse,
-  tsv,
-} from &quot;d3&quot;
-import { Delaunay } from &quot;d3-delaunay&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/multiline-voronoi/multiline-voronoi.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">47</td><td class="">47</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { select } from &quot;d3&quot;
 
+import { MultilineVoronoiChart } from &quot;./multiline-voronoi-chart&quot;
+import {
+  CONTAINER_ID,
+  SHOW_VORONOI_ID,
+  fetchData,
+  getChartConfig,
+} from &quot;./multiline-voronoi-chart-config&quot;
 import * as styles from &quot;./multiline-voronoi.module.css&quot;
 
-const CONTAINER_ID = &quot;chart&quot;
-const SHOW_VORONOI_ID = &quot;show-voronoi&quot;
-
-type InitialDataItem = {
-  [monthKey: string]: string
-  name: string
-}
-
-type CityMetric = {
-  cityName: string
-  date: Date
-  employmentRate: number
-}
-
-type City = {
-  metrics: CityMetric[]
-  name: string
-}
-
-const formatStr = &quot;%Y-%m&quot;
-
-const monthNames = [
-  &quot;January&quot;,
-  &quot;February&quot;,
-  &quot;March&quot;,
-  &quot;April&quot;,
-  &quot;May&quot;,
-  &quot;June&quot;,
-  &quot;July&quot;,
-  &quot;August&quot;,
-  &quot;September&quot;,
-  &quot;October&quot;,
-  &quot;November&quot;,
-  &quot;December&quot;,
-]
-
-const texts = {
-  chartTitle: &quot;US Unemployment Rate&quot;,
-  tooltipPart1: (cityMetric: CityMetric) =&gt; `${cityMetric.cityName.trim()}: `,
-  tooltipPart2: (cityMetric: CityMetric) =&gt; {
-    const date = `${
-      monthNames[cityMetric.date.getMonth()]
-    } of ${cityMetric.date.getFullYear()}`
-
-    return ` ${(cityMetric.employmentRate * 100).toFixed(2)}% - ${date}`
-  },
-}
-
-const fetchData = async () =&gt; {
-  const monthFormat = timeFormat(formatStr)
-  const monthParse = timeParse(formatStr)
-
-  const dataItems = (await tsv(
-    `${ROOT_PATH}data/d3js/multiline-voronoi/data.tsv`
-  )) as unknown as InitialDataItem[]
-
-  const months: Date[] = Object.keys(dataItems[0])
-    .map((v) =&gt; monthParse(v)!)
-    .filter(Number)
-
-  const cities: City[] = dataItems.map((initialCity: InitialDataItem) =&gt; {
-    const name = initialCity.name
-      .replace(/(msa|necta div|met necta|met div)$/i, &quot;&quot;)
-      .trim()
-
-    return {
-      metrics: months.map((date: Date) =&gt; {
-        const itemKey = monthFormat(date)
-        const { [itemKey as keyof InitialDataItem]: itemValue } = initialCity
-        const employmentRate: number = Number(itemValue) / 100
-
-        return {
-          cityName: name,
-          date,
-          employmentRate,
-        }
-      }),
-      name,
-    }
-  })
-
-  return { cities, months }
-}
-
-const margin = {
-  bottom: 70,
-  left: 80,
-  right: 70,
-  top: 60,
-}
-
-type RenderChart = (chartConfig: {
-  cities: City[]
-  months: Date[]
-  rootElId: string
-}) =&gt; {
-  setVoronoi: (v: boolean) =&gt; void
-}
-
-const addFilter = (
-  svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
-) =&gt; {
-  const defs = svg.append(&quot;defs&quot;)
-  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, &quot;drop-shadow&quot;)
-
-  filter
-    .append(&quot;feGaussianBlur&quot;)
-    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
-    .attr(&quot;stdDeviation&quot;, 1)
-
-  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
-  filter
-    .append(&quot;feComponentTransfer&quot;)
-    .append(&quot;feFuncA&quot;)
-    .attr(&quot;slope&quot;, &quot;1&quot;)
-    .attr(&quot;type&quot;, &quot;linear&quot;)
-
-  const feMerge = filter.append(&quot;feMerge&quot;)
-
-  feMerge.append(&quot;feMergeNode&quot;)
-  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
-}
-
-const renderChart: RenderChart = ({ cities, months, rootElId }) =&gt; {
-  const color = scaleOrdinal(schemePastel2)
-
-  const state: {
-    clickToggle: boolean
-    voronoiGroup: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt; | null
-  } = {
-    clickToggle: false,
-    voronoiGroup: null,
-  }
-
-  const rootEl = document.getElementById(rootElId) as HTMLElement
-
-  rootEl.classList.add(styles.multilineVoronoiChart)
-
-  const width =
-    rootEl.getBoundingClientRect().width - margin.left - margin.right
-
-  const height = 500 - margin.top - margin.bottom
-
-  const xScale = scaleTime().range([0, width])
-  const yScale = scaleLinear().range([height, 0])
-
-  const lineXTransformer = (cityMetric: CityMetric) =&gt; xScale(cityMetric.date)
-  const lineYTransformer = (cityMetric: CityMetric) =&gt;
-    yScale(cityMetric.employmentRate)
-
-  const cityNameToLine: { [cityName: string]: SVGPathElement } = {}
-
-  const svg = select(`#${rootElId}`)
-    .append(&quot;svg&quot;)
-    .attr(&quot;width&quot;, width + margin.left + margin.right)
-    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
-    .append(&quot;g&quot;)
-    .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
-
-  xScale.domain(extent&lt;Date&gt;(months) as [Date, Date])
-  yScale
-    .domain([
-      0,
-      max(cities, (city: City) =&gt;
-        max(city.metrics, (cityMetric: CityMetric) =&gt; cityMetric.employmentRate)
-      ) as number,
-    ])
-    .nice()
-
-  svg
-    .append(&quot;g&quot;)
-    .attr(&quot;class&quot;, `${styles.axis} axis--x`)
-    .attr(&quot;transform&quot;, `translate(0,${height})`)
-    .call(axisBottom(xScale))
-
-  svg
-    .append(&quot;g&quot;)
-    .attr(&quot;class&quot;, `${styles.axis} axis--y`)
-    .call(axisLeft(yScale).ticks(10, &quot;%&quot;))
-    .append(&quot;text&quot;)
-    .attr(&quot;x&quot;, 20)
-    .attr(&quot;dy&quot;, &quot;.32em&quot;)
-    .style(&quot;font-weight&quot;, &quot;bold&quot;)
-    .text(texts.chartTitle)
-
-  const focus = svg
-    .append(&quot;g&quot;)
-    .attr(&quot;transform&quot;, &quot;translate(-100,-100)&quot;)
-    .attr(&quot;class&quot;, styles.focus)
-
-  addFilter(svg)
-
-  const line = lineD3&lt;CityMetric&gt;().x(lineXTransformer).y(lineYTransformer)
-
-  const generateLines = (usedCities: City[]) =&gt; {
-    svg
-      .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, styles.cities)
-      .selectAll(&quot;path&quot;)
-      .data(usedCities)
-      .enter()
-      .append(&quot;path&quot;)
-      .attr(&quot;d&quot;, function generateLine(city: City) {
-        cityNameToLine[city.name] = this
-
-        return line(city.metrics)
-      })
-      .style(&quot;stroke&quot;, (...[, cityIndex]) =&gt; color(cityIndex.toString()))
-      .style(&quot;filter&quot;, () =&gt; &quot;url(#drop-shadow)&quot;)
-
-    generateVoronoi(usedCities) // eslint-disable-line @typescript-eslint/no-use-before-define
-  }
-
-  const generateVoronoi = (usedCities: City[]) =&gt; {
-    const mouseover = (...[, cityMetric]: [unknown, CityMetric]) =&gt; {
-      const { [cityMetric.cityName]: linePath } = cityNameToLine
-
-      select(linePath).classed(styles.cityHover, true)
-      ;(linePath.parentNode as SVGGElement).appendChild(linePath)
-
-      focus.attr(
-        &quot;transform&quot;,
-        `translate(${lineXTransformer(cityMetric)},${lineYTransformer(
-          cityMetric
-        )})`
-      )
-
-      focus.select(&quot;.text1&quot;).text(texts.tooltipPart1(cityMetric))
-      focus.select(&quot;.text2&quot;).text(texts.tooltipPart2(cityMetric))
-    }
-
-    const mouseout = (...[, cityMetric]: [unknown, CityMetric]) =&gt; {
-      const { [cityMetric.cityName]: linePath } = cityNameToLine
-
-      select(linePath).classed(styles.cityHover, false)
-
-      return focus.attr(&quot;transform&quot;, &quot;translate(-100,-100)&quot;)
-    }
-
-    const clicked = (...[, cityMetric]: [unknown, CityMetric]) =&gt; {
-      state.clickToggle = !state.clickToggle
-
-      selectAll(`.${styles.cities}`).remove()
-      selectAll(`.${styles.voronoi}`).remove()
-
-      const inputData: City[] = (() =&gt; {
-        if (state.clickToggle) {
-          const city = cities.find(
-            (c) =&gt; c.name === cityMetric.cityName
-          ) as City
-
-          return [city]
-        }
-
-        return cities
-      })()
-
-      generateLines(inputData)
-    }
-
-    focus.append(&quot;circle&quot;).attr(&quot;r&quot;, 3.5)
-    focus.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;text1&quot;).attr(&quot;y&quot;, -30)
-    focus.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;text2&quot;).attr(&quot;y&quot;, -10)
-
-    const flatCityMetrics = usedCities.reduce&lt;CityMetric[]&gt;(
-      (...[acc, city]) =&gt; {
-        city.metrics.forEach((cityMetric) =&gt; {
-          acc.push(cityMetric)
-        })
-
-        return acc
-      },
-      []
-    )
-
-    const voronoi = Delaunay.from(
-      flatCityMetrics,
-      lineXTransformer,
-      lineYTransformer
-    ).voronoi([
-      -margin.left,
-      -margin.top,
-      width + margin.right,
-      height + margin.bottom,
-    ])
-
-    state.voronoiGroup = svg.append(&quot;g&quot;).attr(&quot;class&quot;, styles.voronoi)
-
-    state.voronoiGroup
-      .selectAll(&quot;path&quot;)
-      .data(flatCityMetrics)
-      .enter()
-      .append(&quot;path&quot;)
-      .attr(&quot;d&quot;, (...[, cityIndex]) =&gt; voronoi.renderCell(cityIndex))
-      .on(&quot;mouseover&quot;, mouseover)
-      .on(&quot;mouseout&quot;, mouseout)
-      .on(&quot;click&quot;, clicked)
-  }
-
-  generateLines(cities)
-
-  return {
-    setVoronoi: (checked: boolean) =&gt; {
-      state.voronoiGroup!.classed(styles.voronoiShow, checked)
-    },
-  }
-}
-
 const main = async () =&gt; {
-  const rootElId = CONTAINER_ID
-
   const { cities, months } = await fetchData()
+  const chartConfig = getChartConfig({ cities, months })
 
-  const { setVoronoi } = renderChart({
-    cities,
-    months,
-    rootElId,
-  })
+  const chart = new MultilineVoronoiChart(chartConfig)
 
   const form = document.getElementById(styles.formVoronoi) as HTMLElement
-  const chart = document.getElementById(rootElId) as HTMLElement
+  const chartEl = document.getElementById(CONTAINER_ID) as HTMLElement
 
-  chart.appendChild(form)
+  chartEl.appendChild(form)
 
   select(`#${SHOW_VORONOI_ID}`)
     .property(&quot;disabled&quot;, false)
     .on(&quot;change&quot;, (mouseEvent: MouseEvent) =&gt; {
-      setVoronoi((mouseEvent.target as HTMLInputElement).checked || false)
+      chart.setVoronoi((mouseEvent.target as HTMLInputElement).checked || false)
     })
 }
 
@@ -367,7 +44,7 @@ export { CONTAINER_ID, SHOW_VORONOI_ID }
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 13 Nov 2021 11:53:10 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 14 Nov 2021 12:26:04 GMT</p>
     </body>
   </html>
   

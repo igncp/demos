@@ -1,0 +1,361 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>multiline-voronoi-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/multiline-voronoi/multiline-voronoi-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">613</td><td class="">613</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Selection,
+  axisBottom,
+  axisLeft,
+  extent,
+  line as lineD3,
+  max,
+  scaleLinear,
+  scaleOrdinal,
+  scaleTime,
+  schemePastel2,
+  select,
+} from &quot;d3&quot;
+import { Delaunay } from &quot;d3-delaunay&quot;
+
+import * as styles from &quot;./multiline-voronoi.module.css&quot;
+
+type LineId = string
+
+type ChartConfig&lt;ChartLine, ChartPoint&gt; = Readonly&lt;{
+  chartTitle: string
+  getLineId: (line: ChartLine) =&gt; LineId
+  getLineIdFromPoint: (point: ChartPoint) =&gt; LineId
+  getLinePoints: (line: ChartLine) =&gt; ChartPoint[]
+  getPointXValue: (point: ChartPoint) =&gt; Date
+  getPointYValue: (point: ChartPoint) =&gt; number
+  getTooltipPart1: (point: ChartPoint) =&gt; string
+  getTooltipPart2: (point: ChartPoint) =&gt; string
+  lines: ChartLine[]
+  rootElId: string
+  times: Date[]
+}&gt;
+
+const addFilter = (
+  svg: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+) =&gt; {
+  const defs = svg.append(&quot;defs&quot;)
+  const filter = defs.append(&quot;filter&quot;).attr(&quot;id&quot;, &quot;drop-shadow&quot;)
+
+  filter
+    .append(&quot;feGaussianBlur&quot;)
+    .attr(&quot;in&quot;, &quot;SourceAlpha&quot;)
+    .attr(&quot;stdDeviation&quot;, 1)
+
+  filter.append(&quot;feOffset&quot;).attr(&quot;dx&quot;, 1).attr(&quot;dy&quot;, 1)
+  filter
+    .append(&quot;feComponentTransfer&quot;)
+    .append(&quot;feFuncA&quot;)
+    .attr(&quot;slope&quot;, &quot;1&quot;)
+    .attr(&quot;type&quot;, &quot;linear&quot;)
+
+  const feMerge = filter.append(&quot;feMerge&quot;)
+
+  feMerge.append(&quot;feMergeNode&quot;)
+  feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
+}
+
+const buildTooltip = (
+  svgG: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+) =&gt; {
+  const tooltip = svgG
+    .append(&quot;g&quot;)
+    .attr(&quot;class&quot;, styles.tooltip)
+    .attr(&quot;transform&quot;, &quot;translate(-100,-100)&quot;)
+
+  tooltip
+    .append(&quot;rect&quot;)
+    .attr(&quot;transform&quot;, &quot;translate(-150,-50)&quot;)
+    .attr(&quot;fill&quot;, &quot;white&quot;)
+    .attr(&quot;height&quot;, 50)
+    .attr(&quot;width&quot;, 300)
+    .attr(&quot;rx&quot;, 5)
+    .attr(&quot;ry&quot;, 5)
+    .style(&quot;filter&quot;, &quot;url(#drop-shadow)&quot;)
+    .style(&quot;opacity&quot;, &quot;0.65&quot;)
+    .style(&quot;pointer-events&quot;, &quot;none&quot;)
+    .style(&quot;cursor&quot;, &quot;default&quot;)
+
+  tooltip.append(&quot;circle&quot;).attr(&quot;r&quot;, 3.5)
+  tooltip.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;text1&quot;).attr(&quot;y&quot;, -30)
+  tooltip.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;text2&quot;).attr(&quot;y&quot;, -10)
+
+  return tooltip
+}
+
+type ChartElements = Readonly&lt;{
+  linesWrapper: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+  svgG: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  tooltip: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  voronoiGroup: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  xAxis: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  yAxis: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+}&gt;
+
+class MultilineVoronoiChart&lt;ChartLine, ChartPoint&gt; {
+  private readonly config: ChartConfig&lt;ChartLine, ChartPoint&gt;
+  private readonly elements: ChartElements
+  private readonly state: {
+    clickToggle: boolean
+    usedLines: ChartLine[]
+  }
+
+  public constructor(config: ChartConfig&lt;ChartLine, ChartPoint&gt;) {
+    this.config = config
+
+    const svg = select(`#${this.config.rootElId}`).append(&quot;svg&quot;)
+    const svgG = svg.append(&quot;g&quot;)
+    const xAxis = svgG.append(&quot;g&quot;).attr(&quot;class&quot;, `${styles.axis} axis--x`)
+    const yAxis = svgG.append(&quot;g&quot;).attr(&quot;class&quot;, `${styles.axis} axis--y`)
+
+    svgG
+      .append(&quot;text&quot;)
+      .attr(&quot;x&quot;, 20)
+      .attr(&quot;dy&quot;, &quot;.32em&quot;)
+      .style(&quot;font-weight&quot;, &quot;bold&quot;)
+      .text(this.config.chartTitle)
+
+    addFilter(svgG)
+
+    const linesWrapper = svgG.append(&quot;g&quot;).attr(&quot;class&quot;, styles.lines)
+    const voronoiGroup = svgG.append(&quot;g&quot;).attr(&quot;class&quot;, styles.voronoi)
+
+    const tooltip = buildTooltip(svgG)
+
+    this.elements = {
+      linesWrapper,
+      svg,
+      svgG,
+      tooltip,
+      voronoiGroup,
+      xAxis,
+      yAxis,
+    }
+
+    this.state = {
+      clickToggle: false,
+      usedLines: this.config.lines,
+    }
+
+    this.render()
+
+    window.addEventListener(&quot;resize&quot;, this.handleResize)
+  }
+
+  private static getMargin(width: number) {
+    const defaultMargin = {
+      bottom: 70,
+      left: 80,
+      right: 70,
+      top: 60,
+    }
+
+    if (width &lt; 530) {
+      return {
+        ...defaultMargin,
+        left: 35,
+        right: 5,
+      }
+    }
+
+    return defaultMargin
+  }
+
+  public setVoronoi(newValue: boolean) {
+    this.elements.voronoiGroup.classed(styles.voronoiShow, newValue)
+  }
+
+  private render() {
+    const {
+      config: { lines, rootElId, times },
+      elements,
+    } = this
+    const color = scaleOrdinal(schemePastel2)
+
+    const rootEl = document.getElementById(rootElId) as HTMLElement
+
+    rootEl.classList.add(styles.multilineVoronoiChart)
+
+    const { width: elWidth } = rootEl.getBoundingClientRect()
+    const margin = MultilineVoronoiChart.getMargin(elWidth)
+    const width =
+      rootEl.getBoundingClientRect().width - margin.left - margin.right
+    const isSmallDevice = width &lt; 530
+
+    const height = 500 - margin.top - margin.bottom
+
+    const xScale = scaleTime().range([0, width])
+    const yScale = scaleLinear().range([height, 0])
+
+    const lineXTransformer = (point: ChartPoint) =&gt;
+      xScale(this.config.getPointXValue(point))
+    const lineYTransformer = (point: ChartPoint) =&gt;
+      yScale(this.config.getPointYValue(point))
+
+    const lineIdToElement: { [lineId: string]: SVGPathElement } = {}
+
+    elements.svg
+      .attr(&quot;width&quot;, width + margin.left + margin.right)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+
+    elements.svgG.attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+
+    xScale.domain(extent&lt;Date&gt;(times) as [Date, Date])
+    yScale
+      .domain([
+        0,
+        max(lines, (line) =&gt;
+          max(this.config.getLinePoints(line), this.config.getPointYValue)
+        ) as number,
+      ])
+      .nice()
+
+    elements.xAxis
+      .attr(&quot;transform&quot;, `translate(0,${height})`)
+      .call(axisBottom(xScale).ticks(isSmallDevice ? 2 : undefined))
+
+    elements.yAxis.call(axisLeft(yScale).ticks(10, &quot;%&quot;))
+
+    const line = lineD3&lt;ChartPoint&gt;().x(lineXTransformer).y(lineYTransformer)
+
+    const {
+      config,
+      state: { usedLines },
+    } = this
+
+    const updatedLines = elements.linesWrapper.selectAll(&quot;path&quot;).data(usedLines)
+
+    updatedLines.enter().append(&quot;path&quot;).style(&quot;filter&quot;, &quot;url(#drop-shadow)&quot;)
+    updatedLines.exit().remove()
+
+    elements.linesWrapper
+      .selectAll&lt;SVGPathElement, ChartLine&gt;(&quot;path&quot;)
+      .attr(&quot;d&quot;, function generateLine(usedLine) {
+        const usedLineId = config.getLineId(usedLine)
+
+        lineIdToElement[usedLineId] = this
+
+        const points = config.getLinePoints(usedLine)
+
+        return line(points)
+      })
+      .style(&quot;stroke&quot;, (...[, lineIndex]) =&gt; color(lineIndex.toString()))
+
+    const mouseout = (...[, point]: [unknown, ChartPoint]) =&gt; {
+      const lineId = config.getLineIdFromPoint(point)
+      const { [lineId]: linePath } = lineIdToElement
+
+      select(linePath).classed(styles.lineHover, false)
+
+      return elements.tooltip.attr(&quot;transform&quot;, &quot;translate(-100,-100)&quot;)
+    }
+
+    const clicked = (...[, point]: [unknown, ChartPoint]) =&gt; {
+      this.state.clickToggle = !this.state.clickToggle
+
+      this.state.usedLines = (() =&gt; {
+        if (this.state.clickToggle) {
+          const lineData = lines.find(
+            (lineItem) =&gt;
+              config.getLineId(lineItem) === config.getLineIdFromPoint(point)
+          ) as ChartLine
+
+          return [lineData]
+        }
+
+        return lines
+      })()
+
+      elements.tooltip.on(&quot;mouseover&quot;, null).on(&quot;click&quot;, null)
+
+      this.render()
+    }
+
+    const mouseover = (...[, point]: [unknown, ChartPoint]) =&gt; {
+      const lineId = config.getLineIdFromPoint(point)
+      const { [lineId]: linePath } = lineIdToElement
+
+      select(linePath).classed(styles.lineHover, true)
+      ;(linePath.parentNode as SVGGElement).appendChild(linePath)
+
+      elements.tooltip
+        .attr(
+          &quot;transform&quot;,
+          `translate(${lineXTransformer(point)},${lineYTransformer(point)})`
+        )
+        .on(&quot;mouseover&quot;, () =&gt; {
+          mouseover(null, point)
+        })
+        .on(&quot;click&quot;, () =&gt; {
+          clicked(null, point)
+        })
+
+      elements.tooltip.select(&quot;.text1&quot;).text(config.getTooltipPart1(point))
+      elements.tooltip.select(&quot;.text2&quot;).text(config.getTooltipPart2(point))
+    }
+
+    const flatPoints = usedLines.reduce&lt;ChartPoint[]&gt;((...[acc, usedLine]) =&gt; {
+      const points = config.getLinePoints(usedLine)
+
+      points.forEach((point) =&gt; {
+        acc.push(point)
+      })
+
+      return acc
+    }, [])
+
+    const voronoi = Delaunay.from(
+      flatPoints,
+      lineXTransformer,
+      lineYTransformer
+    ).voronoi([
+      -margin.left,
+      -margin.top,
+      width + margin.right,
+      height + margin.bottom,
+    ])
+
+    const updatedVoronoi = this.elements.voronoiGroup
+      .selectAll&lt;SVGPathElement, ChartPoint&gt;(&quot;path&quot;)
+      .data(
+        flatPoints,
+        (point) =&gt;
+          `${config.getLineIdFromPoint(point)}-${config.getPointXValue(point)}`
+      )
+
+    updatedVoronoi.enter().append(&quot;path&quot;)
+    updatedVoronoi.exit().remove()
+
+    this.elements.voronoiGroup
+      .selectAll&lt;SVGPathElement, ChartPoint&gt;(&quot;path&quot;)
+      .attr(&quot;d&quot;, (...[, pointIndex]) =&gt; voronoi.renderCell(pointIndex))
+      .on(&quot;mouseover&quot;, mouseover)
+      .on(&quot;mouseout&quot;, mouseout)
+      .on(&quot;click&quot;, clicked)
+  }
+
+  private readonly handleResize = () =&gt; {
+    this.render()
+  }
+}
+
+export { MultilineVoronoiChart, ChartConfig }
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 14 Nov 2021 12:26:04 GMT</p>
+    </body>
+  </html>
+  

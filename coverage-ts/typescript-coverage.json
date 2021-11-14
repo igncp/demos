@@ -444,7 +444,14 @@
     },
     {
       "file": "src/demos/fish-eye/fish-eye-chart.ts",
-      "line": 287,
+      "line": 101,
+      "character": 25,
+      "text": "msMaxTouchPoints",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/fish-eye/fish-eye-chart.ts",
+      "line": 337,
       "character": 42,
       "text": "interactionEvent",
       "kind": 1
@@ -528,35 +535,35 @@
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 558,
+      "line": 560,
       "character": 23,
       "text": "brushEvent",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 561,
+      "line": 563,
       "character": 10,
       "text": "brushEvent",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 561,
+      "line": 563,
       "character": 21,
       "text": "selection",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 563,
+      "line": 565,
       "character": 22,
       "text": "selectionStart",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 563,
+      "line": 565,
       "character": 38,
       "text": "selectionEnd",
       "kind": 1
@@ -1269,8 +1276,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.434304288036,
-  "total": 31996,
-  "covered": 31815,
-  "uncovered": 181
+  "percentage": 99.43887775551102,
+  "total": 32435,
+  "covered": 32253,
+  "uncovered": 182
 }

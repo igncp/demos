@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye-chart.ts</td><td class="">99.84%</td><td class="">95%</td><td class="">607</td><td class="">606</td><td class="">1</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/fish-eye/fish-eye-chart.ts</td><td class="">99.71%</td><td class="">95%</td><td class="">689</td><td class="">687</td><td class="">2</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Axis,
   AxisScale,
   ScaleOrdinal,
@@ -39,11 +39,11 @@ const margin = {
   right: 50,
   top: 80,
 }
+const LEFT_OFFSET_SMALL_DEVICE = 20
 const height = 700 - margin.top - margin.bottom
 
 type FishEyeChartOpts&lt;ChartData&gt; = Readonly&lt;{
   chartItems: ChartData[]
-  chartTitle: string
   colorDomain: string[]
   getCircleTitle: (chartItem: ChartData) =&gt; string
   getColorValue: (chartItem: ChartData) =&gt; string
@@ -51,6 +51,10 @@ type FishEyeChartOpts&lt;ChartData&gt; = Readonly&lt;{
   getXValue: (chartItem: ChartData) =&gt; number
   getYValue: (chartItem: ChartData) =&gt; number
   rootElId: string
+  titles: {
+    long: string
+    short: string
+  }
   xAxisLabel: string
   yAxisLabel: string
 }&gt;
@@ -83,9 +87,7 @@ class FishEyeChart&lt;ChartData&gt; {
     this.setupRootEl()
     this.setVars()
     this.setDom()
-  }
 
-  public render() {
     this.setChartTitle()
     this.setBackground()
     this.setPointer()
@@ -98,6 +100,24 @@ class FishEyeChart&lt;ChartData&gt; {
     this.bindMouseLeave()
     this.bindClick()
     this.bindResize()
+
+    this.setZoom({
+      animationDuration: 0,
+      distortion: 0,
+      focus: [0, 0],
+    })
+  }
+
+  private static isTouchDevice() {
+    return (
+      &quot;ontouchstart&quot; in window ||
+      navigator.maxTouchPoints &gt; 0 ||
+      (navigator as any).msMaxTouchPoints &gt; 0 // eslint-disable-line @typescript-eslint/no-explicit-any
+    )
+  }
+
+  public refresh() {
+    this.updateDimensions(1000)
   }
 
   private setupRootEl() {
@@ -109,11 +129,13 @@ class FishEyeChart&lt;ChartData&gt; {
       rootEl.getBoundingClientRect().width - margin.left - margin.right
   }
 
+  private isSmallDevice() {
+    return this.width &lt; 500
+  }
+
   private setDom() {
     const svg = select(`#${this.config.rootElId}`).append(&quot;svg&quot;)
-    const svgG = svg
-      .append(&quot;g&quot;)
-      .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+    const svgG = svg.append(&quot;g&quot;)
 
     this.dom = {
       svg,
@@ -126,7 +148,6 @@ class FishEyeChart&lt;ChartData&gt; {
       .append(&quot;text&quot;)
       .attr(&quot;class&quot;, styles.chartTitle)
       .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-      .text(this.config.chartTitle)
       .style(&quot;font-weight&quot;, &quot;bold&quot;)
   }
 
@@ -138,7 +159,7 @@ class FishEyeChart&lt;ChartData&gt; {
     const radiusScale = scaleSqrt().domain([0, 5e8]).range([5, 60])
     const xScale = d3Fisheye
       .scale(scaleLog)
-      .domain([300, 1e5])
+      .domain([200, 1e5])
       .range([0, this.width]) as FishEyeScale
     const yScale = d3Fisheye
       .scale(scaleLinear)
@@ -205,8 +226,20 @@ class FishEyeChart&lt;ChartData&gt; {
   }
 
   private position(animationDuration: number) {
+    this.dom.svgG.attr(
+      &quot;transform&quot;,
+      `translate(${
+        margin.left - (this.isSmallDevice() ? LEFT_OFFSET_SMALL_DEVICE : 0)
+      },${margin.top})`
+    )
     this.dom
-      .dot!.transition()
+      // Sort the circles by radius, so the largest circles appear below
+      .dot!.sort(
+        (...[chartItemA, chartItemB]) =&gt;
+          this.config.getRadiusValue(chartItemB) -
+          this.config.getRadiusValue(chartItemA)
+      )
+      .transition()
       .duration(animationDuration)
       .attr(&quot;cx&quot;, (chartItem) =&gt; {
         const xValue = this.config.getXValue(chartItem)
@@ -221,8 +254,11 @@ class FishEyeChart&lt;ChartData&gt; {
       .attr(&quot;r&quot;, (chartItem) =&gt; {
         const radiusValue = this.config.getRadiusValue(chartItem)
 
-        return this.vars.radiusScale(radiusValue)
+        return (
+          this.vars.radiusScale(radiusValue) / (this.isSmallDevice() ? 2 : 1)
+        )
       })
+    this.dom.xAxis!.ticks(this.isSmallDevice() ? 2 : undefined)
     this.dom.svgG
       .select&lt;SVGGElement&gt;(`.x.${styles.axis}`)
       .transition()
@@ -251,19 +287,13 @@ class FishEyeChart&lt;ChartData&gt; {
       })
       .style(&quot;stroke&quot;, &quot;black&quot;)
       .style(&#x27;&quot;stroke-width&quot;&#x27;, &quot;1px&quot;)
-      .sort(
-        (...[chartItemA, chartItemB]) =&gt;
-          this.config.getRadiusValue(chartItemB) -
-          this.config.getRadiusValue(chartItemA)
-      )
 
     this.position(0)
   }
 
   private setTitles() {
-    this.dom
-      .dot!.append(&quot;title&quot;)
-      .text((chartItem) =&gt; this.config.getCircleTitle(chartItem))
+    this.dom.dot!.append(&quot;title&quot;).attr(&quot;class&quot;, &quot;dot-title&quot;)
+    this.updateTitles()
   }
 
   private setZoom({
@@ -280,11 +310,31 @@ class FishEyeChart&lt;ChartData&gt; {
     this.position(animationDuration)
   }
 
-  private zoom(interactionEvent: Event) {
+  private updateTitles() {
+    this.dom
+      .dot!.selectAll&lt;SVGTitleElement, ChartData&gt;(&quot;.dot-title&quot;)
+      .text((chartItem) =&gt; this.config.getCircleTitle(chartItem))
+
+    this.dom.svgG
+      .select&lt;SVGTitleElement&gt;(`.${styles.chartTitle}`)
+      .text(
+        this.isSmallDevice()
+          ? this.config.titles.short
+          : this.config.titles.long
+      )
+  }
+
+  private zoom({
+    animationDuration,
+    interactionEvent,
+  }: {
+    animationDuration: number
+    interactionEvent: Event
+  }) {
     const focus = pointerD3(interactionEvent)
 
     this.setZoom({
-      animationDuration: 0,
+      animationDuration,
       distortion: 2.5,
       focus,
     })
@@ -299,8 +349,15 @@ class FishEyeChart&lt;ChartData&gt; {
 
   private bindMousemove() {
     return this.dom.svgG.on(&quot;mousemove&quot;, (interactionEvent) =&gt; {
+      if (FishEyeChart.isTouchDevice()) {
+        return
+      }
+
       if (!this.vars.focused) {
-        this.zoom(interactionEvent)
+        this.zoom({
+          animationDuration: 0,
+          interactionEvent,
+        })
       }
     })
   }
@@ -319,34 +376,45 @@ class FishEyeChart&lt;ChartData&gt; {
 
   private bindClick() {
     this.dom.svgG.on(&quot;click&quot;, (interactionEvent: Event) =&gt; {
-      this.vars.focused = !this.vars.focused
+      const isTouchDevice = FishEyeChart.isTouchDevice()
 
-      if (this.vars.focused) {
-        const pointer = pointerD3(this)
+      if (!isTouchDevice) {
+        this.vars.focused = !this.vars.focused
 
-        this.dom
-          .pointer!.attr(&quot;x&quot;, pointer[0])
-          .attr(&quot;y&quot;, pointer[1])
-          .style(&quot;opacity&quot;, 1)
+        if (this.vars.focused) {
+          const pointer = pointerD3(this)
 
-        return
+          this.dom
+            .pointer!.attr(&quot;x&quot;, pointer[0])
+            .attr(&quot;y&quot;, pointer[1])
+            .style(&quot;opacity&quot;, 1)
+
+          return
+        }
       }
 
       this.dom.pointer!.style(&quot;opacity&quot;, 0)
 
-      this.zoom(interactionEvent)
+      this.zoom({
+        animationDuration: isTouchDevice ? 1000 : 0,
+        interactionEvent,
+      })
     })
   }
 
-  private updateDimensions() {
+  private updateDimensions(animationDuration = 0) {
     this.setupRootEl()
-    // this.vars.xScale.range([0, this.width])
+
+    const isSmallDevice = this.isSmallDevice()
+    const widthOffset = isSmallDevice ? LEFT_OFFSET_SMALL_DEVICE : 0
+    const totalWidth = this.width + widthOffset
+
     this.dom.svg
       .attr(&quot;width&quot;, this.width + margin.left + margin.right)
       .attr(&quot;height&quot;, height + margin.top + margin.bottom)
     this.dom.svgG
       .select(`.${styles.chartTitle}`)
-      .attr(&quot;transform&quot;, `translate(${this.width / 2},-40)`)
+      .attr(&quot;transform&quot;, `translate(${totalWidth / 2},-40)`)
 
     this.dom.svgG
       .select(`.${styles.background}`)
@@ -358,8 +426,9 @@ class FishEyeChart&lt;ChartData&gt; {
       .attr(&quot;y&quot;, height + 26)
       .attr(&quot;x&quot;, this.width / 2)
 
-    this.vars.xScale.range([0, this.width])
-    this.position(0)
+    this.vars.xScale.range([0, totalWidth])
+    this.updateTitles()
+    this.position(animationDuration)
   }
 
   private bindResize() {
@@ -370,8 +439,8 @@ class FishEyeChart&lt;ChartData&gt; {
 }
 
 export { FishEyeChart, FishEyeChartOpts }
-</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye-chart.ts&quot;,&quot;line&quot;:287,&quot;character&quot;:42,&quot;text&quot;:&quot;interactionEvent&quot;,&quot;kind&quot;:1}]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 13 Nov 2021 11:53:10 GMT</p>
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye-chart.ts&quot;,&quot;line&quot;:101,&quot;character&quot;:25,&quot;text&quot;:&quot;msMaxTouchPoints&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/fish-eye/fish-eye-chart.ts&quot;,&quot;line&quot;:337,&quot;character&quot;:42,&quot;text&quot;:&quot;interactionEvent&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 14 Nov 2021 12:26:04 GMT</p>
     </body>
   </html>
   
