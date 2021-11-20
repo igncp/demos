@@ -8,7 +8,7 @@ import main, { CONTAINER_ID, TYPE_FORM } from "@/demos/partition/partition"
 
 const Partition = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
-    <form id={TYPE_FORM}>
+    <form id={TYPE_FORM} style={{ marginBottom: 20 }}>
       <label>
         <input name="mode" type="radio" value="size" /> Size
       </label>

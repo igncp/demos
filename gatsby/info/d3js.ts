@@ -300,10 +300,7 @@ const d3js: D3JS = {
     ] as DemoBase["docs"],
     isCompleted: true,
     name: "Partition",
-    notes: [
-      "Added title attributes, labels and change colors with events",
-      "Added bounce ease function",
-    ],
+    notes: [],
     sources: ["http://bl.ocks.org/mbostock/4063423"],
     summary: [
       "This is a good example of how to uses hierarchies in combination with arc shapes. It includes a couple of ways of generating the hierarchy: via the size (value) of each leaf or via the count.",
