@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/population-circles/population-circles-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">486</td><td class="">486</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import anime from &quot;animejs&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/population-circles/population-circles-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">539</td><td class="">539</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import anime from &quot;animejs&quot;
 import chroma from &quot;chroma-js&quot;
 import {
   BaseType,
@@ -56,10 +56,6 @@ type ChartConfig&lt;CircleData&gt; = {
   rootElId: string
 }
 
-type RenderChartReturn = {
-  updateChart: () =&gt; void
-}
-
 type AddDropShadow = (options: {
   deviation: number
   name: string
@@ -83,76 +79,57 @@ const addDropShadow: AddDropShadow = ({ deviation, name, slope, svg }) =&gt; {
 `)
 }
 
-const renderChart = &lt;CircleData&gt;(
-  chartConfig: ChartConfig&lt;CircleData&gt;
-): RenderChartReturn =&gt; {
-  type ChartNode = HierarchyCircularNode&lt;CircleData&gt;
+type ChartElements = {
+  header: Selection&lt;SVGTextElement, unknown, HTMLElement, unknown&gt;
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+  svgContent: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+}
 
-  const chartEl = document.getElementById(chartConfig.rootElId) as HTMLElement
-  const { width } = chartEl.getBoundingClientRect()
+class CirclesChart&lt;CircleData&gt; {
+  private readonly config: ChartConfig&lt;CircleData&gt;
+  private readonly elements: ChartElements
 
-  const lastPosition = { k: 1, x: 0, y: 0 }
+  public constructor(chartConfig: ChartConfig&lt;CircleData&gt;) {
+    this.config = chartConfig
 
-  // this zoom function is not working well in all directions
-  // eslint-disable-next-line max-params
-  function zoomed(
-    this: SVGSVGElement,
-    zoomEvent: D3ZoomEvent&lt;SVGSVGElement, unknown&gt;
-  ) {
-    const transition = select(this).transition().duration(150)
-    let {
-      transform: { x, y },
-    } = zoomEvent
-    const {
-      transform: { k },
-    } = zoomEvent
+    const svg = select(`#${chartConfig.rootElId}`)
+      .append(&quot;svg&quot;)
+      .attr(&quot;font-size&quot;, 10)
+      .attr(&quot;font-family&quot;, &quot;sans-serif&quot;)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
 
-    if (k !== lastPosition.k) {
-      x = lastPosition.x
-      y = lastPosition.y
+    addDropShadow({ deviation: 2, name: dropShadowBaseId, slope: 0.5, svg })
+
+    const header = svg.append(&quot;text&quot;).attr(&quot;class&quot;, styles.header).text(&quot;&quot;)
+
+    const svgContent = svg.append(&quot;g&quot;)
+
+    this.elements = {
+      header,
+      svg,
+      svgContent,
     }
 
-    transition.attr(&quot;transform&quot;, `translate(${x}, ${y}) scale(${k})`)
-
-    lastPosition.k = k
-    lastPosition.x = x
-    lastPosition.y = y
+    this.setupZoom()
+    this.update()
   }
 
-  const color = scaleOrdinal&lt;string, string&gt;()
-    .domain(chartConfig.colorDomain)
-    .range(schemeSet3)
+  public update() {
+    type ChartNode = HierarchyCircularNode&lt;CircleData&gt;
 
-  const zoomBehavior = zoom&lt;SVGSVGElement, unknown&gt;()
-    .extent([
-      [0, 0],
-      [width / 2, height / 2],
-    ])
-    .on(&quot;end&quot;, zoomed)
+    const { config: chartConfig, elements } = this
+    const width = this.getWidth()
 
-  const svg = select(`#${chartConfig.rootElId}`)
-    .append(&quot;svg&quot;)
-    .attr(&quot;viewBox&quot;, [0, 0, width, height + margin.top].join(&quot;, &quot;))
-    .attr(&quot;font-size&quot;, 10)
-    .attr(&quot;font-family&quot;, &quot;sans-serif&quot;)
-    .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-    .call(zoomBehavior)
-
-  addDropShadow({ deviation: 2, name: dropShadowBaseId, slope: 0.5, svg })
-
-  const header = svg
-    .append(&quot;text&quot;)
-    .attr(&quot;class&quot;, styles.header)
-    .text(&quot;&quot;)
-    .attr(&quot;transform&quot;, `translate(${width / 2}, 50)`)
-
-  const svgContent = svg
-    .append(&quot;g&quot;)
-    .attr(&quot;transform&quot;, `translate(${margin.left}, ${margin.top})`)
-
-  const transitionChart = () =&gt; {
+    const { header, svgContent } = elements
     const filteredData = chartConfig.getChartItems()
     const hoverAnimations: { [k: string]: anime.AnimeInstance | null } = {}
+
+    elements.svg.attr(&quot;viewBox&quot;, [0, 0, width, height + margin.top].join(&quot;, &quot;))
+    elements.header.attr(&quot;transform&quot;, `translate(${width / 2}, 50)`)
+    elements.svgContent.attr(
+      &quot;transform&quot;,
+      `translate(${margin.left}, ${margin.top})`
+    )
 
     const structure = hierarchy({
       ...chartConfig.getEmptyItem(),
@@ -248,6 +225,10 @@ const renderChart = &lt;CircleData&gt;(
         chartConfig.onClick(node.data)
       })
 
+    const color = scaleOrdinal&lt;string, string&gt;()
+      .domain(chartConfig.colorDomain)
+      .range(schemeSet3)
+
     const generateColor = (node: HierarchyCircularNode&lt;CircleData&gt;) =&gt;
       color(chartConfig.getStringForColor(node.data))
 
@@ -304,16 +285,61 @@ const renderChart = &lt;CircleData&gt;(
     })
   }
 
-  transitionChart()
+  private getWidth() {
+    const { config: chartConfig } = this
+    const chartEl = document.getElementById(chartConfig.rootElId) as HTMLElement
+    const { width } = chartEl.getBoundingClientRect()
 
-  return {
-    updateChart: transitionChart,
+    return width
+  }
+
+  private setupZoom() {
+    const {
+      elements: { svg },
+    } = this
+    const width = this.getWidth()
+    const lastPosition = { k: 1, x: 0, y: 0 }
+
+    // this zoom function is not working well in all directions
+    // eslint-disable-next-line max-params
+    function zoomed(
+      this: SVGSVGElement,
+      zoomEvent: D3ZoomEvent&lt;SVGSVGElement, unknown&gt;
+    ) {
+      const transition = select(this).transition().duration(150)
+      let {
+        transform: { x, y },
+      } = zoomEvent
+      const {
+        transform: { k },
+      } = zoomEvent
+
+      if (k !== lastPosition.k) {
+        x = lastPosition.x
+        y = lastPosition.y
+      }
+
+      transition.attr(&quot;transform&quot;, `translate(${x}, ${y}) scale(${k})`)
+
+      lastPosition.k = k
+      lastPosition.x = x
+      lastPosition.y = y
+    }
+
+    const zoomBehavior = zoom&lt;SVGSVGElement, unknown&gt;()
+      .extent([
+        [0, 0],
+        [width / 2, height / 2],
+      ])
+      .on(&quot;end&quot;, zoomed)
+
+    svg.call(zoomBehavior)
   }
 }
 
-export { ChartConfig, renderChart }
+export { ChartConfig, CirclesChart }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 20 Nov 2021 10:16:36 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 24 Nov 2021 22:29:13 GMT</p>
     </body>
   </html>
   
