@@ -1,10 +1,9 @@
 import { select } from "d3"
 import hotkeys from "hotkeys-js"
 
-import { renderChart } from "./population-circles-chart"
+import { CirclesChart } from "./population-circles-chart"
 import {
   CONTAINER_ID,
-  Municipality,
   createChartConfig,
   createState,
   fetchData,
@@ -18,14 +17,14 @@ const main = async () => {
   const state = createState()
   const chartConfig = createChartConfig({ municipalities, state })
 
-  const { updateChart } = renderChart<Municipality>(chartConfig)
+  const chart = new CirclesChart(chartConfig)
 
   select("form").on(
     "change",
     // eslint-disable-next-line id-denylist
     (changeEvent: { target: { value: typeof state["populationType"] } }) => {
       state.populationType = changeEvent.target.value
-      updateChart()
+      chart.update()
     }
   )
 
@@ -36,7 +35,7 @@ const main = async () => {
       ) as [number, number]
 
       state.populationRange = newValues
-      updateChart()
+      chart.update()
     },
     range: true,
     values: [0, 100], // eslint-disable-line id-denylist
@@ -47,7 +46,7 @@ const main = async () => {
   $(".time-slider").slider({
     change: (...[, { value: timeRangeIndex }]) => {
       state.timeRangeIndex = timeRangeIndex as number
-      updateChart()
+      chart.update()
     },
     max,
     min: 0,

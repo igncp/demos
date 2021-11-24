@@ -258,4 +258,4 @@ const createChartConfig = ({
   }
 }
 
-export { CONTAINER_ID, Municipality, createChartConfig, createState, fetchData }
+export { CONTAINER_ID, createChartConfig, createState, fetchData }

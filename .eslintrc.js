@@ -154,6 +154,9 @@ module.exports = {
 
     "import/exports-last": 2,
     "import/group-exports": 2,
+    "import/no-cycle": 2,
+    "import/no-deprecated": 2,
+    "import/no-duplicates": 2,
     "import/no-namespace": [2, { ignore: ["*.module.css"] }],
 
     "init-declarations": [2, "always"],

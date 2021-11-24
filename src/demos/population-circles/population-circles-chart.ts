@@ -43,10 +43,6 @@ type ChartConfig<CircleData> = {
   rootElId: string
 }
 
-type RenderChartReturn = {
-  updateChart: () => void
-}
-
 type AddDropShadow = (options: {
   deviation: number
   name: string
@@ -70,76 +66,57 @@ const addDropShadow: AddDropShadow = ({ deviation, name, slope, svg }) => {
 `)
 }
 
-const renderChart = <CircleData>(
-  chartConfig: ChartConfig<CircleData>
-): RenderChartReturn => {
-  type ChartNode = HierarchyCircularNode<CircleData>
+type ChartElements = {
+  header: Selection<SVGTextElement, unknown, HTMLElement, unknown>
+  svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
+  svgContent: Selection<SVGGElement, unknown, HTMLElement, unknown>
+}
 
-  const chartEl = document.getElementById(chartConfig.rootElId) as HTMLElement
-  const { width } = chartEl.getBoundingClientRect()
+class CirclesChart<CircleData> {
+  private readonly config: ChartConfig<CircleData>
+  private readonly elements: ChartElements
 
-  const lastPosition = { k: 1, x: 0, y: 0 }
+  public constructor(chartConfig: ChartConfig<CircleData>) {
+    this.config = chartConfig
 
-  // this zoom function is not working well in all directions
-  // eslint-disable-next-line max-params
-  function zoomed(
-    this: SVGSVGElement,
-    zoomEvent: D3ZoomEvent<SVGSVGElement, unknown>
-  ) {
-    const transition = select(this).transition().duration(150)
-    let {
-      transform: { x, y },
-    } = zoomEvent
-    const {
-      transform: { k },
-    } = zoomEvent
+    const svg = select(`#${chartConfig.rootElId}`)
+      .append("svg")
+      .attr("font-size", 10)
+      .attr("font-family", "sans-serif")
+      .attr("text-anchor", "middle")
 
-    if (k !== lastPosition.k) {
-      x = lastPosition.x
-      y = lastPosition.y
+    addDropShadow({ deviation: 2, name: dropShadowBaseId, slope: 0.5, svg })
+
+    const header = svg.append("text").attr("class", styles.header).text("")
+
+    const svgContent = svg.append("g")
+
+    this.elements = {
+      header,
+      svg,
+      svgContent,
     }
 
-    transition.attr("transform", `translate(${x}, ${y}) scale(${k})`)
-
-    lastPosition.k = k
-    lastPosition.x = x
-    lastPosition.y = y
+    this.setupZoom()
+    this.update()
   }
 
-  const color = scaleOrdinal<string, string>()
-    .domain(chartConfig.colorDomain)
-    .range(schemeSet3)
+  public update() {
+    type ChartNode = HierarchyCircularNode<CircleData>
 
-  const zoomBehavior = zoom<SVGSVGElement, unknown>()
-    .extent([
-      [0, 0],
-      [width / 2, height / 2],
-    ])
-    .on("end", zoomed)
+    const { config: chartConfig, elements } = this
+    const width = this.getWidth()
 
-  const svg = select(`#${chartConfig.rootElId}`)
-    .append("svg")
-    .attr("viewBox", [0, 0, width, height + margin.top].join(", "))
-    .attr("font-size", 10)
-    .attr("font-family", "sans-serif")
-    .attr("text-anchor", "middle")
-    .call(zoomBehavior)
-
-  addDropShadow({ deviation: 2, name: dropShadowBaseId, slope: 0.5, svg })
-
-  const header = svg
-    .append("text")
-    .attr("class", styles.header)
-    .text("")
-    .attr("transform", `translate(${width / 2}, 50)`)
-
-  const svgContent = svg
-    .append("g")
-    .attr("transform", `translate(${margin.left}, ${margin.top})`)
-
-  const transitionChart = () => {
+    const { header, svgContent } = elements
     const filteredData = chartConfig.getChartItems()
     const hoverAnimations: { [k: string]: anime.AnimeInstance | null } = {}
+
+    elements.svg.attr("viewBox", [0, 0, width, height + margin.top].join(", "))
+    elements.header.attr("transform", `translate(${width / 2}, 50)`)
+    elements.svgContent.attr(
+      "transform",
+      `translate(${margin.left}, ${margin.top})`
+    )
 
     const structure = hierarchy({
       ...chartConfig.getEmptyItem(),
@@ -235,6 +212,10 @@ const renderChart = <CircleData>(
         chartConfig.onClick(node.data)
       })
 
+    const color = scaleOrdinal<string, string>()
+      .domain(chartConfig.colorDomain)
+      .range(schemeSet3)
+
     const generateColor = (node: HierarchyCircularNode<CircleData>) =>
       color(chartConfig.getStringForColor(node.data))
 
@@ -291,11 +272,56 @@ const renderChart = <CircleData>(
     })
   }
 
-  transitionChart()
+  private getWidth() {
+    const { config: chartConfig } = this
+    const chartEl = document.getElementById(chartConfig.rootElId) as HTMLElement
+    const { width } = chartEl.getBoundingClientRect()
 
-  return {
-    updateChart: transitionChart,
+    return width
+  }
+
+  private setupZoom() {
+    const {
+      elements: { svg },
+    } = this
+    const width = this.getWidth()
+    const lastPosition = { k: 1, x: 0, y: 0 }
+
+    // this zoom function is not working well in all directions
+    // eslint-disable-next-line max-params
+    function zoomed(
+      this: SVGSVGElement,
+      zoomEvent: D3ZoomEvent<SVGSVGElement, unknown>
+    ) {
+      const transition = select(this).transition().duration(150)
+      let {
+        transform: { x, y },
+      } = zoomEvent
+      const {
+        transform: { k },
+      } = zoomEvent
+
+      if (k !== lastPosition.k) {
+        x = lastPosition.x
+        y = lastPosition.y
+      }
+
+      transition.attr("transform", `translate(${x}, ${y}) scale(${k})`)
+
+      lastPosition.k = k
+      lastPosition.x = x
+      lastPosition.y = y
+    }
+
+    const zoomBehavior = zoom<SVGSVGElement, unknown>()
+      .extent([
+        [0, 0],
+        [width / 2, height / 2],
+      ])
+      .on("end", zoomed)
+
+    svg.call(zoomBehavior)
   }
 }
 
-export { ChartConfig, renderChart }
+export { ChartConfig, CirclesChart }
