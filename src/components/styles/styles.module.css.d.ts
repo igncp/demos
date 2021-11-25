@@ -16,6 +16,7 @@ declare const styles: {
   readonly "notes": string
   readonly "pageHeader": string
   readonly "raphael": string
+  readonly "rowWrapper": string
   readonly "sourceNumber": string
   readonly "sourcesList": string
   readonly "storybook": string
