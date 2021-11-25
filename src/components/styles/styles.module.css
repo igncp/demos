@@ -20,6 +20,7 @@ $mobileBreakpoint: 530px;
 .bullet {
   font-size: 30px;
   text-shadow: 0.5px 0.5px 1px #444;
+  transition: transform 0.5s ease-in-out;
 
   &.d3js {
     color: #9ac99d;
@@ -35,6 +36,12 @@ $mobileBreakpoint: 530px;
 
   &.testing {
     color: yellow;
+  }
+}
+
+.rowWrapper:hover {
+  .bullet {
+    transform: translateY(-3px) scale(1.2);
   }
 }
 

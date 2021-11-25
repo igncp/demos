@@ -27,7 +27,7 @@ const DemosList = ({ demos, indexOffset }: Props) => (
       <a
         className={`list-group-item ${
           specialHighlightStyle[demo.key as SPECIAL_DEMO_KEYS] || ""
-        }`}
+        } ${styles.rowWrapper}`}
         href={demo.route}
         key={demo.name}
       >

@@ -31,6 +31,7 @@ const tsRules = {
   ],
   "@typescript-eslint/member-ordering": 2,
   "@typescript-eslint/method-signature-style": 2,
+  "@typescript-eslint/no-confusing-non-null-assertion": 2,
   "@typescript-eslint/no-duplicate-imports": 2,
   "@typescript-eslint/no-explicit-any": 2,
   "@typescript-eslint/no-redeclare": 2,
@@ -158,6 +159,7 @@ module.exports = {
     "import/no-deprecated": 2,
     "import/no-duplicates": 2,
     "import/no-namespace": [2, { ignore: ["*.module.css"] }],
+    "import/no-useless-path-segments": 2,
 
     "init-declarations": [2, "always"],
     "max-params": [2, 1],

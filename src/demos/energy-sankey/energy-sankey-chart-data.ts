@@ -1,6 +1,6 @@
 import { format as formatD3, json } from "d3"
 
-import { ChartConfig } from "./energy-sankey-chart"
+import { ChartConfig } from "./sankey-chart"
 
 const CONTAINER_ID = "chart"
 
