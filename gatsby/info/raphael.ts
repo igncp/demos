@@ -3,7 +3,6 @@ import { DemoBase } from "@/common"
 type Raphael = {
   "bars-3dimensional": DemoBase
   "circular-arcs": DemoBase
-  "moving-line": DemoBase
 }
 
 const raphael: Raphael = {
@@ -25,23 +24,6 @@ const raphael: Raphael = {
       "This demo doesn't have data, but it wouldn't be hard (e.g. bound to the radius if all are different)",
     ],
     sources: ["http://codepen.io/dshapira/pen/ltrqc"],
-    summary: [],
-  },
-  "moving-line": {
-    dataFiles: ["data.json"],
-    docs: [
-      [
-        "SVG Line Commands",
-        "https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#line_commands",
-      ],
-    ],
-    isCompleted: true,
-    name: "Moving Line",
-    notes: [
-      "The axis is not included as it is part of the background image",
-      "Add titles",
-    ],
-    sources: ["http://codepen.io/johnegraham2/pen/ExfBI"],
     summary: [],
   },
 }

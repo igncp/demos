@@ -9,13 +9,17 @@ declare const styles: {
   readonly "demosLegend": string
   readonly "demosLists": string
   readonly "fileNameWrapper": string
+  readonly "footer": string
   readonly "ghButtons": string
   readonly "highlightStorybook": string
   readonly "highlightTesting": string
+  readonly "homeDemoNameLink": string
+  readonly "homeDemoNumber": string
   readonly "mainSource": string
   readonly "notes": string
   readonly "pageHeader": string
   readonly "raphael": string
+  readonly "rootLayout": string
   readonly "rowWrapper": string
   readonly "sourceNumber": string
   readonly "sourcesList": string

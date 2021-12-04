@@ -2,7 +2,7 @@
 
 [![Deploy to Github Pages](https://github.com/igncp/demos/actions/workflows/deploy-to-ghpages.yml/badge.svg)](https://github.com/igncp/demos/actions/workflows/deploy-to-ghpages.yml)
 
-Showcase of some client-side demos.
+Showcase of responsive data visualization demos.
 
 https://igncp.github.io/demos/
 

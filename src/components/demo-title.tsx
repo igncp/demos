@@ -10,7 +10,7 @@ type Props = {
 
 const DemoTitle = ({ isCompleted, mainSource, name }: Props) => (
   <h2 className="row" id={styles.demoTitle}>
-    <span className="col-xs-12 col-sm-10">
+    <span className="col-xs-12 col-sm-10 p-0">
       <span className={styles.demoName}>{name} Chart </span>
       <small id={styles.mainSource} title="Main Source">
         <a href={mainSource}>···</a>
@@ -21,8 +21,8 @@ const DemoTitle = ({ isCompleted, mainSource, name }: Props) => (
         </small>
       )}
     </span>
-    <span className={`col-sm-2 d-xs-none ${styles.backHome}`}>
-      <a className="btn btn-default" href={ROOT_PATH}>
+    <span className={`col-sm-2 p-0 d-xs-none ${styles.backHome}`}>
+      <a className="btn btn-info" href={ROOT_PATH} role="button">
         <span className="glyphicon glyphicon-home" /> Home
       </a>
     </span>

@@ -6,16 +6,6 @@ const Head = () => (
       src={`${ROOT_PATH}vendors/jquery/dist/jquery.min.js`}
       type="text/javascript"
     />
-    <link
-      href={`${ROOT_PATH}vendors/bootstrap/dist/css/bootstrap.min.css`}
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link
-      href={`${ROOT_PATH}vendors/bootstrap/dist/css/bootstrap-theme.min.css`}
-      rel="stylesheet"
-      type="text/css"
-    />
     {/* Iconspedia - Free License */}
     <link
       href={`${ROOT_PATH}favicon.png`}

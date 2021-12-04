@@ -6,6 +6,12 @@ $mobileBreakpoint: 530px;
   }
 }
 
+/* Bootstrap v5 override */
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-size: 0.9em !important;
+}
+
 .backHome {
   padding: 0;
   text-align: right;
@@ -39,12 +45,6 @@ $mobileBreakpoint: 530px;
   }
 }
 
-.rowWrapper:hover {
-  .bullet {
-    transform: translateY(-3px) scale(1.2);
-  }
-}
-
 .demoName {
   font-size: 30px;
 
@@ -57,9 +57,39 @@ $mobileBreakpoint: 530px;
   word-break: break-all;
 }
 
+.footer p {
+  margin-top: 40px;
+}
+
+.homeDemoNumber,
+.homeDemoNameLink {
+  color: #67777a;
+}
+
+.homeDemoNumber {
+  font-weight: bold;
+}
+
 .notes {
   margin-bottom: 30px;
   margin-top: 30px;
+}
+
+/* Bootstrap v5 override */
+.rootLayout {
+  a {
+    text-decoration: none;
+
+    &,
+    &:hover {
+      color: #223cc9;
+    }
+  }
+
+  /* stylelint-disable-next-line selector-class-pattern */
+  :global .btn.btn-info {
+    color: #fff;
+  }
 }
 
 .sourceNumber {
@@ -73,8 +103,10 @@ $mobileBreakpoint: 530px;
   margin: 40px 0 20px;
   padding-bottom: 9px;
 
+  /* stylelint-disable-next-line no-descending-specificity */
   a {
     color: #324297;
+    text-decoration: none;
   }
 
   h1 {
@@ -85,6 +117,12 @@ $mobileBreakpoint: 530px;
   small {
     color: #9bb9a8;
     font-size: 0.5em;
+  }
+}
+
+.rowWrapper:hover {
+  .bullet {
+    transform: translateY(-3px) scale(1.2);
   }
 }
 
@@ -111,12 +149,12 @@ $mobileBreakpoint: 530px;
   .bullet {
     left: -15px;
     position: absolute;
-    top: -10px;
+    top: -12px;
   }
 }
 
 #demosLists {
-  font-size: 1.1em;
+  font-size: 1em;
   letter-spacing: 1px;
   margin-top: 15px;
 
@@ -168,7 +206,11 @@ $mobileBreakpoint: 530px;
 }
 
 #mainSource {
-  color: #bbb;
+  /* stylelint-disable-next-line no-descending-specificity */
+  a {
+    color: #bbb;
+    text-decoration: none;
+  }
 
   @mixin mobile-only {
     font-size: 18px;

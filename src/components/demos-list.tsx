@@ -31,10 +31,10 @@ const DemosList = ({ demos, indexOffset }: Props) => (
         href={demo.route}
         key={demo.name}
       >
-        <span className="home-demo-number">
+        <span className={styles.homeDemoNumber}>
           {demoIndex + 1 + indexOffset}.-
         </span>{" "}
-        <span className="home-demo-name-link">{demo.name}</span>
+        <span className={styles.homeDemoNameLink}>{demo.name}</span>
         <div
           className={`${styles.bullet} ${
             categoryToBulletStyleMap[demo.category]

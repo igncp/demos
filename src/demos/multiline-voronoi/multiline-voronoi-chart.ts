@@ -55,6 +55,9 @@ const addFilter = (
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
+const tooltipWidth = 300
+const tooltipWidthHalf = tooltipWidth / 2
+
 const buildTooltip = (
   svgG: Selection<SVGGElement, unknown, HTMLElement, unknown>
 ) => {
@@ -68,7 +71,7 @@ const buildTooltip = (
     .attr("transform", "translate(-150,-50)")
     .attr("fill", "white")
     .attr("height", 50)
-    .attr("width", 300)
+    .attr("width", tooltipWidth)
     .attr("rx", 5)
     .attr("ry", 5)
     .style("filter", "url(#drop-shadow)")
@@ -76,7 +79,6 @@ const buildTooltip = (
     .style("pointer-events", "none")
     .style("cursor", "default")
 
-  tooltip.append("circle").attr("r", 3.5)
   tooltip.append("text").attr("class", "text1").attr("y", -30)
   tooltip.append("text").attr("class", "text2").attr("y", -10)
 
@@ -84,6 +86,7 @@ const buildTooltip = (
 }
 
 type ChartElements = Readonly<{
+  circle: Selection<SVGCircleElement, unknown, HTMLElement, unknown>
   linesWrapper: Selection<SVGGElement, unknown, HTMLElement, unknown>
   svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
   svgG: Selection<SVGGElement, unknown, HTMLElement, unknown>
@@ -119,11 +122,13 @@ class MultilineVoronoiChart<ChartLine, ChartPoint> {
     addFilter(svgG)
 
     const linesWrapper = svgG.append("g").attr("class", styles.lines)
+    const circle = svgG.append("circle").attr("r", 3.5)
     const voronoiGroup = svgG.append("g").attr("class", styles.voronoi)
 
     const tooltip = buildTooltip(svgG)
 
     this.elements = {
+      circle,
       linesWrapper,
       svg,
       svgG,
@@ -279,17 +284,27 @@ class MultilineVoronoiChart<ChartLine, ChartPoint> {
       select(linePath).classed(styles.lineHover, true)
       ;(linePath.parentNode as SVGGElement).appendChild(linePath)
 
+      const rawTranslateX = lineXTransformer(point)
+      const rawTranslateY = lineYTransformer(point)
+
+      const translateX = Math.min(
+        width - tooltipWidth / 2,
+        Math.max(tooltipWidthHalf, rawTranslateX)
+      )
+      const translateY = rawTranslateY
+
       elements.tooltip
-        .attr(
-          "transform",
-          `translate(${lineXTransformer(point)},${lineYTransformer(point)})`
-        )
+        .attr("transform", `translate(${translateX},${translateY})`)
         .on("mouseover", () => {
           mouseover(null, point)
         })
         .on("click", () => {
           clicked(null, point)
         })
+      elements.circle.attr(
+        "transform",
+        `translate(${rawTranslateX},${rawTranslateY})`
+      )
 
       elements.tooltip.select(".text1").text(config.getTooltipPart1(point))
       elements.tooltip.select(".text2").text(config.getTooltipPart2(point))

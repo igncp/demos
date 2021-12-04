@@ -8,7 +8,15 @@ import DemosList from "@/components/demos-list"
 import Layout from "@/components/layout"
 import * as styles from "@/components/styles/styles.module.css"
 
-const colClassName = "col-xs-offset-1 col-xs-11 col-lg-offset-2 col-lg-3"
+const getColClassName = (isFirst: boolean) =>
+  [
+    "col-11",
+    "col-lg-4",
+    "col-xl-3",
+    "offset-1",
+    "offset-xl-2",
+    `offset-lg-${isFirst ? "1" : "2"}`,
+  ].join(" ")
 
 const IndexPage = ({
   pageContext: { groupedDemos, meta, numberPerGroup },
@@ -59,7 +67,7 @@ const IndexPage = ({
 
       <div className="row" id={styles.demosLists}>
         {isMobile ? (
-          <div className={colClassName}>
+          <div className={getColClassName(true)}>
             <DemosList
               demos={groupedDemos[0].concat(groupedDemos[1])}
               indexOffset={0}
@@ -67,10 +75,10 @@ const IndexPage = ({
           </div>
         ) : (
           <>
-            <div className={colClassName}>
+            <div className={getColClassName(true)}>
               <DemosList demos={groupedDemos[0]} indexOffset={0} />
             </div>
-            <div className={colClassName}>
+            <div className={getColClassName(false)}>
               <DemosList demos={groupedDemos[1]} indexOffset={numberPerGroup} />
             </div>
           </>

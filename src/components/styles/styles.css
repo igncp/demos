@@ -13,6 +13,11 @@ a:focus {
   text-decoration: none;
 }
 
+body,
+html {
+  height: auto !important;
+}
+
 body {
   color: #6d6d77;
 }
@@ -27,14 +32,6 @@ form {
 
 ul {
   list-style-type: circle;
-}
-
-.home-demo-name-link {
-  color: #67777a;
-}
-
-.home-demo-number {
-  font-weight: bold;
 }
 
 .row {

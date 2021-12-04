@@ -5,13 +5,13 @@ import * as styles from "@/components/styles/styles.module.css"
 const PageTitle = () => (
   <div className={styles.pageHeader}>
     <h1 className="row">
-      <span className="col-sm-8 col-xs-8">
+      <span className="col-3 col-md-8 p-0">
         <a href={ROOT_PATH}>Demos</a>{" "}
         <small className="hide-tablet">
           interactive data visualization examples
         </small>
       </span>
-      <span className="col-xs-4" id={styles.ghButtons}>
+      <span className="col-9 col-md-4 p-0" id={styles.ghButtons}>
         <iframe
           className="hide-mobile"
           frameBorder="0"
