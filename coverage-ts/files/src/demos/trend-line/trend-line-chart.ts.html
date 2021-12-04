@@ -1,0 +1,238 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>trend-line-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/trend-line/trend-line-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">355</td><td class="">355</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Line,
+  Selection,
+  axisBottom,
+  axisLeft,
+  line as d3Line,
+  extent,
+  max,
+  min,
+  range,
+  scaleLinear,
+  scaleQuantile,
+  scaleTime,
+  select,
+} from &quot;d3&quot;
+
+import * as styles from &quot;./trend-line.module.css&quot;
+
+const margin = {
+  bottom: 50,
+  left: 50,
+  right: 50,
+  top: 50,
+}
+
+const height = 500 - margin.top - margin.bottom
+
+const animationTime = 2000
+
+const getInterpolation =
+  &lt;ChartData&gt;({
+    line,
+    lineData,
+  }: {
+    line: Line&lt;ChartData&gt;
+    lineData: ChartData[]
+  }) =&gt;
+  () =&gt; {
+    const interpolate = scaleQuantile()
+      .domain([0, 1])
+      .range(range(1, lineData.length + 1))
+
+    return (t: number): string =&gt; {
+      const interpolatedLine = lineData.slice(0, interpolate(t))
+
+      return line(interpolatedLine)!
+    }
+  }
+
+type ChartConfig&lt;ChartData&gt; = {
+  chartText: string
+  getDashedLineX: (lineData: ChartData) =&gt; Date
+  getDashedLineY: (lineData: ChartData) =&gt; number
+  getFullLineX: (lineData: ChartData) =&gt; Date
+  getFullLineY: (lineData: ChartData) =&gt; number
+  initialZoomed: boolean
+  lineData: ChartData[]
+  rootElId: string
+}
+
+type ChartElements = {
+  chartText: Selection&lt;SVGTextElement, unknown, HTMLElement, undefined&gt;
+  dashedLine: Selection&lt;SVGPathElement, unknown, HTMLElement, undefined&gt;
+  fullLine: Selection&lt;SVGPathElement, unknown, HTMLElement, undefined&gt;
+  rootEl: Selection&lt;HTMLElement, unknown, HTMLElement, undefined&gt;
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, undefined&gt;
+  svgG: Selection&lt;SVGGElement, unknown, HTMLElement, undefined&gt;
+  xAxis: Selection&lt;SVGGElement, unknown, HTMLElement, undefined&gt;
+  yAxis: Selection&lt;SVGGElement, unknown, HTMLElement, undefined&gt;
+}
+
+class TrendLineChart&lt;ChartData&gt; {
+  private readonly elements: ChartElements
+  private readonly config: ChartConfig&lt;ChartData&gt;
+  private readonly state: { isZoomed: boolean } = {
+    isZoomed: false,
+  }
+
+  public constructor(config: ChartConfig&lt;ChartData&gt;) {
+    const { initialZoomed, rootElId } = config
+
+    const rootEl = select&lt;HTMLElement, unknown&gt;(`#${rootElId}`)
+    const svg = rootEl.append(&quot;svg&quot;)
+    const svgG = svg.append(&quot;g&quot;)
+    const xAxis = svgG.append(&quot;g&quot;)
+    const yAxis = svgG.append(&quot;g&quot;)
+    const fullLine = svgG.append(&quot;path&quot;)
+    const dashedLine = svgG.append(&quot;path&quot;)
+    const chartText = svgG.append(&quot;text&quot;)
+
+    this.elements = {
+      chartText,
+      dashedLine,
+      fullLine,
+      rootEl,
+      svg,
+      svgG,
+      xAxis,
+      yAxis,
+    }
+
+    this.config = config
+    this.renderContent(initialZoomed)
+
+    window.addEventListener(&quot;resize&quot;, this.handleResize)
+  }
+
+  public renderContent(isZoomed: boolean) {
+    this.state.isZoomed = isZoomed
+
+    this.render(true)
+  }
+
+  private render(withAnimation: boolean) {
+    const finalAnimationTime = withAnimation ? animationTime : 0
+    const {
+      config: {
+        getDashedLineX,
+        getDashedLineY,
+        getFullLineX,
+        getFullLineY,
+        lineData,
+        rootElId,
+      },
+      config,
+      elements: {
+        chartText,
+        dashedLine,
+        fullLine,
+        svg,
+        svgG,
+        xAxis: xAxisSel,
+        yAxis: yAxisSel,
+      },
+      state: { isZoomed },
+    } = this
+    const container = document.getElementById(rootElId) as HTMLElement
+
+    container.classList.add(styles.trendLineChart)
+
+    const width =
+      container.getBoundingClientRect().width - margin.left - margin.right
+
+    svg
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+      .attr(&quot;width&quot;, width + margin.left + margin.right)
+    svgG.attr(&quot;transform&quot;, `translate(${margin.left},${margin.right})`)
+
+    const x = scaleTime()
+      .range([0, width])
+      .domain(extent(lineData, getFullLineX) as [Date, Date])
+    const y = scaleLinear()
+      .range([height, 0])
+      .domain([
+        isZoomed ? (min(lineData, getFullLineY) as number) : 0,
+        max(lineData, getFullLineY) as number,
+      ])
+    const xAxis = axisBottom(x)
+    const yAxis = axisLeft(y)
+
+    const line = d3Line&lt;ChartData&gt;()
+      .x((lineItem) =&gt; x(getFullLineX(lineItem)))
+      .y((lineItem) =&gt; y(getFullLineY(lineItem)))
+
+    xAxisSel
+      .attr(&quot;class&quot;, `x ${styles.axis}`)
+      .attr(&quot;transform&quot;, `translate(0,${height})`)
+      .call(xAxis)
+    yAxisSel.attr(&quot;class&quot;, `y ${styles.axis}`).call(yAxis)
+
+    fullLine
+      .datum(lineData)
+      .interrupt()
+      .transition()
+      .duration(finalAnimationTime)
+      .attrTween(
+        &quot;d&quot;,
+        getInterpolation({
+          line,
+          lineData,
+        })
+      )
+      .attr(&quot;class&quot;, styles.line)
+
+    const regressionLine = d3Line&lt;ChartData&gt;()
+      .x((lineItem) =&gt; x(getDashedLineX(lineItem)))
+      .y((lineItem) =&gt; y(getDashedLineY(lineItem)))
+
+    dashedLine
+      .datum(lineData)
+      .attr(&quot;d&quot;, null)
+      .interrupt()
+      .transition()
+      .delay(finalAnimationTime)
+      .duration(finalAnimationTime)
+      .attrTween(
+        &quot;d&quot;,
+        getInterpolation({
+          line: regressionLine,
+          lineData,
+        })
+      )
+      .attr(&quot;class&quot;, styles.rline)
+
+    chartText
+      .attr(&quot;transform&quot;, `translate(${width * 0.7},${height * 0.7})`)
+      .style(&quot;opacity&quot;, finalAnimationTime ? 0 : 1)
+      .interrupt()
+      .transition()
+      .delay(finalAnimationTime * 2)
+      .text(config.chartText)
+      .style(&quot;opacity&quot;, 1)
+  }
+
+  private readonly handleResize = () =&gt; {
+    this.render(false)
+  }
+}
+
+export { TrendLineChart, ChartConfig }
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 04 Dec 2021 14:17:30 GMT</p>
+    </body>
+  </html>
+  

@@ -520,20 +520,6 @@
       "kind": 1
     },
     {
-      "file": "src/demos/moving-line/moving-line.ts",
-      "line": 64,
-      "character": 18,
-      "text": "className",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/moving-line/moving-line.ts",
-      "line": 64,
-      "character": 28,
-      "text": "baseVal",
-      "kind": 1
-    },
-    {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
       "line": 560,
       "character": 23,
@@ -1276,8 +1262,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.44454617591406,
-  "total": 32766,
-  "covered": 32584,
-  "uncovered": 182
+  "percentage": 99.44959178057059,
+  "total": 32703,
+  "covered": 32523,
+  "uncovered": 180
 }

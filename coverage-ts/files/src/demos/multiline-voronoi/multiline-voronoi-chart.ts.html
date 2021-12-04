@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/multiline-voronoi/multiline-voronoi-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">613</td><td class="">613</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/multiline-voronoi/multiline-voronoi-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">643</td><td class="">643</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Selection,
   axisBottom,
   axisLeft,
@@ -68,6 +68,9 @@ const addFilter = (
   feMerge.append(&quot;feMergeNode&quot;).attr(&quot;in&quot;, &quot;SourceGraphic&quot;)
 }
 
+const tooltipWidth = 300
+const tooltipWidthHalf = tooltipWidth / 2
+
 const buildTooltip = (
   svgG: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
 ) =&gt; {
@@ -81,7 +84,7 @@ const buildTooltip = (
     .attr(&quot;transform&quot;, &quot;translate(-150,-50)&quot;)
     .attr(&quot;fill&quot;, &quot;white&quot;)
     .attr(&quot;height&quot;, 50)
-    .attr(&quot;width&quot;, 300)
+    .attr(&quot;width&quot;, tooltipWidth)
     .attr(&quot;rx&quot;, 5)
     .attr(&quot;ry&quot;, 5)
     .style(&quot;filter&quot;, &quot;url(#drop-shadow)&quot;)
@@ -89,7 +92,6 @@ const buildTooltip = (
     .style(&quot;pointer-events&quot;, &quot;none&quot;)
     .style(&quot;cursor&quot;, &quot;default&quot;)
 
-  tooltip.append(&quot;circle&quot;).attr(&quot;r&quot;, 3.5)
   tooltip.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;text1&quot;).attr(&quot;y&quot;, -30)
   tooltip.append(&quot;text&quot;).attr(&quot;class&quot;, &quot;text2&quot;).attr(&quot;y&quot;, -10)
 
@@ -97,6 +99,7 @@ const buildTooltip = (
 }
 
 type ChartElements = Readonly&lt;{
+  circle: Selection&lt;SVGCircleElement, unknown, HTMLElement, unknown&gt;
   linesWrapper: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
   svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
   svgG: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
@@ -132,11 +135,13 @@ class MultilineVoronoiChart&lt;ChartLine, ChartPoint&gt; {
     addFilter(svgG)
 
     const linesWrapper = svgG.append(&quot;g&quot;).attr(&quot;class&quot;, styles.lines)
+    const circle = svgG.append(&quot;circle&quot;).attr(&quot;r&quot;, 3.5)
     const voronoiGroup = svgG.append(&quot;g&quot;).attr(&quot;class&quot;, styles.voronoi)
 
     const tooltip = buildTooltip(svgG)
 
     this.elements = {
+      circle,
       linesWrapper,
       svg,
       svgG,
@@ -292,17 +297,27 @@ class MultilineVoronoiChart&lt;ChartLine, ChartPoint&gt; {
       select(linePath).classed(styles.lineHover, true)
       ;(linePath.parentNode as SVGGElement).appendChild(linePath)
 
+      const rawTranslateX = lineXTransformer(point)
+      const rawTranslateY = lineYTransformer(point)
+
+      const translateX = Math.min(
+        width - tooltipWidth / 2,
+        Math.max(tooltipWidthHalf, rawTranslateX)
+      )
+      const translateY = rawTranslateY
+
       elements.tooltip
-        .attr(
-          &quot;transform&quot;,
-          `translate(${lineXTransformer(point)},${lineYTransformer(point)})`
-        )
+        .attr(&quot;transform&quot;, `translate(${translateX},${translateY})`)
         .on(&quot;mouseover&quot;, () =&gt; {
           mouseover(null, point)
         })
         .on(&quot;click&quot;, () =&gt; {
           clicked(null, point)
         })
+      elements.circle.attr(
+        &quot;transform&quot;,
+        `translate(${rawTranslateX},${rawTranslateY})`
+      )
 
       elements.tooltip.select(&quot;.text1&quot;).text(config.getTooltipPart1(point))
       elements.tooltip.select(&quot;.text2&quot;).text(config.getTooltipPart2(point))
@@ -355,7 +370,7 @@ class MultilineVoronoiChart&lt;ChartLine, ChartPoint&gt; {
 
 export { MultilineVoronoiChart, ChartConfig }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 25 Nov 2021 23:14:39 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 04 Dec 2021 14:17:30 GMT</p>
     </body>
   </html>
   

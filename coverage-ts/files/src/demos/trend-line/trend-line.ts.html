@@ -11,236 +11,32 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/trend-line/trend-line.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">365</td><td class="">365</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
-  Line,
-  axisBottom,
-  axisLeft,
-  line as d3Line,
-  extent,
-  max,
-  min,
-  range,
-  scaleLinear,
-  scaleQuantile,
-  scaleTime,
-  select,
-  selectAll,
-  timeParse,
-  tsv,
-} from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/trend-line/trend-line.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">30</td><td class="">30</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { selectAll } from &quot;d3&quot;
 
-import * as styles from &quot;./trend-line.module.css&quot;
-
-const CONTAINER_ID = &quot;chart&quot;
-
-type InitialDataItem = {
-  occurred: string
-  value: string // eslint-disable-line id-denylist
-}
-
-type DataItem = {
-  arbitraryValue: number
-  occurred: Date
-}
-
-const fetchData = async (): Promise&lt;DataItem[]&gt; =&gt; {
-  const response = (await tsv(
-    `${ROOT_PATH}data/d3js/trend-line/data.tsv`
-  )) as InitialDataItem[]
-
-  const timeFormat = timeParse(&quot;%Y-%m-%d&quot;)
-
-  return response.map((responseItem) =&gt; ({
-    arbitraryValue: +responseItem.value,
-    occurred: timeFormat(responseItem.occurred)!,
-  }))
-}
-
-const margin = {
-  bottom: 50,
-  left: 50,
-  right: 50,
-  top: 50,
-}
-
-const height = 500 - margin.top - margin.bottom
-
-const animationTime = 2000
-
-const getInterpolation =
-  ({ line, lineData }: { line: Line&lt;DataItem&gt;; lineData: DataItem[] }) =&gt;
-  () =&gt; {
-    const interpolate = scaleQuantile()
-      .domain([0, 1])
-      .range(range(1, lineData.length + 1))
-
-    return (t: number): string =&gt; {
-      const interpolatedLine = lineData.slice(0, interpolate(t))
-
-      return line(interpolatedLine)!
-    }
-  }
-
-const createLinearRegression = (lineData: DataItem[]) =&gt; {
-  const linearRegression: {
-    intercept?: number
-    r2?: number
-    slope?: number
-  } = {}
-  const { length: itemsNum } = lineData
-
-  let sumX = 0
-  let sumY = 0
-  let sumXY = 0
-  let sumXX = 0
-  let sumYY = 0
-
-  lineData.forEach((lineItem) =&gt; {
-    sumY += lineItem.arbitraryValue
-    sumYY += lineItem.arbitraryValue * lineItem.arbitraryValue
-    sumXY += lineItem.occurred.getTime() * lineItem.arbitraryValue
-
-    sumX += lineItem.occurred.getTime()
-    sumXX += lineItem.occurred.getTime() * lineItem.occurred.getTime()
-  })
-
-  linearRegression.slope =
-    (itemsNum * sumXY - sumX * sumY) / (itemsNum * sumXX - sumX * sumX)
-  linearRegression.intercept = (sumY - linearRegression.slope * sumX) / itemsNum
-  linearRegression.r2 = Math.pow(
-    (itemsNum * sumXY - sumX * sumY) /
-      Math.sqrt(
-        (itemsNum * sumXX - sumX * sumX) * (itemsNum * sumYY - sumY * sumY)
-      ),
-    2
-  )
-
-  return linearRegression
-}
-
-const renderGraph = ({
-  initialZoomed,
-  lineData,
-  rootElId,
-}: {
-  initialZoomed: boolean
-  lineData: DataItem[]
-  rootElId: string
-}) =&gt; {
-  const container = document.getElementById(rootElId) as HTMLElement
-
-  container.classList.add(styles.trendLineChart)
-
-  const width =
-    container.getBoundingClientRect().width - margin.left - margin.right
-
-  const renderContent = (isZoomed: boolean) =&gt; {
-    const svg = select(`#${rootElId}`)
-      .text(&quot;&quot;)
-      .append(&quot;svg&quot;)
-      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
-      .attr(&quot;width&quot;, width + margin.left + margin.right)
-      .append(&quot;g&quot;)
-      .attr(&quot;transform&quot;, `translate(${margin.left},${margin.right})`)
-
-    const x = scaleTime().range([0, width])
-    const y = scaleLinear().range([height, 0])
-    const xAxis = axisBottom(x)
-    const yAxis = axisLeft(y)
-
-    const line = d3Line&lt;DataItem&gt;()
-      .x((lineItem) =&gt; x(lineItem.occurred))
-      .y((lineItem) =&gt; y(lineItem.arbitraryValue))
-
-    x.domain(extent(lineData, (lineItem) =&gt; lineItem.occurred) as [Date, Date])
-    y.domain([
-      isZoomed
-        ? (min(lineData, (lineItem) =&gt; lineItem.arbitraryValue) as number)
-        : 0,
-      max(lineData, (lineItem) =&gt; lineItem.arbitraryValue) as number,
-    ])
-
-    svg
-      .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, `x ${styles.axis}`)
-      .attr(&quot;transform&quot;, `translate(0,${height})`)
-      .call(xAxis)
-    svg.append(&quot;g&quot;).attr(&quot;class&quot;, `y ${styles.axis}`).call(yAxis)
-
-    svg
-      .append(&quot;path&quot;)
-      .datum(lineData)
-      .transition()
-      .duration(animationTime)
-      .attrTween(
-        &quot;d&quot;,
-        getInterpolation({
-          line,
-          lineData,
-        })
-      )
-      .attr(&quot;class&quot;, styles.line)
-
-    const linearRegression = createLinearRegression(lineData)
-
-    const regressionLine = d3Line&lt;DataItem&gt;()
-      .x((lineItem) =&gt; x(lineItem.occurred))
-      .y((lineItem) =&gt;
-        y(
-          linearRegression.intercept! +
-            linearRegression.slope! * +lineItem.occurred
-        )
-      )
-
-    svg
-      .append(&quot;path&quot;)
-      .datum(lineData)
-      .transition()
-      .delay(animationTime)
-      .duration(animationTime)
-      .attrTween(
-        &quot;d&quot;,
-        getInterpolation({
-          line: regressionLine,
-          lineData,
-        })
-      )
-      .attr(&quot;class&quot;, styles.rline)
-
-    svg
-      .append(&quot;text&quot;)
-      .attr(&quot;transform&quot;, `translate(${width * 0.7},${height * 0.7})`)
-      .style(&quot;opacity&quot;, 0)
-      .transition()
-      .delay(animationTime * 2)
-      .text(`Slope: ${linearRegression.slope!.toExponential(3)}`)
-      .style(&quot;opacity&quot;, 1)
-  }
-
-  renderContent(initialZoomed)
-
-  return {
-    renderContent,
-  }
-}
+import { TrendLineChart } from &quot;./trend-line-chart&quot;
+import {
+  CONTAINER_ID,
+  fetchData,
+  getChartConfig,
+} from &quot;./trend-line-chart-config&quot;
 
 const main = async () =&gt; {
-  const rootElId = CONTAINER_ID
   const lineData = await fetchData()
 
   const getIsZoomed = () =&gt;
     (document.querySelector(&#x27;input[value=&quot;zoom&quot;]&#x27;) as HTMLInputElement).checked
 
-  const { renderContent } = renderGraph({
+  const chartConfig = getChartConfig({
     initialZoomed: getIsZoomed(),
     lineData,
-    rootElId,
   })
+
+  const chart = new TrendLineChart(chartConfig)
 
   selectAll(&#x27;input[name=&quot;mode&quot;]&#x27;).on(&quot;change&quot;, () =&gt; {
     const isZoomed = getIsZoomed()
 
-    renderContent(isZoomed)
+    chart.renderContent(isZoomed)
   })
 }
 
@@ -248,7 +44,7 @@ export { CONTAINER_ID }
 
 export default main
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Thu, 25 Nov 2021 23:14:39 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 04 Dec 2021 14:17:30 GMT</p>
     </body>
   </html>
   
