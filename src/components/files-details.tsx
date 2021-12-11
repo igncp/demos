@@ -1,8 +1,3 @@
-import Prism from "prismjs"
-// https://prismjs.com/#supported-languages
-import "prismjs/components/prism-jsx"
-import "prismjs/components/prism-scss"
-import "prismjs/components/prism-typescript"
 import "prismjs/themes/prism-coy.css"
 import React from "react"
 
@@ -148,11 +143,7 @@ const FilesDetails = ({ demoInfo }: Props) => {
               <pre>
                 <code
                   dangerouslySetInnerHTML={{
-                    __html: Prism.highlight(
-                      content,
-                      Prism.languages.typescript,
-                      "typescript"
-                    ),
+                    __html: content,
                   }}
                 />
               </pre>
@@ -167,11 +158,7 @@ const FilesDetails = ({ demoInfo }: Props) => {
             <pre>
               <code
                 dangerouslySetInnerHTML={{
-                  __html: Prism.highlight(
-                    demoInfo.files.page.content,
-                    Prism.languages.jsx,
-                    "jsx"
-                  ),
+                  __html: demoInfo.files.page.content,
                 }}
               />
             </pre>
@@ -187,11 +174,7 @@ const FilesDetails = ({ demoInfo }: Props) => {
               <pre>
                 <code
                   dangerouslySetInnerHTML={{
-                    __html: Prism.highlight(
-                      content,
-                      Prism.languages.scss,
-                      "scss"
-                    ),
+                    __html: content,
                   }}
                 />
               </pre>

@@ -1,6 +1,6 @@
 import React from "react"
 
-import { DemoPageProps, JQUERYUI } from "@/common"
+import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
@@ -9,12 +9,7 @@ import main, {
 } from "@/demos/philosophers-timeline/philosophers-timeline"
 
 const PhilosophersTimeline = ({ pageContext }: DemoPageProps) => (
-  <Demo
-    links={[JQUERYUI.STYLE]}
-    main={main}
-    pageContext={pageContext}
-    scripts={[JQUERYUI.SCRIPT]}
-  >
+  <Demo main={main} pageContext={pageContext}>
     <div id={CONTAINER_ID} />
   </Demo>
 )

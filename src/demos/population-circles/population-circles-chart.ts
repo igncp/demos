@@ -15,8 +15,14 @@ import {
   select,
   zoom,
 } from "d3"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 
 import * as styles from "./population-circles.module.css"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 const dropShadowBaseId = "dropShadowBase"
 

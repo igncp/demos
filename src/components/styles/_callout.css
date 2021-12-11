@@ -1,3 +1,5 @@
+@import "./mixin.css";
+
 /* stylelint-disable selector-class-pattern */
 
 .bs-callout {
@@ -13,6 +15,13 @@
 
   p:last-child {
     margin-bottom: 0;
+  }
+
+  @mixin mobile-only {
+    ul {
+      list-style: none;
+      padding: 0;
+    }
   }
 }
 

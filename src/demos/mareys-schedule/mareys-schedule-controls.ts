@@ -1,5 +1,12 @@
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
+
 import { Redraw } from "./crossing-lines-chart"
 import { MareysSchedules } from "./mareys-schedule-data-model"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/slider")
+}
 
 type ScheduleLimits = [number, number]
 

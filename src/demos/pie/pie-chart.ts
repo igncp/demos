@@ -12,10 +12,16 @@ import {
   schemePastel2,
   select,
 } from "d3"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 import cloneDeep from "lodash/cloneDeep"
 import { v1 as uuidv1 } from "uuid"
 
 import * as styles from "./pie-chart.module.css"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 const height = 300
 const outerRadius = 100

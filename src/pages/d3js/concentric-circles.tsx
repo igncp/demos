@@ -1,6 +1,6 @@
 import React from "react"
 
-import { DemoPageProps, JQUERYUI } from "@/common"
+import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
@@ -10,12 +10,7 @@ import main, {
 } from "@/demos/concentric-circles/concentric-circles"
 
 const ConcentricCircles = ({ pageContext }: DemoPageProps) => (
-  <Demo
-    links={[JQUERYUI.STYLE]}
-    main={main}
-    pageContext={pageContext}
-    scripts={[JQUERYUI.SCRIPT]}
-  >
+  <Demo main={main} pageContext={pageContext}>
     <div style={{ marginBottom: 20 }}>
       <p>Zoom</p>
       <div id={ZOOM_SLIDER_ID} />

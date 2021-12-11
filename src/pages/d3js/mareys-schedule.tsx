@@ -1,6 +1,6 @@
 import React from "react"
 
-import { DemoPageProps, JQUERYUI } from "@/common"
+import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
@@ -10,12 +10,7 @@ import main, {
 } from "@/demos/mareys-schedule/mareys-schedule"
 
 const MareysSchedule = ({ pageContext }: DemoPageProps) => (
-  <Demo
-    links={[JQUERYUI.STYLE]}
-    main={main}
-    pageContext={pageContext}
-    scripts={[JQUERYUI.SCRIPT]}
-  >
+  <Demo main={main} pageContext={pageContext}>
     <div>
       <div id={RANGE_ID} />
     </div>

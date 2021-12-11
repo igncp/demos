@@ -8,9 +8,16 @@ import {
   scaleLinear,
   select,
 } from "d3"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 import { v1 as uuidv1 } from "uuid"
 
+import { DragModule } from "./bars-chart-drag"
 import * as styles from "./bars.module.css"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 type ChartData = {
   id: number
@@ -18,6 +25,8 @@ type ChartData = {
 }
 
 const height = 500
+const smallMarginWidth = 600
+
 const margin = { left: 160, top: 100 }
 const floor = height - margin.top * 2
 
@@ -33,29 +42,94 @@ type ChartConfig = {
   rootElId: string
 }
 
+type ChartElements = {
+  chart: Selection<SVGGElement, ChartData, HTMLElement, unknown>
+  dragArea: Selection<SVGGElement, ChartData, HTMLElement, unknown>
+  svg: Selection<SVGSVGElement, ChartData, HTMLElement, unknown>
+  xAxisG: Selection<SVGGElement, ChartData, HTMLElement, unknown>
+  xAxisText: Selection<SVGTextElement, ChartData, HTMLElement, unknown>
+  yAxisG: Selection<SVGGElement, ChartData, HTMLElement, unknown>
+  yAxisText: Selection<SVGTextElement, ChartData, HTMLElement, unknown>
+}
+
 type Interval = ReturnType<typeof setInterval>
-type Chart = Selection<SVGGElement, ChartData, HTMLElement, unknown>
 type ColorFn = (c: ChartData) => string
 
 class BarsChart {
   private readonly bars: ChartData[]
+  private readonly elements: ChartElements
   private readonly rootElId: string
-  private interval: Interval | null
   private readonly barClassName: string
-  private chart: Chart | null
+  private readonly dragModule: DragModule<ChartData>
   private color: ColorFn | null
+  private readonly state: {
+    interval: Interval | null
+  } = {
+    interval: null,
+  }
 
   public constructor({ bars, rootElId }: ChartConfig) {
     this.bars = bars
     this.rootElId = rootElId
     this.barClassName = `bars-${uuidv1().slice(0, 6)}`
 
-    this.interval = null
-    this.chart = null
+    const svg = select<HTMLElement, ChartData>(`#${rootElId}`).append("svg")
+
+    svg
+      .append("g")
+      .append("filter")
+      .attr("height", "300%")
+      .attr("x", "-100%")
+      .attr("y", "-100%")
+      .attr("id", "blur")
+      .attr("width", "300%")
+      .append("feGaussianBlur")
+      .attr("stdDeviation", "2 2")
+
+    const dragArea = svg.append("g")
+    const chart = dragArea.append("g")
+    const xAxisG = chart.append("g")
+    const xAxisText = xAxisG.append("text")
+    const yAxisG = chart.append("g")
+    const yAxisText = yAxisG.append("text")
+
+    this.elements = {
+      chart,
+      dragArea,
+      svg,
+      xAxisG,
+      xAxisText,
+      yAxisG,
+      yAxisText,
+    }
+
+    this.dragModule = new DragModule({
+      chart,
+      dragArea,
+      svg,
+    })
+
     this.color = null
+
+    this.render()
+
+    window.addEventListener("resize", this.handleResize)
   }
 
-  public render() {
+  public addBar(newBar: ChartData) {
+    this.bars.push(newBar)
+  }
+
+  public getBars(): ChartData[] {
+    return this.bars.slice()
+  }
+
+  public refresh() {
+    this.drawRectangles()
+    this.redraw()
+  }
+
+  private render() {
     const { bars, rootElId } = this
     const { width } = (
       document.getElementById(rootElId) as HTMLElement
@@ -73,31 +147,29 @@ class BarsChart {
 
     this.color = color
 
-    const svg = select<HTMLElement, ChartData>(`#${rootElId}`).append("svg")
+    const {
+      elements: { chart, svg, xAxisG, xAxisText, yAxisG, yAxisText },
+    } = this
 
     svg
       .attr("height", height)
       .attr("width", width)
       .attr("class", styles.barsChart)
 
-    svg
-      .append("g")
-      .append("filter")
-      .attr("height", "300%")
-      .attr("x", "-100%")
-      .attr("y", "-100%")
-      .attr("id", "blur")
-      .attr("width", "300%")
-      .append("feGaussianBlur")
-      .attr("stdDeviation", "2 2")
+    const marginLeft = width > smallMarginWidth ? margin.left : 80
 
-    const chart = svg.append("g")
+    this.dragModule.setDimensions({
+      marginLeft,
+      width,
+    })
 
-    this.chart = chart
+    chart.attr("transform", `translate(${marginLeft},${margin.top})`)
 
-    chart.attr("transform", `translate(${margin.left},${margin.top})`)
+    if (this.state.interval) {
+      clearInterval(this.state.interval)
+    }
 
-    this.interval = setInterval(this.getIntervalFn(), 1000)
+    this.state.interval = setInterval(this.getIntervalFn(), 1000)
 
     const x = scaleLinear()
       .domain([0.5, bars.length + 0.5])
@@ -110,15 +182,12 @@ class BarsChart {
         -1 * barHeight * (max(bars, (bar) => bar.metric) as number),
       ])
 
-    const xAxisG = chart.append("g")
-
     xAxisG
       .attr("class", `xAxis ${styles.axis}`)
       .attr("transform", `translate(0,${floor})`)
       .call(axisBottom(x))
 
-    xAxisG
-      .append("text")
+    xAxisText
       .attr("transform", `translate(${(barWidth * bars.length) / 2} ,0)`)
       .attr("class", "xAxisLabel")
       .attr("y", 40)
@@ -127,15 +196,12 @@ class BarsChart {
       .style("text-anchor", "end")
       .text("Number")
 
-    const yAxisG = chart.append("g")
-
     yAxisG
       .attr("class", `yAxis ${styles.axis}`)
       .attr("transform", `translate(0,${floor})`)
       .call(axisLeft(y))
 
-    yAxisG
-      .append("text")
+    yAxisText
       .attr("transform", `translate(-30,${(-1 * (height - 60)) / 2})`)
       .attr("y", 40)
       .attr("font-size", "1.3em")
@@ -143,32 +209,22 @@ class BarsChart {
       .style("text-anchor", "end")
       .text("Value")
 
+    this.dragModule.reset()
     this.drawRectangles()
-  }
-
-  public addBar(newBar: ChartData) {
-    this.bars.push(newBar)
-  }
-
-  public getBars(): ChartData[] {
-    return this.bars.slice()
-  }
-
-  public refresh() {
-    this.drawRectangles()
-    this.redraw()
   }
 
   private clearInterval() {
-    if (this.interval) {
-      clearInterval(this.interval)
+    if (this.state.interval) {
+      clearInterval(this.state.interval)
     }
   }
 
   private getBarsSelection() {
-    const { chart } = this
+    const {
+      elements: { chart },
+    } = this
 
-    return (chart as Chart).selectAll<SVGRectElement, ChartData>("rect")
+    return chart.selectAll<SVGRectElement, ChartData>("rect")
   }
 
   private drawRectangles() {
@@ -193,7 +249,7 @@ class BarsChart {
       .on("mouseleave", () => {
         this.getBarsSelection().style("filter", null)
         this.clearInterval()
-        this.interval = setInterval(this.getIntervalFn(), 1000)
+        this.state.interval = setInterval(this.getIntervalFn(), 1000)
       })
       .attr("title", (bar) => bar.metric)
 
@@ -213,11 +269,11 @@ class BarsChart {
   }
 
   private redraw() {
-    const { bars, chart, color } = this
-
-    if (!chart) {
-      return
-    }
+    const {
+      bars,
+      color,
+      elements: { chart },
+    } = this
 
     const newX = scaleLinear()
       .domain([0.5, bars.length + 0.5])
@@ -243,6 +299,12 @@ class BarsChart {
       .attr("fill", color!)
       .select("title")
       .text((barItem) => barItem.metric)
+
+    this.dragModule.refresh()
+  }
+
+  private readonly handleResize = () => {
+    this.render()
   }
 }
 

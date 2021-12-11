@@ -1,6 +1,11 @@
 import fs from "fs"
 import { GatsbyNode } from "gatsby"
 import path from "path"
+import Prism from "prismjs"
+// https://prismjs.com/#supported-languages
+import "prismjs/components/prism-jsx"
+import "prismjs/components/prism-scss"
+import "prismjs/components/prism-typescript"
 
 import {
   DemoBase,
@@ -76,6 +81,14 @@ const getDemoTSFiles = (demoName: string) => {
 
       return fileB.content.includes(mainStr) ? 1 : 0
     })
+    .map((file) => ({
+      ...file,
+      content: Prism.highlight(
+        file.content,
+        Prism.languages.typescript,
+        "typescript"
+      ),
+    }))
 }
 
 const getDemoCSSFiles = (demoName: string) => {
@@ -89,6 +102,10 @@ const getDemoCSSFiles = (demoName: string) => {
       filePath,
     }))
     .filter((file) => !!file.content)
+    .map((file) => ({
+      ...file,
+      content: Prism.highlight(file.content, Prism.languages.scss, "scss"),
+    }))
 }
 
 const getPage = ({
@@ -97,10 +114,14 @@ const getPage = ({
 }: {
   category: Category
   demoName: string
-}) => ({
-  content: readIfExists(`src/pages/${category}/${demoName}.tsx`),
-  type: "tsx",
-})
+}) => {
+  const rawContent = readIfExists(`src/pages/${category}/${demoName}.tsx`)
+
+  return {
+    content: Prism.highlight(rawContent, Prism.languages.jsx, "jsx"),
+    type: "tsx",
+  }
+}
 
 const getDemoInfo = (slugs: string[]) => {
   const [category, demoName] = slugs as [Category, string]

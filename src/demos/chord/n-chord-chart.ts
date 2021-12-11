@@ -14,9 +14,15 @@ import {
   schemePastel2,
   select,
 } from "d3"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 import { v1 as uuidv1 } from "uuid"
 
 import * as styles from "./chord.module.css"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 const getRibbonKey = (ribbonNode: Chord) =>
   `${ribbonNode.source.index}_${ribbonNode.target.index}`

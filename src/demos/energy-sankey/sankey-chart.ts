@@ -8,8 +8,14 @@ import {
   sankeyLeft,
   sankeyLinkHorizontal,
 } from "d3-sankey"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 
 import * as styles from "./energy-sankey.module.css"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 type AddedGradients = {
   [key: string]: boolean

@@ -13,9 +13,15 @@ import {
   select,
 } from "d3"
 import { GeoJsonProperties } from "geojson"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 import { feature } from "topojson-client"
 import { Objects, Topology } from "topojson-specification"
 import { v1 as uuidv1 } from "uuid"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 const colorsScheme = ["#323247", "#7c7cc9", "#72b66c", "#429742"]
 const height = 500

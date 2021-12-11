@@ -6,6 +6,13 @@ module.exports = {
     `gatsby-plugin-react-helmet`,
     {
       options: {
+        analyzerMode: "static",
+        openAnalyzer: false,
+      },
+      resolve: "gatsby-plugin-webpack-bundle-analyser-v2",
+    },
+    {
+      options: {
         alias: {
           "@": "src",
         },

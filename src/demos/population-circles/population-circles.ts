@@ -1,5 +1,7 @@
 import { select } from "d3"
 import hotkeys from "hotkeys-js"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 
 import { CirclesChart } from "./population-circles-chart"
 import {
@@ -8,6 +10,10 @@ import {
   createState,
   fetchData,
 } from "./population-circles-chart-data"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/slider")
+}
 
 const main = async () => {
   hotkeys("control", () => {})

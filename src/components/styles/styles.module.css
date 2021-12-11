@@ -1,10 +1,4 @@
-$mobileBreakpoint: 530px;
-
-@define-mixin mobile-only {
-  @media (max-width: $mobileBreakpoint) {
-    @mixin-content;
-  }
-}
+@import "./mixin.css";
 
 /* Bootstrap v5 override */
 body {

@@ -9,8 +9,14 @@ import {
   select,
   selectAll,
 } from "d3"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 
 import * as styles from "./timeline-bands-brush-chart.module.css"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 enum SortOrder {
   Ascending = "ascending",

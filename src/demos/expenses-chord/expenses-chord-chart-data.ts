@@ -1,5 +1,12 @@
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
+
 import { ChartConfig, DisplayType, RibbonType } from "./expenses-chord-chart"
 import { Expenses } from "./expenses-chord-data-model"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/slider")
+}
 
 type State = {
   selectedCountry: string

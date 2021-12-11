@@ -11,8 +11,6 @@ const main = async () => {
 
   const barsChart = new BarsChart(chartConfig)
 
-  barsChart.render()
-
   const addItemEl = document.getElementById(styles.addItemButton) as HTMLElement
 
   addItemEl.addEventListener("click", () => {

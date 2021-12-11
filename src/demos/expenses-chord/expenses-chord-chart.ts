@@ -16,9 +16,15 @@ import {
   schemeTableau10,
   select,
 } from "d3"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 import { v1 as uuid } from "uuid"
 
 import * as styles from "./expenses-chord.module.css"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 const height = 800
 const elementDefaultOpacity = 0.7

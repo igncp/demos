@@ -18,6 +18,8 @@ https://igncp.github.io/demos/
     - https://igncp.github.io/demos/coverage-ts
     - The coverage is relatively high and there is a minimum threshold of 95% for the whole project
     - Type-checking is required in the CI so there are no TypeScript errors but in a few cases it uses `any`
+- JS bundles analysis:
+    - https://igncp.github.io/demos/report.html
 - Some in-browser unit tests using [QUnit](https://qunitjs.com/) for learning the usage of third-party dependencies better:
     - https://igncp.github.io/demos/testing
     - [src/pages/testing.tsx](./src/pages/testing.tsx)

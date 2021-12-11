@@ -1,8 +1,14 @@
 import anime from "animejs"
 import { geoMercator, geoPath, select, zoom } from "d3"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 import { v1 as uuidv1 } from "uuid"
 
 import * as styles from "./circles-map-chart.module.css"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 type Point = [number, number]
 type Geolocation = { coordinates: Point; type: "Point" }

@@ -1,3 +1,6 @@
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
+
 import { CirclesChart } from "./circles-chart"
 import {
   CONTAINER_ID,
@@ -5,6 +8,10 @@ import {
   fetchData,
   getChartConfig,
 } from "./concentric-circles-config"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/slider")
+}
 
 const main = async () => {
   const namesMetrics = await fetchData()

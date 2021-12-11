@@ -8,9 +8,15 @@ import {
   scaleTime,
   select,
 } from "d3"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 import { v1 as uuid } from "uuid"
 
 import * as styles from "./crossing-lines-chart.module.css"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 // @TODO make it more generic to allow other y type in addition to Date
 

@@ -1,6 +1,6 @@
 import React from "react"
 
-import { DemoPageProps, JQUERYUI } from "@/common"
+import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
@@ -10,12 +10,7 @@ import main, {
 import * as styles from "@/demos/population-circles/population-circles.module.css"
 
 const PopulationCircles = ({ pageContext }: DemoPageProps) => (
-  <Demo
-    links={[JQUERYUI.STYLE]}
-    main={main}
-    pageContext={pageContext}
-    scripts={[JQUERYUI.SCRIPT]}
-  >
+  <Demo main={main} pageContext={pageContext}>
     <form>
       {[
         { id: "total", label: "Total" },

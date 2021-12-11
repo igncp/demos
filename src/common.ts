@@ -60,18 +60,12 @@ enum SPECIAL_DEMO_KEYS {
   TESTING = "testing",
 }
 
-const JQUERYUI = {
-  SCRIPT: "/vendors/jquery-ui/jquery-ui.min.js",
-  STYLE: "/vendors/jquery-ui/themes/base/jquery-ui.min.css",
-}
-
 export {
   DemoBase,
   DemoInfo,
   DemoPageProps,
   DemoSummary,
   IndexPageProps,
-  JQUERYUI,
   Meta,
   SPECIAL_DEMO_KEYS,
 }

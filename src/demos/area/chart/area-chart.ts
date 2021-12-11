@@ -12,10 +12,16 @@ import {
   scaleQuantize,
   select,
 } from "d3"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 import { v1 as uuidv1 } from "uuid"
 
 import * as styles from "./area-chart.module.css"
 import { VoronoiGroup } from "./voronoi-group"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 const filterBlackOpacity = ({
   deviation,
@@ -170,7 +176,6 @@ class AreaChart<AreaPoint> implements BaseChart {
   }
 
   private render(cancelAnimation: boolean) {
-    const animationDuration = cancelAnimation ? 0 : 1000
     const {
       config: { rootElId },
     } = this
@@ -178,6 +183,7 @@ class AreaChart<AreaPoint> implements BaseChart {
       document.getElementById(rootElId) as HTMLElement
     ).getBoundingClientRect()
     const isSmallDevice = width < 500
+    const animationDuration = cancelAnimation || isSmallDevice ? 0 : 1000
 
     const margin = {
       bottom: 50,

@@ -1,6 +1,6 @@
 import React from "react"
 
-import { DemoPageProps, JQUERYUI } from "@/common"
+import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
@@ -11,12 +11,7 @@ import {
 } from "@/demos/area/income-chart-controls"
 
 const Area = ({ pageContext }: DemoPageProps) => (
-  <Demo
-    links={[JQUERYUI.STYLE]}
-    main={main}
-    pageContext={pageContext}
-    scripts={[JQUERYUI.SCRIPT]}
-  >
+  <Demo main={main} pageContext={pageContext}>
     <form style={{ marginBottom: 20 }}>
       <button className="btn btn-info" id={TOGGLE_BUTTON_ID} type="button">
         Toggle Voronoi

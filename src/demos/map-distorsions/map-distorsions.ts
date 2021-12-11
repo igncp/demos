@@ -10,9 +10,15 @@ import {
   select,
   tsv,
 } from "d3"
+import $ from "jquery"
+import "jquery-ui/themes/base/all.css"
 import qs from "query-string"
 
 import * as styles from "./map-distorsions.module.css"
+
+if (typeof window !== "undefined") {
+  require("jquery-ui/ui/widgets/tooltip")
+}
 
 const CONTAINER_ID = "chart"
 
