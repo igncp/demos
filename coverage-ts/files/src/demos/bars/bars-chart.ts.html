@@ -11,7 +11,7 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars/bars-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">384</td><td class="">384</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/bars/bars-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">483</td><td class="">483</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Selection,
   axisBottom,
   axisLeft,
@@ -21,9 +21,16 @@
   scaleLinear,
   select,
 } from &quot;d3&quot;
+import $ from &quot;jquery&quot;
+import &quot;jquery-ui/themes/base/all.css&quot;
 import { v1 as uuidv1 } from &quot;uuid&quot;
 
+import { DragModule } from &quot;./bars-chart-drag&quot;
 import * as styles from &quot;./bars.module.css&quot;
+
+if (typeof window !== &quot;undefined&quot;) {
+  require(&quot;jquery-ui/ui/widgets/tooltip&quot;)
+}
 
 type ChartData = {
   id: number
@@ -31,6 +38,8 @@ type ChartData = {
 }
 
 const height = 500
+const smallMarginWidth = 600
+
 const margin = { left: 160, top: 100 }
 const floor = height - margin.top * 2
 
@@ -46,29 +55,94 @@ type ChartConfig = {
   rootElId: string
 }
 
+type ChartElements = {
+  chart: Selection&lt;SVGGElement, ChartData, HTMLElement, unknown&gt;
+  dragArea: Selection&lt;SVGGElement, ChartData, HTMLElement, unknown&gt;
+  svg: Selection&lt;SVGSVGElement, ChartData, HTMLElement, unknown&gt;
+  xAxisG: Selection&lt;SVGGElement, ChartData, HTMLElement, unknown&gt;
+  xAxisText: Selection&lt;SVGTextElement, ChartData, HTMLElement, unknown&gt;
+  yAxisG: Selection&lt;SVGGElement, ChartData, HTMLElement, unknown&gt;
+  yAxisText: Selection&lt;SVGTextElement, ChartData, HTMLElement, unknown&gt;
+}
+
 type Interval = ReturnType&lt;typeof setInterval&gt;
-type Chart = Selection&lt;SVGGElement, ChartData, HTMLElement, unknown&gt;
 type ColorFn = (c: ChartData) =&gt; string
 
 class BarsChart {
   private readonly bars: ChartData[]
+  private readonly elements: ChartElements
   private readonly rootElId: string
-  private interval: Interval | null
   private readonly barClassName: string
-  private chart: Chart | null
+  private readonly dragModule: DragModule&lt;ChartData&gt;
   private color: ColorFn | null
+  private readonly state: {
+    interval: Interval | null
+  } = {
+    interval: null,
+  }
 
   public constructor({ bars, rootElId }: ChartConfig) {
     this.bars = bars
     this.rootElId = rootElId
     this.barClassName = `bars-${uuidv1().slice(0, 6)}`
 
-    this.interval = null
-    this.chart = null
+    const svg = select&lt;HTMLElement, ChartData&gt;(`#${rootElId}`).append(&quot;svg&quot;)
+
+    svg
+      .append(&quot;g&quot;)
+      .append(&quot;filter&quot;)
+      .attr(&quot;height&quot;, &quot;300%&quot;)
+      .attr(&quot;x&quot;, &quot;-100%&quot;)
+      .attr(&quot;y&quot;, &quot;-100%&quot;)
+      .attr(&quot;id&quot;, &quot;blur&quot;)
+      .attr(&quot;width&quot;, &quot;300%&quot;)
+      .append(&quot;feGaussianBlur&quot;)
+      .attr(&quot;stdDeviation&quot;, &quot;2 2&quot;)
+
+    const dragArea = svg.append(&quot;g&quot;)
+    const chart = dragArea.append(&quot;g&quot;)
+    const xAxisG = chart.append(&quot;g&quot;)
+    const xAxisText = xAxisG.append(&quot;text&quot;)
+    const yAxisG = chart.append(&quot;g&quot;)
+    const yAxisText = yAxisG.append(&quot;text&quot;)
+
+    this.elements = {
+      chart,
+      dragArea,
+      svg,
+      xAxisG,
+      xAxisText,
+      yAxisG,
+      yAxisText,
+    }
+
+    this.dragModule = new DragModule({
+      chart,
+      dragArea,
+      svg,
+    })
+
     this.color = null
+
+    this.render()
+
+    window.addEventListener(&quot;resize&quot;, this.handleResize)
   }
 
-  public render() {
+  public addBar(newBar: ChartData) {
+    this.bars.push(newBar)
+  }
+
+  public getBars(): ChartData[] {
+    return this.bars.slice()
+  }
+
+  public refresh() {
+    this.drawRectangles()
+    this.redraw()
+  }
+
+  private render() {
     const { bars, rootElId } = this
     const { width } = (
       document.getElementById(rootElId) as HTMLElement
@@ -86,31 +160,29 @@ class BarsChart {
 
     this.color = color
 
-    const svg = select&lt;HTMLElement, ChartData&gt;(`#${rootElId}`).append(&quot;svg&quot;)
+    const {
+      elements: { chart, svg, xAxisG, xAxisText, yAxisG, yAxisText },
+    } = this
 
     svg
       .attr(&quot;height&quot;, height)
       .attr(&quot;width&quot;, width)
       .attr(&quot;class&quot;, styles.barsChart)
 
-    svg
-      .append(&quot;g&quot;)
-      .append(&quot;filter&quot;)
-      .attr(&quot;height&quot;, &quot;300%&quot;)
-      .attr(&quot;x&quot;, &quot;-100%&quot;)
-      .attr(&quot;y&quot;, &quot;-100%&quot;)
-      .attr(&quot;id&quot;, &quot;blur&quot;)
-      .attr(&quot;width&quot;, &quot;300%&quot;)
-      .append(&quot;feGaussianBlur&quot;)
-      .attr(&quot;stdDeviation&quot;, &quot;2 2&quot;)
+    const marginLeft = width &gt; smallMarginWidth ? margin.left : 80
 
-    const chart = svg.append(&quot;g&quot;)
+    this.dragModule.setDimensions({
+      marginLeft,
+      width,
+    })
 
-    this.chart = chart
+    chart.attr(&quot;transform&quot;, `translate(${marginLeft},${margin.top})`)
 
-    chart.attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+    if (this.state.interval) {
+      clearInterval(this.state.interval)
+    }
 
-    this.interval = setInterval(this.getIntervalFn(), 1000)
+    this.state.interval = setInterval(this.getIntervalFn(), 1000)
 
     const x = scaleLinear()
       .domain([0.5, bars.length + 0.5])
@@ -123,15 +195,12 @@ class BarsChart {
         -1 * barHeight * (max(bars, (bar) =&gt; bar.metric) as number),
       ])
 
-    const xAxisG = chart.append(&quot;g&quot;)
-
     xAxisG
       .attr(&quot;class&quot;, `xAxis ${styles.axis}`)
       .attr(&quot;transform&quot;, `translate(0,${floor})`)
       .call(axisBottom(x))
 
-    xAxisG
-      .append(&quot;text&quot;)
+    xAxisText
       .attr(&quot;transform&quot;, `translate(${(barWidth * bars.length) / 2} ,0)`)
       .attr(&quot;class&quot;, &quot;xAxisLabel&quot;)
       .attr(&quot;y&quot;, 40)
@@ -140,15 +209,12 @@ class BarsChart {
       .style(&quot;text-anchor&quot;, &quot;end&quot;)
       .text(&quot;Number&quot;)
 
-    const yAxisG = chart.append(&quot;g&quot;)
-
     yAxisG
       .attr(&quot;class&quot;, `yAxis ${styles.axis}`)
       .attr(&quot;transform&quot;, `translate(0,${floor})`)
       .call(axisLeft(y))
 
-    yAxisG
-      .append(&quot;text&quot;)
+    yAxisText
       .attr(&quot;transform&quot;, `translate(-30,${(-1 * (height - 60)) / 2})`)
       .attr(&quot;y&quot;, 40)
       .attr(&quot;font-size&quot;, &quot;1.3em&quot;)
@@ -156,32 +222,22 @@ class BarsChart {
       .style(&quot;text-anchor&quot;, &quot;end&quot;)
       .text(&quot;Value&quot;)
 
+    this.dragModule.reset()
     this.drawRectangles()
-  }
-
-  public addBar(newBar: ChartData) {
-    this.bars.push(newBar)
-  }
-
-  public getBars(): ChartData[] {
-    return this.bars.slice()
-  }
-
-  public refresh() {
-    this.drawRectangles()
-    this.redraw()
   }
 
   private clearInterval() {
-    if (this.interval) {
-      clearInterval(this.interval)
+    if (this.state.interval) {
+      clearInterval(this.state.interval)
     }
   }
 
   private getBarsSelection() {
-    const { chart } = this
+    const {
+      elements: { chart },
+    } = this
 
-    return (chart as Chart).selectAll&lt;SVGRectElement, ChartData&gt;(&quot;rect&quot;)
+    return chart.selectAll&lt;SVGRectElement, ChartData&gt;(&quot;rect&quot;)
   }
 
   private drawRectangles() {
@@ -206,7 +262,7 @@ class BarsChart {
       .on(&quot;mouseleave&quot;, () =&gt; {
         this.getBarsSelection().style(&quot;filter&quot;, null)
         this.clearInterval()
-        this.interval = setInterval(this.getIntervalFn(), 1000)
+        this.state.interval = setInterval(this.getIntervalFn(), 1000)
       })
       .attr(&quot;title&quot;, (bar) =&gt; bar.metric)
 
@@ -226,11 +282,11 @@ class BarsChart {
   }
 
   private redraw() {
-    const { bars, chart, color } = this
-
-    if (!chart) {
-      return
-    }
+    const {
+      bars,
+      color,
+      elements: { chart },
+    } = this
 
     const newX = scaleLinear()
       .domain([0.5, bars.length + 0.5])
@@ -256,12 +312,18 @@ class BarsChart {
       .attr(&quot;fill&quot;, color!)
       .select(&quot;title&quot;)
       .text((barItem) =&gt; barItem.metric)
+
+    this.dragModule.refresh()
+  }
+
+  private readonly handleResize = () =&gt; {
+    this.render()
   }
 }
 
 export { BarsChart, ChartConfig }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 04 Dec 2021 14:17:30 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 11 Dec 2021 15:21:36 GMT</p>
     </body>
   </html>
   

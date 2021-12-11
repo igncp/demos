@@ -360,84 +360,84 @@
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 181,
+      "line": 187,
       "character": 24,
       "text": "ribbonType",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 182,
+      "line": 188,
       "character": 4,
       "text": "ribbonType",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 182,
+      "line": 188,
       "character": 15,
       "text": "radius",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 182,
+      "line": 188,
       "character": 41,
       "text": "padAngle",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 184,
+      "line": 190,
       "character": 8,
       "text": "ribbonArrow",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 185,
+      "line": 191,
       "character": 8,
       "text": "ribbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 256,
+      "line": 262,
       "character": 10,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 257,
+      "line": 263,
       "character": 58,
       "text": "ribbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 257,
+      "line": 263,
       "character": 67,
       "text": "ribbonArrow",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 320,
+      "line": 326,
       "character": 23,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 334,
+      "line": 340,
       "character": 29,
       "text": "usedRibbon",
       "kind": 1
     },
     {
       "file": "src/demos/expenses-chord/expenses-chord-chart.ts",
-      "line": 352,
+      "line": 358,
       "character": 23,
       "text": "usedRibbon",
       "kind": 1
@@ -458,147 +458,147 @@
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 85,
+      "line": 91,
       "character": 2,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 218,
+      "line": 224,
       "character": 12,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 218,
+      "line": 224,
       "character": 18,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 243,
+      "line": 249,
       "character": 16,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/map-distorsions.ts",
-      "line": 287,
+      "line": 293,
       "character": 43,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/circles-map-chart.ts",
-      "line": 41,
+      "line": 47,
       "character": 37,
       "text": "zoomEvent",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/circles-map-chart.ts",
-      "line": 42,
+      "line": 48,
       "character": 60,
       "text": "zoomEvent",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/circles-map-chart.ts",
-      "line": 42,
+      "line": 48,
       "character": 70,
       "text": "transform",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/circles-map-chart.ts",
-      "line": 64,
+      "line": 70,
       "character": 8,
       "text": "geometryPath",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 560,
+      "line": 566,
       "character": 23,
       "text": "brushEvent",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 563,
+      "line": 569,
       "character": 10,
       "text": "brushEvent",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 563,
+      "line": 569,
       "character": 21,
       "text": "selection",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 565,
+      "line": 571,
       "character": 22,
       "text": "selectionStart",
       "kind": 1
     },
     {
       "file": "src/demos/philosophers-timeline/timeline-bands-brush-chart.ts",
-      "line": 565,
+      "line": 571,
       "character": 38,
       "text": "selectionEnd",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/n-map-chart.ts",
-      "line": 37,
+      "line": 43,
       "character": 14,
       "text": "featureData",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/n-map-chart.ts",
-      "line": 135,
+      "line": 141,
       "character": 22,
       "text": "dataGeo",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/n-map-chart.ts",
-      "line": 137,
+      "line": 143,
       "character": 10,
       "text": "dataGeoParsed",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/n-map-chart.ts",
-      "line": 137,
+      "line": 143,
       "character": 26,
       "text": "dataGeo",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/n-map-chart.ts",
-      "line": 137,
+      "line": 143,
       "character": 34,
       "text": "map",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/n-map-chart.ts",
-      "line": 302,
+      "line": 308,
       "character": 36,
       "text": "geometries",
       "kind": 1
     },
     {
       "file": "src/demos/spain-map/n-map-chart.ts",
-      "line": 302,
+      "line": 308,
       "character": 47,
       "text": "length",
       "kind": 1
@@ -1260,10 +1260,31 @@
       "character": 45,
       "text": "y",
       "kind": 1
+    },
+    {
+      "file": "src/demos/bars/__tests__/bars-chart-drag.test.ts",
+      "line": 73,
+      "character": 10,
+      "text": "dragEvent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bars/__tests__/bars-chart-drag.test.ts",
+      "line": 75,
+      "character": 4,
+      "text": "dragEvent",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/bars/__tests__/bars-chart-drag.test.ts",
+      "line": 75,
+      "character": 14,
+      "text": "dx",
+      "kind": 1
     }
   ],
-  "percentage": 99.44959178057059,
-  "total": 32703,
-  "covered": 32523,
-  "uncovered": 180
+  "percentage": 99.44511825348697,
+  "total": 32980,
+  "covered": 32797,
+  "uncovered": 183
 }
