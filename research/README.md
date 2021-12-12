@@ -36,6 +36,13 @@
 - https://registry.opendata.aws/
 - https://datasetsearch.research.google.com/
 
+## Libraries
+
+- https://github.com/willianjusten/awesome-svg/blob/master/topics/Libraries.md
+    - https://github.com/mojs/mojso
+    - https://github.com/andreaferretti/paths-js
+    - https://github.com/bendc/animateplus
+
 ## Features to implement
 
 - Zoom with slider, pan with mouse, zooming with mouse can be annoying as it prevents scroll

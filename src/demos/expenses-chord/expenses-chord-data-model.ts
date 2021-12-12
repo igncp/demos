@@ -26,7 +26,17 @@ class Expenses {
     const countries = Object.keys(expensesData).sort()
 
     this.countries = countries
-    this.regions = Object.keys(expensesData[countries[0]]).sort()
+    this.regions = (() => {
+      const allRegions = countries.reduce((...[regions, country]) => {
+        Object.keys(expensesData[country]).forEach((region) => {
+          regions.add(region)
+        })
+
+        return regions
+      }, new Set<string>())
+
+      return Array.from(allRegions).sort()
+    })()
     this.expensesData = expensesData
     this.names = countries.concat(this.regions)
   }
@@ -72,9 +82,9 @@ class Expenses {
           return 0
         }
 
-        return dataItem[timeIndexFilter].value
+        return dataItem[timeIndexFilter].value ?? 0
       })
-    }) as number[][]
+    })
   }
 
   public getTimeFramesNumber(): number {

@@ -123,21 +123,6 @@ const addDropShadowFilter = ({
   feMerge.append("feMergeNode").attr("in", "SourceGraphic")
 }
 
-const addBlurFilter = <T>(
-  svg: Selection<SVGSVGElement, T, HTMLElement, unknown>
-) => {
-  svg
-    .append("g")
-    .append("filter")
-    .attr("height", "300%")
-    .attr("x", "-100%")
-    .attr("y", "-100%")
-    .attr("id", "blur")
-    .attr("width", "300%")
-    .append("feGaussianBlur")
-    .attr("stdDeviation", "5 5")
-}
-
 const colorFns = [
   interpolateRdYlGn,
   interpolateSpectral,
@@ -190,7 +175,6 @@ class WorldMap {
       slope: 0.5,
       svg: svgSel,
     })
-    addBlurFilter(svgSel)
 
     this.elements = {
       backgroundSel,
@@ -303,7 +287,6 @@ class WorldMap {
       .attr("d", this.projectionPath)
       .style("fill", colorFn)
       .on("mouseenter", function handleCountryMouseEnter() {
-        countriesSel.attr("filter", "url(#blur)")
         select(this)
           .attr("filter", "url(#drop-shadow)")
           .style("stroke-width", "2px")

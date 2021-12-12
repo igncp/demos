@@ -78,6 +78,7 @@
     "stylelint-config-standard": "^23.0.0",
     "stylelint-order": "^5.0.0",
     "stylelint-scss": "^4.0.1",
+    "textures": "^1.2.3",
     "three": "^0.134.0",
     "topojson-client": "^3.1.0",
     "ts-node": "^10.4.0",

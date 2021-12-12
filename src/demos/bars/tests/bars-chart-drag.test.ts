@@ -71,9 +71,9 @@ describe("DragModule drag event", () => {
 
     dragModule.reset()
 
-    const dragEvent = new Event("drag") as any // eslint-disable-line @typescript-eslint/no-explicit-any
+    const dragEvent = new Event("drag")
 
-    dragEvent.dx = dx
+    ;(dragEvent as unknown as { dx: number }).dx = dx
 
     selections.svg.node()!.dispatchEvent(dragEvent)
 

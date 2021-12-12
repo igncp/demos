@@ -62,9 +62,7 @@ const getDemoTSFiles = (demoName: string) => {
     .filter((file) => /\.ts$/.test(file))
     .filter(
       (file) =>
-        !file.includes(".css") &&
-        file !== demoName &&
-        !file.includes("__tests__")
+        !file.includes(".css") && file !== demoName && !file.includes("/tests/")
     )
   const mainStr = "export default main" // move the main demo file to the top
 

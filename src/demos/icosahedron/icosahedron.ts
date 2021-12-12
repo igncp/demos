@@ -9,6 +9,7 @@ import {
   select,
   timer,
 } from "d3"
+import textures from "textures"
 
 import * as styles from "./icosahedron.module.css"
 
@@ -27,6 +28,8 @@ type FaceWithPolygon = Face & {
   faceIndex: number
   polygon?: Hull
 }
+
+const hoverTexture = textures.lines().thicker().background("orange")
 
 class Icosahedron {
   private readonly rootElId: string
@@ -125,15 +128,16 @@ class Icosahedron {
       .append("svg")
       .attr("height", this.config.height)
 
+    svg.call(hoverTexture)
+
     const gSel = svg.append("g")
 
     const color = scaleOrdinal<number, string>(schemePastel2)
-    const highlightColor = "orange"
     const { vars } = this
 
     const setColor = (faceData: FaceWithPolygon) => {
       if (vars.selectedIndex === faceData.faceIndex) {
-        return highlightColor
+        return hoverTexture.url()
       }
 
       return color(faceData.faceIndex)
@@ -149,7 +153,7 @@ class Icosahedron {
       })
       .style("fill", setColor)
       .on("mouseenter", function handleMouseEnter() {
-        select(this).style("fill", highlightColor)
+        select(this).style("fill", hoverTexture.url())
       })
       .on("mouseleave", function handleMouseLeave() {
         select<SVGPathElement, FaceWithPolygon>(this).style("fill", setColor)

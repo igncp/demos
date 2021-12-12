@@ -8,6 +8,7 @@ import * as styles from "./circles-map-chart.module.css"
 
 if (typeof window !== "undefined") {
   require("jquery-ui/ui/widgets/tooltip")
+  require("jquery-ui/ui/widgets/dialog")
 }
 
 type Point = [number, number]
@@ -65,8 +66,10 @@ const renderChart = <CircleData extends ChartDataConstraint>(
 ) => {
   const { circlesData, getCircleId, mapLayout, rootElId } = chartConfig
   const rootEl = document.getElementById(rootElId) as HTMLElement
-  const width =
-    rootEl.getBoundingClientRect().width - margin.left - margin.right
+  const width = Math.max(
+    rootEl.getBoundingClientRect().width - margin.left - margin.right,
+    1000
+  )
   const projectionFn = geoMercator().translate([width / 2, height / 2])
   const geometryPath: any = geoPath().projection(projectionFn) // eslint-disable-line @typescript-eslint/no-explicit-any
 
