@@ -493,28 +493,28 @@
     },
     {
       "file": "src/demos/meteorites-map/circles-map-chart.ts",
-      "line": 47,
+      "line": 48,
       "character": 37,
       "text": "zoomEvent",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/circles-map-chart.ts",
-      "line": 48,
+      "line": 49,
       "character": 60,
       "text": "zoomEvent",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/circles-map-chart.ts",
-      "line": 48,
+      "line": 49,
       "character": 70,
       "text": "transform",
       "kind": 1
     },
     {
       "file": "src/demos/meteorites-map/circles-map-chart.ts",
-      "line": 70,
+      "line": 73,
       "character": 8,
       "text": "geometryPath",
       "kind": 1
@@ -633,49 +633,49 @@
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 238,
+      "line": 222,
       "character": 16,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 254,
+      "line": 238,
       "character": 22,
       "text": "featuresData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 256,
+      "line": 240,
       "character": 6,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 256,
+      "line": 240,
       "character": 12,
       "text": "objects",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 256,
+      "line": 240,
       "character": 20,
       "text": "countries",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 265,
+      "line": 249,
       "character": 18,
       "text": "featuresData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 265,
+      "line": 249,
       "character": 31,
       "text": "length",
       "kind": 1
@@ -1260,31 +1260,10 @@
       "character": 45,
       "text": "y",
       "kind": 1
-    },
-    {
-      "file": "src/demos/bars/__tests__/bars-chart-drag.test.ts",
-      "line": 73,
-      "character": 10,
-      "text": "dragEvent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars/__tests__/bars-chart-drag.test.ts",
-      "line": 75,
-      "character": 4,
-      "text": "dragEvent",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/bars/__tests__/bars-chart-drag.test.ts",
-      "line": 75,
-      "character": 14,
-      "text": "dx",
-      "kind": 1
     }
   ],
-  "percentage": 99.44511825348697,
-  "total": 32980,
-  "covered": 32797,
-  "uncovered": 183
+  "percentage": 99.4576189471781,
+  "total": 33187,
+  "covered": 33007,
+  "uncovered": 180
 }
