@@ -3,3 +3,6 @@ static
 !storybook/.storybook
 storybook-static
 coverage-ts
+ci-e2e
+playwright-report
+coverage

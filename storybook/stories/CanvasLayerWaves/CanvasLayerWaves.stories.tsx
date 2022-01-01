@@ -8,6 +8,7 @@ import {
   createRangeControl,
 } from "../common"
 
+import { ROOT_ID } from "./constants"
 import { noise, noiseFactor } from "./noise"
 
 type Props = {
@@ -26,8 +27,6 @@ type Point = {
 
 type Triangle = [Point, Point, Point]
 type Mesh = Triangle[]
-
-const ROOT_ID = "example"
 
 const main = ({ cols, fov, rows, waveHeight, zoom }: Props) => {
   const { width } = (

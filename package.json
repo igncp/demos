@@ -6,6 +6,7 @@
   "author": "igncp",
   "dependencies": {
     "@babel/core": "^7.16.5",
+    "@playwright/test": "^1.17.1",
     "@trivago/prettier-plugin-sort-imports": "^3.1.1",
     "@types/animejs": "^3.1.4",
     "@types/chroma-js": "^2.1.3",
@@ -35,6 +36,7 @@
     "eslint-find-rules": "^3.6.1",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.27.1",
     "eslint-plugin-sort-destructure-keys": "^1.4.0",
     "eslint-plugin-typescript-sort-keys": "^1.8.0",
@@ -46,6 +48,7 @@
     "gatsby-plugin-postcss": "^5.4.0",
     "gatsby-plugin-react-helmet": "^5.4.0",
     "gatsby-plugin-sharp": "^4.4.0",
+    "gatsby-plugin-webpack-bundle-analyser-v2": "^1.1.26",
     "gatsby-source-filesystem": "^4.4.0",
     "gatsby-transformer-sharp": "^4.4.0",
     "gatsby-transformer-typescript-css-modules": "^1.0.14",
@@ -63,6 +66,7 @@
     "postcss-nested": "^5.0.6",
     "postcss-preset-env": "^7.0.2",
     "postcss-simple-vars": "^6.0.3",
+    "prettier": "^2.5.1",
     "prismjs": "^1.25.0",
     "prop-types": "^15.7.2",
     "query-string": "^7.0.1",
@@ -81,18 +85,13 @@
     "textures": "^1.2.3",
     "three": "^0.134.0",
     "topojson-client": "^3.1.0",
+    "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",
     "ts-prune": "^0.10.3",
     "typed-css-modules": "^0.7.0",
     "typescript": "^4.5.4",
     "typescript-coverage-report": "^0.6.1",
     "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "eslint-plugin-prettier": "^4.0.0",
-    "gatsby-plugin-webpack-bundle-analyser-v2": "^1.1.26",
-    "prettier": "^2.5.1",
-    "ts-jest": "^27.1.2"
   },
   "keywords": [
     "gatsby"
@@ -101,10 +100,13 @@
   "scripts": {
     "build": "rm -rf public .cache && npm run check:ts && gatsby build --prefix-paths",
     "build:gh-pages": "sh ./scripts/build_ghpages.sh",
-    "check:ci": "npm run lint && npm test && npm run build:gh-pages",
+    "check:ci": "npm run lint && npm test && npm run build:gh-pages && npm run e2e:ci",
     "check:ts": "npm run ts-css && tsc --noEmit --project .",
     "clean": "gatsby clean",
     "develop": "gatsby develop -H 0.0.0.0",
+    "e2e:ci": "sh ./scripts/run_e2e_ci.sh",
+    "e2e:install": "playwright install",
+    "e2e:test": "playwright test src storybook/stories",
     "eslint-find-rules": "FIND_RULES=true eslint-find-rules -u ./.eslintrc.js",
     "lint": "npm run lint:ts && npm run lint:css && npm run ts-prune",
     "lint-fix:css": "npm run lint:css -- --fix",
@@ -116,7 +118,7 @@
     "start": "npm run develop",
     "storybook:build": "cd ./storybook && npm run storybook:build",
     "storybook:run": "cd ./storybook && npm run storybook:run",
-    "test": "jest src",
+    "test": "jest src --coverage",
     "ts-coverage": "typescript-coverage-report --ignore-files '**/*.json'",
     "ts-css": "sh ./scripts/ts_css.sh",
     "ts-prune": "sh ./scripts/ts_prune.sh"

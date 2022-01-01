@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - test-action
 
 jobs:
   build-and-deploy:
@@ -14,6 +15,7 @@ jobs:
       - name: Install 🚧
         run: |
           npm install
+          npm run e2e:install
           cd storybook && npm install
 
       - name: Test ✔️
@@ -27,6 +29,10 @@ jobs:
       - name: Build 🔧
         run: |
           npm run build:gh-pages
+
+      - name: Test E2E 🚦
+        run: |
+          npm run e2e:ci
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4

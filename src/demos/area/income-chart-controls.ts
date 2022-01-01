@@ -1,5 +1,4 @@
-const TOGGLE_BUTTON_ID = "toggle-voronoi"
-const UPDATE_BUTTON_ID = "update-voronoi"
+import { TOGGLE_BUTTON_ID, UPDATE_BUTTON_ID } from "./ui-constants"
 
 const setupChartControls = ({
   onToggleVoronoiClick,

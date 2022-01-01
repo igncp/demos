@@ -7,6 +7,8 @@ import {
 } from "d3"
 import { Delaunay } from "d3-delaunay"
 
+import { HAS_VORONOI_ATTR } from "../ui-constants"
+
 import * as styles from "./area-chart.module.css"
 
 type RenderOpts<Point> = {
@@ -117,6 +119,8 @@ class VoronoiGroup<Point> {
       : currentClassWithoutVoronoi
 
     voronoiGroup.attr("class", newClass)
+
+    voronoiGroup.attr(HAS_VORONOI_ATTR, hasVoronoi)
   }
 }
 

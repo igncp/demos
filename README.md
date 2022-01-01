@@ -18,12 +18,13 @@ https://igncp.github.io/demos/
     - https://igncp.github.io/demos/coverage-ts
     - The coverage is relatively high and there is a minimum threshold of 95% for the whole project
     - Type-checking is required in the CI so there are no TypeScript errors but in a few cases it uses `any`
+- Tests reports:
+    - Unit and functional tests using [Jest](https://jestjs.io/) ([config](./jest.config.js)): https://igncp.github.io/demos/jest-report
+    - End-to-end tests using [Playwright](https://playwright.dev) ([config](./playwright.config.ts)): https://igncp.github.io/demos/playwright-report
+    - In-browser unit tests for learning some dependencies with [QUnit](https://qunitjs.com/) ([page](./src/pages/testing.tsx)): https://igncp.github.io/demos/testing
 - JS bundles analysis:
     - https://igncp.github.io/demos/report.html
-- Some in-browser unit tests using [QUnit](https://qunitjs.com/) for learning the usage of third-party dependencies better:
-    - https://igncp.github.io/demos/testing
-    - [src/pages/testing.tsx](./src/pages/testing.tsx)
-- It has extensive tooling for the code, run via [Github Actions](https://github.com/igncp/demos/actions):
+- It has extensive tooling for the code, all run via [Github Actions](https://github.com/igncp/demos/actions):
     - [ESLint](https://eslint.org/) config: [.eslintrc.js](./.eslintrc.js)
     - [Prettier](https://prettier.io/) config: [.prettierrc](./.prettierrc)
     - [stylelint](https://stylelint.io/) config: [stylelint.config.js](./stylelint.config.js)

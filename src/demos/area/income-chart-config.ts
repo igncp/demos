@@ -1,7 +1,6 @@
 import { ChartConfig } from "./chart/area-chart"
 import { IncomeItem } from "./income-item-model"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type Config = ChartConfig<IncomeItem>
 

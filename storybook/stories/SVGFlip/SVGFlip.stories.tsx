@@ -3,11 +3,10 @@ import React from "react"
 
 import { StoryInfo, TemplateType } from "../common"
 
+import { ROOT_ID } from "./constants"
 import * as styles from "./svgFlip.module.css"
 
 type Props = { color: string; infinite: boolean }
-
-const ROOT_ID = "example"
 
 const main = ({ color, infinite }: Props) => {
   const svg = select(`#${ROOT_ID}`)
@@ -44,10 +43,6 @@ const SVGFlip = (props: Props) => {
   React.useEffect(() => {
     main(props)
   })
-
-  React.useEffect(() => {
-    select(`#${ROOT_ID}`).text("")
-  }, [])
 
   return (
     <div>
