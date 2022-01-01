@@ -457,44 +457,37 @@
       "kind": 1
     },
     {
-      "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 50,
+      "file": "src/demos/map-distorsions/map-distorsions.ts",
+      "line": 91,
       "character": 2,
       "text": "scale",
       "kind": 1
     },
     {
-      "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 234,
-      "character": 14,
+      "file": "src/demos/map-distorsions/map-distorsions.ts",
+      "line": 224,
+      "character": 12,
       "text": "scale",
       "kind": 1
     },
     {
-      "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 234,
-      "character": 20,
-      "text": "range",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 234,
-      "character": 39,
+      "file": "src/demos/map-distorsions/map-distorsions.ts",
+      "line": 224,
+      "character": 18,
       "text": "domain",
       "kind": 1
     },
     {
-      "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 256,
-      "character": 18,
+      "file": "src/demos/map-distorsions/map-distorsions.ts",
+      "line": 249,
+      "character": 16,
       "text": "scale",
       "kind": 1
     },
     {
-      "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 295,
-      "character": 45,
+      "file": "src/demos/map-distorsions/map-distorsions.ts",
+      "line": 293,
+      "character": 43,
       "text": "scale",
       "kind": 1
     },
@@ -1269,8 +1262,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.46121331190093,
-  "total": 33594,
-  "covered": 33413,
-  "uncovered": 181
+  "percentage": 99.46218889121276,
+  "total": 33469,
+  "covered": 33289,
+  "uncovered": 180
 }
