@@ -1,8 +1,8 @@
 import { createChart } from "./pie-chart"
 import { createChartConfig } from "./pie-chart-config"
-import { BUTTON_ID, setupChartControls } from "./pie-chart-controls"
+import { setupChartControls } from "./pie-chart-controls"
 import { TechItem } from "./tech-data-model"
-import { CONTAINER_ID } from "./ui-constants"
+import { BUTTON_ID, CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   const techItems = await TechItem.fetchAndCreateCollection()

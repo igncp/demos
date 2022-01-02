@@ -2,9 +2,9 @@ import QUnit from "qunit"
 import React, { useEffect } from "react"
 import { Helmet } from "react-helmet"
 
-import d3Tests from "@/testing/d3"
-import raphaelTests from "@/testing/raphael"
-import threeJSTests from "@/testing/threeJS"
+import d3Tests from "@/tests/qunit/d3"
+import raphaelTests from "@/tests/qunit/raphael"
+import threeJSTests from "@/tests/qunit/threeJS"
 
 const setupTitle = () => {
   const implementationsLink = document.createElement("a")
@@ -12,7 +12,7 @@ const setupTitle = () => {
 
   implementationsLink.setAttribute(
     "href",
-    "https://github.com/igncp/demos/tree/main/src/testing"
+    "https://github.com/igncp/demos/tree/main/src/tests/qunit"
   )
   implementationsLink.setAttribute("target", "_blank")
   implementationsLink.innerText = "Read tests files in Github"

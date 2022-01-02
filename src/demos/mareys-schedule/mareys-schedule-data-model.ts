@@ -116,11 +116,13 @@ class MareysSchedules {
       stops: { 0: firstStop, [trainData.stops.length - 1]: lastStop },
     } = trainData
 
+    const stops = [firstStop, lastStop].map((stop) => stop.station.name)
+
     if (trainData.direction === "S") {
-      return `${firstStop.station.name} -> ${lastStop.station.name}`
+      stops.reverse()
     }
 
-    return `${lastStop.station.name} -> ${firstStop.station.name}`
+    return `${stops[1]} -> ${stops[0]}`
   }
 
   public getStations() {

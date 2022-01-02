@@ -1,6 +1,8 @@
 declare const styles: {
   readonly "backHome": string
   readonly "bullet": string
+  readonly "codeFragment": string
+  readonly "codeFragmentButton": string
   readonly "d3js": string
   readonly "dataList": string
   readonly "demoName": string
@@ -8,6 +10,7 @@ declare const styles: {
   readonly "demoWip": string
   readonly "demosLegend": string
   readonly "demosLists": string
+  readonly "divisor": string
   readonly "fileNameWrapper": string
   readonly "footer": string
   readonly "ghButtons": string
@@ -24,6 +27,8 @@ declare const styles: {
   readonly "sourceNumber": string
   readonly "sourcesList": string
   readonly "storybook": string
+  readonly "tag": string
+  readonly "tagCollection": string
   readonly "testing": string
 }
 export = styles

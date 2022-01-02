@@ -1,3 +1,5 @@
 const CONTAINER_ID = "chart"
+const TYPE_FORM = "type-form"
+const TRANSITION_DURATION = 2000
 
-export { CONTAINER_ID }
+export { CONTAINER_ID, TYPE_FORM, TRANSITION_DURATION }

@@ -1,6 +1,6 @@
 import { RaphaelPaper, RaphaelPath, RaphaelSet } from "raphael"
 
-import Raphael from "@/demos/_utils/browserRaphael"
+import Raphael from "@/utils/browserRaphael"
 
 import * as styles from "./bars-3dimensional.module.css"
 import { CONTAINER_ID } from "./ui-constants"

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test"
 
 import { checkForConsoleErrors, demosBaseURL } from "../../../e2e"
-import { CONTAINER_ID } from "../ui-constants"
+import { BUTTON_ID, CONTAINER_ID, TRANSITION_DURATION } from "../ui-constants"
 
 const mainSVGSelector = `#${CONTAINER_ID} > svg`
 
@@ -26,4 +26,37 @@ test("UI is as expected", async ({ page }) => {
 
 test("Generates the svg", async ({ page }) => {
   await expect(page.locator(mainSVGSelector)).toHaveCount(1)
+})
+
+test("One slice change when pressing the button", async ({ page }) => {
+  const getSlices = () =>
+    page.evaluate(
+      ([selector]) => {
+        const slices = document
+          .querySelector(selector)!
+          .querySelectorAll("text")
+
+        return Array.from(slices).map((slice) => slice.innerHTML)
+      },
+      [mainSVGSelector]
+    )
+  const getDiffSlices = (...[slicesA, slicesB]: [string[], string[]]) =>
+    slicesA.filter((...[slice, sliceIndex]) => slice !== slicesB[sliceIndex])
+
+  const clickButtonAndWait = async () => {
+    await page.click(`#${BUTTON_ID}`)
+    await new Promise((resolve) => setTimeout(resolve, TRANSITION_DURATION))
+  }
+
+  const initialSlices = await getSlices()
+
+  await clickButtonAndWait()
+
+  const secondSlices = await getSlices()
+
+  expect(getDiffSlices(initialSlices, secondSlices).length).toEqual(1)
+
+  await clickButtonAndWait()
+
+  expect(getDiffSlices(secondSlices, await getSlices()).length).toEqual(1)
 })

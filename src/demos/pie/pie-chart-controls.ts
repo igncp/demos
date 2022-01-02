@@ -1,6 +1,5 @@
 import { TechItem } from "./tech-data-model"
-
-const BUTTON_ID = "change-data"
+import { BUTTON_ID } from "./ui-constants"
 
 const MAX_NEW_VAL_UPDATE = 45
 const MIN_NEW_VAL_UPDATE = 20
@@ -36,4 +35,4 @@ const setupChartControls = ({
   })
 }
 
-export { BUTTON_ID, setupChartControls }
+export { setupChartControls }

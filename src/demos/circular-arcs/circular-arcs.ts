@@ -1,6 +1,6 @@
 import { RaphaelPaper, RaphaelPath } from "raphael"
 
-import Raphael from "@/demos/_utils/browserRaphael"
+import Raphael from "@/utils/browserRaphael"
 
 import * as styles from "./circular-arcs.module.css"
 import { CONTAINER_ID } from "./ui-constants"

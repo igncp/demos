@@ -5,7 +5,8 @@ module.exports = {
     ROOT_PATH: "ROOT_PATH_TEST",
   },
   moduleNameMapper: {
-    d3: "<rootDir>/node_modules/d3/dist/d3.min.js",
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "d3": "<rootDir>/node_modules/d3/dist/d3.min.js",
   },
   preset: "ts-jest",
   testEnvironment: "node",

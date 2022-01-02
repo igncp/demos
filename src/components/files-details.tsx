@@ -5,6 +5,10 @@ import { DemoInfo } from "@/common"
 
 import * as styles from "@/components/styles/styles.module.css"
 
+import { getDemoE2ETestFilePath } from "@/utils/getDemoE2ETestFilePath"
+
+import CodeFragment from "./code-fragment"
+
 const CodeInGH = ({ filePath }: { filePath: string }) => (
   <>
     <span>| </span>
@@ -88,24 +92,15 @@ const FilesDetails = ({ demoInfo }: Props) => {
           <p>
             <strong>Docs:</strong>
           </p>
-          <ul>
+          <div className={styles.tagCollection}>
             {demoInfo.docs.map((doc) => (
-              <li
-                key={doc[1]}
-                style={{
-                  border: "1px solid #157ad4",
-                  borderRadius: 5,
-                  display: "inline-block",
-                  margin: 5,
-                  padding: 5,
-                }}
-              >
+              <span className={styles.tag} key={doc[1]}>
                 <a href={doc[1]} rel="noreferrer" target="_blank">
                   {doc[0]}
                 </a>
-              </li>
+              </span>
             ))}
-          </ul>
+          </div>
         </div>
       )}
       {!!demoInfo.dataFiles.length && (
@@ -123,63 +118,65 @@ const FilesDetails = ({ demoInfo }: Props) => {
           </p>
         </div>
       )}
-
       <div className="bs-callout bs-callout-success" id="code">
         <p>
           <strong>Code:</strong>
         </p>
         <ul>
-          {demoInfo.files.demoTS.map(({ content, filePath }) => (
-            <li key={filePath}>
-              <p>
-                <span className={styles.fileNameWrapper}>{filePath}</span>{" "}
-                {(() => (
-                  <>
-                    <CodeInGH filePath={filePath} />{" "}
-                    <CoverageReport filePath={filePath} />
-                  </>
-                ))()}
-              </p>
-              <pre>
-                <code
-                  dangerouslySetInnerHTML={{
-                    __html: content,
-                  }}
-                />
-              </pre>
-            </li>
-          ))}
+          {demoInfo.files.demoTS.map(
+            (...[{ content, filePath }, fileIndex]) => (
+              <li key={filePath}>
+                <p>
+                  <span className={styles.fileNameWrapper}>{filePath}</span>{" "}
+                  <CodeInGH filePath={filePath} />{" "}
+                  <CoverageReport filePath={filePath} />
+                  {fileIndex === 0 && (
+                    <>
+                      <span> | </span>
+                      <a
+                        href={`https://github.com/igncp/demos/blob/main/${getDemoE2ETestFilePath(
+                          demoInfo.key
+                        )}`}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        E2E tests
+                      </a>
+                    </>
+                  )}
+                </p>
+                <CodeFragment content={content} />
+                <div className={styles.divisor} />
+              </li>
+            )
+          )}
           <li>
             <p>
               <span className={styles.fileNameWrapper}>{pageFilePath}</span>{" "}
               <CodeInGH filePath={pageFilePath} />{" "}
               <CoverageReport filePath={pageFilePath} />
             </p>
-            <pre>
-              <code
-                dangerouslySetInnerHTML={{
-                  __html: demoInfo.files.page.content,
-                }}
-              />
-            </pre>
+            <CodeFragment content={demoInfo.files.page.content} />
+            {!!demoInfo.files.demoCSS.length && (
+              <div className={styles.divisor} />
+            )}
           </li>
-          {demoInfo.files.demoCSS.map(({ content, filePath }) => (
-            <li key={filePath}>
-              <p>
-                <span className={styles.fileNameWrapper}>{filePath}</span>{" "}
-                {(() => (
-                  <CodeInGH filePath={filePath} />
-                ))()}
-              </p>
-              <pre>
-                <code
-                  dangerouslySetInnerHTML={{
-                    __html: content,
-                  }}
-                />
-              </pre>
-            </li>
-          ))}
+          {demoInfo.files.demoCSS.map(
+            (...[{ content, filePath }, cssIndex]) => (
+              <li key={filePath}>
+                <p>
+                  <span className={styles.fileNameWrapper}>{filePath}</span>{" "}
+                  {(() => (
+                    <CodeInGH filePath={filePath} />
+                  ))()}
+                </p>
+                <CodeFragment content={content} />
+                {cssIndex !== demoInfo.files.demoCSS.length - 1 && (
+                  <div className={styles.divisor} />
+                )}
+              </li>
+            )
+          )}
         </ul>
       </div>
     </div>

@@ -2,6 +2,8 @@ import React from "react"
 
 import * as styles from "@/components/styles/styles.module.css"
 
+import { BACK_HOME_ATTR } from "@/ui-constants"
+
 type Props = {
   isCompleted: boolean
   mainSource: string
@@ -21,7 +23,10 @@ const DemoTitle = ({ isCompleted, mainSource, name }: Props) => (
         </small>
       )}
     </span>
-    <span className={`col-sm-2 p-0 d-xs-none ${styles.backHome}`}>
+    <span
+      className={`col-sm-2 p-0 d-xs-none ${styles.backHome}`}
+      {...{ [BACK_HOME_ATTR]: "" }}
+    >
       <a className="btn btn-info" href={ROOT_PATH} role="button">
         <span className="glyphicon glyphicon-home" /> Home
       </a>

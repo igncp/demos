@@ -14,6 +14,8 @@ import {
   select,
 } from "d3"
 
+import { TRANSITION_DURATION } from "./ui-constants"
+
 type Node<NodeData> = NodeData & {
   chidren: Array<Node<NodeData>>
 }
@@ -27,7 +29,6 @@ enum PartitionType {
 
 const height = 700
 const overColor = "#de7c03"
-const transitionDuration = 2000
 const easeFn = easeBounce
 
 const extractTweenObj = <ChartData>(node: HierarchyRectNode<ChartData>) => ({
@@ -266,7 +267,7 @@ class PartitionChart<ChartData> {
 
     path
       .transition()
-      .duration(transitionDuration)
+      .duration(TRANSITION_DURATION)
       .ease(easeFn)
       .attrTween(
         "d",
@@ -318,7 +319,7 @@ class PartitionChart<ChartData> {
 
     initialTexts
       .transition("movement")
-      .duration(transitionDuration)
+      .duration(TRANSITION_DURATION)
       .ease(easeFn)
       .attrTween(
         "transform",
@@ -331,7 +332,7 @@ class PartitionChart<ChartData> {
     svgG
       .selectAll<SVGTextElement, HierarchyRectNode<ChartData>>("text")
       .transition("opacity")
-      .duration(transitionDuration)
+      .duration(TRANSITION_DURATION)
       .ease(easeLinear)
       .style("opacity", opacityFn)
 

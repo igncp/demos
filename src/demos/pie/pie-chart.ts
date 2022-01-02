@@ -18,6 +18,7 @@ import cloneDeep from "lodash/cloneDeep"
 import { v1 as uuidv1 } from "uuid"
 
 import * as styles from "./pie-chart.module.css"
+import { TRANSITION_DURATION } from "./ui-constants"
 
 if (typeof window !== "undefined") {
   require("jquery-ui/ui/widgets/tooltip")
@@ -25,7 +26,6 @@ if (typeof window !== "undefined") {
 
 const height = 300
 const outerRadius = 100
-const transitionDuration = 3000
 
 const colorScale = scaleOrdinal(schemePastel2)
 const easeFn = easeBack
@@ -189,7 +189,7 @@ class PieChart<SliceData> {
     paths
       .data(this.pie(slices))
       .transition()
-      .duration(transitionDuration)
+      .duration(TRANSITION_DURATION)
       .ease(easeFn)
       .attrTween("d", this.arcTween.bind(this))
 
@@ -197,7 +197,7 @@ class PieChart<SliceData> {
 
     labelsUpdate
       .transition("transitionWithEase")
-      .duration(transitionDuration)
+      .duration(TRANSITION_DURATION)
       .ease(easeFn)
       .attrTween("transform", this.textTransformTween.bind(this))
       .style("opacity", (slice) => {
@@ -208,7 +208,7 @@ class PieChart<SliceData> {
 
     labelsUpdate
       .transition("textTransition")
-      .duration(transitionDuration)
+      .duration(TRANSITION_DURATION)
       .tween("text", function tweenText(slice) {
         const currentText = Number(select(this).text())
         const newText = Number(config.getSliceValue(slice.data))

@@ -1,6 +1,12 @@
 import { expect, test } from "@playwright/test"
 
-import { QUnitHeaderLinkSelector, demosBaseURL } from "./e2e"
+import {
+  QUnitHeaderLinkSelector,
+  backButtonWrapperSelector,
+  demosBaseURL,
+  getIsInHomePage,
+  homeDemoSelector,
+} from "../e2e"
 
 test.describe("Home page", () => {
   test("The home page has the expected content", async ({ page }) => {
@@ -25,6 +31,22 @@ test.describe("Home page", () => {
 
     expect(await page.screenshot()).toMatchSnapshot("landing.png")
   })
+
+  test("Goes to the home page when clicking on the Home button inside the demo", async ({
+    page,
+  }) => {
+    await page.goto(demosBaseURL)
+
+    await page.waitForSelector(homeDemoSelector)
+    await page.click(homeDemoSelector)
+
+    expect(getIsInHomePage(page)).toEqual(false)
+
+    await page.waitForSelector(backButtonWrapperSelector)
+    await page.click(`${backButtonWrapperSelector} >> a`)
+
+    expect(getIsInHomePage(page)).toEqual(true)
+  })
 })
 
 test.describe("Testing page", () => {
@@ -42,6 +64,6 @@ test.describe("Testing page", () => {
 
     await page.click(QUnitHeaderLinkSelector)
 
-    expect(page.url()).toContain(demosBaseURL)
+    expect(getIsInHomePage(page)).toEqual(true)
   })
 })

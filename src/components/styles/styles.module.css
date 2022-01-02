@@ -39,12 +39,33 @@ body {
   }
 }
 
+.codeFragment {
+  display: flex;
+}
+
+.codeFragmentButton {
+  background: #fff;
+  border: 1px solid black;
+  flex: 1;
+
+  @media (min-width: 768px) {
+    flex: 0 0 50%;
+  }
+}
+
 .demoName {
   font-size: 30px;
 
   @mixin mobile-only {
     font-size: 20px;
   }
+}
+
+.divisor {
+  background: #ccc;
+  height: 1px;
+  margin: 20px 0;
+  padding: 0 20px;
 }
 
 .fileNameWrapper {
@@ -118,6 +139,20 @@ body {
   .bullet {
     transform: translateY(-3px) scale(1.2);
   }
+}
+
+.tagCollection {
+  display: inline-flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.tag {
+  border: 1px solid #157ad4;
+  border-radius: 5px;
+  box-shadow: 0 2px 7px 0.5px rgba(0 0 0 / 16%);
+  padding: 5px;
 }
 
 #demosLegend {

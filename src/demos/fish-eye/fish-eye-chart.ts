@@ -16,7 +16,7 @@ import {
   select,
 } from "d3"
 
-import d3Fisheye, { FishEyeScale } from "@/demos/_utils/fish-eye"
+import d3Fisheye, { FishEyeScale } from "@/utils/fishEye"
 
 import * as styles from "./fish-eye.module.css"
 

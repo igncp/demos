@@ -1,3 +1,5 @@
 const CONTAINER_ID = "chart"
+const TRANSITION_DURATION = 3000
+const BUTTON_ID = "change-data"
 
-export { CONTAINER_ID }
+export { BUTTON_ID, CONTAINER_ID, TRANSITION_DURATION }
