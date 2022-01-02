@@ -1,3 +1,7 @@
+.addItemButton {
+  margin-bottom: 20px;
+}
+
 .barsChart {
   $axisColor: #777;
 
@@ -16,8 +20,4 @@
       stroke: $axisColor;
     }
   }
-}
-
-#addItemButton {
-  margin-bottom: 20px;
 }

@@ -1,53 +1,64 @@
 import { expect, test } from "@playwright/test"
 
-import { getFrame, hoverSidebarHeader, storybookBaseURL } from "../common/e2e"
+import {
+  checkForConsoleErrors,
+  getFrame,
+  hoverSidebarHeader,
+  storybookBaseURL,
+} from "../common/e2e"
 
 import { ROOT_ID } from "./constants"
 
-test.describe("CanvasLayerWaves", () => {
-  test("The animation is present", async ({ page }) => {
-    await page.goto(`${storybookBaseURL}?path=/story/svg-flip--common`)
+const { setupConsoleAfterEach, setupConsoleBeforeEach } =
+  checkForConsoleErrors()
 
-    const frame = await getFrame(page)
+const svgSelector = `#${ROOT_ID} >> svg`
 
-    const svgSelector = `#${ROOT_ID} >> svg`
+test.beforeEach(async ({ page }) => {
+  setupConsoleBeforeEach(page)
 
-    await frame.waitForSelector(svgSelector)
+  await page.goto(`${storybookBaseURL}?path=/story/svg-flip--common`)
 
-    await expect(frame.locator(svgSelector)).toHaveCount(1)
-  })
+  const frame = await getFrame(page)
 
-  test("The circle changes color when the rectangle is hovered", async ({
-    page,
-  }) => {
-    await page.goto(`${storybookBaseURL}?path=/story/svg-flip--common`)
+  await frame.waitForSelector(svgSelector)
+})
 
-    const frame = await getFrame(page)
+test.afterEach(setupConsoleAfterEach)
 
-    const getCircleColor = () =>
-      frame.evaluate((rootId) => {
-        const circle = document
-          .querySelector(`#${rootId}`)!
-          .querySelector("circle")!
+test("The initial UI is as expected", async ({ page }) => {
+  const frame = await getFrame(page)
 
-        return circle.getAttribute("fill")
-      }, ROOT_ID)
+  expect(await frame.locator(svgSelector).screenshot()).toMatchSnapshot(
+    "story.png"
+  )
+})
 
-    const svgSelector = `#${ROOT_ID} >> svg`
-    const rectangleSelector = `#${ROOT_ID} >> circle`
+test("The circle changes color when the rectangle is hovered", async ({
+  page,
+}) => {
+  const frame = await getFrame(page)
 
-    await frame.waitForSelector(svgSelector)
+  const getCircleColor = () =>
+    frame.evaluate((rootId) => {
+      const circle = document
+        .querySelector(`#${rootId}`)!
+        .querySelector("circle")!
 
-    const initialCircleColor = await getCircleColor()
+      return circle.getAttribute("fill")
+    }, ROOT_ID)
 
-    expect(initialCircleColor).toBeDefined()
+  const rectangleSelector = `#${ROOT_ID} >> circle`
 
-    await frame.hover(rectangleSelector)
+  const initialCircleColor = await getCircleColor()
 
-    expect(await getCircleColor()).not.toEqual(initialCircleColor)
+  expect(initialCircleColor).toBeDefined()
 
-    await hoverSidebarHeader(page)
+  await frame.hover(rectangleSelector)
 
-    expect(await getCircleColor()).toEqual(initialCircleColor)
-  })
+  expect(await getCircleColor()).not.toEqual(initialCircleColor)
+
+  await hoverSidebarHeader(page)
+
+  expect(await getCircleColor()).toEqual(initialCircleColor)
 })

@@ -1,19 +1,32 @@
 import { expect, test } from "@playwright/test"
 
-import { getFrame, storybookBaseURL } from "../common/e2e"
+import {
+  checkForConsoleErrors,
+  getFrame,
+  storybookBaseURL,
+} from "../common/e2e"
 
 import { ROOT_ID } from "./constants"
 
-test.describe("CanvasLayerWaves", () => {
-  test("The animation is present", async ({ page }) => {
-    await page.goto(`${storybookBaseURL}?path=/story/canvas-layerwaves--common`)
+const { setupConsoleAfterEach, setupConsoleBeforeEach } =
+  checkForConsoleErrors()
 
-    const frame = await getFrame(page)
+const exampleSelector = `#${ROOT_ID} > canvas`
 
-    const exampleSelector = `#${ROOT_ID} > canvas`
+test.beforeEach(async ({ page }) => {
+  setupConsoleBeforeEach(page)
 
-    await frame.waitForSelector(exampleSelector)
+  await page.goto(`${storybookBaseURL}?path=/story/canvas-layerwaves--common`)
 
-    await expect(frame.locator(exampleSelector)).toBeVisible()
-  })
+  const frame = await getFrame(page)
+
+  await frame.waitForSelector(exampleSelector)
+})
+
+test.afterEach(setupConsoleAfterEach)
+
+test("The canvas is present", async ({ page }) => {
+  const frame = await getFrame(page)
+
+  await expect(frame.locator(exampleSelector)).toBeVisible()
 })

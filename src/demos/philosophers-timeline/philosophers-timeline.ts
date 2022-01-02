@@ -1,10 +1,10 @@
 import {
-  CONTAINER_ID,
   TimeBandItem,
   fetchData,
   getChartConfig,
 } from "./philosophers-timeline-chart-data"
 import { Timeline } from "./timeline-bands-brush-chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 enum BandName {
   Main = "mainBand",

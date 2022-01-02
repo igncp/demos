@@ -6,8 +6,7 @@ import {
   findNode,
   findParentNode,
 } from "./collapsible-tree-chart"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type RawData = {
   name: string
@@ -118,4 +117,4 @@ const createChartConfig = (rootData: BaseNode): Config => {
   }
 }
 
-export { CONTAINER_ID, fetchData, createChartConfig }
+export { fetchData, createChartConfig }

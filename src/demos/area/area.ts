@@ -1,7 +1,8 @@
 import { AreaChart } from "./chart/area-chart"
-import { CONTAINER_ID, createChartConfig } from "./income-chart-config"
+import { createChartConfig } from "./income-chart-config"
 import { setupChartControls } from "./income-chart-controls"
 import { IncomeItem } from "./income-item-model"
+import { CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   const dataPoints = await IncomeItem.fetchAndCreateCollection()

@@ -3,6 +3,8 @@ import React from "react"
 
 import { StoryInfo, TemplateType, canvasDocs } from "../common"
 
+import { ROOT_ID } from "./constants"
+
 type Props = {
   count: number
   interactionDistance: number
@@ -10,8 +12,6 @@ type Props = {
   radiusBase: number
   speedBase: number
 }
-
-const ROOT_ID = "example"
 
 const colors = ["#f35d4f", "#f36849", "#c0d988", "#6ddaf1", "#f1e85b"]
 

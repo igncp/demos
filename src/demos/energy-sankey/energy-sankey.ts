@@ -1,12 +1,9 @@
 import hotkeys from "hotkeys-js"
 import qs from "query-string"
 
-import {
-  CONTAINER_ID,
-  createChartConfig,
-  fetchData,
-} from "./energy-sankey-chart-data"
+import { createChartConfig, fetchData } from "./energy-sankey-chart-data"
 import { SankeyChart } from "./sankey-chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   hotkeys("control", () => {})

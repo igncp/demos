@@ -5,11 +5,11 @@ import "jquery-ui/themes/base/all.css"
 
 import { CirclesChart } from "./population-circles-chart"
 import {
-  CONTAINER_ID,
   createChartConfig,
   createState,
   fetchData,
 } from "./population-circles-chart-data"
+import { CONTAINER_ID } from "./ui-constants"
 
 if (typeof window !== "undefined") {
   require("jquery-ui/ui/widgets/slider")

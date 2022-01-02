@@ -1,8 +1,8 @@
 import { json } from "d3"
 
 import { AreasData, ChartConfig } from "./n-map-chart"
+import { CONTAINER_ID } from "./ui-constants"
 
-const CONTAINER_ID = "chart"
 const UPDATE_BUTTON_ID = "update-button"
 
 type Properties = {
@@ -62,10 +62,4 @@ const fetchAreasData = () =>
     `${ROOT_PATH}data/d3js/spain-map/data.json`
   ) as unknown as Promise<AreasData>
 
-export {
-  CONTAINER_ID,
-  Properties,
-  UPDATE_BUTTON_ID,
-  createChartConfig,
-  fetchAreasData,
-}
+export { Properties, UPDATE_BUTTON_ID, createChartConfig, fetchAreasData }

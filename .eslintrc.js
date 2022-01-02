@@ -93,6 +93,12 @@ module.exports = {
   },
   overrides: [
     {
+      files: ["**/tests/**/*.ts"],
+      rules: {
+        "import/no-namespace": 0,
+      },
+    },
+    {
       files: ["research/**/*.js"],
       rules: {
         "no-console": 0,

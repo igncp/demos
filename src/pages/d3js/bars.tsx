@@ -4,13 +4,17 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main, { CONTAINER_ID } from "@/demos/bars/bars"
+import main, { ADD_BAR_BUTTON_ID, CONTAINER_ID } from "@/demos/bars/bars"
 import * as styles from "@/demos/bars/bars.module.css"
 
 const Bars = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
     <form>
-      <button className="btn btn-info" id={styles.addItemButton} type="button">
+      <button
+        className={`btn btn-info ${styles.addItemButton}`}
+        id={ADD_BAR_BUTTON_ID}
+        type="button"
+      >
         Add item
       </button>
     </form>

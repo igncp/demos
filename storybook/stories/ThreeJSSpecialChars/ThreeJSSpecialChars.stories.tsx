@@ -16,7 +16,8 @@ import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader"
 
 import { StoryInfo } from "../common"
 
-const ROOT_ID = "example"
+import { ROOT_ID } from "./constants"
+
 const LOADING_ID = "loading!"
 
 type Props = {

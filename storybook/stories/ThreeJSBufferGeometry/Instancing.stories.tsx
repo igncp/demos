@@ -15,7 +15,7 @@ import {
 
 import { StoryInfo, TemplateType, createRangeControl } from "../common"
 
-const ROOT_ID = "example"
+import { ROOT_ID } from "./constants"
 
 type Props = {
   colorAnimation: boolean

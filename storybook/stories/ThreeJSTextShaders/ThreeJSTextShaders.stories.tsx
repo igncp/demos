@@ -27,6 +27,7 @@ import {
   webAPIDocs,
 } from "../common"
 
+import { ROOT_ID } from "./constants"
 import { fragmentShader, vertexShader } from "./shaders"
 
 const speedScale = scalePow().exponent(3).domain([0, 1]).range([0, 1])
@@ -43,7 +44,6 @@ const blendingMap: { [key in BlendingType]: Blending } = {
   [BlendingType.Normal]: NormalBlending,
 }
 
-const ROOT_ID = "example"
 const FRAGMENT_SHADER_ID = "fragmentshader"
 const VERTEX_SHADER_ID = "vertexshader"
 

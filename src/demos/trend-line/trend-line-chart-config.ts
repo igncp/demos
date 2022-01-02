@@ -1,8 +1,7 @@
 import { timeParse, tsv } from "d3"
 
 import { ChartConfig } from "./trend-line-chart"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type InitialDataItem = {
   occurred: string
@@ -95,4 +94,4 @@ const getChartConfig = ({
   }
 }
 
-export { CONTAINER_ID, fetchData, getChartConfig }
+export { fetchData, getChartConfig }

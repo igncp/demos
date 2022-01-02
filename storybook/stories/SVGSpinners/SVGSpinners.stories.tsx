@@ -3,6 +3,7 @@ import React from "react"
 
 import { StoryInfo, TemplateType, svgDocs } from "../common"
 
+import { ROOT_ID } from "./constants"
 import * as styles from "./svgSpinners.module.css"
 
 enum SpinnerType {
@@ -16,8 +17,6 @@ type SpinnerFn = (config: {
   props: Props
   svg: Selection<SVGGElement, unknown, HTMLElement, unknown>
 }) => void
-
-const ROOT_ID = "example"
 
 const firstSpinnerFn: SpinnerFn = ({ props, svg }) => {
   svg.attr("class", styles.firstSpinner)

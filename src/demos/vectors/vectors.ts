@@ -9,9 +9,8 @@ import {
   select,
 } from "d3"
 
+import { CONTAINER_ID } from "./ui-constants"
 import * as styles from "./vectors.module.css"
-
-const CONTAINER_ID = "chart"
 
 // missing:
 // - connect nodes

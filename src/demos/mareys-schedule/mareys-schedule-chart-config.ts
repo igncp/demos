@@ -5,8 +5,8 @@ import {
   HorizontalMarker,
   LineStyle,
 } from "./crossing-lines-chart"
-import { CONTAINER_ID } from "./mareys-schedule-controls"
 import { MareysSchedules } from "./mareys-schedule-data-model"
+import { CONTAINER_ID } from "./ui-constants"
 
 const formatAMPM = (date: Date) => {
   let hours = date.getHours()

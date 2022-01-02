@@ -1,11 +1,8 @@
 import { renderChart } from "./crossing-lines-chart"
 import { createChartConfig } from "./mareys-schedule-chart-config"
-import {
-  CONTAINER_ID,
-  RANGE_ID,
-  setupControls,
-} from "./mareys-schedule-controls"
+import { RANGE_ID, setupControls } from "./mareys-schedule-controls"
 import { MareysSchedules } from "./mareys-schedule-data-model"
+import { CONTAINER_ID } from "./ui-constants"
 
 // @TODO: Add interaction on click
 

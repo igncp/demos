@@ -3,12 +3,13 @@ import React from "react"
 
 import { StoryInfo, createSelectControl } from "../common"
 
+import { SVG_ID } from "./constants"
+
 /**
  * Spec: https://drafts.fxtf.org/filter-effects/#FilterPrimitivesOverview
  */
 
 const SHAPE_CONTAINER_ID = "example"
-const SVG_ID = "example-svg"
 
 // https://www.w3.org/TR/SVG2/shapes.html
 const starPolygon = [

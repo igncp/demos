@@ -9,8 +9,7 @@ import {
 } from "d3"
 
 import * as styles from "./force.module.css"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type Node = {
   fx: number | null

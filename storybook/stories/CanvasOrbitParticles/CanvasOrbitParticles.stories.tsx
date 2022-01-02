@@ -3,6 +3,8 @@ import React from "react"
 
 import { StoryInfo, TemplateType, canvasDocs } from "../common"
 
+import { ROOT_ID } from "./constants"
+
 type Props = {
   clearAlpha: number
   count: number
@@ -15,8 +17,6 @@ type Props = {
   scale: number
   speed: number
 }
-
-const ROOT_ID = "example"
 
 const random = ({ max, min }: { max: number; min: number }) =>
   Math.random() * (max - min) + min

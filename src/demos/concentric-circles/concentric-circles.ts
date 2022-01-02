@@ -3,11 +3,11 @@ import "jquery-ui/themes/base/all.css"
 
 import { CirclesChart } from "./circles-chart"
 import {
-  CONTAINER_ID,
   ZOOM_SLIDER_ID,
   fetchData,
   getChartConfig,
 } from "./concentric-circles-config"
+import { CONTAINER_ID } from "./ui-constants"
 
 if (typeof window !== "undefined") {
   require("jquery-ui/ui/widgets/slider")

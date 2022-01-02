@@ -1,20 +1,25 @@
 import { expect, test } from "@playwright/test"
 
-import { demosBaseURL } from "../../../e2e"
+import { demosBaseURL, jQueryUITooltipSelector } from "../../../e2e"
 import {
   CONTAINER_ID,
   HAS_VORONOI_ATTR,
   TOGGLE_BUTTON_ID,
+  VORONOI_ITEM,
 } from "../ui-constants"
-
-const demoPath = `${demosBaseURL}/d3js/area`
 
 const mainSVGSelector = `#${CONTAINER_ID} > svg`
 
-test("It has the svg", async ({ page }) => {
-  await page.goto(demoPath)
+test.beforeEach(async ({ page }) => {
+  await page.goto(`${demosBaseURL}/d3js/area`)
 
-  await expect(page.locator(mainSVGSelector)).toHaveCount(1)
+  await page.waitForSelector(mainSVGSelector)
+})
+
+test("UI is as expected", async ({ page }) => {
+  expect(await page.locator(mainSVGSelector).screenshot()).toMatchSnapshot(
+    "chart.png"
+  )
 })
 
 test("It can toggle the display of voronoi lines on button click", async ({
@@ -22,12 +27,8 @@ test("It can toggle the display of voronoi lines on button click", async ({
 }) => {
   const [selectorHasVoronoiTrue, selectorHasVoronoiFalse] = [true, false].map(
     (valueResult) =>
-      `${mainSVGSelector} >> g[${HAS_VORONOI_ATTR}="${valueResult}"]`
+      `${mainSVGSelector} >> [${HAS_VORONOI_ATTR}="${valueResult}"]`
   )
-
-  await page.goto(demoPath)
-
-  await page.waitForSelector(mainSVGSelector)
 
   await expect(page.locator(selectorHasVoronoiFalse)).toHaveCount(1)
   await expect(page.locator(selectorHasVoronoiTrue)).toHaveCount(0)
@@ -41,4 +42,20 @@ test("It can toggle the display of voronoi lines on button click", async ({
 
   await expect(page.locator(selectorHasVoronoiFalse)).toHaveCount(1)
   await expect(page.locator(selectorHasVoronoiTrue)).toHaveCount(0)
+})
+
+test("Displays the expected tooltip when overing a path", async ({ page }) => {
+  await expect(page.locator(jQueryUITooltipSelector)).toHaveCount(0)
+
+  await page.hover(`${mainSVGSelector} >> [${VORONOI_ITEM}="1"]`)
+
+  await expect(page.locator(jQueryUITooltipSelector)).toHaveCount(1)
+  await expect(page.locator(jQueryUITooltipSelector)).toHaveText(
+    "Year: 1911, Percentage: 40.80%"
+  )
+})
+
+test("Renders many paths", async ({ page }) => {
+  await expect(page.locator(`${mainSVGSelector} >> path`)).not.toHaveCount(0)
+  await expect(page.locator(`${mainSVGSelector} >> path`)).not.toHaveCount(1)
 })

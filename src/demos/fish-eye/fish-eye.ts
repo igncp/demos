@@ -1,12 +1,8 @@
 import { extent, scalePow } from "d3"
 
 import { FishEyeChart } from "./fish-eye-chart"
-import {
-  CONTAINER_ID,
-  RANDOM_UPDATE_ID,
-  fetchData,
-  getChartConfig,
-} from "./fish-eye-config"
+import { RANDOM_UPDATE_ID, fetchData, getChartConfig } from "./fish-eye-config"
+import { CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   const incomeMetrics = await fetchData()

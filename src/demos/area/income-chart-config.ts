@@ -27,4 +27,4 @@ const createChartConfig = (
   rootElId: CONTAINER_ID,
 })
 
-export { CONTAINER_ID, createChartConfig }
+export { createChartConfig }

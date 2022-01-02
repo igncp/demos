@@ -19,6 +19,8 @@ import { LuminosityShader } from "three/examples/jsm/shaders/LuminosityShader.js
 
 import { StoryInfo, TemplateType } from "../common"
 
+import { ROOT_ID } from "./constants"
+
 enum SobelColor {
   Inverse = "inverse",
   Same = "Same",
@@ -94,8 +96,6 @@ const createSobelShader = (color: SobelColor) => ({
       gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
     }`,
 })
-
-const ROOT_ID = "example"
 
 type State = {
   rafId: number | null

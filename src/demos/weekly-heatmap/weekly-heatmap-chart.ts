@@ -9,6 +9,7 @@ import {
 import $ from "jquery"
 import "jquery-ui/themes/base/all.css"
 
+import { TRANSITION_DURATION } from "./ui-constants"
 import * as styles from "./weekly-heatmap.module.css"
 
 if (typeof window !== "undefined") {
@@ -217,7 +218,7 @@ class HeatmapChart<ChartData> {
 
     elements.cellsSel
       .transition()
-      .duration(2000)
+      .duration(TRANSITION_DURATION)
       .style("fill", (cellItem) => colorScale(config.getItemValue(cellItem)))
 
     elements.cellsSel

@@ -1,8 +1,8 @@
 import { json } from "d3"
 
 import { FishEyeChartOpts } from "./fish-eye-chart"
+import { CONTAINER_ID } from "./ui-constants"
 
-const CONTAINER_ID = "chart"
 const RANDOM_UPDATE_ID = "random-update"
 
 type IncomeMetric = {
@@ -83,4 +83,4 @@ const getChartConfig = (incomeMetrics: IncomeMetric[]): Opts => ({
   yAxisLabel,
 })
 
-export { CONTAINER_ID, RANDOM_UPDATE_ID, fetchData, getChartConfig }
+export { RANDOM_UPDATE_ID, fetchData, getChartConfig }

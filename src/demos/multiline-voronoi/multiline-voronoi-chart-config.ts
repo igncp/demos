@@ -1,8 +1,8 @@
 import { timeFormat, timeParse, tsv } from "d3"
 
 import { ChartConfig } from "./multiline-voronoi-chart"
+import { CONTAINER_ID } from "./ui-constants"
 
-const CONTAINER_ID = "chart"
 const SHOW_VORONOI_ID = "show-voronoi"
 
 type InitialDataItem = {
@@ -118,4 +118,4 @@ const getChartConfig = ({
   times: months,
 })
 
-export { CONTAINER_ID, SHOW_VORONOI_ID, fetchData, getChartConfig }
+export { SHOW_VORONOI_ID, fetchData, getChartConfig }

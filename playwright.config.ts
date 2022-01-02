@@ -2,6 +2,7 @@ import { PlaywrightTestConfig, devices } from "@playwright/test"
 
 const config: PlaywrightTestConfig = {
   forbidOnly: !!process.env.CI,
+  globalTimeout: 5 * 60 * 1000,
   projects: [
     {
       name: "chromium",
@@ -10,6 +11,7 @@ const config: PlaywrightTestConfig = {
   ],
   retries: process.env.CI ? 2 : 0,
   testMatch: [/.*\.e2e\.ts/],
+  timeout: (process.env.CI ? 30 : 15) * 1000,
   use: {
     trace: "on-first-retry",
   },

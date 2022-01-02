@@ -15,5 +15,5 @@ $baseColor: #4cfed7;
 .filtered {
   color: $baseColor;
   fill: $baseColor;
-  filter: "url(#filter)";
+  filter: url("#filter");
 }

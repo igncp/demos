@@ -15,6 +15,7 @@ import {
 } from "d3"
 
 import * as styles from "./trend-line.module.css"
+import { ANIMATION_MS } from "./ui-constants"
 
 const margin = {
   bottom: 50,
@@ -24,8 +25,6 @@ const margin = {
 }
 
 const height = 500 - margin.top - margin.bottom
-
-const animationTime = 2000
 
 const getInterpolation =
   <ChartData>({
@@ -112,7 +111,7 @@ class TrendLineChart<ChartData> {
   }
 
   private render(withAnimation: boolean) {
-    const finalAnimationTime = withAnimation ? animationTime : 0
+    const finalAnimationTime = withAnimation ? ANIMATION_MS : 0
     const {
       config: {
         getDashedLineX,

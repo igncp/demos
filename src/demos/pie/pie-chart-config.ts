@@ -1,7 +1,6 @@
 import { ChartConfig } from "./pie-chart"
 import { TechItem } from "./tech-data-model"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type Config = ChartConfig<TechItem>
 
@@ -25,4 +24,4 @@ const createChartConfig = (techItems: TechItem[]): Config => ({
   updateSliceValue,
 })
 
-export { CONTAINER_ID, createChartConfig }
+export { createChartConfig }

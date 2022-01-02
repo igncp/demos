@@ -1,11 +1,11 @@
 import { PartitionChart } from "./partition-chart"
 import {
-  CONTAINER_ID,
   PartitionType,
   TYPE_FORM,
   fetchData,
   getChartConfig,
 } from "./partition-chart-config"
+import { CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   const rootData = await fetchData()

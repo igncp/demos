@@ -2,8 +2,7 @@ import { scaleLinear, scalePoint, scaleSqrt, tsv } from "d3"
 import qs from "query-string"
 
 import { ChartConfig, Dimension, DimensionType } from "./lines-chart"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type ProjectionItem = {
   "Acc. 40º 150%": string
@@ -109,4 +108,4 @@ const getChartConfig = async (): Promise<Config> => {
   }
 }
 
-export { CONTAINER_ID, getChartConfig }
+export { getChartConfig }

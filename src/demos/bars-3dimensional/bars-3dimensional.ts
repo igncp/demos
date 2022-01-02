@@ -3,8 +3,7 @@ import { RaphaelPaper, RaphaelPath, RaphaelSet } from "raphael"
 import Raphael from "@/demos/_utils/browserRaphael"
 
 import * as styles from "./bars-3dimensional.module.css"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 const fetchData = async () => {
   const response = await fetch(

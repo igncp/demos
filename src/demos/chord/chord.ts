@@ -1,10 +1,7 @@
-import {
-  CONTAINER_ID,
-  UPDATE_BUTTON_ID,
-  getChartConfig,
-} from "./chord-chart-config"
+import { UPDATE_BUTTON_ID, getChartConfig } from "./chord-chart-config"
 import { FinancialData } from "./chord-data-model"
 import { NChordChart } from "./n-chord-chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   const financialData = await FinancialData.fetchAndCreate()

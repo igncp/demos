@@ -2,12 +2,12 @@ import { select } from "d3"
 
 import { MultilineVoronoiChart } from "./multiline-voronoi-chart"
 import {
-  CONTAINER_ID,
   SHOW_VORONOI_ID,
   fetchData,
   getChartConfig,
 } from "./multiline-voronoi-chart-config"
 import * as styles from "./multiline-voronoi.module.css"
+import { CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   const { cities, months } = await fetchData()

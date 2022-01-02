@@ -3,8 +3,7 @@ import { RaphaelPaper, RaphaelPath } from "raphael"
 import Raphael from "@/demos/_utils/browserRaphael"
 
 import * as styles from "./circular-arcs.module.css"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 const strokeWidth = 3
 

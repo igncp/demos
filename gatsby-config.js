@@ -8,6 +8,7 @@ module.exports = {
       options: {
         analyzerMode: "static",
         openAnalyzer: false,
+        reportFilename: "bundles-sizes-report.html",
       },
       resolve: "gatsby-plugin-webpack-bundle-analyser-v2",
     },

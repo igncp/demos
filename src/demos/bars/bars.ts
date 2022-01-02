@@ -1,8 +1,8 @@
 import { max } from "d3"
 
 import { BarsChart } from "./bars-chart"
-import { CONTAINER_ID, createChartConfig, fetchData } from "./bars-chart-config"
-import * as styles from "./bars.module.css"
+import { createChartConfig, fetchData } from "./bars-chart-config"
+import { ADD_BAR_BUTTON_ID, CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   const initialBars = await fetchData()
@@ -11,7 +11,7 @@ const main = async () => {
 
   const barsChart = new BarsChart(chartConfig)
 
-  const addItemEl = document.getElementById(styles.addItemButton) as HTMLElement
+  const addItemEl = document.getElementById(ADD_BAR_BUTTON_ID) as HTMLElement
 
   addItemEl.addEventListener("click", () => {
     const bars = barsChart.getBars()
@@ -31,6 +31,6 @@ const main = async () => {
   })
 }
 
-export { CONTAINER_ID }
+export { ADD_BAR_BUTTON_ID, CONTAINER_ID }
 
 export default main

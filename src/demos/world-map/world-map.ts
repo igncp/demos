@@ -17,7 +17,8 @@ import {
 } from "d3"
 import { feature } from "topojson-client"
 
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
+
 const UPDATE_BUTTON_ID = "update-colors"
 
 type CountryData = GeoPermissibleObjects & {

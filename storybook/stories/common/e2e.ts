@@ -1,5 +1,7 @@
 import { Frame, Page } from "@playwright/test"
 
+import { checkForConsoleErrors } from "../../../src/e2e"
+
 const storybookBaseURL = (() => {
   if (process.env.CI) {
     return "http://localhost:9000/demos/storybook"
@@ -23,4 +25,4 @@ const getFrame = async (page: Page) => {
 
 const hoverSidebarHeader = (page: Page) => page.hover(".sidebar-header")
 
-export { getFrame, hoverSidebarHeader, storybookBaseURL }
+export { checkForConsoleErrors, getFrame, hoverSidebarHeader, storybookBaseURL }

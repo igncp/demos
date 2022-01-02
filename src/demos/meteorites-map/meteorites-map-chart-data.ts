@@ -1,7 +1,6 @@
 import { ChartConfig } from "./circles-map-chart"
 import { CountriesLayout, MeteoritesData } from "./meteorites-data-model"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 const chartHelpHTML = `
 <p>The green circles refer to meteorites which were moved in the map to allow seeing the selected meteorite, which is in red.</p>
@@ -41,4 +40,4 @@ const createChartConfig = ({
   }
 }
 
-export { CONTAINER_ID, createChartConfig }
+export { createChartConfig }

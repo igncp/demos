@@ -3,8 +3,7 @@ import hotkeys from "hotkeys-js"
 import qs from "query-string"
 
 import { ChartConfig } from "./population-circles-chart"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type PopulationRecord = {
   count: number
@@ -258,4 +257,4 @@ const createChartConfig = ({
   }
 }
 
-export { CONTAINER_ID, createChartConfig, createState, fetchData }
+export { createChartConfig, createState, fetchData }

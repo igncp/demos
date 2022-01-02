@@ -1,6 +1,7 @@
 import { renderChart } from "./circles-map-chart"
 import { CountriesLayout, MeteoritesData } from "./meteorites-data-model"
-import { CONTAINER_ID, createChartConfig } from "./meteorites-map-chart-data"
+import { createChartConfig } from "./meteorites-map-chart-data"
+import { CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   const [meteoritesData, countriesLayout] = await Promise.all([

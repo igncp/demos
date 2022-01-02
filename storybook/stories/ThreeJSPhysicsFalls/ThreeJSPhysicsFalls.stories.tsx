@@ -24,8 +24,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { StoryInfo, TemplateType, createRangeControl } from "../common"
 
 import { createOimoPhysics } from "./OimoPhysics"
-
-const ROOT_ID = "example"
+import { ROOT_ID } from "./constants"
 
 type Physics = ReturnType<typeof createOimoPhysics>
 

@@ -26,6 +26,8 @@ import {
   threeDocs,
 } from "../common"
 
+import { ROOT_ID } from "./constants"
+
 const canvasHeight = 400
 const scaleFactor = 4
 const planeSize = 7500
@@ -40,8 +42,6 @@ type Props = {
   worldDepth: number
   worldWidth: number
 }
-
-const ROOT_ID = "example"
 
 const generateHeight = ({
   depth,

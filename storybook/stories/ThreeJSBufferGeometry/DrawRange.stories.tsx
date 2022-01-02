@@ -22,7 +22,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 
 import { StoryInfo, TemplateType, createRangeControl } from "../common"
 
-const ROOT_ID = "example"
+import { ROOT_ID } from "./constants"
 
 const initialParticleCount = 500
 const maxParticleCount = 1000

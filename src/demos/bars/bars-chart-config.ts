@@ -1,6 +1,5 @@
 import { ChartConfig } from "./bars-chart"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type BarData = number
 
@@ -18,4 +17,4 @@ const createChartConfig = ({ bars }: { bars: BarData[] }): ChartConfig => ({
   rootElId: CONTAINER_ID,
 })
 
-export { CONTAINER_ID, createChartConfig, fetchData }
+export { createChartConfig, fetchData }

@@ -19,7 +19,7 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js"
 
 import { StoryInfo, TemplateType } from "../common"
 
-const ROOT_ID = "examples"
+import { ROOT_ID } from "./constants"
 
 type State = {
   isStopped: boolean

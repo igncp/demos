@@ -1,8 +1,7 @@
 import { format as formatD3, json } from "d3"
 
 import { ChartConfig } from "./sankey-chart"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type EnergyDataLink = {
   source: string
@@ -72,4 +71,4 @@ const createChartConfig = ({
   }
 }
 
-export { CONTAINER_ID, createChartConfig, fetchData }
+export { createChartConfig, fetchData }

@@ -1,8 +1,8 @@
 import { csv } from "d3"
 
 import { ChartConfig } from "./circles-chart"
+import { CONTAINER_ID } from "./ui-constants"
 
-const CONTAINER_ID = "chart"
 const ZOOM_SLIDER_ID = "year-slider"
 
 type NamesMetric = {
@@ -63,4 +63,4 @@ const getChartConfig = ({
   rootElId: CONTAINER_ID,
 })
 
-export { CONTAINER_ID, ZOOM_SLIDER_ID, fetchData, getChartConfig }
+export { ZOOM_SLIDER_ID, fetchData, getChartConfig }

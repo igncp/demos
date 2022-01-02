@@ -20,13 +20,12 @@ import { Water } from "three/examples/jsm/objects/Water.js"
 
 import { StoryInfo, TemplateType, createRangeControl } from "../common"
 
+import { ROOT_ID } from "./constants"
 import waterTexture from "./waternormals.jpg"
 
 type Props = {
   speed: number
 }
-
-const ROOT_ID = "example"
 
 const planeSize = 10_000
 const textureSize = 512

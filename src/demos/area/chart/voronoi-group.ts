@@ -7,7 +7,7 @@ import {
 } from "d3"
 import { Delaunay } from "d3-delaunay"
 
-import { HAS_VORONOI_ATTR } from "../ui-constants"
+import { HAS_VORONOI_ATTR, VORONOI_ITEM } from "../ui-constants"
 
 import * as styles from "./area-chart.module.css"
 
@@ -93,6 +93,7 @@ class VoronoiGroup<Point> {
       .on("mouseenter", mouseenter)
       .on("mouseleave", mouseleave)
       .attr("class", className)
+      .attr(VORONOI_ITEM, (...[, itemIndex]) => itemIndex)
       .attr("title", getTitle)
       .style("filter", filter)
       .transition()

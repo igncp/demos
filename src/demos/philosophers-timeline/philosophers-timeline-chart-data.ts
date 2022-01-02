@@ -2,8 +2,7 @@ import { csv, timeParse } from "d3"
 import qs from "query-string"
 
 import { ChartConfig, SortOrder } from "./timeline-bands-brush-chart"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type TimeBandItem = {
   end: Date
@@ -146,4 +145,4 @@ const getChartConfig = (): Config => ({
   rootElId: CONTAINER_ID,
 })
 
-export { CONTAINER_ID, TimeBandItem, fetchData, getChartConfig }
+export { TimeBandItem, fetchData, getChartConfig }

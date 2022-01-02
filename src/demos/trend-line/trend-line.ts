@@ -1,11 +1,8 @@
 import { selectAll } from "d3"
 
 import { TrendLineChart } from "./trend-line-chart"
-import {
-  CONTAINER_ID,
-  fetchData,
-  getChartConfig,
-} from "./trend-line-chart-config"
+import { fetchData, getChartConfig } from "./trend-line-chart-config"
+import { CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   const lineData = await fetchData()

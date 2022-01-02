@@ -1,6 +1,6 @@
+import { CONTAINER_ID } from "./ui-constants"
 import { HeatmapChart } from "./weekly-heatmap-chart"
 import {
-  CONTAINER_ID,
   TimeItem,
   UPDATE_BUTTON_ID,
   createChartConfig,

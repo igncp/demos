@@ -1,11 +1,11 @@
 import { NMapChart } from "./n-map-chart"
 import {
-  CONTAINER_ID,
   Properties,
   UPDATE_BUTTON_ID,
   createChartConfig,
   fetchAreasData,
 } from "./spain-map-chart-data"
+import { CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
   const areasData = await fetchAreasData()

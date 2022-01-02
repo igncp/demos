@@ -31,7 +31,7 @@ import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js"
 
 import { StoryInfo, TemplateType, createRangeControl } from "../common"
 
-const ROOT_ID = "example"
+import { ROOT_ID } from "./constants"
 
 type State = {
   rafId: number | null

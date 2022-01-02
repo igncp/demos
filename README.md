@@ -19,11 +19,11 @@ https://igncp.github.io/demos/
     - The coverage is relatively high and there is a minimum threshold of 95% for the whole project
     - Type-checking is required in the CI so there are no TypeScript errors but in a few cases it uses `any`
 - Tests reports:
-    - Unit and functional tests using [Jest](https://jestjs.io/) ([config](./jest.config.js)): https://igncp.github.io/demos/jest-report
-    - End-to-end tests using [Playwright](https://playwright.dev) ([config](./playwright.config.ts)): https://igncp.github.io/demos/playwright-report
-    - In-browser unit tests for learning some dependencies with [QUnit](https://qunitjs.com/) ([page](./src/pages/testing.tsx)): https://igncp.github.io/demos/testing
+    - [Unit and functional tests report](https://igncp.github.io/demos/jest-report) using [Jest](https://jestjs.io/) ([jest.config.js](./jest.config.js))
+    - [End-to-end tests report](https://igncp.github.io/demos/playwright-report) using [Playwright](https://playwright.dev) ([playwright.config.ts](./playwright.config.ts))
+    - [In-browser unit tests page](https://igncp.github.io/demos/testing) for learning some dependencies with [QUnit](https://qunitjs.com/) ([page](./src/pages/testing.tsx))
 - JS bundles analysis:
-    - https://igncp.github.io/demos/report.html
+    - https://igncp.github.io/demos/bundles-sizes-report.html
 - It has extensive tooling for the code, all run via [Github Actions](https://github.com/igncp/demos/actions):
     - [ESLint](https://eslint.org/) config: [.eslintrc.js](./.eslintrc.js)
     - [Prettier](https://prettier.io/) config: [.prettierrc](./.prettierrc)

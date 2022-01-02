@@ -1,0 +1,4 @@
+const CONTAINER_ID = "chart"
+const ANIMATION_MS = 2000
+
+export { ANIMATION_MS, CONTAINER_ID }

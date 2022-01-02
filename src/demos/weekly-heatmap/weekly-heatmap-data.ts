@@ -1,8 +1,8 @@
 import { tsv } from "d3"
 
+import { CONTAINER_ID } from "./ui-constants"
 import { ChartConfig } from "./weekly-heatmap-chart"
 
-const CONTAINER_ID = "chart"
 const UPDATE_BUTTON_ID = "update-random"
 
 type TimeItem = {
@@ -85,10 +85,4 @@ const createChartConfig = (weeklyData: TimeItem[]): Config => ({
   weeklyData,
 })
 
-export {
-  CONTAINER_ID,
-  TimeItem,
-  UPDATE_BUTTON_ID,
-  createChartConfig,
-  fetchData,
-}
+export { TimeItem, UPDATE_BUTTON_ID, createChartConfig, fetchData }

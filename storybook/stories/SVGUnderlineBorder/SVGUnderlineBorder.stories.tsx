@@ -3,11 +3,10 @@ import React from "react"
 
 import { StoryInfo, TemplateType } from "../common"
 
+import { ROOT_ID } from "./constants"
 import * as styles from "./svgUnderlineBorder.module.css"
 
 type Props = { infinite: boolean }
-
-const ROOT_ID = "example"
 
 const main = ({ infinite }: Props) => {
   const width = 320

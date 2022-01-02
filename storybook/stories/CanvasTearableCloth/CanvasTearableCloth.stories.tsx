@@ -8,6 +8,8 @@ import {
   createRangeControl,
 } from "../common"
 
+import { ROOT_ID } from "./constants"
+
 type Props = {
   clothHeight: number
   clothWidth: number
@@ -19,8 +21,6 @@ type Props = {
   startY: number
   tearDistance: number
 }
-
-const ROOT_ID = "example"
 
 const pointDelta = 0.016
 const pointDeltaSquare = pointDelta * pointDelta

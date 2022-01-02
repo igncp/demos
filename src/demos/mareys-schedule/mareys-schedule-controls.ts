@@ -10,8 +10,6 @@ if (typeof window !== "undefined") {
 
 type ScheduleLimits = [number, number]
 
-const CONTAINER_ID = "chart"
-
 const RANGE_ID = "schedule-range"
 
 const convertLimitsToTimes = (limits: ScheduleLimits): [string, string] => {
@@ -75,4 +73,4 @@ const setupControls = (updateScheduleLimits: Redraw) => {
   slider.slider("values", [10, 50])
 }
 
-export { CONTAINER_ID, RANGE_ID, setupControls }
+export { RANGE_ID, setupControls }

@@ -30,6 +30,8 @@ import {
   threeDocs,
 } from "../common"
 
+import { ROOT_ID } from "./constants"
+
 type Sphere = Mesh<SphereGeometry, MeshPhysicalMaterial>
 
 type Props = {
@@ -53,8 +55,6 @@ type Simulation = {
   state: State
   stop: () => void
 }
-
-const ROOT_ID = "example"
 
 const cubeWidth = 400
 const numberOfSphersPerSide = 5

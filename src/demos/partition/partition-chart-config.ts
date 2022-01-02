@@ -1,8 +1,8 @@
 import { json } from "d3"
 
 import { ChartConfig, Node, PartitionType } from "./partition-chart"
+import { CONTAINER_ID } from "./ui-constants"
 
-const CONTAINER_ID = "chart"
 const TYPE_FORM = "type-form"
 
 type DataNode = Node<{
@@ -37,4 +37,4 @@ const getChartConfig = ({
   rootElId: CONTAINER_ID,
 })
 
-export { CONTAINER_ID, TYPE_FORM, fetchData, getChartConfig, PartitionType }
+export { TYPE_FORM, fetchData, getChartConfig, PartitionType }

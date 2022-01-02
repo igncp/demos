@@ -3,6 +3,7 @@ import "jquery-ui/themes/base/all.css"
 
 import { ChartConfig, DisplayType, RibbonType } from "./expenses-chord-chart"
 import { Expenses } from "./expenses-chord-data-model"
+import { CONTAINER_ID } from "./ui-constants"
 
 if (typeof window !== "undefined") {
   require("jquery-ui/ui/widgets/slider")
@@ -14,7 +15,6 @@ type State = {
   timeIndex: number
 }
 
-const CONTAINER_ID = "chart"
 const AUTOMATIC_TIME_ID = "automatic-time"
 const SLIDER_TIME_ID = "slider-time"
 const COUNTRIES_SELECT_ID = "countries-select"
@@ -209,7 +209,6 @@ const setupChartForm = ({
 
 export {
   AUTOMATIC_TIME_ID,
-  CONTAINER_ID,
   COUNTRIES_SELECT_ID,
   REGIONS_SELECT_ID,
   SLIDER_TIME_ID,

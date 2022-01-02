@@ -25,6 +25,8 @@ import {
   webAPIDocs,
 } from "../common"
 
+import { ROOT_ID } from "./constants"
+
 enum FontWeight {
   Bold = "bold",
   Regular = "regular",
@@ -45,8 +47,6 @@ type Props = {
   size: number
   text: string
 }
-
-const ROOT_ID = "example"
 
 const fontsMap: { [key in FontName]: { [key2 in FontWeight]: unknown } } = {
   [FontName.DroidSans]: {

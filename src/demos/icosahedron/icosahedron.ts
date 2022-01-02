@@ -12,8 +12,7 @@ import {
 import textures from "textures"
 
 import * as styles from "./icosahedron.module.css"
-
-const CONTAINER_ID = "chart"
+import { CONTAINER_ID } from "./ui-constants"
 
 type IcosahedronOpts = {
   rootElId: string

@@ -17,8 +17,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { StoryInfo, TemplateType, createRangeControl } from "../common"
 
 import circleImg from "./circle.png"
-
-const ROOT_ID = "example"
+import { ROOT_ID } from "./constants"
 
 const FRAGMENT_SHADER_ID = "fragmentshader"
 const VERTEX_SHADER_ID = "vertexshader"

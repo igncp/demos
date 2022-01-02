@@ -9,9 +9,8 @@ import {
   svgDocs,
 } from "../common"
 
+import { ROOT_ID } from "./constants"
 import * as styles from "./styles.module.css"
-
-const ROOT_ID = "example"
 
 type Props = {
   fontFamily: string
