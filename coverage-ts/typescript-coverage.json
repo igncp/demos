@@ -276,63 +276,63 @@
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 12,
+      "line": 11,
       "character": 8,
       "text": "jsonResponse",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 14,
+      "line": 13,
       "character": 9,
       "text": "jsonResponse",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 14,
+      "line": 13,
       "character": 22,
       "text": "results",
       "kind": 1
     },
     {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
-      "line": 254,
+      "line": 253,
       "character": 8,
       "text": "countriesMetrics",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 130,
+      "line": 129,
       "character": 8,
       "text": "fn",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 132,
+      "line": 131,
       "character": 2,
       "text": "fn",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 132,
+      "line": 131,
       "character": 5,
       "text": "circularArc",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 133,
+      "line": 132,
       "character": 2,
       "text": "fn",
       "kind": 1
     },
     {
       "file": "src/demos/circular-arcs/circular-arcs.ts",
-      "line": 133,
+      "line": 132,
       "character": 5,
       "text": "arc",
       "kind": 1
@@ -612,77 +612,77 @@
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 30,
+      "line": 31,
       "character": 5,
       "text": "WorldData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 34,
+      "line": 35,
       "character": 2,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 34,
+      "line": 35,
       "character": 9,
       "text": "WorldData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 47,
+      "line": 48,
       "character": 14,
       "text": "featureData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 222,
+      "line": 223,
       "character": 16,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 238,
+      "line": 239,
       "character": 22,
       "text": "featuresData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 240,
+      "line": 241,
       "character": 6,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 240,
+      "line": 241,
       "character": 12,
       "text": "objects",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 240,
+      "line": 241,
       "character": 20,
       "text": "countries",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 249,
+      "line": 250,
       "character": 18,
       "text": "featuresData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 249,
+      "line": 250,
       "character": 31,
       "text": "length",
       "kind": 1
@@ -710,70 +710,70 @@
     },
     {
       "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
-      "line": 171,
+      "line": 170,
       "character": 35,
       "text": "value",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
-      "line": 208,
+      "line": 207,
       "character": 29,
       "text": "value",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
-      "line": 209,
+      "line": 208,
       "character": 28,
       "text": "value",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
-      "line": 210,
+      "line": 209,
       "character": 34,
       "text": "value",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
-      "line": 211,
+      "line": 210,
       "character": 35,
       "text": "value",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
-      "line": 226,
+      "line": 225,
       "character": 43,
       "text": "value",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
-      "line": 226,
+      "line": 225,
       "character": 49,
       "text": "copy",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
-      "line": 227,
+      "line": 226,
       "character": 46,
       "text": "value",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
-      "line": 227,
+      "line": 226,
       "character": 52,
       "text": "copy",
       "kind": 1
     },
     {
       "file": "storybook/stories/ThreeJSCubeWater/ThreeJSCubeWater.stories.tsx",
-      "line": 227,
+      "line": 226,
       "character": 62,
       "text": "normalize",
       "kind": 1
@@ -1267,10 +1267,38 @@
       "character": 45,
       "text": "y",
       "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/tests/meteorites-data-model.test.ts",
+      "line": 12,
+      "character": 37,
+      "text": "path",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/tests/meteorites-data-model.test.ts",
+      "line": 14,
+      "character": 8,
+      "text": "path",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/tests/meteorites-data-model.test.ts",
+      "line": 30,
+      "character": 37,
+      "text": "path",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/meteorites-map/tests/meteorites-data-model.test.ts",
+      "line": 31,
+      "character": 10,
+      "text": "path",
+      "kind": 1
     }
   ],
-  "percentage": 99.46569842956666,
-  "total": 33876,
-  "covered": 33695,
-  "uncovered": 181
+  "percentage": 99.4859826067628,
+  "total": 35991,
+  "covered": 35806,
+  "uncovered": 185
 }
