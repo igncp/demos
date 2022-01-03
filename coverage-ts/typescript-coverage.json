@@ -268,10 +268,31 @@
       "kind": 1
     },
     {
-      "file": "src/testing/threeJS.ts",
+      "file": "src/tests/qunit/threeJS.ts",
       "line": 72,
       "character": 43,
       "text": "reflectivity",
+      "kind": 1
+    },
+    {
+      "file": "src/tests/misc.test.ts",
+      "line": 36,
+      "character": 14,
+      "text": "jsonContent",
+      "kind": 1
+    },
+    {
+      "file": "src/tests/misc.test.ts",
+      "line": 38,
+      "character": 15,
+      "text": "jsonContent",
+      "kind": 1
+    },
+    {
+      "file": "src/tests/misc.test.ts",
+      "line": 38,
+      "character": 27,
+      "text": "devDependencies",
       "kind": 1
     },
     {
@@ -1269,6 +1290,34 @@
       "kind": 1
     },
     {
+      "file": "src/demos/mareys-schedule/tests/mareys-schedule-data-model.test.ts",
+      "line": 11,
+      "character": 34,
+      "text": "path",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/mareys-schedule/tests/mareys-schedule-data-model.test.ts",
+      "line": 12,
+      "character": 8,
+      "text": "path",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/mareys-schedule/tests/mareys-schedule-data-model.test.ts",
+      "line": 51,
+      "character": 6,
+      "text": "stops",
+      "kind": 1
+    },
+    {
+      "file": "src/demos/mareys-schedule/tests/mareys-schedule-data-model.test.ts",
+      "line": 62,
+      "character": 6,
+      "text": "time",
+      "kind": 1
+    },
+    {
       "file": "src/demos/meteorites-map/tests/meteorites-data-model.test.ts",
       "line": 12,
       "character": 37,
@@ -1297,8 +1346,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.4859826067628,
-  "total": 35991,
-  "covered": 35806,
-  "uncovered": 185
+  "percentage": 99.47226650541477,
+  "total": 36382,
+  "covered": 36190,
+  "uncovered": 192
 }

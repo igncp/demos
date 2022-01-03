@@ -1,0 +1,126 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>threeJS.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/tests/qunit/threeJS.ts</td><td class="">99.46%</td><td class="">95%</td><td class="">185</td><td class="">184</td><td class="">1</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import QUnitType from &quot;qunit&quot;
+import {
+  Audio,
+  AudioListener,
+  Color,
+  MeshLambertMaterial,
+  Vector3,
+  WebGLRenderer,
+} from &quot;three&quot;
+import { EffectComposer } from &quot;three/examples/jsm/postprocessing/EffectComposer.js&quot;
+import { Pass } from &quot;three/examples/jsm/postprocessing/Pass&quot;
+
+const threeJSTests = (QUnit: QUnitType) =&gt; {
+  // https://threejs.org/docs/#api/en/audio/Audio
+  QUnit.test(&quot;Audio&quot;, (assert) =&gt; {
+    const listener = new AudioListener()
+    const sound = new Audio(listener)
+
+    assert.deepEqual(sound.name, &quot;&quot;)
+    assert.deepEqual(sound.autoplay, false)
+    assert.deepEqual(sound.isPlaying, false)
+    assert.deepEqual(sound.duration, undefined)
+  })
+
+  // https://threejs.org/docs/#api/en/math/Color
+  // https://en.wikipedia.org/wiki/X11_color_names#Color_name_chart
+  QUnit.test(&quot;Color&quot;, (assert) =&gt; {
+    const colorA = new Color(0xffff00)
+    const colorRed = new Color(0xff0000)
+
+    assert.deepEqual(colorA.r, 1)
+    assert.deepEqual(colorA.b, 0)
+    assert.deepEqual(colorA.getHex(), 0xffff00)
+    assert.deepEqual(colorA.getHexString(), &quot;ffff00&quot;)
+    assert.deepEqual(colorA.getStyle(), &quot;rgb(255,255,0)&quot;)
+
+    // substracts and removes the difference
+    assert.deepEqual(colorA.sub(colorRed).getHexString(), &quot;00ff00&quot;)
+
+    // the previous operation mutated only the colorA color
+    assert.deepEqual(colorA.getHexString(), &quot;00ff00&quot;)
+    assert.deepEqual(colorRed.getHexString(), &quot;ff0000&quot;)
+  })
+
+  // https://threejs.org/docs/#examples/en/postprocessing/EffectComposer
+  QUnit.test(&quot;EffectComposer&quot;, (assert) =&gt; {
+    const renderer = new WebGLRenderer()
+    const composer = new EffectComposer(renderer)
+    const fooPass = new Pass()
+
+    assert.deepEqual(composer.passes, [])
+
+    composer.addPass(fooPass)
+
+    assert.deepEqual(composer.passes, [fooPass])
+
+    composer.removePass(fooPass)
+
+    assert.deepEqual(composer.passes, [])
+  })
+
+  // https://threejs.org/docs/#api/en/materials/MeshLambertMaterial
+  QUnit.test(&quot;MeshLambertMaterial&quot;, (assert) =&gt; {
+    const testMaterial = new MeshLambertMaterial()
+
+    // has properties specific to the MeshLambertMaterial
+    assert.deepEqual(testMaterial.lightMap, null)
+
+    // has common properties from the base Material
+    assert.deepEqual(testMaterial.alphaTest, 0)
+    assert.deepEqual(testMaterial.type, &quot;MeshLambertMaterial&quot;)
+    assert.deepEqual(testMaterial.opacity, 1)
+    assert.deepEqual(testMaterial.toJSON().reflectivity, 1)
+
+    // has the expected default
+    assert.deepEqual(testMaterial.emissive, new Color(0x000000))
+  })
+
+  QUnit.test(&quot;Vector3&quot;, (assert) =&gt; {
+    const vect1 = new Vector3(1, 1, 1)
+    const vect0 = new Vector3()
+
+    assert.deepEqual(
+      vect1.distanceTo(vect0).toFixed(3),
+      Math.pow(3, 0.5).toFixed(3)
+    )
+
+    assert.deepEqual(vect1.divideScalar(0.5), new Vector3(2, 2, 2))
+
+    // the vector has been mutated in the previous operation
+    assert.deepEqual(vect1.x, 2)
+  })
+
+  // https://threejs.org/docs/#api/en/renderers/WebGLRenderer
+  QUnit.test(&quot;WebGLRenderer&quot;, (assert) =&gt; {
+    const rendererA = new WebGLRenderer()
+
+    // the renderer creates its own DOM element
+    assert.deepEqual(rendererA.domElement instanceof HTMLCanvasElement, true)
+
+    assert.deepEqual(rendererA.info.memory, { geometries: 0, textures: 0 })
+
+    // by default the renderer automatically clears the canvas output before each frame
+    assert.deepEqual(rendererA.autoClear, true)
+  })
+}
+
+export default threeJSTests
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/tests/qunit/threeJS.ts&quot;,&quot;line&quot;:72,&quot;character&quot;:43,&quot;text&quot;:&quot;reflectivity&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 02 Jan 2022 23:56:20 GMT</p>
+    </body>
+  </html>
+  

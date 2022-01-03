@@ -1,0 +1,118 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>mareys-schedule-data-model.test.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/tests/mareys-schedule-data-model.test.ts</td><td class="">96.15%</td><td class="">95%</td><td class="">104</td><td class="">100</td><td class="">4</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as d3 from &quot;d3&quot;
+
+import { MareysSchedules } from &quot;../mareys-schedule-data-model&quot;
+
+import { mockSchedules } from &quot;./testData&quot;
+
+jest.spyOn(d3, &quot;tsv&quot;)
+
+const tsvMock = d3.tsv as jest.Mock
+
+beforeEach(() =&gt; {
+  tsvMock.mockImplementationOnce((path) =&gt; {
+    if (path === `${ROOT_PATH}data/d3js/mareys-schedule/data.tsv`) {
+      return Promise.resolve(mockSchedules)
+    }
+
+    return Promise.reject()
+  })
+})
+
+describe(&quot;getStations&quot;, () =&gt; {
+  it(&quot;returns the expected format&quot;, async () =&gt; {
+    const schedules = await MareysSchedules.fetchAndCreateSchedules()
+
+    expect(
+      schedules
+        .getStations()
+        .sort((...[stationA, stationB]) =&gt;
+          stationA.name.localeCompare(stationB.name)
+        )[0]
+    ).toEqual({
+      distance: 40,
+      key: &quot;stop|22nd Street|40|1&quot;,
+      name: &quot;22nd Street&quot;,
+      zone: 1,
+    })
+  })
+})
+
+describe(&quot;getStations&quot;, () =&gt; {
+  it(&quot;returns the expected format&quot;, async () =&gt; {
+    const schedules = await MareysSchedules.fetchAndCreateSchedules()
+
+    const sampleTrain = schedules
+      .getTrains()
+      .sort((...[trainA, trainB]) =&gt; trainA.id - trainB.id)[0]
+
+    expect(sampleTrain).toEqual({
+      direction: &quot;S&quot;,
+      id: 0,
+      number: &quot;102&quot;,
+      stops: expect.any(Array),
+      type: &quot;N&quot;,
+    })
+
+    expect(sampleTrain.stops[0]).toEqual({
+      station: {
+        distance: 124,
+        key: &quot;stop|Bayshore|124|1&quot;,
+        name: &quot;Bayshore&quot;,
+        zone: 1,
+      },
+      time: expect.any(Date),
+      trainId: 0,
+    })
+  })
+})
+
+describe(&quot;getTrainTitle&quot;, () =&gt; {
+  it(&quot;returns the expected text&quot;, () =&gt; {
+    const dummyTrain = {
+      direction: &quot;S&quot;,
+      stops: [
+        {
+          station: {
+            name: &quot;first station&quot;,
+          },
+        },
+        null,
+        {
+          station: {
+            name: &quot;last station&quot;,
+          },
+        },
+      ],
+    } as Record&lt;string, unknown&gt;
+
+    expect(
+      // @ts-expect-error
+      MareysSchedules.getTrainTitle(dummyTrain)
+    ).toEqual(&quot;first station -&gt; last station&quot;)
+    expect(
+      // @ts-expect-error
+      MareysSchedules.getTrainTitle({
+        ...dummyTrain,
+        direction: &quot;N&quot;,
+      })
+    ).toEqual(&quot;last station -&gt; first station&quot;)
+  })
+})
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src/demos/mareys-schedule/tests/mareys-schedule-data-model.test.ts&quot;,&quot;line&quot;:11,&quot;character&quot;:34,&quot;text&quot;:&quot;path&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/tests/mareys-schedule-data-model.test.ts&quot;,&quot;line&quot;:12,&quot;character&quot;:8,&quot;text&quot;:&quot;path&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/tests/mareys-schedule-data-model.test.ts&quot;,&quot;line&quot;:51,&quot;character&quot;:6,&quot;text&quot;:&quot;stops&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src/demos/mareys-schedule/tests/mareys-schedule-data-model.test.ts&quot;,&quot;line&quot;:62,&quot;character&quot;:6,&quot;text&quot;:&quot;time&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 02 Jan 2022 23:56:21 GMT</p>
+    </body>
+  </html>
+  
