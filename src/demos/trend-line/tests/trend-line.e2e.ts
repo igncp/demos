@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-import { checkForConsoleErrors, demosBaseURL } from "../../../e2e"
+import { ProjectName, checkForConsoleErrors, demosBaseURL } from "../../../e2e"
 import { ANIMATION_MS, CONTAINER_ID } from "../ui-constants"
 
 const mainSVGSelector = `#${CONTAINER_ID} > svg`
@@ -18,7 +18,11 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(setupConsoleAfterEach)
 
-test("UI is as expected", async ({ page }) => {
+test("UI is as expected", async ({ page }, workerInfo) => {
+  if (workerInfo.project.name !== ProjectName.DesktopChrome) {
+    return
+  }
+
   // ANIMATION_MS is used for the estimated, real, and text opacity
   await new Promise((resolve) => setTimeout(resolve, ANIMATION_MS * 3.5))
 

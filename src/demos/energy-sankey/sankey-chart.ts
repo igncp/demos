@@ -12,6 +12,11 @@ import $ from "jquery"
 import "jquery-ui/themes/base/all.css"
 
 import * as styles from "./energy-sankey.module.css"
+import {
+  ATTR_SANKEY_LINK,
+  ATTR_SANKEY_NODE,
+  TRANSITION_DURATION,
+} from "./ui-constants"
 
 if (typeof window !== "undefined") {
   require("jquery-ui/ui/widgets/tooltip")
@@ -221,7 +226,7 @@ class SankeyChart<NodeData, LinkData> {
         requestAnimationFrame(() => {
           linkPath
             .transition()
-            .duration(500)
+            .duration(TRANSITION_DURATION)
             .style("opacity", (sankeyLink) =>
               [
                 getNodeId(sankeyLink.source as NodeData),
@@ -256,6 +261,7 @@ class SankeyChart<NodeData, LinkData> {
       .attr("y", (sankeyNode) => sankeyNode.y0!)
       .attr("height", (sankeyNode) => sankeyNode.y1! - sankeyNode.y0!)
       .attr("width", (sankeyNode) => sankeyNode.x1! - sankeyNode.x0!)
+      .attr(ATTR_SANKEY_NODE, true)
       .attr("fill", color)
       .on("mouseenter", function onMouseEnter() {
         lastAnime()
@@ -343,6 +349,7 @@ class SankeyChart<NodeData, LinkData> {
 
         return `url(#${id})`
       })
+      .attr(ATTR_SANKEY_LINK, true)
       .attr("class", styles.chartLink)
       .attr("stroke-width", (sankeyLink) => Math.max(1, sankeyLink.width!))
       .on("click", function onLinkClick() {
@@ -396,6 +403,7 @@ class SankeyChart<NodeData, LinkData> {
       .attr("text-anchor", (sankeyNode) =>
         sankeyNode.x0! < width / 2 ? "start" : "end"
       )
+      .style("pointer-events", "none")
       .text(chartConfig.getNodeText)
   }
 }
