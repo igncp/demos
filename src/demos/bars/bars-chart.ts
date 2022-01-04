@@ -40,6 +40,7 @@ const barHeightFn = (barItem: ChartData) => barItem.metric * barHeight
 type ChartConfig = {
   bars: ChartData[]
   rootElId: string
+  withoutInterval?: boolean
 }
 
 type ChartElements = {
@@ -59,6 +60,7 @@ class BarsChart {
   private readonly bars: ChartData[]
   private readonly elements: ChartElements
   private readonly rootElId: string
+  private readonly withoutInterval: boolean
   private readonly barClassName: string
   private readonly dragModule: DragModule<ChartData>
   private color: ColorFn | null
@@ -68,7 +70,8 @@ class BarsChart {
     interval: null,
   }
 
-  public constructor({ bars, rootElId }: ChartConfig) {
+  public constructor({ bars, rootElId, withoutInterval }: ChartConfig) {
+    this.withoutInterval = withoutInterval ?? false
     this.bars = bars
     this.rootElId = rootElId
     this.barClassName = `bars-${uuidv1().slice(0, 6)}`
@@ -169,7 +172,9 @@ class BarsChart {
       clearInterval(this.state.interval)
     }
 
-    this.state.interval = setInterval(this.getIntervalFn(), 1000)
+    if (!this.withoutInterval) {
+      this.state.interval = setInterval(this.getIntervalFn(), 1000)
+    }
 
     const x = scaleLinear()
       .domain([0.5, bars.length + 0.5])
@@ -249,7 +254,10 @@ class BarsChart {
       .on("mouseleave", () => {
         this.getBarsSelection().style("filter", null)
         this.clearInterval()
-        this.state.interval = setInterval(this.getIntervalFn(), 1000)
+
+        if (!this.withoutInterval) {
+          this.state.interval = setInterval(this.getIntervalFn(), 1000)
+        }
       })
       .attr("title", (bar) => bar.metric)
 

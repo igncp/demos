@@ -19,7 +19,8 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(setupConsoleAfterEach)
 
 test("UI is as expected", async ({ page }) => {
-  await new Promise((resolve) => setTimeout(resolve, ANIMATION_MS))
+  // ANIMATION_MS is used for the estimated, real, and text opacity
+  await new Promise((resolve) => setTimeout(resolve, ANIMATION_MS * 3.5))
 
   expect(await page.locator(mainSVGSelector).screenshot()).toMatchSnapshot(
     "chart.png"

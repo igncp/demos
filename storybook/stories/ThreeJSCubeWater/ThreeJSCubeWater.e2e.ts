@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test"
 
 import {
+  ProjectName,
   checkForConsoleErrors,
   getFrame,
   storybookBaseURL,
@@ -25,7 +26,11 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(setupConsoleAfterEach)
 
-test("The canvas is present", async ({ page }) => {
+test("The canvas is present", async ({ page }, workerInfo) => {
+  if (workerInfo.project.name !== ProjectName.DesktopChrome) {
+    return
+  }
+
   const frame = await getFrame(page)
 
   await expect(frame.locator(exampleSelector)).toHaveCount(1)

@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test"
 
+import { ProjectName } from "../../../src/e2e"
 import {
   checkForConsoleErrors,
   getFrame,
@@ -36,7 +37,11 @@ test("The initial UI is as expected", async ({ page }) => {
 
 test("The circle changes color when the rectangle is hovered", async ({
   page,
-}) => {
+}, workerInfo) => {
+  if (workerInfo.project.name !== ProjectName.DesktopChrome) {
+    return
+  }
+
   const frame = await getFrame(page)
 
   const getCircleColor = () =>

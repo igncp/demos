@@ -2,6 +2,11 @@ import { Page } from "@playwright/test"
 
 import { BACK_HOME_ATTR } from "./ui-constants"
 
+enum ProjectName {
+  DesktopChrome = "desktop-chrome",
+  MobileChrome = "mobile-chrome",
+}
+
 const demosBaseURL = (() => {
   if (process.env.CI) {
     return "http://localhost:9000/demos"
@@ -48,11 +53,12 @@ const getIsInHomePage = (page: Page) =>
   [demosBaseURL, `${demosBaseURL}/`].includes(page.url())
 
 export {
+  ProjectName,
   QUnitHeaderLinkSelector,
+  backButtonWrapperSelector,
   checkForConsoleErrors,
   demosBaseURL,
   getIsInHomePage,
   homeDemoSelector,
-  backButtonWrapperSelector,
   jQueryUITooltipSelector,
 }

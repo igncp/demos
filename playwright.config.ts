@@ -1,12 +1,18 @@
 import { PlaywrightTestConfig, devices } from "@playwright/test"
 
+import { ProjectName } from "./src/e2e"
+
 const config: PlaywrightTestConfig = {
   forbidOnly: !!process.env.CI,
   globalTimeout: 5 * 60 * 1000,
   projects: [
     {
-      name: "chromium",
+      name: ProjectName.DesktopChrome,
       use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: ProjectName.MobileChrome,
+      use: { ...devices["Pixel 5"] },
     },
   ],
   retries: process.env.CI ? 2 : 0,

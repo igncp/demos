@@ -13,7 +13,6 @@ const { setupConsoleAfterEach, setupConsoleBeforeEach } =
 
 const exampleSelector = `#${ROOT_ID} > canvas`
 
-// eslint-disable-next-line max-params
 test.beforeEach(async ({ page }, testInfo) => {
   setupConsoleBeforeEach(page)
 

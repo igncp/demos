@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test"
 
 import {
+  ProjectName,
   QUnitHeaderLinkSelector,
   backButtonWrapperSelector,
   demosBaseURL,
@@ -31,10 +32,16 @@ test.describe("Home page", () => {
 
     expect(await page.screenshot()).toMatchSnapshot("landing.png")
   })
+})
 
+test.describe("Generic demo page", () => {
   test("Goes to the home page when clicking on the Home button inside the demo", async ({
     page,
-  }) => {
+  }, workerInfo) => {
+    if (workerInfo.project.name !== ProjectName.DesktopChrome) {
+      return
+    }
+
     await page.goto(demosBaseURL)
 
     await page.waitForSelector(homeDemoSelector)
@@ -46,6 +53,23 @@ test.describe("Home page", () => {
     await page.click(`${backButtonWrapperSelector} >> a`)
 
     expect(getIsInHomePage(page)).toEqual(true)
+  })
+
+  test("It hides the code in mobile but not in desktop", async ({
+    page,
+  }, workerInfo) => {
+    await page.goto(demosBaseURL)
+
+    await page.waitForSelector(homeDemoSelector)
+    await page.click(homeDemoSelector)
+
+    const locatorResult = page.locator("text=Show Code")
+
+    if (workerInfo.project.name === ProjectName.DesktopChrome) {
+      await expect(locatorResult).toHaveCount(0)
+    } else if (workerInfo.project.name === ProjectName.MobileChrome) {
+      await expect(locatorResult).not.toHaveCount(0)
+    }
   })
 })
 

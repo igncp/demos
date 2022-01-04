@@ -15,6 +15,7 @@ const createChartConfig = ({ bars }: { bars: BarData[] }): ChartConfig => ({
     metric,
   })),
   rootElId: CONTAINER_ID,
+  withoutInterval: (window.location.search || "").includes("interval=false"),
 })
 
 export { createChartConfig, fetchData }

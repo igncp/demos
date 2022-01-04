@@ -99,6 +99,12 @@ module.exports = {
       },
     },
     {
+      files: ["**/tests/**/*.e2e.ts", "storybook/stories/**/*.e2e.ts"],
+      rules: {
+        "max-params": 0,
+      },
+    },
+    {
       files: ["research/**/*.js"],
       rules: {
         "no-console": 0,

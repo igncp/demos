@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test"
 
 import {
+  ProjectName,
   checkForConsoleErrors,
   getFrame,
   storybookBaseURL,
@@ -14,11 +15,14 @@ const { setupConsoleAfterEach, setupConsoleBeforeEach } =
 const exampleSelector = `#${ROOT_ID} > canvas`
 const timeout = 2 * 60 * 1000
 
-// eslint-disable-next-line max-params
-test.beforeEach(async ({ page }, testInfo) => {
+test.beforeEach(async ({ page }, workerInfo) => {
+  if (workerInfo.project.name !== ProjectName.DesktopChrome) {
+    return
+  }
+
   setupConsoleBeforeEach(page)
 
-  test.setTimeout(testInfo.timeout + timeout)
+  test.setTimeout(workerInfo.timeout + timeout)
 
   await page.goto(
     `${storybookBaseURL}?path=/story/threejs-buffergeometry-instancing--common`
@@ -31,7 +35,11 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 test.afterEach(setupConsoleAfterEach)
 
-test("The canvas is present", async ({ page }) => {
+test("The canvas is present", async ({ page }, workerInfo) => {
+  if (workerInfo.project.name !== ProjectName.DesktopChrome) {
+    return
+  }
+
   const frame = await getFrame(page)
 
   await expect(frame.locator(exampleSelector)).toHaveCount(1, {

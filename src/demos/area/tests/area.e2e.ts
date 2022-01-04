@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test"
 
-import { demosBaseURL, jQueryUITooltipSelector } from "../../../e2e"
+import {
+  ProjectName,
+  demosBaseURL,
+  jQueryUITooltipSelector,
+} from "../../../e2e"
 import {
   CONTAINER_ID,
   HAS_VORONOI_ATTR,
@@ -44,7 +48,13 @@ test("It can toggle the display of voronoi lines on button click", async ({
   await expect(page.locator(selectorHasVoronoiTrue)).toHaveCount(0)
 })
 
-test("Displays the expected tooltip when overing a path", async ({ page }) => {
+test("Displays the expected tooltip when hovering a path", async ({
+  page,
+}, workerInfo) => {
+  if (workerInfo.project.name !== ProjectName.DesktopChrome) {
+    return
+  }
+
   await expect(page.locator(jQueryUITooltipSelector)).toHaveCount(0)
 
   await page.hover(`${mainSVGSelector} >> [${VORONOI_ITEM}="1"]`)

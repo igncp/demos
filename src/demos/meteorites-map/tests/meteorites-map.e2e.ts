@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-import { checkForConsoleErrors, demosBaseURL } from "../../../e2e"
+import { ProjectName, checkForConsoleErrors, demosBaseURL } from "../../../e2e"
 import { CONTAINER_ID } from "../ui-constants"
 
 const mainSVGSelector = `#${CONTAINER_ID} > svg`
@@ -18,7 +18,11 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(setupConsoleAfterEach)
 
-test("UI is as expected", async ({ page }) => {
+test("UI is as expected", async ({ page }, workerInfo) => {
+  if (workerInfo.project.name !== ProjectName.DesktopChrome) {
+    return
+  }
+
   expect(await page.locator(mainSVGSelector).screenshot()).toMatchSnapshot(
     "chart.png"
   )
