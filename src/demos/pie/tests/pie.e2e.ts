@@ -60,3 +60,41 @@ test("One slice change when pressing the button", async ({ page }) => {
 
   expect(getDiffSlices(secondSlices, await getSlices()).length).toEqual(1)
 })
+
+test("It updates the translate when the viewport is resized", async ({
+  page,
+}) => {
+  const getTranslate = () =>
+    page.evaluate(
+      ([selector]) => {
+        const translate = document
+          .querySelector(selector)!
+          .querySelector("g")!
+          .getAttribute("transform")!
+
+        return /translate\(([0-9.]+),.?([0-9.]+)\)/
+          .exec(translate)!
+          .slice(1)
+          .map(Number)
+      },
+      [mainSVGSelector]
+    )
+
+  const initialTranslate = await getTranslate()
+
+  expect(initialTranslate.every((translateItem) => translateItem > 0)).toEqual(
+    true
+  )
+
+  await page.setViewportSize({
+    height: 2000,
+    width: 2000,
+  })
+
+  expect(
+    (await getTranslate()).every(
+      (...[translateItem, translateIndex]) =>
+        translateItem > initialTranslate[translateIndex]
+    )
+  ).not.toEqual(initialTranslate)
+})

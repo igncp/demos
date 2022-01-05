@@ -3,8 +3,12 @@ import { PlaywrightTestConfig, devices } from "@playwright/test"
 import { ProjectName } from "./src/e2e"
 
 const config: PlaywrightTestConfig = {
+  expect: {
+    // https://github.com/mapbox/pixelmatch#api
+    toMatchSnapshot: { threshold: 0.3 },
+  },
   forbidOnly: !!process.env.CI,
-  globalTimeout: 5 * 60 * 1000,
+  globalTimeout: 10 * 60 * 1000,
   projects: [
     {
       name: ProjectName.DesktopChrome,

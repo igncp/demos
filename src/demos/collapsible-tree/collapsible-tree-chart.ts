@@ -12,6 +12,7 @@ import {
 import { UILink } from "./collapsible-tree-chart-ui-link"
 import { UINode } from "./collapsible-tree-chart-ui-node"
 import * as styles from "./collapsible-tree.module.css"
+import { OPEN_CLOSE_ANIMATION_MS } from "./ui-constants"
 
 const inlineStyles = {
   linkDefaultColor: "#555",
@@ -83,7 +84,6 @@ const margin = {
   top: 20,
 }
 
-const openCloseAnimationDuration = 750
 const height = 800 - margin.top - margin.bottom
 
 const getChartNode = <BaseData>(
@@ -193,7 +193,7 @@ const renderChart = <BaseData>(chartConfig: ChartConfig<BaseData>) => {
     }),
     getPosition: (node: TreeNode) => ({ x: node.x, y: node.y }),
     linkDefaultColor: inlineStyles.linkDefaultColor,
-    openCloseAnimationDuration,
+    openCloseAnimationDuration: OPEN_CLOSE_ANIMATION_MS,
   }
 
   const uiLink = new UILink<SVGGElement, TreeLink, TreeNode>(commonUIOpts)

@@ -3,6 +3,7 @@ import { BaseType, Selection, select } from "d3"
 
 import { CommonUIProps } from "./collapsible-tree-chart-ui-common"
 import { UISmallButton } from "./collapsible-tree-chart-ui-small-button"
+import { NODE_CIRCLE_CLASS } from "./ui-constants"
 
 type UINodeOpts<Container extends BaseType, Datum> = CommonUIProps<
   Container,
@@ -18,7 +19,6 @@ type UINodeOpts<Container extends BaseType, Datum> = CommonUIProps<
     hasDescendants: (node: Datum) => boolean
   }>
 
-const nodeCircleClass = "node-circle"
 const nodeLabelClass = "node-label"
 
 /**
@@ -117,7 +117,7 @@ export class UINode<Container extends BaseType, Datum> {
     nodeEnter
       .append("circle")
       .attr("r", 10)
-      .attr("class", nodeCircleClass)
+      .attr("class", NODE_CIRCLE_CLASS)
       .attr("stroke-width", 10)
 
     const textDX = 10
@@ -246,7 +246,7 @@ export class UINode<Container extends BaseType, Datum> {
       )
 
       nodeGroup
-        .selectAll<SVGCircleElement, Datum>(`.${nodeCircleClass}`)
+        .selectAll<SVGCircleElement, Datum>(`.${NODE_CIRCLE_CLASS}`)
         .attr("fill", circleDefaultFill)
 
       nodeGroup

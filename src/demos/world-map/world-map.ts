@@ -17,9 +17,12 @@ import {
 } from "d3"
 import { feature } from "topojson-client"
 
-import { CONTAINER_ID } from "./ui-constants"
-
-const UPDATE_BUTTON_ID = "update-colors"
+import {
+  COLOR_FNS_NUM,
+  CONTAINER_ID,
+  COUNTRY_CLASS,
+  UPDATE_BUTTON_ID,
+} from "./ui-constants"
 
 type CountryData = GeoPermissibleObjects & {
   id: number
@@ -131,6 +134,10 @@ const colorFns = [
   interpolateViridis,
   interpolateTurbo,
 ]
+
+if (colorFns.length !== COLOR_FNS_NUM) {
+  throw new Error(`Expected ${COLOR_FNS_NUM} color functions`)
+}
 
 class WorldMap {
   private readonly config: ChartConfig
@@ -279,7 +286,7 @@ class WorldMap {
     countriesUpdateSel
       .enter()
       .append("path")
-      .attr("class", (countryData: CountryData) => `country ${countryData.id}`)
+      .attr("class", COUNTRY_CLASS)
       .style("stroke", "#fff")
       .style("stroke-width", countriesStrokeWidth)
       .attr("filter", "url(#drop-shadow)")
@@ -304,7 +311,7 @@ class WorldMap {
 
   private getCountriesSel() {
     return this.elements.contentSel.selectAll<SVGPathElement, CountryData>(
-      ".country"
+      `.${COUNTRY_CLASS}`
     )
   }
 
