@@ -633,77 +633,77 @@
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 31,
+      "line": 34,
       "character": 5,
       "text": "WorldData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 35,
+      "line": 38,
       "character": 2,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 35,
+      "line": 38,
       "character": 9,
       "text": "WorldData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 48,
+      "line": 51,
       "character": 14,
       "text": "featureData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 223,
+      "line": 230,
       "character": 16,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 239,
+      "line": 246,
       "character": 22,
       "text": "featuresData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 241,
+      "line": 248,
       "character": 6,
       "text": "world",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 241,
+      "line": 248,
       "character": 12,
       "text": "objects",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 241,
+      "line": 248,
       "character": 20,
       "text": "countries",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 250,
+      "line": 257,
       "character": 18,
       "text": "featuresData",
       "kind": 1
     },
     {
       "file": "src/demos/world-map/world-map.ts",
-      "line": 250,
+      "line": 257,
       "character": 31,
       "text": "length",
       "kind": 1
@@ -1346,8 +1346,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.47226650541477,
-  "total": 36382,
-  "covered": 36190,
+  "percentage": 99.48011155939454,
+  "total": 36931,
+  "covered": 36739,
   "uncovered": 192
 }
