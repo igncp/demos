@@ -40,4 +40,9 @@
   position: absolute;
   right: 30px;
   top: 20px;
+
+  input {
+    cursor: pointer;
+    margin-right: 5px;
+  }
 }

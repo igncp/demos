@@ -5,6 +5,7 @@ import { DemoPageProps } from "@/common"
 import Demo from "@/components/demo"
 
 import main, { CONTAINER_ID } from "@/demos/area/area"
+import * as styles from "@/demos/area/area-page.module.css"
 import {
   TOGGLE_BUTTON_ID,
   UPDATE_BUTTON_ID,
@@ -12,16 +13,11 @@ import {
 
 const Area = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
-    <form style={{ marginBottom: 20 }}>
+    <form className={styles.form}>
       <button className="btn btn-info" id={TOGGLE_BUTTON_ID} type="button">
         Toggle Voronoi
       </button>
-      <button
-        className="btn btn-success"
-        id={UPDATE_BUTTON_ID}
-        style={{ marginLeft: 20 }}
-        type="button"
-      >
+      <button className="btn btn-success" id={UPDATE_BUTTON_ID} type="button">
         Update Random Values
       </button>
     </form>

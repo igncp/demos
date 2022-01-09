@@ -1,7 +1,7 @@
 import $ from "jquery"
 import "jquery-ui/themes/base/all.css"
 
-import { Redraw } from "./crossing-lines-chart"
+import { TimeRange } from "./crossing-lines-chart"
 import { MareysSchedules } from "./mareys-schedule-data-model"
 
 if (typeof window !== "undefined") {
@@ -55,7 +55,7 @@ const convertLimitsToTimes = (limits: ScheduleLimits): [string, string] => {
   return times as [string, string]
 }
 
-const setupControls = (updateScheduleLimits: Redraw) => {
+const setupControls = (updateScheduleLimits: (limits: TimeRange) => void) => {
   const slider = $(`#${RANGE_ID}`)
 
   slider.slider({

@@ -1,0 +1,9 @@
+div.slider {
+  cursor: pointer;
+  margin-bottom: 30px;
+
+  /* stylelint-disable-next-line selector-class-pattern */
+  :global .ui-widget-header {
+    background: #c4dcf9;
+  }
+}

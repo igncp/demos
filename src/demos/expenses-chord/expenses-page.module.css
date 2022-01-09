@@ -1,0 +1,37 @@
+$rowSeparator: 20px;
+$labelSeparator: 10px;
+
+.label {
+  margin-right: $labelSeparator;
+}
+
+.selectRow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $rowSeparator 40px;
+  margin-bottom: $rowSeparator;
+
+  input,
+  select {
+    cursor: pointer;
+  }
+
+  select {
+    display: inline-block;
+    width: auto;
+  }
+}
+
+.sliderRow {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: $rowSeparator;
+}
+
+div.sliderTime {
+  background: #c4dcf9;
+  cursor: pointer;
+  flex: 1;
+  margin-top: 5px;
+}
