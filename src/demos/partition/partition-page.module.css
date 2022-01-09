@@ -1,3 +1,15 @@
+.colorSelect {
+  cursor: pointer;
+  display: inline-block;
+  width: auto;
+}
+
+.form {
+  margin-bottom: 30px;
+  text-align: center;
+  width: 100%;
+}
+
 .label {
   cursor: pointer;
 }

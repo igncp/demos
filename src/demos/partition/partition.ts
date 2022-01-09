@@ -1,42 +1,27 @@
 import { PartitionChart } from "./partition-chart"
-import {
-  PartitionType,
-  fetchData,
-  getChartConfig,
-} from "./partition-chart-config"
-import { CONTAINER_ID, TYPE_FORM } from "./ui-constants"
+import { fetchData, getChartConfig } from "./partition-chart-config"
+import { setupControls } from "./partition-controls"
+import { COLOR_METHOD, CONTAINER_ID, TYPE_FORM } from "./ui-constants"
 
 const main = async () => {
+  const { formState, onStateChangeHandler } = setupControls()
+
   const rootData = await fetchData()
 
-  const formEl = document.getElementById(TYPE_FORM) as HTMLFormElement
-
-  const getCurrentSelectedRadio = (): PartitionType => {
-    const selectedRadio = Array.from(
-      formEl.elements as unknown as HTMLInputElement[]
-    ).find((formElement: HTMLInputElement) => formElement.checked)
-
-    return selectedRadio!.value as PartitionType
-  }
-
-  const partitionType = getCurrentSelectedRadio()
-
   const chartConfig = getChartConfig({
-    partitionType,
     rootData,
+    state: formState,
   })
 
   const chart = new PartitionChart(chartConfig)
 
   chart.render()
 
-  formEl.addEventListener("change", () => {
-    const newPartitionType = getCurrentSelectedRadio()
-
-    chart.updatePartition(newPartitionType)
+  onStateChangeHandler(() => {
+    chart.update()
   })
 }
 
-export { CONTAINER_ID, TYPE_FORM }
+export { CONTAINER_ID, TYPE_FORM, COLOR_METHOD }
 
 export default main

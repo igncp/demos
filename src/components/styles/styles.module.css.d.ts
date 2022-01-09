@@ -3,6 +3,7 @@ declare const styles: {
   readonly "bullet": string
   readonly "codeFragment": string
   readonly "codeFragmentButton": string
+  readonly "contentWrapper": string
   readonly "d3js": string
   readonly "dataList": string
   readonly "demoName": string
@@ -13,12 +14,14 @@ declare const styles: {
   readonly "divisor": string
   readonly "fileNameWrapper": string
   readonly "footer": string
+  readonly "footerWrapper": string
   readonly "ghButtons": string
   readonly "highlightStorybook": string
   readonly "highlightTesting": string
   readonly "homeDemoNameLink": string
   readonly "homeDemoNumber": string
   readonly "mainSource": string
+  readonly "navWrapper": string
   readonly "notes": string
   readonly "pageHeader": string
   readonly "raphael": string

@@ -4,12 +4,21 @@ import { DemoPageProps } from "@/common"
 
 import Demo from "@/components/demo"
 
-import main, { CONTAINER_ID, TYPE_FORM } from "@/demos/partition/partition"
+import main, {
+  COLOR_METHOD,
+  CONTAINER_ID,
+  TYPE_FORM,
+} from "@/demos/partition/partition"
 import * as styles from "@/demos/partition/partition-page.module.css"
 
 const Partition = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
-    <form id={TYPE_FORM} style={{ marginBottom: 20 }}>
+    <form className={styles.form} id={TYPE_FORM}>
+      <span>Color Method: </span>
+      <select
+        className={`form-select ${styles.colorSelect}`}
+        id={COLOR_METHOD}
+      />
       <label className={styles.label}>
         <input
           className="form-check-inpu"

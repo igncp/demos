@@ -10,15 +10,15 @@ type Props = {
 }
 
 const Layout = ({ children }: Props) => (
-  <>
-    <div className={styles.rootLayout}>
-      <div className="px-3 px-sm-5">
-        <PageTitle />
-        {children}
-      </div>
+  <div className={`${styles.rootLayout} px-3 px-sm-5`}>
+    <div className={styles.navWrapper}>
+      <PageTitle />
     </div>
-    <Footer />
-  </>
+    <div className={styles.contentWrapper}>{children}</div>
+    <div className={styles.footerWrapper}>
+      <Footer />
+    </div>
+  </div>
 )
 
 export default Layout

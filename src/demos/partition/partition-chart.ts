@@ -1,6 +1,7 @@
 import {
   D3DragEvent,
   HierarchyRectangularNode,
+  ScaleOrdinal,
   Selection,
   arc as arcD3,
   drag as dragD3,
@@ -9,6 +10,7 @@ import {
   interpolate,
   partition as partitionD3,
   scaleOrdinal,
+  schemePastel1,
   schemePastel2,
   select,
 } from "d3"
@@ -28,13 +30,8 @@ type Node<NodeData> = NodeData & {
 
 type HierarchyNode<ChartData> = HierarchyRectangularNode<Node<ChartData>>
 
-enum PartitionType {
-  Count = "count",
-  Size = "size",
-}
-
 const height = 700
-const overColor = "#de7c03"
+const hoverColor = "#de7c03"
 const easeFn = easeExpInOut
 
 const extractTweenObj = <ChartData>(node?: HierarchyNode<ChartData>) => ({
@@ -45,17 +42,19 @@ const extractTweenObj = <ChartData>(node?: HierarchyNode<ChartData>) => ({
   y1: node?.y1 ?? 0,
 })
 
-// @TODO: decouple the node size which is an arbitrary property
-
 type ChartConfig<ChartData> = {
+  getColorOptions: (opts: {
+    depths: number[]
+    nodes: Array<Node<ChartData>>
+  }) => number[]
+  getHierarchySum: (node: Node<ChartData>) => number
+  getNodeColorOption: (opts: { depth: number; node: Node<ChartData> }) => number
   getNodeId: (node: Node<ChartData>) => number
   getNodeLabel: (node: Node<ChartData>) => string
-  getNodeSize: (node: Node<ChartData>) => number | undefined
   getNodeTitle: (options: {
     nodeData: Node<ChartData>
     valueNum?: number
   }) => string
-  partitionType: PartitionType
   rootData: Node<ChartData>
   rootElId: string
 }
@@ -114,7 +113,7 @@ type ChartElements = {
 class PartitionChart<ChartData> {
   private readonly config: ChartConfig<ChartData>
   private readonly elements: ChartElements
-  private readonly color: (node: HierarchyNode<ChartData>) => string
+  private readonly colorScale: ScaleOrdinal<number, string>
   private readonly selectors: {
     path: string
     text: string
@@ -124,14 +123,13 @@ class PartitionChart<ChartData> {
     descendants: Array<HierarchyNode<ChartData>>
     drag: { x: number; y: number }
     isClearingSelection: boolean
-    partitionType: PartitionType
     rootNode: Node<ChartData> | null
   }
 
   public constructor(config: ChartConfig<ChartData>) {
     this.config = config
 
-    const { getNodeId, partitionType, rootElId } = config
+    const { rootElId } = config
 
     const svg = select(`#${rootElId}`).append("svg").text("")
     const svgDrag = svg.append("g")
@@ -141,7 +139,6 @@ class PartitionChart<ChartData> {
       descendants: [],
       drag: { x: 0, y: 0 },
       isClearingSelection: false,
-      partitionType,
       rootNode: null,
     }
 
@@ -150,33 +147,11 @@ class PartitionChart<ChartData> {
       text: `text-${uuid().slice(0, 6)}`,
     }
 
-    const allIds = new Set<number>()
-
-    const recursiveFn = (node: Node<ChartData>) => {
-      allIds.add(config.getNodeId(node))
-
-      if (node.children) {
-        node.children.forEach(recursiveFn)
-      }
-    }
-
-    recursiveFn(config.rootData)
-
-    const colorScale = scaleOrdinal<number, string>(schemePastel2).domain(
-      Array.from(allIds)
-    )
-
-    this.color = (node: HierarchyNode<ChartData>) => {
-      if (node.children) {
-        return colorScale(getNodeId(node.data))
-      }
-
-      return node.parent
-        ? colorScale(getNodeId(node.parent.data))
-        : colorScale(0)
-    }
-
     this.state.descendants = this.getDataHierarchy()
+
+    this.colorScale = scaleOrdinal<number, string>(
+      schemePastel1.concat(schemePastel2)
+    )
 
     this.elements = {
       svg,
@@ -189,9 +164,7 @@ class PartitionChart<ChartData> {
     window.addEventListener("resize", this.handleResize)
   }
 
-  public updatePartition(newPartitionType: PartitionType) {
-    this.state.partitionType = newPartitionType
-
+  public update() {
     this.state.descendants = this.getDataHierarchy()
 
     this.renderDescendants()
@@ -228,8 +201,8 @@ class PartitionChart<ChartData> {
 
   private getDataHierarchy() {
     const {
-      config: { getNodeSize, rootData },
-      state: { partitionType, rootNode },
+      config: { getHierarchySum, rootData },
+      state: { rootNode },
     } = this
     const { radius } = this.getDimensions()
 
@@ -244,16 +217,9 @@ class PartitionChart<ChartData> {
       ? cloneRecursive(rootNode)
       : cloneRecursive(rootData)
 
-    const getDataHierarchySize = () =>
-      hierarchy(newNode).sum((node: Node<ChartData>) => getNodeSize(node) ?? 0)
-    const getDataHierarchyCount = () => hierarchy(newNode).sum(() => 1)
     const partition = partitionD3<Node<ChartData>>().size([2 * Math.PI, radius])
-
-    const hierarchyResult = partition(
-      partitionType === "size"
-        ? getDataHierarchySize()
-        : getDataHierarchyCount()
-    )
+    const newHierarchy = hierarchy(newNode).sum(getHierarchySum)
+    const hierarchyResult = partition(newHierarchy)
 
     return hierarchyResult.descendants()
   }
@@ -287,11 +253,24 @@ class PartitionChart<ChartData> {
   private renderDescendants() {
     const {
       color,
-      config: { getNodeId, getNodeLabel, getNodeTitle },
+      config: { getColorOptions, getNodeId, getNodeLabel, getNodeTitle },
       elements: { svgG },
       selectors,
       state: { descendants: usedDescendants },
     } = this
+
+    const depths = new Set<number>()
+
+    this.state.descendants.forEach((node) => {
+      depths.add(node.depth)
+    })
+
+    this.colorScale.domain(
+      getColorOptions({
+        depths: Array.from(depths),
+        nodes: this.state.descendants.map((node) => node.data),
+      })
+    )
 
     const arc = arcD3<HierarchyNode<ChartData>>()
       .startAngle((node) => node.x0)
@@ -468,7 +447,7 @@ class PartitionChart<ChartData> {
         const nodeIndex = select(this).attr("data-index")
 
         if (getShouldHighlightNode(node)) {
-          select(`path[data-index="${nodeIndex}"]`).style("fill", overColor)
+          select(`path[data-index="${nodeIndex}"]`).style("fill", hoverColor)
           select(`text[data-index="${nodeIndex}"]`).style("fill", "white")
         }
       })
@@ -514,9 +493,23 @@ class PartitionChart<ChartData> {
     })
   }
 
+  private readonly color = (node: HierarchyNode<ChartData>) => {
+    const {
+      colorScale,
+      config: { getNodeColorOption },
+    } = this
+
+    const nodeOption = getNodeColorOption({
+      depth: node.depth,
+      node: node.data,
+    })
+
+    return colorScale(nodeOption)
+  }
+
   private readonly handleResize = () => {
     this.render()
   }
 }
 
-export { PartitionChart, PartitionType, Node, ChartConfig }
+export { ChartConfig, Node, PartitionChart }

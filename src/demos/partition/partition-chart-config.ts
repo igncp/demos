@@ -1,6 +1,7 @@
 import { json } from "d3"
 
-import { ChartConfig, Node, PartitionType } from "./partition-chart"
+import { ChartConfig, Node } from "./partition-chart"
+import { ColorMethod, FormState, PartitionType } from "./partition-controls"
 import { CONTAINER_ID } from "./ui-constants"
 
 type DataBase = {
@@ -44,7 +45,6 @@ const fetchData = async (): Promise<DataNode> => {
 
 type Config = ChartConfig<DataNode>
 
-const getNodeSize: Config["getNodeSize"] = (node) => node.size
 const getNodeLabel: Config["getNodeLabel"] = (node) => node.name
 const getNodeTitle: Config["getNodeTitle"] = ({ nodeData, valueNum }) =>
   `Name: "${nodeData.name}"\nSize: ${
@@ -57,19 +57,45 @@ const getNodeTitle: Config["getNodeTitle"] = ({ nodeData, valueNum }) =>
 const getNodeId: Config["getNodeId"] = (node) => node.id
 
 const getChartConfig = ({
-  partitionType,
   rootData,
+  state,
 }: {
-  partitionType: PartitionType
   rootData: DataNode
-}) => ({
-  getNodeId,
-  getNodeLabel,
-  getNodeSize,
-  getNodeTitle,
-  partitionType,
-  rootData,
-  rootElId: CONTAINER_ID,
-})
+  state: FormState
+}): Config => {
+  const allIds = new Set<number>()
 
-export { fetchData, getChartConfig, PartitionType }
+  const getIdsRecursive = (node: DataNode) => {
+    const { id } = node
+
+    allIds.add(id)
+
+    if ("children" in node) {
+      node.children?.forEach(getIdsRecursive)
+    }
+  }
+
+  getIdsRecursive(rootData)
+
+  const getHierarchySum: Config["getHierarchySum"] = (node) =>
+    state.partitionType === PartitionType.count ? 1 : node.size ?? 0
+
+  const getColorOptions: Config["getColorOptions"] = ({ depths }) =>
+    state.colorMethod === ColorMethod.depth ? depths : Array.from(allIds)
+
+  const getNodeColorOption: Config["getNodeColorOption"] = ({ depth, node }) =>
+    state.colorMethod === ColorMethod.depth ? depth : node.id
+
+  return {
+    getColorOptions,
+    getHierarchySum,
+    getNodeColorOption,
+    getNodeId,
+    getNodeLabel,
+    getNodeTitle,
+    rootData,
+    rootElId: CONTAINER_ID,
+  }
+}
+
+export { fetchData, getChartConfig }

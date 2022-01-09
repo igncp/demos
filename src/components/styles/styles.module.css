@@ -1,9 +1,10 @@
 @import "./mixin.css";
 
-/* Bootstrap v5 override */
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-size: 0.9em !important;
+  font-size: 0.9em !important; /* Bootstrap v5 override */
+  margin: 0;
+  min-height: 100vh;
 }
 
 .backHome {
@@ -53,6 +54,10 @@ body {
   }
 }
 
+.contentWrapper {
+  grid-area: main;
+}
+
 .demoName {
   font-size: 30px;
 
@@ -73,7 +78,12 @@ body {
 }
 
 .footer p {
-  margin-top: 40px;
+  margin: 30px 0;
+  text-align: center;
+}
+
+.footerWrapper {
+  grid-area: footer;
 }
 
 .homeDemoNumber,
@@ -85,6 +95,10 @@ body {
   font-weight: bold;
 }
 
+.navWrapper {
+  grid-area: nav;
+}
+
 .notes {
   margin-bottom: 30px;
   margin-top: 30px;
@@ -92,6 +106,18 @@ body {
 
 /* Bootstrap v5 override */
 .rootLayout {
+  display: grid;
+  grid-gap: 10px;
+
+  /* @TODO */
+
+  /* stylelint-disable declaration-block-no-redundant-longhand-properties */
+  grid-template-areas: "nav" "main" "footer";
+  grid-template-columns: 100%;
+  grid-template-rows: auto 1fr auto;
+  /* stylelint-enable declaration-block-no-redundant-longhand-properties */
+  min-height: 100vh;
+
   a {
     text-decoration: none;
 
@@ -115,8 +141,7 @@ body {
 .pageHeader {
   border-bottom: 1px solid #eee;
   font-family: Lobster, cursive;
-  margin: 40px 0 20px;
-  padding-bottom: 9px;
+  padding: 40px 0 20px;
 
   /* stylelint-disable-next-line no-descending-specificity */
   a {
