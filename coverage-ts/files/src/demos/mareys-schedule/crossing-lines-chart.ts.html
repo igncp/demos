@@ -11,10 +11,12 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/crossing-lines-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">434</td><td class="">434</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/mareys-schedule/crossing-lines-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">636</td><td class="">636</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  D3DragEvent,
   Selection,
   axisBottom,
   axisTop,
+  drag as dragD3,
   extent,
   line as lineD3,
   scaleLinear,
@@ -26,12 +28,11 @@ import &quot;jquery-ui/themes/base/all.css&quot;
 import { v1 as uuid } from &quot;uuid&quot;
 
 import * as styles from &quot;./crossing-lines-chart.module.css&quot;
+import { MIN_WIDTH } from &quot;./ui-constants&quot;
 
 if (typeof window !== &quot;undefined&quot;) {
   require(&quot;jquery-ui/ui/widgets/tooltip&quot;)
 }
-
-// @TODO make it more generic to allow other y type in addition to Date
 
 type HorizontalMarker = {
   key: string
@@ -61,7 +62,7 @@ type CrossingLines = {
   lines: Line[]
 }
 
-type Redraw = (range: [Date, Date]) =&gt; void
+type TimeRange = [Date, Date]
 
 const lineStyleToClassName: { [key in LineStyle]: string } = {
   [LineStyle.Red]: styles.redLine,
@@ -128,59 +129,138 @@ type ChartConfig = {
   rootElId: string
 }
 
-const renderChart = (chartConfig: ChartConfig) =&gt; {
-  const { crossingLinesData, rootElId } = chartConfig
-  const { horizontalMarkers, lines } = crossingLinesData
-  const rootEl = document.getElementById(rootElId) as HTMLElement
+type ChartElements = {
+  chartTitle: Selection&lt;SVGTextElement, unknown, HTMLElement, unknown&gt;
+  clipPath: Selection&lt;SVGRectElement, unknown, HTMLElement, unknown&gt;
+  horizongalAxis: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  linesWrapper: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+  svgDrag: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  svgG: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  xAxisBottom: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  xAxisTop: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+}
 
-  rootEl.classList.add(styles.mareysScheduleChart)
+class CrossingLinesChart {
+  private readonly elements: ChartElements
+  private readonly config: ChartConfig
+  private readonly selectors: {
+    clipId: string
+    filterId: string
+    linePathClass: string
+    pointCircleClass: string
+  }
 
-  const width =
-    rootEl.getBoundingClientRect().width - margin.left - margin.right
+  private dragX: number
 
-  const linePathClass = `line-${uuid().slice(0, 6)}`
-  const pointCircleClass = `point-${uuid().slice(0, 6)}`
-  const filterId = `lines-${uuid().slice(0, 6)}`
-  const clipId = `clip-${uuid().slice(0, 6)}`
+  private latesTimeRange: TimeRange
 
-  const redraw: Redraw = ([timeStart, timeEnd]) =&gt; {
-    const x = scaleTime().domain([timeStart, timeEnd]).range([0, width])
-    const y = scaleLinear().range([0, height])
-    const xAxisTop = axisTop&lt;Date&gt;(x)
-      .ticks(8)
-      .tickFormat(chartConfig.getXAxisLabel)
-    const xAxisBottom = axisBottom&lt;Date&gt;(x)
-      .ticks(8)
-      .tickFormat(chartConfig.getXAxisLabel)
+  public constructor(chartConfig: ChartConfig) {
+    this.config = chartConfig
 
-    const svg = select(`#${rootElId}`)
-      .text(&quot;&quot;)
-      .append(&quot;svg&quot;)
-      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
-      .attr(&quot;width&quot;, width + margin.left + margin.right)
+    const { rootElId } = chartConfig
+    const rootEl = document.getElementById(rootElId) as HTMLElement
+
+    rootEl.classList.add(styles.mareysScheduleChart)
+
+    this.selectors = {
+      clipId: `clip-${uuid().slice(0, 6)}`,
+      filterId: `lines-${uuid().slice(0, 6)}`,
+      linePathClass: `line-${uuid().slice(0, 6)}`,
+      pointCircleClass: `point-${uuid().slice(0, 6)}`,
+    }
+
+    const svg = select(`#${rootElId}`).append(&quot;svg&quot;)
+    const svgDrag = svg.append(&quot;g&quot;)
+    const svgG = svgDrag.append(&quot;g&quot;)
+    const chartTitle = svgG.append(&quot;text&quot;)
+    const clipPath = svgG
+      .append(&quot;defs&quot;)
+      .append(&quot;clipPath&quot;)
+      .attr(&quot;id&quot;, this.selectors.clipId)
+      .append(&quot;rect&quot;)
+    const horizongalAxis = svgG
       .append(&quot;g&quot;)
-      .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
-
-    svg
-      .append(&quot;text&quot;)
-      .attr(&quot;class&quot;, styles.chartTitle)
-      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-      .attr(&quot;transform&quot;, `translate(${width / 2},-40)`)
-      .text(chartConfig.chartTitle)
-      .style(&quot;font-weight&quot;, &quot;bold&quot;)
+      .attr(&quot;class&quot;, styles.horizontalMarker)
+    const xAxisTop = svgG.append(&quot;g&quot;).attr(&quot;class&quot;, `x top ${styles.axis}`)
+    const xAxisBottom = svgG
+      .append(&quot;g&quot;)
+      .attr(&quot;class&quot;, `x bottom ${styles.axis}`)
+    const linesWrapper = svgG.append(&quot;g&quot;)
 
     filterBlackOpacity({
       deviation: 2,
-      id: filterId,
+      id: this.selectors.filterId,
       slope: 0.2,
-      svg,
+      svg: svgG,
     })
 
+    this.elements = {
+      chartTitle,
+      clipPath,
+      horizongalAxis,
+      linesWrapper,
+      svg,
+      svgDrag,
+      svgG,
+      xAxisBottom,
+      xAxisTop,
+    }
+
+    this.dragX = 0
+
+    this.latesTimeRange = [new Date(), new Date()]
+
+    window.addEventListener(&quot;resize&quot;, this.handleResize)
+  }
+
+  public refresh(timeRange: TimeRange) {
+    this.latesTimeRange = timeRange
+
+    const [timeStart, timeEnd] = timeRange
+
+    const {
+      config: { crossingLinesData, rootElId },
+      config,
+      elements: {
+        chartTitle,
+        clipPath,
+        horizongalAxis,
+        linesWrapper,
+        svg,
+        svgG,
+        xAxisBottom,
+        xAxisTop,
+      },
+      selectors: { clipId, filterId, linePathClass, pointCircleClass },
+    } = this
+    const { horizontalMarkers, lines } = crossingLinesData
+    const rootEl = document.getElementById(rootElId) as HTMLElement
+    const realWidth =
+      rootEl.getBoundingClientRect().width - margin.left - margin.right
+    const width = Math.max(realWidth, MIN_WIDTH)
+    const x = scaleTime().domain([timeStart, timeEnd]).range([0, width])
+    const y = scaleLinear().range([0, height])
+    const xAxisTopFn = axisTop&lt;Date&gt;(x)
+      .ticks(8)
+      .tickFormat(config.getXAxisLabel)
+    const xAxisBottomFn = axisBottom&lt;Date&gt;(x)
+      .ticks(8)
+      .tickFormat(config.getXAxisLabel)
+
     svg
-      .append(&quot;defs&quot;)
-      .append(&quot;clipPath&quot;)
-      .attr(&quot;id&quot;, clipId)
-      .append(&quot;rect&quot;)
+      .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+      .attr(&quot;width&quot;, width + margin.left + margin.right)
+    svgG.attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`)
+
+    chartTitle
+      .attr(&quot;class&quot;, styles.chartTitle)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .attr(&quot;transform&quot;, `translate(${width / 2},-40)`)
+      .text(config.chartTitle)
+      .style(&quot;font-weight&quot;, &quot;bold&quot;)
+
+    clipPath
       .attr(&quot;y&quot;, -margin.top)
       .attr(&quot;width&quot;, width)
       .attr(&quot;height&quot;, height + margin.top + margin.bottom)
@@ -192,9 +272,7 @@ const renderChart = (chartConfig: ChartConfig) =&gt; {
       ) as [number, number]
     )
 
-    const horizontalMarkersSelection = svg
-      .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, styles.horizontalMarker)
+    const horizontalMarkersSelection = horizongalAxis
       .selectAll(&quot;g&quot;)
       .data(horizontalMarkers)
       .enter()
@@ -211,12 +289,8 @@ const renderChart = (chartConfig: ChartConfig) =&gt; {
       .text((horizontalMarker) =&gt; horizontalMarker.label)
 
     horizontalMarkersSelection.append(&quot;line&quot;).attr(&quot;x2&quot;, width)
-    svg.append(&quot;g&quot;).attr(&quot;class&quot;, `x top ${styles.axis}`).call(xAxisTop)
-    svg
-      .append(&quot;g&quot;)
-      .attr(&quot;class&quot;, `x bottom ${styles.axis}`)
-      .attr(&quot;transform&quot;, `translate(0,${height})`)
-      .call(xAxisBottom)
+    xAxisTop.call(xAxisTopFn)
+    xAxisBottom.attr(&quot;transform&quot;, `translate(0,${height})`).call(xAxisBottomFn)
 
     const mouseover = (...[, line]: [unknown, Line]) =&gt; {
       select(`.line-${line.id}`).select(&quot;path&quot;).style(&quot;stroke-width&quot;, &quot;5px&quot;)
@@ -226,8 +300,7 @@ const renderChart = (chartConfig: ChartConfig) =&gt; {
       select(`.line-${line.id}`).select(&quot;path&quot;).style(&quot;stroke-width&quot;, &quot;2.5px&quot;)
     }
 
-    const linesSelection = svg
-      .append(&quot;g&quot;)
+    const linesSelection = linesWrapper
       .attr(&quot;class&quot;, styles.line)
       .attr(&quot;clip-path&quot;, `url(#${clipId})`)
       .selectAll(&quot;g&quot;)
@@ -235,7 +308,7 @@ const renderChart = (chartConfig: ChartConfig) =&gt; {
       .enter()
       .append(&quot;g&quot;)
       .attr(&quot;class&quot;, (crossingLine) =&gt; {
-        const lineStyle = chartConfig.getLineStyle(crossingLine)
+        const lineStyle = config.getLineStyle(crossingLine)
         const { [lineStyle]: lineClass } = lineStyleToClassName
 
         return `${lineClass} line-${crossingLine.id}`
@@ -247,11 +320,15 @@ const renderChart = (chartConfig: ChartConfig) =&gt; {
       .x((point) =&gt; x(point.x!))
       .y((point) =&gt; y(point.horizontalMarker.position))
 
-    linesSelection
-      .append(&quot;path&quot;)
+    linesSelection.append(&quot;path&quot;)
+
+    const lineGroup = linesWrapper.selectAll(&quot;g&quot;)
+
+    lineGroup
+      .selectAll&lt;SVGPathElement, Line&gt;(&quot;path&quot;)
       .attr(&quot;d&quot;, (crossingLine) =&gt; line(crossingLine.points))
       .attr(&quot;class&quot;, linePathClass)
-      .attr(&quot;title&quot;, chartConfig.getLineTitle)
+      .attr(&quot;title&quot;, config.getLineTitle)
 
     linesSelection
       .selectAll(&quot;circle&quot;)
@@ -260,36 +337,87 @@ const renderChart = (chartConfig: ChartConfig) =&gt; {
       .append(&quot;circle&quot;)
       .style(&quot;cursor&quot;, &quot;pointer&quot;)
       .on(&quot;click&quot;, (...[, point]) =&gt; {
-        chartConfig.onPointClick(point)
+        config.onPointClick(point)
       })
+      .style(&quot;filter&quot;, `url(#drop-shadow-${filterId})`)
+      .attr(&quot;r&quot;, &quot;5px&quot;)
+      .attr(&quot;class&quot;, pointCircleClass)
+
+    lineGroup
+      .selectAll&lt;SVGCircleElement, Point&gt;(&quot;circle&quot;)
       .attr(
         &quot;transform&quot;,
         (point) =&gt;
           `translate(${x(point.x!)},${y(point.horizontalMarker.position)})`
       )
-      .style(&quot;filter&quot;, `url(#drop-shadow-${filterId})`)
-      .attr(&quot;r&quot;, &quot;5px&quot;)
-      .attr(&quot;class&quot;, pointCircleClass)
-      .attr(&quot;title&quot;, (point) =&gt; chartConfig.getPointTitle(point))
+      .attr(&quot;title&quot;, (point) =&gt; config.getPointTitle(point))
 
     $(`.${linePathClass}`).tooltip({
       track: true,
     })
+
     $(`.${pointCircleClass}`).tooltip({
       track: true,
     })
+
+    this.setupDrag(realWidth)
   }
 
-  return {
-    refresh: (limits: [Date, Date]) =&gt; {
-      redraw(limits)
-    },
+  private setupDrag(containerWidth: number) {
+    const { elements } = this
+
+    const canUseDrag = containerWidth &lt; MIN_WIDTH
+
+    const updateDrag = () =&gt; {
+      if (canUseDrag) {
+        this.dragX = Math.min(0, this.dragX)
+        this.dragX = Math.max(containerWidth - MIN_WIDTH, this.dragX)
+      } else {
+        this.dragX = 0
+      }
+
+      this.elements.svgDrag.attr(&quot;transform&quot;, `translate(${this.dragX},0)`)
+    }
+
+    const dragHandler = (
+      dragEvent: D3DragEvent&lt;SVGSVGElement, unknown, unknown&gt;
+    ) =&gt; {
+      if (!canUseDrag) {
+        return
+      }
+
+      this.dragX += dragEvent.dx
+
+      updateDrag()
+    }
+
+    const dragBehavior = dragD3&lt;SVGSVGElement, unknown&gt;().on(
+      &quot;drag&quot;,
+      dragHandler
+    )
+
+    elements.svg
+      .style(&quot;cursor&quot;, canUseDrag ? &quot;move&quot; : &quot;default&quot;)
+      .call(dragBehavior)
+      .on(&quot;drag&quot;, dragHandler)
+
+    updateDrag()
+  }
+
+  private readonly handleResize = () =&gt; {
+    this.refresh(this.latesTimeRange)
   }
 }
 
-export { ChartConfig, HorizontalMarker, LineStyle, Redraw, renderChart }
+export {
+  ChartConfig,
+  CrossingLinesChart,
+  HorizontalMarker,
+  LineStyle,
+  TimeRange,
+}
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 05 Jan 2022 23:31:16 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 09 Jan 2022 19:23:16 GMT</p>
     </body>
   </html>
   

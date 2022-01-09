@@ -11,14 +11,13 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/partition/partition-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">604</td><td class="">604</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/partition/partition-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">829</td><td class="">829</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   D3DragEvent,
   HierarchyRectangularNode,
   Selection,
   arc as arcD3,
   drag as dragD3,
-  easeBounce,
-  easeLinear,
+  easeExpInOut,
   hierarchy,
   interpolate,
   partition as partitionD3,
@@ -26,14 +25,21 @@
   schemePastel2,
   select,
 } from &quot;d3&quot;
+import $ from &quot;jquery&quot;
+import &quot;jquery-ui/themes/base/all.css&quot;
+import { v1 as uuid } from &quot;uuid&quot;
 
 import { TRANSITION_DURATION } from &quot;./ui-constants&quot;
 
-type Node&lt;NodeData&gt; = NodeData &amp; {
-  chidren: Array&lt;Node&lt;NodeData&gt;&gt;
+if (typeof window !== &quot;undefined&quot;) {
+  require(&quot;jquery-ui/ui/widgets/tooltip&quot;)
 }
 
-type HierarchyRectNode&lt;ChartData&gt; = HierarchyRectangularNode&lt;Node&lt;ChartData&gt;&gt;
+type Node&lt;NodeData&gt; = NodeData &amp; {
+  children?: Array&lt;Node&lt;NodeData&gt;&gt;
+}
+
+type HierarchyNode&lt;ChartData&gt; = HierarchyRectangularNode&lt;Node&lt;ChartData&gt;&gt;
 
 enum PartitionType {
   Count = &quot;count&quot;,
@@ -42,40 +48,20 @@ enum PartitionType {
 
 const height = 700
 const overColor = &quot;#de7c03&quot;
-const easeFn = easeBounce
+const easeFn = easeExpInOut
 
-const extractTweenObj = &lt;ChartData&gt;(node: HierarchyRectNode&lt;ChartData&gt;) =&gt; ({
-  depth: node.depth,
-  x0: node.x0,
-  x1: node.x1,
-  y0: node.y0,
-  y1: node.y1,
+const extractTweenObj = &lt;ChartData&gt;(node?: HierarchyNode&lt;ChartData&gt;) =&gt; ({
+  depth: node?.depth ?? 0,
+  x0: node?.x0 ?? 0,
+  x1: node?.x1 ?? 0,
+  y0: node?.y0 ?? 0,
+  y1: node?.y1 ?? 0,
 })
 
-const getInterpolatorFn =
-  &lt;ChartData&gt;({
-    fn,
-    initialData,
-  }: {
-    fn: (node: HierarchyRectNode&lt;ChartData&gt;) =&gt; string | null
-    initialData: Array&lt;HierarchyRectNode&lt;ChartData&gt;&gt;
-  }) =&gt;
-  (...[finalNode, nodeIndex]: [HierarchyRectNode&lt;ChartData&gt;, number]) =&gt; {
-    const { [nodeIndex]: initialNode } = initialData
-
-    const interpolateFn = interpolate(
-      extractTweenObj(initialNode),
-      extractTweenObj(finalNode)
-    )
-
-    return (t: number) =&gt; {
-      const transitientState = interpolateFn(t)
-
-      return fn(transitientState as HierarchyRectNode&lt;ChartData&gt;)!
-    }
-  }
+// @TODO: decouple the node size which is an arbitrary property
 
 type ChartConfig&lt;ChartData&gt; = {
+  getNodeId: (node: Node&lt;ChartData&gt;) =&gt; number
   getNodeLabel: (node: Node&lt;ChartData&gt;) =&gt; string
   getNodeSize: (node: Node&lt;ChartData&gt;) =&gt; number | undefined
   getNodeTitle: (options: {
@@ -87,6 +73,51 @@ type ChartConfig&lt;ChartData&gt; = {
   rootElId: string
 }
 
+const getInterpolatorFn =
+  &lt;ChartData&gt;({
+    fn,
+    getNodeId,
+    initialData,
+    isText,
+  }: {
+    fn: (node: HierarchyNode&lt;ChartData&gt;) =&gt; string | null
+    getNodeId: ChartConfig&lt;ChartData&gt;[&quot;getNodeId&quot;]
+    initialData: Array&lt;HierarchyNode&lt;ChartData&gt; | undefined&gt;
+    isText: boolean
+  }) =&gt;
+  (finalNode: HierarchyNode&lt;ChartData&gt;) =&gt; {
+    const initialNode = initialData.find(
+      (node) =&gt; node &amp;&amp; getNodeId(node.data) === getNodeId(finalNode.data)
+    )
+
+    const finalTween = extractTweenObj(finalNode)
+    const initialTween = extractTweenObj(initialNode)
+
+    const initialTweenUpdated = (() =&gt; {
+      if (finalTween.x0 === finalTween.x1) {
+        return finalTween
+      }
+
+      if (isText &amp;&amp; finalNode.depth === 0) {
+        return finalTween
+      }
+
+      return {
+        ...initialTween,
+        y0: finalTween.y0,
+        y1: finalTween.y1,
+      }
+    })()
+
+    const interpolateFn = interpolate(initialTweenUpdated, finalTween)
+
+    return (t: number) =&gt; {
+      const transitientState = interpolateFn(t)
+
+      return fn(transitientState as HierarchyNode&lt;ChartData&gt;)!
+    }
+  }
+
 type ChartElements = {
   svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
   svgDrag: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
@@ -96,17 +127,24 @@ type ChartElements = {
 class PartitionChart&lt;ChartData&gt; {
   private readonly config: ChartConfig&lt;ChartData&gt;
   private readonly elements: ChartElements
+  private readonly color: (node: HierarchyNode&lt;ChartData&gt;) =&gt; string
+  private readonly selectors: {
+    path: string
+    text: string
+  }
 
   private readonly state: {
-    descendants: Array&lt;HierarchyRectangularNode&lt;Node&lt;ChartData&gt;&gt;&gt;
+    descendants: Array&lt;HierarchyNode&lt;ChartData&gt;&gt;
     drag: { x: number; y: number }
+    isClearingSelection: boolean
     partitionType: PartitionType
+    rootNode: Node&lt;ChartData&gt; | null
   }
 
   public constructor(config: ChartConfig&lt;ChartData&gt;) {
     this.config = config
 
-    const { partitionType, rootElId } = config
+    const { getNodeId, partitionType, rootElId } = config
 
     const svg = select(`#${rootElId}`).append(&quot;svg&quot;).text(&quot;&quot;)
     const svgDrag = svg.append(&quot;g&quot;)
@@ -115,7 +153,40 @@ class PartitionChart&lt;ChartData&gt; {
     this.state = {
       descendants: [],
       drag: { x: 0, y: 0 },
+      isClearingSelection: false,
       partitionType,
+      rootNode: null,
+    }
+
+    this.selectors = {
+      path: `path-${uuid().slice(0, 6)}`,
+      text: `text-${uuid().slice(0, 6)}`,
+    }
+
+    const allIds = new Set&lt;number&gt;()
+
+    const recursiveFn = (node: Node&lt;ChartData&gt;) =&gt; {
+      allIds.add(config.getNodeId(node))
+
+      if (node.children) {
+        node.children.forEach(recursiveFn)
+      }
+    }
+
+    recursiveFn(config.rootData)
+
+    const colorScale = scaleOrdinal&lt;number, string&gt;(schemePastel2).domain(
+      Array.from(allIds)
+    )
+
+    this.color = (node: HierarchyNode&lt;ChartData&gt;) =&gt; {
+      if (node.children) {
+        return colorScale(getNodeId(node.data))
+      }
+
+      return node.parent
+        ? colorScale(getNodeId(node.parent.data))
+        : colorScale(0)
     }
 
     this.state.descendants = this.getDataHierarchy()
@@ -134,9 +205,7 @@ class PartitionChart&lt;ChartData&gt; {
   public updatePartition(newPartitionType: PartitionType) {
     this.state.partitionType = newPartitionType
 
-    const newDescendants = this.getDataHierarchy()
-
-    this.state.descendants = newDescendants
+    this.state.descendants = this.getDataHierarchy()
 
     this.renderDescendants()
   }
@@ -173,17 +242,30 @@ class PartitionChart&lt;ChartData&gt; {
   private getDataHierarchy() {
     const {
       config: { getNodeSize, rootData },
-      state: { partitionType },
+      state: { partitionType, rootNode },
     } = this
     const { radius } = this.getDimensions()
-    const dataHierarchySize = hierarchy(rootData).sum(
-      (node: Node&lt;ChartData&gt;) =&gt; getNodeSize(node) ?? 0
-    )
-    const dataHierarchyCount = hierarchy(rootData).sum(() =&gt; 1)
+
+    const cloneRecursive = &lt;T&gt;(node: Node&lt;T&gt;): Node&lt;T&gt; =&gt; ({
+      ...node,
+      ...(&quot;children&quot; in node &amp;&amp; {
+        children: node.children!.map(cloneRecursive),
+      }),
+    })
+
+    const newNode = rootNode
+      ? cloneRecursive(rootNode)
+      : cloneRecursive(rootData)
+
+    const getDataHierarchySize = () =&gt;
+      hierarchy(newNode).sum((node: Node&lt;ChartData&gt;) =&gt; getNodeSize(node) ?? 0)
+    const getDataHierarchyCount = () =&gt; hierarchy(newNode).sum(() =&gt; 1)
     const partition = partitionD3&lt;Node&lt;ChartData&gt;&gt;().size([2 * Math.PI, radius])
 
     const hierarchyResult = partition(
-      partitionType === &quot;size&quot; ? dataHierarchySize : dataHierarchyCount
+      partitionType === &quot;size&quot;
+        ? getDataHierarchySize()
+        : getDataHierarchyCount()
     )
 
     return hierarchyResult.descendants()
@@ -217,26 +299,21 @@ class PartitionChart&lt;ChartData&gt; {
 
   private renderDescendants() {
     const {
-      config: { getNodeLabel, getNodeTitle },
+      color,
+      config: { getNodeId, getNodeLabel, getNodeTitle },
       elements: { svgG },
+      selectors,
       state: { descendants: usedDescendants },
     } = this
 
-    const colorScale = scaleOrdinal(schemePastel2)
-
-    const color = (node: HierarchyRectNode&lt;ChartData&gt;) =&gt;
-      node.children
-        ? colorScale(getNodeLabel(node.data))
-        : colorScale(getNodeLabel(node.parent!.data))
-
-    const arc = arcD3&lt;HierarchyRectNode&lt;ChartData&gt;&gt;()
+    const arc = arcD3&lt;HierarchyNode&lt;ChartData&gt;&gt;()
       .startAngle((node) =&gt; node.x0)
       .endAngle((node) =&gt; node.x1)
       .innerRadius((node) =&gt; node.y0)
       .outerRadius((node) =&gt; node.y1)
       .padAngle(0.01)
 
-    const textsTransform = (node: HierarchyRectNode&lt;ChartData&gt;) =&gt; {
+    const textsTransform = (node: HierarchyNode&lt;ChartData&gt;) =&gt; {
       if (!node.depth) {
         return &quot;&quot;
       }
@@ -258,45 +335,88 @@ class PartitionChart&lt;ChartData&gt; {
       ].join(&quot; &quot;)
     }
 
-    const pathSel = svgG.selectAll&lt;
-      SVGPathElement,
-      HierarchyRectNode&lt;ChartData&gt;
-    &gt;(&quot;path&quot;)
+    const pathSel = svgG.selectAll&lt;SVGPathElement, HierarchyNode&lt;ChartData&gt;&gt;(
+      &quot;path&quot;
+    )
     const pathInitialData = pathSel.data()
-    const path = pathSel.data(usedDescendants)
 
-    path.exit().remove()
+    const path = pathSel.data(
+      usedDescendants,
+      (node) =&gt; `path-${getNodeId(node.data)}`
+    )
+
+    const usedDuration = this.state.isClearingSelection
+      ? 0
+      : TRANSITION_DURATION
+
+    this.state.isClearingSelection = false
+
+    const getShouldHighlightNode = (node: HierarchyNode&lt;ChartData&gt;) =&gt;
+      node.depth !== 0 || this.state.rootNode
+
+    type CommonSelection&lt;ElementType extends SVGElement&gt; = Selection&lt;
+      ElementType,
+      HierarchyNode&lt;ChartData&gt;,
+      SVGGElement,
+      unknown
+    &gt;
+
+    const cursorFn = &lt;ElementType extends SVGElement&gt;(
+      selection: CommonSelection&lt;ElementType&gt;
+    ) =&gt; {
+      selection.style(&quot;cursor&quot;, (node) =&gt;
+        getShouldHighlightNode(node) ? &quot;pointer&quot; : &quot;move&quot;
+      )
+    }
+
+    const pathCommon = (selection: CommonSelection&lt;SVGPathElement&gt;) =&gt; {
+      selection
+        .attr(&quot;data-index&quot;, (...[, nodeIndex]) =&gt; nodeIndex)
+        .style(&quot;fill&quot;, color)
+        .call(cursorFn)
+    }
 
     const pathEnter = path
       .enter()
       .append(&quot;path&quot;)
-      .attr(&quot;display&quot;, (node) =&gt; (node.depth ? null : &quot;none&quot;))
-      .attr(&quot;data-index&quot;, (...[, nodeIndex]) =&gt; nodeIndex)
+      .attr(&quot;class&quot;, selectors.path)
       .style(&quot;stroke&quot;, &quot;#000&quot;)
-      .style(&quot;stroke-width&quot;, &quot;0.5px&quot;)
+      .style(&quot;stroke-width&quot;, &quot;2px&quot;)
       .style(&quot;stroke-dasharray&quot;, &quot;1,3&quot;)
-      .style(&quot;fill&quot;, color)
       .attr(&quot;d&quot;, arc)
+      .call(pathCommon)
+
+    path.exit().remove()
 
     path
+      .call(pathCommon)
       .transition()
-      .duration(TRANSITION_DURATION)
+      .duration(usedDuration)
       .ease(easeFn)
       .attrTween(
         &quot;d&quot;,
-        getInterpolatorFn({ fn: arc, initialData: pathInitialData })
+        getInterpolatorFn({
+          fn: arc,
+          getNodeId,
+          initialData: pathInitialData,
+          isText: false,
+        })
       )
 
     const initialTextsSel = svgG.selectAll&lt;
       SVGTextElement,
-      HierarchyRectNode&lt;ChartData&gt;
+      HierarchyNode&lt;ChartData&gt;
     &gt;(&quot;text&quot;)
     const textsInitialData = initialTextsSel.data()
-    const initialTexts = initialTextsSel.data(usedDescendants)
+
+    const initialTexts = initialTextsSel.data(
+      usedDescendants,
+      (node) =&gt; `text-${getNodeId(node.data)}`
+    )
 
     initialTexts.exit().remove()
 
-    const opacityFn = (node: HierarchyRectangularNode&lt;Node&lt;ChartData&gt;&gt;) =&gt; {
+    const opacityFn = (...[node]: [HierarchyNode&lt;ChartData&gt;, number]) =&gt; {
       const arcLength = Math.abs(node.x0 - node.x1) * node.y1
 
       // this number is obtained empirically
@@ -306,74 +426,104 @@ class PartitionChart&lt;ChartData&gt; {
 
       const isAlmostVertical = Math.abs((node.x0 + node.x1) / 2 - Math.PI) &lt; 0.2
 
-      return isAlmostVertical ? 0 : 1
+      return isAlmostVertical &amp;&amp; node.depth !== 0 ? 0 : 1
+    }
+
+    const textCommon = (selection: CommonSelection&lt;SVGTextElement&gt;) =&gt; {
+      selection
+        .text((node: HierarchyNode&lt;ChartData&gt;) =&gt; {
+          const label = getNodeLabel(node.data)
+          const limit = 9
+
+          return label.length &gt; limit ? `${label.slice(0, limit)}...` : label
+        })
+        .attr(&quot;data-index&quot;, (...[, nodeIndex]) =&gt; nodeIndex)
+        .call(cursorFn)
     }
 
     const textsEnter = initialTexts
       .enter()
       .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, selectors.text)
       .style(&quot;fill&quot;, &quot;#333&quot;)
       .style(&quot;cursor&quot;, &quot;default&quot;)
       .style(&quot;font&quot;, &quot;bold 12px Arial&quot;)
       .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
-      .text((...[node, nodeIndex]) =&gt; {
-        if (nodeIndex === 0) {
-          return &quot;&quot;
-        }
-
-        const label = getNodeLabel(node.data)
-        const limit = 9
-
-        return label.length &gt; limit ? `${label.slice(0, limit)}...` : label
-      })
-      .attr(&quot;data-index&quot;, (...[, nodeIndex]) =&gt; nodeIndex)
       .attr(&quot;transform&quot;, textsTransform)
       .style(&quot;opacity&quot;, opacityFn)
+      .call(textCommon)
 
     initialTexts
+      .call(textCommon)
       .transition(&quot;movement&quot;)
-      .duration(TRANSITION_DURATION)
+      .duration(usedDuration)
       .ease(easeFn)
       .attrTween(
         &quot;transform&quot;,
         getInterpolatorFn({
           fn: textsTransform,
+          getNodeId,
           initialData: textsInitialData,
+          isText: true,
         })
       )
 
-    svgG
-      .selectAll&lt;SVGTextElement, HierarchyRectNode&lt;ChartData&gt;&gt;(&quot;text&quot;)
+    initialTexts
       .transition(&quot;opacity&quot;)
-      .duration(TRANSITION_DURATION)
-      .ease(easeLinear)
+      .duration(usedDuration)
+      .ease(easeFn)
       .style(&quot;opacity&quot;, opacityFn)
 
     const updatedGroups = [pathEnter, textsEnter]
 
     updatedGroups.forEach((set) =&gt; {
-      set.on(&quot;mouseover&quot;, function onMouseOver() {
+      set.on(&quot;mouseover&quot;, function onMouseOver(...[, node]) {
         const nodeIndex = select(this).attr(&quot;data-index&quot;)
 
-        select(`path[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, overColor)
-        select(`text[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, &quot;white&quot;)
+        if (getShouldHighlightNode(node)) {
+          select(`path[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, overColor)
+          select(`text[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, &quot;white&quot;)
+        }
       })
 
       set.on(&quot;mouseout&quot;, function onMouseOut() {
         const nodeIndex = select(this).attr(&quot;data-index&quot;)
 
-        select&lt;SVGPathElement, HierarchyRectNode&lt;ChartData&gt;&gt;(
+        select&lt;SVGPathElement, HierarchyNode&lt;ChartData&gt;&gt;(
           `path[data-index=&quot;${nodeIndex}&quot;]`
         ).style(&quot;fill&quot;, color)
         select(`text[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, &quot;#000&quot;)
       })
 
-      set.append(&quot;title&quot;).text((node) =&gt;
+      set.on(&quot;click&quot;, (...[, node]) =&gt; {
+        if (
+          this.state.rootNode &amp;&amp;
+          getNodeId(this.state.rootNode) === getNodeId(node.data)
+        ) {
+          this.state.rootNode = null
+          this.state.isClearingSelection = true
+        } else {
+          this.state.rootNode = node.data
+        }
+
+        this.state.descendants = this.getDataHierarchy()
+        this.renderDescendants()
+      })
+
+      set.attr(&quot;title&quot;, (node) =&gt;
         getNodeTitle({
           nodeData: node.data,
           valueNum: node.value,
         })
       )
+    })
+
+    $(`.${selectors.path}`).tooltip({
+      track: true,
+    })
+
+    $(`.${selectors.text}`).tooltip({
+      track: true,
     })
   }
 
@@ -384,7 +534,7 @@ class PartitionChart&lt;ChartData&gt; {
 
 export { PartitionChart, PartitionType, Node, ChartConfig }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 05 Jan 2022 23:31:16 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 09 Jan 2022 19:23:16 GMT</p>
     </body>
   </html>
   
