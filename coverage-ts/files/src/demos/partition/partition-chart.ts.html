@@ -11,9 +11,10 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/partition/partition-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">829</td><td class="">829</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/partition/partition-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">822</td><td class="">822</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   D3DragEvent,
   HierarchyRectangularNode,
+  ScaleOrdinal,
   Selection,
   arc as arcD3,
   drag as dragD3,
@@ -22,6 +23,7 @@
   interpolate,
   partition as partitionD3,
   scaleOrdinal,
+  schemePastel1,
   schemePastel2,
   select,
 } from &quot;d3&quot;
@@ -41,13 +43,8 @@ type Node&lt;NodeData&gt; = NodeData &amp; {
 
 type HierarchyNode&lt;ChartData&gt; = HierarchyRectangularNode&lt;Node&lt;ChartData&gt;&gt;
 
-enum PartitionType {
-  Count = &quot;count&quot;,
-  Size = &quot;size&quot;,
-}
-
 const height = 700
-const overColor = &quot;#de7c03&quot;
+const hoverColor = &quot;#de7c03&quot;
 const easeFn = easeExpInOut
 
 const extractTweenObj = &lt;ChartData&gt;(node?: HierarchyNode&lt;ChartData&gt;) =&gt; ({
@@ -58,17 +55,19 @@ const extractTweenObj = &lt;ChartData&gt;(node?: HierarchyNode&lt;ChartData&gt;)
   y1: node?.y1 ?? 0,
 })
 
-// @TODO: decouple the node size which is an arbitrary property
-
 type ChartConfig&lt;ChartData&gt; = {
+  getColorOptions: (opts: {
+    depths: number[]
+    nodes: Array&lt;Node&lt;ChartData&gt;&gt;
+  }) =&gt; number[]
+  getHierarchySum: (node: Node&lt;ChartData&gt;) =&gt; number
+  getNodeColorOption: (opts: { depth: number; node: Node&lt;ChartData&gt; }) =&gt; number
   getNodeId: (node: Node&lt;ChartData&gt;) =&gt; number
   getNodeLabel: (node: Node&lt;ChartData&gt;) =&gt; string
-  getNodeSize: (node: Node&lt;ChartData&gt;) =&gt; number | undefined
   getNodeTitle: (options: {
     nodeData: Node&lt;ChartData&gt;
     valueNum?: number
   }) =&gt; string
-  partitionType: PartitionType
   rootData: Node&lt;ChartData&gt;
   rootElId: string
 }
@@ -127,7 +126,7 @@ type ChartElements = {
 class PartitionChart&lt;ChartData&gt; {
   private readonly config: ChartConfig&lt;ChartData&gt;
   private readonly elements: ChartElements
-  private readonly color: (node: HierarchyNode&lt;ChartData&gt;) =&gt; string
+  private readonly colorScale: ScaleOrdinal&lt;number, string&gt;
   private readonly selectors: {
     path: string
     text: string
@@ -137,14 +136,13 @@ class PartitionChart&lt;ChartData&gt; {
     descendants: Array&lt;HierarchyNode&lt;ChartData&gt;&gt;
     drag: { x: number; y: number }
     isClearingSelection: boolean
-    partitionType: PartitionType
     rootNode: Node&lt;ChartData&gt; | null
   }
 
   public constructor(config: ChartConfig&lt;ChartData&gt;) {
     this.config = config
 
-    const { getNodeId, partitionType, rootElId } = config
+    const { rootElId } = config
 
     const svg = select(`#${rootElId}`).append(&quot;svg&quot;).text(&quot;&quot;)
     const svgDrag = svg.append(&quot;g&quot;)
@@ -154,7 +152,6 @@ class PartitionChart&lt;ChartData&gt; {
       descendants: [],
       drag: { x: 0, y: 0 },
       isClearingSelection: false,
-      partitionType,
       rootNode: null,
     }
 
@@ -163,33 +160,11 @@ class PartitionChart&lt;ChartData&gt; {
       text: `text-${uuid().slice(0, 6)}`,
     }
 
-    const allIds = new Set&lt;number&gt;()
-
-    const recursiveFn = (node: Node&lt;ChartData&gt;) =&gt; {
-      allIds.add(config.getNodeId(node))
-
-      if (node.children) {
-        node.children.forEach(recursiveFn)
-      }
-    }
-
-    recursiveFn(config.rootData)
-
-    const colorScale = scaleOrdinal&lt;number, string&gt;(schemePastel2).domain(
-      Array.from(allIds)
-    )
-
-    this.color = (node: HierarchyNode&lt;ChartData&gt;) =&gt; {
-      if (node.children) {
-        return colorScale(getNodeId(node.data))
-      }
-
-      return node.parent
-        ? colorScale(getNodeId(node.parent.data))
-        : colorScale(0)
-    }
-
     this.state.descendants = this.getDataHierarchy()
+
+    this.colorScale = scaleOrdinal&lt;number, string&gt;(
+      schemePastel1.concat(schemePastel2)
+    )
 
     this.elements = {
       svg,
@@ -202,9 +177,7 @@ class PartitionChart&lt;ChartData&gt; {
     window.addEventListener(&quot;resize&quot;, this.handleResize)
   }
 
-  public updatePartition(newPartitionType: PartitionType) {
-    this.state.partitionType = newPartitionType
-
+  public update() {
     this.state.descendants = this.getDataHierarchy()
 
     this.renderDescendants()
@@ -241,8 +214,8 @@ class PartitionChart&lt;ChartData&gt; {
 
   private getDataHierarchy() {
     const {
-      config: { getNodeSize, rootData },
-      state: { partitionType, rootNode },
+      config: { getHierarchySum, rootData },
+      state: { rootNode },
     } = this
     const { radius } = this.getDimensions()
 
@@ -257,16 +230,9 @@ class PartitionChart&lt;ChartData&gt; {
       ? cloneRecursive(rootNode)
       : cloneRecursive(rootData)
 
-    const getDataHierarchySize = () =&gt;
-      hierarchy(newNode).sum((node: Node&lt;ChartData&gt;) =&gt; getNodeSize(node) ?? 0)
-    const getDataHierarchyCount = () =&gt; hierarchy(newNode).sum(() =&gt; 1)
     const partition = partitionD3&lt;Node&lt;ChartData&gt;&gt;().size([2 * Math.PI, radius])
-
-    const hierarchyResult = partition(
-      partitionType === &quot;size&quot;
-        ? getDataHierarchySize()
-        : getDataHierarchyCount()
-    )
+    const newHierarchy = hierarchy(newNode).sum(getHierarchySum)
+    const hierarchyResult = partition(newHierarchy)
 
     return hierarchyResult.descendants()
   }
@@ -300,11 +266,24 @@ class PartitionChart&lt;ChartData&gt; {
   private renderDescendants() {
     const {
       color,
-      config: { getNodeId, getNodeLabel, getNodeTitle },
+      config: { getColorOptions, getNodeId, getNodeLabel, getNodeTitle },
       elements: { svgG },
       selectors,
       state: { descendants: usedDescendants },
     } = this
+
+    const depths = new Set&lt;number&gt;()
+
+    this.state.descendants.forEach((node) =&gt; {
+      depths.add(node.depth)
+    })
+
+    this.colorScale.domain(
+      getColorOptions({
+        depths: Array.from(depths),
+        nodes: this.state.descendants.map((node) =&gt; node.data),
+      })
+    )
 
     const arc = arcD3&lt;HierarchyNode&lt;ChartData&gt;&gt;()
       .startAngle((node) =&gt; node.x0)
@@ -481,7 +460,7 @@ class PartitionChart&lt;ChartData&gt; {
         const nodeIndex = select(this).attr(&quot;data-index&quot;)
 
         if (getShouldHighlightNode(node)) {
-          select(`path[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, overColor)
+          select(`path[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, hoverColor)
           select(`text[data-index=&quot;${nodeIndex}&quot;]`).style(&quot;fill&quot;, &quot;white&quot;)
         }
       })
@@ -527,14 +506,28 @@ class PartitionChart&lt;ChartData&gt; {
     })
   }
 
+  private readonly color = (node: HierarchyNode&lt;ChartData&gt;) =&gt; {
+    const {
+      colorScale,
+      config: { getNodeColorOption },
+    } = this
+
+    const nodeOption = getNodeColorOption({
+      depth: node.depth,
+      node: node.data,
+    })
+
+    return colorScale(nodeOption)
+  }
+
   private readonly handleResize = () =&gt; {
     this.render()
   }
 }
 
-export { PartitionChart, PartitionType, Node, ChartConfig }
+export { ChartConfig, Node, PartitionChart }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 09 Jan 2022 19:23:16 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Mon, 10 Jan 2022 00:15:23 GMT</p>
     </body>
   </html>
   
