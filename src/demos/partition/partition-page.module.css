@@ -5,6 +5,11 @@
 }
 
 .form {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
   margin-bottom: 30px;
   text-align: center;
   width: 100%;
@@ -12,4 +17,8 @@
 
 .label {
   cursor: pointer;
+}
+
+.radios {
+  display: inline-block;
 }

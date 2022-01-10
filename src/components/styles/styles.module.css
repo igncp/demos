@@ -150,13 +150,22 @@ body {
   }
 
   h1 {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
     font-size: 4em;
     text-shadow: 1px 1px 1px #ddd;
+    width: 100%;
   }
 
   small {
     color: #9bb9a8;
     font-size: 0.5em;
+  }
+
+  .titleWrapper {
+    flex: 1;
+    margin-right: 20px;
   }
 }
 

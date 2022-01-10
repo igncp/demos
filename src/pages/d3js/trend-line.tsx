@@ -5,10 +5,11 @@ import { DemoPageProps } from "@/common"
 import Demo from "@/components/demo"
 
 import main, { CONTAINER_ID } from "@/demos/trend-line/trend-line"
+import * as styles from "@/demos/trend-line/trend-line-page.module.css"
 
 const TrendLine = ({ pageContext }: DemoPageProps) => (
   <Demo main={main} pageContext={pageContext}>
-    <form>
+    <form className={styles.form}>
       <label>
         <input defaultChecked name="mode" type="radio" value="zoom" /> Zoom
       </label>

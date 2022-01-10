@@ -34,6 +34,9 @@ const height = 700
 const hoverColor = "#de7c03"
 const easeFn = easeExpInOut
 
+const isTouchDevice = () =>
+  "ontouchstart" in window || navigator.maxTouchPoints > 0
+
 const extractTweenObj = <ChartData>(node?: HierarchyNode<ChartData>) => ({
   depth: node?.depth ?? 0,
   x0: node?.x0 ?? 0,
@@ -318,7 +321,7 @@ class PartitionChart<ChartData> {
     this.state.isClearingSelection = false
 
     const getShouldHighlightNode = (node: HierarchyNode<ChartData>) =>
-      node.depth !== 0 || this.state.rootNode
+      !isTouchDevice() && (node.depth !== 0 || this.state.rootNode)
 
     type CommonSelection<ElementType extends SVGElement> = Selection<
       ElementType,
@@ -484,13 +487,15 @@ class PartitionChart<ChartData> {
       )
     })
 
-    $(`.${selectors.path}`).tooltip({
-      track: true,
-    })
+    if (!isTouchDevice()) {
+      $(`.${selectors.path}`).tooltip({
+        track: true,
+      })
 
-    $(`.${selectors.text}`).tooltip({
-      track: true,
-    })
+      $(`.${selectors.text}`).tooltip({
+        track: true,
+      })
+    }
   }
 
   private readonly color = (node: HierarchyNode<ChartData>) => {

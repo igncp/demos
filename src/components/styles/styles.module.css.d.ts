@@ -33,5 +33,6 @@ declare const styles: {
   readonly "tag": string
   readonly "tagCollection": string
   readonly "testing": string
+  readonly "titleWrapper": string
 }
 export = styles
