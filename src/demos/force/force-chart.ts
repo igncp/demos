@@ -1,6 +1,8 @@
 import {
   Selection,
   Simulation,
+  SimulationLinkDatum,
+  SimulationNodeDatum,
   drag,
   forceCenter,
   forceLink as forceLinkD3,
@@ -11,24 +13,6 @@ import {
 
 import * as styles from "./force.module.css"
 
-type Node<NodeData> = NodeData & {
-  fx: number | null
-  fy: number | null
-  index: number // eslint-disable-line id-denylist
-  x: number
-  y: number
-}
-
-type Link<NodeData> = {
-  source: Node<NodeData>
-  target: Node<NodeData>
-}
-
-type ForceData<NodeData> = {
-  links: Array<Link<NodeData>>
-  nodes: Array<Node<NodeData>>
-}
-
 type CustomDragEvent = DragEvent & { active: boolean }
 
 const settings = {
@@ -38,9 +22,12 @@ const settings = {
   textDY: 5,
 }
 
-type ChartConfig<NodeData> = {
-  forceData: ForceData<NodeData>
-  getNodeText: (node: Node<NodeData>) => string
+// eslint-disable-next-line id-denylist
+const getNodeId = (node: { index?: number }) => `node-text-${node.index!}`
+
+type ChartConfig<NodeData, LinkData> = {
+  forceData: { links: LinkData[]; nodes: NodeData[] }
+  getNodeText: (node: NodeData) => string
   height: number
   rootElId: string
 }
@@ -49,62 +36,98 @@ type ChartElements = {
   svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
 }
 
-class ForceChart<NodeData> {
-  private readonly config: ChartConfig<NodeData>
-  private readonly simulation: Simulation<Node<NodeData>, undefined>
+class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
+  private readonly config: ChartConfig<NodeData, LinkData>
   private readonly elements: ChartElements
+  private readonly simulation: Simulation<NodeData, undefined>
+  private readonly forceNodes: Array<NodeData & SimulationNodeDatum>
+  private readonly forceLinks: Array<
+    SimulationLinkDatum<NodeData & SimulationNodeDatum>
+  >
 
-  public constructor(config: ChartConfig<NodeData>) {
+  public constructor(config: ChartConfig<NodeData, LinkData>) {
     this.config = config
 
-    const { forceData, height, rootElId } = config
+    const { forceData, rootElId } = config
     const { links, nodes } = forceData
 
     const rootEl = document.getElementById(rootElId) as HTMLElement
 
     rootEl.classList.add(styles.forceChart)
 
-    const { width } = rootEl.getBoundingClientRect()
-
-    const svg = select(`#${rootElId}`)
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height)
+    const svg = select(`#${rootElId}`).append("svg")
 
     this.elements = { svg }
 
-    this.simulation = forceSimulation(nodes)
+    const forceLink = forceLinkD3<NodeData, LinkData>().links(
+      links.map((link) => ({ ...link }))
+    )
+
+    const simulation = forceSimulation<NodeData>(
+      nodes.map((node) => ({ ...node }))
+    )
+      .force("link", forceLink)
+      .on("tick", () => {
+        this.render()
+      })
+
+    this.simulation = simulation
+    this.forceNodes = this.simulation.nodes()
+    this.forceLinks = forceLink.links()
+
+    this.render()
+
+    window.addEventListener("resize", this.handleResize)
+  }
+
+  private readonly handleResize = () => {
+    this.render()
+  }
+
+  private render() {
+    const {
+      config: { height, rootElId },
+    } = this
+
+    const rootEl = document.getElementById(rootElId) as HTMLElement
+
+    const { width } = rootEl.getBoundingClientRect()
+
+    this.simulation
       .force("charge", forceManyBody().strength(settings.strength))
       .force("center", forceCenter(width / 2, height / 2))
-      .force("link", forceLinkD3().links(links))
-      .on("tick", () => {
-        this.updateLinks()
-        this.updateNodes()
-      })
+
+    this.elements.svg.attr("width", width).attr("height", height)
+    this.updateLinks()
+    this.updateNodes()
   }
 
   private updateLinks() {
     const {
-      config: { forceData },
       elements: { svg },
     } = this
-    const { links } = forceData
     const linksEls = svg
-      .selectAll<SVGPathElement, ForceData<NodeData>["links"]>(
+      .selectAll<SVGPathElement, ForceChart<NodeData, LinkData>["forceLinks"]>(
         `.${styles.linkCurved}`
       )
-      .data(links)
+      .data(this.forceLinks)
+
+    type ForceNode = NodeData & SimulationNodeDatum
 
     linksEls
       .enter()
       .append<SVGPathElement>("path")
       .merge(linksEls)
       .attr("d", (forceLink) => {
-        const dx = forceLink.target.x - forceLink.source.x
-        const dy = forceLink.target.y - forceLink.source.y
+        const { source, target } = forceLink as {
+          source: ForceNode
+          target: ForceNode
+        }
+        const dx = target.x! - source.x!
+        const dy = target.y! - source.y!
         const dr = Math.sqrt(dx * dx + dy * dy) * 1.3
 
-        return `M${forceLink.source.x},${forceLink.source.y}A${dr},${dr} 0 0,1 ${forceLink.target.x},${forceLink.target.y}`
+        return `M${source.x!},${source.y!}A${dr},${dr} 0 0,1 ${target.x!},${target.y!}`
       })
       .attr("class", styles.linkCurved)
       .attr("marker-end", "url(#end)")
@@ -114,20 +137,22 @@ class ForceChart<NodeData> {
   }
 
   private updateNodes() {
+    type ForceNode = ForceChart<NodeData, LinkData>["forceNodes"][0]
+
     const {
-      config: { forceData, getNodeText },
+      config: { getNodeText },
       elements: { svg },
+      forceNodes,
     } = this
-    const { nodes } = forceData
     const nodesEls = svg
-      .selectAll<SVGCircleElement, ForceData<NodeData>["nodes"]>("circle")
-      .data(nodes)
+      .selectAll<SVGCircleElement, ForceNode>("circle")
+      .data(forceNodes)
     const textsEls = svg
-      .selectAll<SVGTextElement, ForceData<NodeData>["nodes"]>("text")
-      .data(nodes)
+      .selectAll<SVGTextElement, ForceNode>("text")
+      .data(forceNodes)
 
     const dragstarted = (
-      ...[dragEvent, forceNode]: [CustomDragEvent, Node<NodeData>]
+      ...[dragEvent, forceNode]: [CustomDragEvent, ForceNode]
     ) => {
       if (!dragEvent.active) {
         this.simulation.alphaTarget(0.3).restart()
@@ -138,14 +163,14 @@ class ForceChart<NodeData> {
     }
 
     const dragged = (
-      ...[dragEvent, forceNode]: [CustomDragEvent, Node<NodeData>]
+      ...[dragEvent, forceNode]: [CustomDragEvent, ForceNode]
     ) => {
       forceNode.fx = dragEvent.x
       forceNode.fy = dragEvent.y
     }
 
     const dragended = (
-      ...[dragEvent, forceNode]: [CustomDragEvent, Node<NodeData>]
+      ...[dragEvent, forceNode]: [CustomDragEvent, ForceNode]
     ) => {
       if (!dragEvent.active) {
         this.simulation.alphaTarget(0)
@@ -159,24 +184,24 @@ class ForceChart<NodeData> {
       .enter()
       .append("circle")
       .merge(nodesEls)
-      .attr("cx", (forceNode) => forceNode.x)
-      .attr("cy", (forceNode) => forceNode.y)
+      .attr("cx", (forceNode) => forceNode.x!)
+      .attr("cy", (forceNode) => forceNode.y!)
       .attr("r", () => settings.circleRadius)
       .attr("fill", "black")
       .each(function setupMouseHandlers() {
-        select<SVGCircleElement, ForceData<NodeData>["nodes"][0]>(this)
+        select<SVGCircleElement, ForceNode>(this)
           .on("mouseover", (...[, forceNode]) => {
-            select(`#node-text-${forceNode.index}`).style("opacity", 1)
+            select(`#${getNodeId(forceNode)}`).style("opacity", 1)
           })
           .on("mouseleave", (...[, forceNode]) => {
-            select(`#node-text-${forceNode.index}`).style(
+            select(`#${getNodeId(forceNode)}`).style(
               "opacity",
               settings.defaultTextOpacity
             )
           })
       })
       .call(
-        drag<SVGCircleElement, ForceData<NodeData>["nodes"][0]>()
+        drag<SVGCircleElement, ForceNode>()
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended)
@@ -187,10 +212,10 @@ class ForceChart<NodeData> {
       .append("text")
       .merge(textsEls)
       .text(getNodeText)
-      .attr("x", (forceNode) => forceNode.x)
-      .attr("y", (forceNode) => forceNode.y)
+      .attr("x", (forceNode) => forceNode.x!)
+      .attr("y", (forceNode) => forceNode.y!)
       .attr("dy", () => settings.textDY)
-      .attr("id", (forceNode) => `node-text-${forceNode.index}`)
+      .attr("id", getNodeId)
       .style("opacity", settings.defaultTextOpacity)
 
     nodesEls.exit().remove()

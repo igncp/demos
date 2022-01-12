@@ -3,17 +3,24 @@ import { json } from "d3"
 import { ChartConfig } from "./force-chart"
 import { CONTAINER_ID } from "./ui-constants"
 
-type CustomNode = {
+type NodeData = {
   name: string
 }
 
-type Config = ChartConfig<CustomNode>
+type LinkData = {
+  name: string
+  source: number
+  strength: number
+  target: number
+}
+
+type Config = ChartConfig<NodeData, LinkData>
 
 const fetchForceData = async (): Promise<Config["forceData"]> => {
-  const [nodes, links] = await Promise.all([
+  const [nodes, links] = (await Promise.all([
     json(`${ROOT_PATH}data/d3js/force/nodes.json`),
     json(`${ROOT_PATH}data/d3js/force/links.json`),
-  ])
+  ])) as [NodeData[], LinkData[]]
 
   return {
     links,
