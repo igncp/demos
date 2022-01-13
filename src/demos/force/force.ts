@@ -1,5 +1,6 @@
 import { ForceChart } from "./force-chart"
-import { fetchForceData, getChartConfig } from "./force-config"
+import { getChartConfig } from "./force-config"
+import { fetchForceData } from "./force-data"
 import { CONTAINER_ID } from "./ui-constants"
 
 // @TODO: refactors, responsive, interactions

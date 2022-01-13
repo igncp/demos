@@ -30,6 +30,7 @@ const d3EaseItems = [
 
 const d3AxisItems = getCommonItems("d3-axis")
 const d3FetchItems = getCommonItems("d3-fetch")
+const d3Force = getCommonItems("d3-force")
 const d3HierarchyItems = getCommonItems("d3-hierarchy")
 const d3InterpolateItems = getCommonItems("d3-interpolate")
 const d3SankeyItems = getCommonItems("d3-sankey")
@@ -200,7 +201,7 @@ const d3js: D3JS = {
   },
   "force": {
     dataFiles: ["links.json", "nodes.json"],
-    docs: [],
+    docs: [...d3Force],
     isCompleted: true,
     name: "Force",
     notes: [],

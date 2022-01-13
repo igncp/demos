@@ -5,6 +5,7 @@ import {
   SimulationNodeDatum,
   drag,
   forceCenter,
+  forceCollide as forceCollideD3,
   forceLink as forceLinkD3,
   forceManyBody,
   forceSimulation,
@@ -22,8 +23,7 @@ const settings = {
   textDY: 5,
 }
 
-// eslint-disable-next-line id-denylist
-const getNodeId = (node: { index?: number }) => `node-text-${node.index!}`
+const getNodeId = (node: SimulationNodeDatum) => `node-text-${node.index!}`
 
 type ChartConfig<NodeData, LinkData> = {
   forceData: { links: LinkData[]; nodes: NodeData[] }
@@ -40,6 +40,7 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
   private readonly config: ChartConfig<NodeData, LinkData>
   private readonly elements: ChartElements
   private readonly simulation: Simulation<NodeData, undefined>
+
   private readonly forceNodes: Array<NodeData & SimulationNodeDatum>
   private readonly forceLinks: Array<
     SimulationLinkDatum<NodeData & SimulationNodeDatum>
@@ -62,11 +63,13 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
     const forceLink = forceLinkD3<NodeData, LinkData>().links(
       links.map((link) => ({ ...link }))
     )
+    const forceCollide = forceCollideD3(12).strength(1).iterations(100)
 
     const simulation = forceSimulation<NodeData>(
       nodes.map((node) => ({ ...node }))
     )
       .force("link", forceLink)
+      .force("collide", forceCollide)
       .on("tick", () => {
         this.render()
       })
@@ -98,6 +101,7 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
       .force("center", forceCenter(width / 2, height / 2))
 
     this.elements.svg.attr("width", width).attr("height", height)
+
     this.updateLinks()
     this.updateNodes()
   }
@@ -180,6 +184,29 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
       forceNode.fy = null
     }
 
+    const addInteraction = <El extends SVGElement>(
+      selection: Selection<El, ForceNode, SVGSVGElement, unknown>
+    ) => {
+      selection
+        .on("mouseenter", (...[, forceNode]) => {
+          select(`#${getNodeId(forceNode)}`)
+            .style("opacity", 1)
+            .style("fill", "#000")
+        })
+        .on("mouseleave", (...[, forceNode]) => {
+          select(`#${getNodeId(forceNode)}`)
+            .style("opacity", settings.defaultTextOpacity)
+            .style("fill", null)
+        })
+        .call(
+          drag<El, ForceNode>()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended)
+        )
+        .style("cursor", "pointer")
+    }
+
     nodesEls
       .enter()
       .append("circle")
@@ -188,24 +215,7 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
       .attr("cy", (forceNode) => forceNode.y!)
       .attr("r", () => settings.circleRadius)
       .attr("fill", "black")
-      .each(function setupMouseHandlers() {
-        select<SVGCircleElement, ForceNode>(this)
-          .on("mouseover", (...[, forceNode]) => {
-            select(`#${getNodeId(forceNode)}`).style("opacity", 1)
-          })
-          .on("mouseleave", (...[, forceNode]) => {
-            select(`#${getNodeId(forceNode)}`).style(
-              "opacity",
-              settings.defaultTextOpacity
-            )
-          })
-      })
-      .call(
-        drag<SVGCircleElement, ForceNode>()
-          .on("start", dragstarted)
-          .on("drag", dragged)
-          .on("end", dragended)
-      )
+      .call(addInteraction)
 
     textsEls
       .enter()
@@ -217,6 +227,7 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
       .attr("dy", () => settings.textDY)
       .attr("id", getNodeId)
       .style("opacity", settings.defaultTextOpacity)
+      .call(addInteraction)
 
     nodesEls.exit().remove()
     textsEls.exit().remove()
