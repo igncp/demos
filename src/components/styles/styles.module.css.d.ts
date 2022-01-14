@@ -23,16 +23,16 @@ declare const styles: {
   readonly "mainSource": string
   readonly "navWrapper": string
   readonly "notes": string
-  readonly "pageHeader": string;
-  readonly "tag": string;
-  readonly "rootLayout": string,
-  readonly "tagCollection": string;
-  readonly "sourceNumber": string,
+  readonly "pageHeader": string
+  readonly "raphael": string
+  readonly "rootLayout": string
+  readonly "rowWrapper": string
+  readonly "sourceNumber": string
   readonly "sourcesList": string
   readonly "storybook": string
-  readonly "titleWrapper": string
-  readonly "raphael": string
+  readonly "tag": string
+  readonly "tagCollection": string
   readonly "testing": string
-  readonly "rowWrapper": string
+  readonly "titleWrapper": string
 }
 export = styles
