@@ -11,13 +11,14 @@
 <link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/force/force-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">393</td><td class="">393</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/force/force-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">411</td><td class="">411</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Selection,
   Simulation,
   SimulationLinkDatum,
   SimulationNodeDatum,
   drag,
   forceCenter,
+  forceCollide as forceCollideD3,
   forceLink as forceLinkD3,
   forceManyBody,
   forceSimulation,
@@ -35,8 +36,7 @@ const settings = {
   textDY: 5,
 }
 
-// eslint-disable-next-line id-denylist
-const getNodeId = (node: { index?: number }) =&gt; `node-text-${node.index!}`
+const getNodeId = (node: SimulationNodeDatum) =&gt; `node-text-${node.index!}`
 
 type ChartConfig&lt;NodeData, LinkData&gt; = {
   forceData: { links: LinkData[]; nodes: NodeData[] }
@@ -53,6 +53,7 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
   private readonly config: ChartConfig&lt;NodeData, LinkData&gt;
   private readonly elements: ChartElements
   private readonly simulation: Simulation&lt;NodeData, undefined&gt;
+
   private readonly forceNodes: Array&lt;NodeData &amp; SimulationNodeDatum&gt;
   private readonly forceLinks: Array&lt;
     SimulationLinkDatum&lt;NodeData &amp; SimulationNodeDatum&gt;
@@ -75,11 +76,13 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
     const forceLink = forceLinkD3&lt;NodeData, LinkData&gt;().links(
       links.map((link) =&gt; ({ ...link }))
     )
+    const forceCollide = forceCollideD3(12).strength(1).iterations(100)
 
     const simulation = forceSimulation&lt;NodeData&gt;(
       nodes.map((node) =&gt; ({ ...node }))
     )
       .force(&quot;link&quot;, forceLink)
+      .force(&quot;collide&quot;, forceCollide)
       .on(&quot;tick&quot;, () =&gt; {
         this.render()
       })
@@ -111,6 +114,7 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
       .force(&quot;center&quot;, forceCenter(width / 2, height / 2))
 
     this.elements.svg.attr(&quot;width&quot;, width).attr(&quot;height&quot;, height)
+
     this.updateLinks()
     this.updateNodes()
   }
@@ -193,6 +197,29 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
       forceNode.fy = null
     }
 
+    const addInteraction = &lt;El extends SVGElement&gt;(
+      selection: Selection&lt;El, ForceNode, SVGSVGElement, unknown&gt;
+    ) =&gt; {
+      selection
+        .on(&quot;mouseenter&quot;, (...[, forceNode]) =&gt; {
+          select(`#${getNodeId(forceNode)}`)
+            .style(&quot;opacity&quot;, 1)
+            .style(&quot;fill&quot;, &quot;#000&quot;)
+        })
+        .on(&quot;mouseleave&quot;, (...[, forceNode]) =&gt; {
+          select(`#${getNodeId(forceNode)}`)
+            .style(&quot;opacity&quot;, settings.defaultTextOpacity)
+            .style(&quot;fill&quot;, null)
+        })
+        .call(
+          drag&lt;El, ForceNode&gt;()
+            .on(&quot;start&quot;, dragstarted)
+            .on(&quot;drag&quot;, dragged)
+            .on(&quot;end&quot;, dragended)
+        )
+        .style(&quot;cursor&quot;, &quot;pointer&quot;)
+    }
+
     nodesEls
       .enter()
       .append(&quot;circle&quot;)
@@ -201,24 +228,7 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
       .attr(&quot;cy&quot;, (forceNode) =&gt; forceNode.y!)
       .attr(&quot;r&quot;, () =&gt; settings.circleRadius)
       .attr(&quot;fill&quot;, &quot;black&quot;)
-      .each(function setupMouseHandlers() {
-        select&lt;SVGCircleElement, ForceNode&gt;(this)
-          .on(&quot;mouseover&quot;, (...[, forceNode]) =&gt; {
-            select(`#${getNodeId(forceNode)}`).style(&quot;opacity&quot;, 1)
-          })
-          .on(&quot;mouseleave&quot;, (...[, forceNode]) =&gt; {
-            select(`#${getNodeId(forceNode)}`).style(
-              &quot;opacity&quot;,
-              settings.defaultTextOpacity
-            )
-          })
-      })
-      .call(
-        drag&lt;SVGCircleElement, ForceNode&gt;()
-          .on(&quot;start&quot;, dragstarted)
-          .on(&quot;drag&quot;, dragged)
-          .on(&quot;end&quot;, dragended)
-      )
+      .call(addInteraction)
 
     textsEls
       .enter()
@@ -230,6 +240,7 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
       .attr(&quot;dy&quot;, () =&gt; settings.textDY)
       .attr(&quot;id&quot;, getNodeId)
       .style(&quot;opacity&quot;, settings.defaultTextOpacity)
+      .call(addInteraction)
 
     nodesEls.exit().remove()
     textsEls.exit().remove()
@@ -238,7 +249,7 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
 
 export { ChartConfig, ForceChart }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Wed, 12 Jan 2022 00:26:29 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Fri, 14 Jan 2022 21:38:33 GMT</p>
     </body>
   </html>
   
