@@ -3,7 +3,6 @@ import {
   Simulation,
   SimulationLinkDatum,
   SimulationNodeDatum,
-  drag,
   forceCenter,
   forceCollide as forceCollideD3,
   forceLink as forceLinkD3,
@@ -12,12 +11,11 @@ import {
   select,
 } from "d3"
 
-import * as styles from "./force.module.css"
+import * as styles from "../force.module.css"
 
-type CustomDragEvent = DragEvent & { active: boolean }
+import { BackgroundDrag, CustomDragEvent, NodeDrag } from "./force-drag"
 
 const settings = {
-  circleRadius: 5,
   defaultTextOpacity: 0.5,
   strength: -40,
   textDY: 5,
@@ -29,17 +27,26 @@ type ChartConfig<NodeData, LinkData> = {
   forceData: { links: LinkData[]; nodes: NodeData[] }
   getNodeText: (node: NodeData) => string
   height: number
+  radius?: number
   rootElId: string
 }
 
 type ChartElements = {
   svg: Selection<SVGSVGElement, unknown, HTMLElement, unknown>
+  svgDrag: Selection<SVGGElement, unknown, HTMLElement, unknown>
+  svgG: Selection<SVGGElement, unknown, HTMLElement, unknown>
 }
 
 class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
+  public static defaultRadius = 5
+
+  private readonly backgroundDrag: BackgroundDrag<SVGSVGElement, SVGGElement>
   private readonly config: ChartConfig<NodeData, LinkData>
   private readonly elements: ChartElements
   private readonly simulation: Simulation<NodeData, undefined>
+  private state: {
+    radius: number
+  }
 
   private readonly forceNodes: Array<NodeData & SimulationNodeDatum>
   private readonly forceLinks: Array<
@@ -48,6 +55,9 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
 
   public constructor(config: ChartConfig<NodeData, LinkData>) {
     this.config = config
+    this.state = {
+      radius: config.radius ?? ForceChart.defaultRadius,
+    }
 
     const { forceData, rootElId } = config
     const { links, nodes } = forceData
@@ -57,8 +67,15 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
     rootEl.classList.add(styles.forceChart)
 
     const svg = select(`#${rootElId}`).append("svg")
+    const svgDrag = svg.append("g")
+    const svgG = svgDrag.append("g")
 
-    this.elements = { svg }
+    this.elements = { svg, svgDrag, svgG }
+
+    this.backgroundDrag = new BackgroundDrag({
+      svg,
+      svgDrag,
+    })
 
     const forceLink = forceLinkD3<NodeData, LinkData>().links(
       links.map((link) => ({ ...link }))
@@ -78,9 +95,16 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
     this.forceNodes = this.simulation.nodes()
     this.forceLinks = forceLink.links()
 
+    this.backgroundDrag.setupBackgroundDrag()
+
     this.render()
 
     window.addEventListener("resize", this.handleResize)
+  }
+
+  public setRadius(radius: number) {
+    this.state.radius = radius
+    this.getNodes().attr("r", radius)
   }
 
   private readonly handleResize = () => {
@@ -108,9 +132,9 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
 
   private updateLinks() {
     const {
-      elements: { svg },
+      elements: { svgG },
     } = this
-    const linksEls = svg
+    const linksEls = svgG
       .selectAll<SVGPathElement, ForceChart<NodeData, LinkData>["forceLinks"]>(
         `.${styles.linkCurved}`
       )
@@ -145,65 +169,65 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
 
     const {
       config: { getNodeText },
-      elements: { svg },
+      elements: { svgG },
       forceNodes,
     } = this
-    const nodesEls = svg
-      .selectAll<SVGCircleElement, ForceNode>("circle")
-      .data(forceNodes)
-    const textsEls = svg
+
+    const nodesEls = this.getNodes().data(forceNodes)
+
+    const textsEls = svgG
       .selectAll<SVGTextElement, ForceNode>("text")
       .data(forceNodes)
 
-    const dragstarted = (
-      ...[dragEvent, forceNode]: [CustomDragEvent, ForceNode]
-    ) => {
-      if (!dragEvent.active) {
-        this.simulation.alphaTarget(0.3).restart()
-      }
-
-      forceNode.fx = forceNode.x
-      forceNode.fy = forceNode.y
+    type DragOpts = {
+      dragEvent: CustomDragEvent
+      node: ForceNode
     }
 
-    const dragged = (
-      ...[dragEvent, forceNode]: [CustomDragEvent, ForceNode]
-    ) => {
-      forceNode.fx = dragEvent.x
-      forceNode.fy = dragEvent.y
+    const onDrag = ({ dragEvent, node }: DragOpts) => {
+      node.fx = dragEvent.x
+      node.fy = dragEvent.y
     }
 
-    const dragended = (
-      ...[dragEvent, forceNode]: [CustomDragEvent, ForceNode]
-    ) => {
+    const onDragEnded = ({ dragEvent, node }: DragOpts) => {
       if (!dragEvent.active) {
         this.simulation.alphaTarget(0)
       }
 
-      forceNode.fx = null
-      forceNode.fy = null
+      node.fx = null
+      node.fy = null
     }
 
-    const addInteraction = <El extends SVGElement>(
-      selection: Selection<El, ForceNode, SVGSVGElement, unknown>
+    const onDragStart = ({ dragEvent, node }: DragOpts) => {
+      if (!dragEvent.active) {
+        this.simulation.alphaTarget(0.3).restart()
+      }
+
+      node.fx = node.x
+      node.fy = node.y
+    }
+
+    const addInteraction = <SVGType extends SVGCircleElement | SVGTextElement>(
+      selection: Selection<SVGType, ForceNode, SVGGElement, unknown>
     ) => {
+      const nodeDrag = new NodeDrag<ForceNode, SVGType>({
+        onDrag,
+        onDragEnded,
+        onDragStart,
+      })
+
       selection
         .on("mouseenter", (...[, forceNode]) => {
           select(`#${getNodeId(forceNode)}`)
             .style("opacity", 1)
             .style("fill", "#000")
-        })
+        })!
         .on("mouseleave", (...[, forceNode]) => {
           select(`#${getNodeId(forceNode)}`)
             .style("opacity", settings.defaultTextOpacity)
             .style("fill", null)
         })
-        .call(
-          drag<El, ForceNode>()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended)
-        )
+        .call(nodeDrag.setupNodes)
         .style("cursor", "pointer")
     }
 
@@ -213,7 +237,7 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
       .merge(nodesEls)
       .attr("cx", (forceNode) => forceNode.x!)
       .attr("cy", (forceNode) => forceNode.y!)
-      .attr("r", () => settings.circleRadius)
+      .attr("r", () => this.state.radius)
       .attr("fill", "black")
       .call(addInteraction)
 
@@ -231,6 +255,12 @@ class ForceChart<NodeData, LinkData extends SimulationLinkDatum<NodeData>> {
 
     nodesEls.exit().remove()
     textsEls.exit().remove()
+  }
+
+  private getNodes() {
+    type ForceNode = NodeData & SimulationNodeDatum
+
+    return this.elements.svgG.selectAll<SVGCircleElement, ForceNode>("circle")
   }
 }
 

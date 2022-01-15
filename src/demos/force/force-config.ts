@@ -1,4 +1,4 @@
-import { ChartConfig } from "./force-chart"
+import { ChartConfig } from "./chart/force-chart"
 import { SampleLink, SampleNode } from "./force-data"
 import { CONTAINER_ID } from "./ui-constants"
 
