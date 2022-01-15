@@ -7,16 +7,15 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
-<script src="../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
-<link href="../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/force/force-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">411</td><td class="">411</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/force/chart/force-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">470</td><td class="">470</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   Selection,
   Simulation,
   SimulationLinkDatum,
   SimulationNodeDatum,
-  drag,
   forceCenter,
   forceCollide as forceCollideD3,
   forceLink as forceLinkD3,
@@ -25,12 +24,11 @@
   select,
 } from &quot;d3&quot;
 
-import * as styles from &quot;./force.module.css&quot;
+import * as styles from &quot;../force.module.css&quot;
 
-type CustomDragEvent = DragEvent &amp; { active: boolean }
+import { BackgroundDrag, CustomDragEvent, NodeDrag } from &quot;./force-drag&quot;
 
 const settings = {
-  circleRadius: 5,
   defaultTextOpacity: 0.5,
   strength: -40,
   textDY: 5,
@@ -42,17 +40,26 @@ type ChartConfig&lt;NodeData, LinkData&gt; = {
   forceData: { links: LinkData[]; nodes: NodeData[] }
   getNodeText: (node: NodeData) =&gt; string
   height: number
+  radius?: number
   rootElId: string
 }
 
 type ChartElements = {
   svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+  svgDrag: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  svgG: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
 }
 
 class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&gt;&gt; {
+  public static defaultRadius = 5
+
+  private readonly backgroundDrag: BackgroundDrag&lt;SVGSVGElement, SVGGElement&gt;
   private readonly config: ChartConfig&lt;NodeData, LinkData&gt;
   private readonly elements: ChartElements
   private readonly simulation: Simulation&lt;NodeData, undefined&gt;
+  private state: {
+    radius: number
+  }
 
   private readonly forceNodes: Array&lt;NodeData &amp; SimulationNodeDatum&gt;
   private readonly forceLinks: Array&lt;
@@ -61,6 +68,9 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
 
   public constructor(config: ChartConfig&lt;NodeData, LinkData&gt;) {
     this.config = config
+    this.state = {
+      radius: config.radius ?? ForceChart.defaultRadius,
+    }
 
     const { forceData, rootElId } = config
     const { links, nodes } = forceData
@@ -70,8 +80,15 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
     rootEl.classList.add(styles.forceChart)
 
     const svg = select(`#${rootElId}`).append(&quot;svg&quot;)
+    const svgDrag = svg.append(&quot;g&quot;)
+    const svgG = svgDrag.append(&quot;g&quot;)
 
-    this.elements = { svg }
+    this.elements = { svg, svgDrag, svgG }
+
+    this.backgroundDrag = new BackgroundDrag({
+      svg,
+      svgDrag,
+    })
 
     const forceLink = forceLinkD3&lt;NodeData, LinkData&gt;().links(
       links.map((link) =&gt; ({ ...link }))
@@ -91,9 +108,16 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
     this.forceNodes = this.simulation.nodes()
     this.forceLinks = forceLink.links()
 
+    this.backgroundDrag.setupBackgroundDrag()
+
     this.render()
 
     window.addEventListener(&quot;resize&quot;, this.handleResize)
+  }
+
+  public setRadius(radius: number) {
+    this.state.radius = radius
+    this.getNodes().attr(&quot;r&quot;, radius)
   }
 
   private readonly handleResize = () =&gt; {
@@ -121,9 +145,9 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
 
   private updateLinks() {
     const {
-      elements: { svg },
+      elements: { svgG },
     } = this
-    const linksEls = svg
+    const linksEls = svgG
       .selectAll&lt;SVGPathElement, ForceChart&lt;NodeData, LinkData&gt;[&quot;forceLinks&quot;]&gt;(
         `.${styles.linkCurved}`
       )
@@ -158,65 +182,65 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
 
     const {
       config: { getNodeText },
-      elements: { svg },
+      elements: { svgG },
       forceNodes,
     } = this
-    const nodesEls = svg
-      .selectAll&lt;SVGCircleElement, ForceNode&gt;(&quot;circle&quot;)
-      .data(forceNodes)
-    const textsEls = svg
+
+    const nodesEls = this.getNodes().data(forceNodes)
+
+    const textsEls = svgG
       .selectAll&lt;SVGTextElement, ForceNode&gt;(&quot;text&quot;)
       .data(forceNodes)
 
-    const dragstarted = (
-      ...[dragEvent, forceNode]: [CustomDragEvent, ForceNode]
-    ) =&gt; {
-      if (!dragEvent.active) {
-        this.simulation.alphaTarget(0.3).restart()
-      }
-
-      forceNode.fx = forceNode.x
-      forceNode.fy = forceNode.y
+    type DragOpts = {
+      dragEvent: CustomDragEvent
+      node: ForceNode
     }
 
-    const dragged = (
-      ...[dragEvent, forceNode]: [CustomDragEvent, ForceNode]
-    ) =&gt; {
-      forceNode.fx = dragEvent.x
-      forceNode.fy = dragEvent.y
+    const onDrag = ({ dragEvent, node }: DragOpts) =&gt; {
+      node.fx = dragEvent.x
+      node.fy = dragEvent.y
     }
 
-    const dragended = (
-      ...[dragEvent, forceNode]: [CustomDragEvent, ForceNode]
-    ) =&gt; {
+    const onDragEnded = ({ dragEvent, node }: DragOpts) =&gt; {
       if (!dragEvent.active) {
         this.simulation.alphaTarget(0)
       }
 
-      forceNode.fx = null
-      forceNode.fy = null
+      node.fx = null
+      node.fy = null
     }
 
-    const addInteraction = &lt;El extends SVGElement&gt;(
-      selection: Selection&lt;El, ForceNode, SVGSVGElement, unknown&gt;
+    const onDragStart = ({ dragEvent, node }: DragOpts) =&gt; {
+      if (!dragEvent.active) {
+        this.simulation.alphaTarget(0.3).restart()
+      }
+
+      node.fx = node.x
+      node.fy = node.y
+    }
+
+    const addInteraction = &lt;SVGType extends SVGCircleElement | SVGTextElement&gt;(
+      selection: Selection&lt;SVGType, ForceNode, SVGGElement, unknown&gt;
     ) =&gt; {
+      const nodeDrag = new NodeDrag&lt;ForceNode, SVGType&gt;({
+        onDrag,
+        onDragEnded,
+        onDragStart,
+      })
+
       selection
         .on(&quot;mouseenter&quot;, (...[, forceNode]) =&gt; {
           select(`#${getNodeId(forceNode)}`)
             .style(&quot;opacity&quot;, 1)
             .style(&quot;fill&quot;, &quot;#000&quot;)
-        })
+        })!
         .on(&quot;mouseleave&quot;, (...[, forceNode]) =&gt; {
           select(`#${getNodeId(forceNode)}`)
             .style(&quot;opacity&quot;, settings.defaultTextOpacity)
             .style(&quot;fill&quot;, null)
         })
-        .call(
-          drag&lt;El, ForceNode&gt;()
-            .on(&quot;start&quot;, dragstarted)
-            .on(&quot;drag&quot;, dragged)
-            .on(&quot;end&quot;, dragended)
-        )
+        .call(nodeDrag.setupNodes)
         .style(&quot;cursor&quot;, &quot;pointer&quot;)
     }
 
@@ -226,7 +250,7 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
       .merge(nodesEls)
       .attr(&quot;cx&quot;, (forceNode) =&gt; forceNode.x!)
       .attr(&quot;cy&quot;, (forceNode) =&gt; forceNode.y!)
-      .attr(&quot;r&quot;, () =&gt; settings.circleRadius)
+      .attr(&quot;r&quot;, () =&gt; this.state.radius)
       .attr(&quot;fill&quot;, &quot;black&quot;)
       .call(addInteraction)
 
@@ -245,11 +269,17 @@ class ForceChart&lt;NodeData, LinkData extends SimulationLinkDatum&lt;NodeData&g
     nodesEls.exit().remove()
     textsEls.exit().remove()
   }
+
+  private getNodes() {
+    type ForceNode = NodeData &amp; SimulationNodeDatum
+
+    return this.elements.svgG.selectAll&lt;SVGCircleElement, ForceNode&gt;(&quot;circle&quot;)
+  }
 }
 
 export { ChartConfig, ForceChart }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Fri, 14 Jan 2022 21:38:33 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 15 Jan 2022 16:59:08 GMT</p>
     </body>
   </html>
   
