@@ -1,0 +1,552 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>partition-chart.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/partition/chart/partition-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">813</td><td class="">813</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  Arc,
+  ScaleOrdinal,
+  Selection,
+  arc as arcD3,
+  easeExpInOut,
+  interpolate,
+  scaleOrdinal,
+  schemePastel1,
+  schemePastel2,
+  select,
+} from &quot;d3&quot;
+import $ from &quot;jquery&quot;
+import &quot;jquery-ui/themes/base/all.css&quot;
+import { v1 as uuid } from &quot;uuid&quot;
+
+import { ATTR_DATA_ID, TRANSITION_DURATION } from &quot;../ui-constants&quot;
+
+import { DragModule } from &quot;./chart-drag&quot;
+import {
+  HierarchyNode,
+  Node,
+  PartitionData,
+  PartitionDataConfig,
+  extractTweenObj,
+  getInterpolatorFn,
+} from &quot;./partition-data&quot;
+
+if (typeof window !== &quot;undefined&quot;) {
+  require(&quot;jquery-ui/ui/widgets/tooltip&quot;)
+}
+
+const colorHover = &quot;#de7c03&quot;
+const colorDefaultStroke = &quot;#000&quot;
+const colorFillSelected = &quot;#f6ddf2&quot;
+
+const easeFn = easeExpInOut
+const height = 700
+
+const isTouchDevice = () =&gt;
+  &quot;ontouchstart&quot; in window || navigator.maxTouchPoints &gt; 0
+
+// With this correction the text looks more aligned
+const getX0CentroidCorrection = (x0: number) =&gt;
+  x0 + (x0 &gt; Math.PI ? -1 : 1) * 0.05
+
+const getTextsTransform =
+  &lt;ChartData&gt;(arc: Arc&lt;unknown, HierarchyNode&lt;ChartData&gt;&gt;) =&gt;
+  (node: HierarchyNode&lt;ChartData&gt;) =&gt; {
+    if (!node.depth) {
+      return &quot;&quot;
+    }
+
+    const centroid = arc.centroid({
+      ...node,
+      x0: getX0CentroidCorrection(node.x0),
+    })
+    const rotationDeg = (() =&gt; {
+      if (node.x0 &lt;= Math.PI / 2 &amp;&amp; node.x1 &gt;= (Math.PI * 3) / 2) {
+        return 0
+      }
+
+      const rotation =
+        90 + ((node.x0 + (node.x1 - node.x0) / 2) * 180) / Math.PI
+
+      return rotation &gt; 90 &amp;&amp; rotation &lt; 270 ? rotation - 180 : rotation
+    })()
+
+    return [
+      `rotate(${rotationDeg},${centroid[0]},${centroid[1]})`,
+      `translate(${centroid[0]},${centroid[1]})`,
+    ].join(&quot; &quot;)
+  }
+
+const getTextsOpacity = &lt;ChartData&gt;(node: HierarchyNode&lt;ChartData&gt;) =&gt; {
+  const arcLength = Math.abs(node.x0 - node.x1) * node.y1
+
+  // This number is obtained empirically to check small angles
+  if (arcLength &lt; 25) {
+    return 0
+  }
+
+  if (node.x0 &lt;= Math.PI / 2 &amp;&amp; node.x1 &gt;= (Math.PI * 3) / 2) {
+    return 1
+  }
+
+  const isAlmostVertical = Math.abs((node.x0 + node.x1) / 2 - Math.PI) &lt; 0.2
+
+  return isAlmostVertical &amp;&amp; node.depth !== 0 ? 0 : 1
+}
+
+const getArc = &lt;ChartData&gt;() =&gt;
+  arcD3&lt;HierarchyNode&lt;ChartData&gt;&gt;()
+    .startAngle((node) =&gt; node.x0)
+    .endAngle((node) =&gt; node.x1)
+    .innerRadius((node) =&gt; node.y0)
+    .outerRadius((node) =&gt; node.y1)
+    .padAngle(0.01)
+
+function moveToBottom&lt;SVGType extends SVGElement&gt;(this: SVGType) {
+  const selection = select(this)
+  const node = selection.node()!
+
+  node.parentNode!.prepend(node)
+}
+
+type ChartConfig&lt;ChartData&gt; = Omit&lt;
+  PartitionDataConfig&lt;ChartData&gt;,
+  &quot;getMaxRadius&quot;
+&gt; &amp; {
+  getColorOptions: (opts: {
+    depths: number[]
+    nodes: Array&lt;Node&lt;ChartData&gt;&gt;
+  }) =&gt; number[]
+  getNodeColorOption: (opts: { depth: number; node: Node&lt;ChartData&gt; }) =&gt; number
+  getNodeLabel: (node: Node&lt;ChartData&gt;) =&gt; string
+  getNodeTitle: (options: {
+    nodeData: Node&lt;ChartData&gt;
+    valueNum?: number
+  }) =&gt; string
+  rootElId: string
+}
+
+type ChartElements = {
+  svg: Selection&lt;SVGSVGElement, unknown, HTMLElement, unknown&gt;
+  svgDrag: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+  svgG: Selection&lt;SVGGElement, unknown, HTMLElement, unknown&gt;
+}
+
+class PartitionChart&lt;ChartData&gt; {
+  private readonly config: ChartConfig&lt;ChartData&gt;
+  private readonly elements: ChartElements
+  private readonly colorScale: ScaleOrdinal&lt;number, string&gt;
+  private readonly dataModule: PartitionData&lt;ChartData&gt;
+  private readonly selectors: {
+    path: string
+    text: string
+  }
+
+  private readonly state: {
+    drag: { x: number; y: number }
+    isClearingSelection: boolean
+  }
+
+  public constructor(config: ChartConfig&lt;ChartData&gt;) {
+    this.config = config
+
+    const { getHierarchySum, getNodeId, rootData } = config
+
+    this.dataModule = new PartitionData({
+      getHierarchySum,
+      getMaxRadius: () =&gt; this.getDimensions().radius,
+      getNodeId,
+      rootData,
+    })
+
+    const { rootElId } = config
+
+    const svg = select(`#${rootElId}`).append(&quot;svg&quot;)
+    const svgDrag = svg.append(&quot;g&quot;)
+    const svgG = svgDrag.append(&quot;g&quot;)
+
+    new DragModule({
+      container: svg,
+      dragSurface: svgDrag,
+    })
+
+    this.state = {
+      drag: { x: 0, y: 0 },
+      isClearingSelection: false,
+    }
+
+    this.selectors = {
+      path: `path-${uuid().slice(0, 6)}`,
+      text: `text-${uuid().slice(0, 6)}`,
+    }
+
+    this.dataModule.setDescendants()
+
+    this.colorScale = scaleOrdinal&lt;number, string&gt;(
+      schemePastel1.concat(schemePastel2)
+    )
+
+    this.elements = {
+      svg,
+      svgDrag,
+      svgG,
+    }
+
+    window.addEventListener(&quot;resize&quot;, this.handleResize)
+  }
+
+  public update() {
+    this.dataModule.setDescendants()
+
+    this.renderDescendants()
+  }
+
+  public render() {
+    const { width } = this.getDimensions()
+    const {
+      elements: { svg, svgG },
+    } = this
+
+    svg.attr(&quot;width&quot;, width).attr(&quot;height&quot;, height)
+    svgG.attr(&quot;transform&quot;, `translate(${width / 2},${height * 0.52})`)
+
+    this.renderDescendants()
+  }
+
+  private getDimensions() {
+    const {
+      config: { rootElId },
+    } = this
+    const { width } = (
+      document.getElementById(rootElId) as HTMLElement
+    ).getBoundingClientRect()
+    const chartWidth = Math.max(width, 700)
+    const radius = Math.min(chartWidth, height) / 2
+
+    return {
+      chartWidth,
+      radius,
+      width,
+    }
+  }
+
+  private renderDescendants() {
+    const {
+      config: { getColorOptions, getNodeId, getNodeLabel, getNodeTitle },
+      elements: { svgG },
+      selectors,
+    } = this
+    const usedDescendants = this.dataModule.getDescendants()
+
+    const depths = new Set&lt;number&gt;()
+
+    usedDescendants.forEach((node) =&gt; {
+      depths.add(node.depth)
+    })
+
+    this.colorScale.domain(
+      getColorOptions({
+        depths: Array.from(depths),
+        nodes: usedDescendants.map((node) =&gt; node.data),
+      })
+    )
+
+    const arc = getArc()
+
+    const textsTransform = getTextsTransform(arc)
+
+    const pathSel = svgG.selectAll&lt;SVGPathElement, HierarchyNode&lt;ChartData&gt;&gt;(
+      &quot;path&quot;
+    )
+    const pathInitialData = pathSel.data()
+
+    const path = pathSel.data(
+      usedDescendants,
+      (node) =&gt; `path-${getNodeId(node.data)}`
+    )
+
+    const usedDuration = this.state.isClearingSelection
+      ? 0
+      : TRANSITION_DURATION
+
+    this.state.isClearingSelection = false
+
+    const getShouldHighlightNode = (node: HierarchyNode&lt;ChartData&gt;) =&gt;
+      !isTouchDevice() || node.depth === 0
+
+    type CommonSelection&lt;ElementType extends SVGElement&gt; = Selection&lt;
+      ElementType,
+      HierarchyNode&lt;ChartData&gt;,
+      SVGGElement,
+      unknown
+    &gt;
+
+    const cursorFn = &lt;ElementType extends SVGElement&gt;(
+      selection: CommonSelection&lt;ElementType&gt;
+    ) =&gt; {
+      selection.style(&quot;cursor&quot;, (node) =&gt;
+        getShouldHighlightNode(node) ? &quot;pointer&quot; : &quot;move&quot;
+      )
+    }
+
+    const pathCommon = (selection: CommonSelection&lt;SVGPathElement&gt;) =&gt; {
+      selection
+        .attr(ATTR_DATA_ID, (node) =&gt; getNodeId(node.data))
+        .style(&quot;fill&quot;, this.fillColor)
+        .style(&quot;stroke&quot;, this.getPathStrokeColor)
+        .call(cursorFn)
+    }
+
+    const pathEnter = path
+      .enter()
+      .append(&quot;path&quot;)
+      .attr(&quot;class&quot;, selectors.path)
+      .style(&quot;stroke-width&quot;, &quot;3px&quot;)
+      .style(&quot;stroke-dasharray&quot;, &quot;1,3&quot;)
+      .attr(&quot;d&quot;, arc)
+      .call(pathCommon)
+
+    const exitPaths = path.exit&lt;HierarchyNode&lt;ChartData&gt;&gt;()
+
+    exitPaths.each(moveToBottom)
+
+    exitPaths
+      .transition()
+      .duration(usedDuration)
+      .ease(easeFn)
+      .attrTween(&quot;d&quot;, (node) =&gt; {
+        const initialNode = extractTweenObj(node)
+        const fn = interpolate(initialNode, {
+          ...initialNode,
+          x0: 0,
+          x1: 0,
+        })
+
+        return (t: number) =&gt; {
+          const tempNode = fn(t) as HierarchyNode&lt;ChartData&gt;
+
+          return arc(tempNode)!
+        }
+      })
+      .remove()
+
+    path
+      .call(pathCommon)
+      .transition()
+      .duration(usedDuration)
+      .ease(easeFn)
+      .attrTween(
+        &quot;d&quot;,
+        getInterpolatorFn({
+          fn: arc,
+          getNodeId,
+          initialData: pathInitialData,
+          isText: false,
+        })
+      )
+
+    const initialTextsSel = svgG.selectAll&lt;
+      SVGTextElement,
+      HierarchyNode&lt;ChartData&gt;
+    &gt;(&quot;text&quot;)
+    const textsInitialData = initialTextsSel.data()
+
+    const initialTexts = initialTextsSel.data(
+      usedDescendants,
+      (node) =&gt; `text-${getNodeId(node.data)}`
+    )
+
+    initialTexts.exit().remove()
+
+    const textCommon = (selection: CommonSelection&lt;SVGTextElement&gt;) =&gt; {
+      selection
+        .text((node: HierarchyNode&lt;ChartData&gt;) =&gt; {
+          const label = getNodeLabel(node.data)
+          const limit = 8
+
+          return label.length &gt; limit ? `${label.slice(0, limit)}...` : label
+        })
+        .attr(ATTR_DATA_ID, (node) =&gt; getNodeId(node.data))
+        .call(cursorFn)
+    }
+
+    const textsEnter = initialTexts
+      .enter()
+      .append(&quot;text&quot;)
+      .attr(&quot;class&quot;, selectors.text)
+      .style(&quot;fill&quot;, &quot;#333&quot;)
+      .style(&quot;cursor&quot;, &quot;default&quot;)
+      .style(&quot;font&quot;, &quot;bold 12px Arial&quot;)
+      .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+      .attr(&quot;transform&quot;, textsTransform)
+      .style(&quot;opacity&quot;, getTextsOpacity)
+      .call(textCommon)
+
+    // The texts need to be moved to the bottom before the paths
+    textsEnter.each(moveToBottom)
+    pathEnter.each(moveToBottom)
+
+    initialTexts
+      .call(textCommon)
+      .transition(&quot;movement&quot;)
+      .duration(usedDuration)
+      .ease(easeFn)
+      .attrTween(
+        &quot;transform&quot;,
+        getInterpolatorFn({
+          fn: textsTransform,
+          getNodeId,
+          initialData: textsInitialData,
+          isText: true,
+        })
+      )
+
+    initialTexts
+      .transition(&quot;opacity&quot;)
+      .duration(usedDuration)
+      .ease(easeFn)
+      .style(&quot;opacity&quot;, getTextsOpacity)
+
+    const updatedGroups = [pathEnter, textsEnter]
+
+    updatedGroups.forEach((set) =&gt; {
+      set.on(&quot;mouseover&quot;, (...[, node]) =&gt; {
+        const nodeId = getNodeId(node.data)
+
+        if (getShouldHighlightNode(node)) {
+          svgG
+            .selectAll&lt;SVGPathElement, HierarchyNode&lt;ChartData&gt;&gt;(
+              `path[${ATTR_DATA_ID}=&quot;${nodeId}&quot;]`
+            )
+            .style(&quot;fill&quot;, colorHover)
+
+          svgG
+            .select(`text[${ATTR_DATA_ID}=&quot;${nodeId}&quot;]`)
+            .style(&quot;fill&quot;, &quot;white&quot;)
+        }
+      })
+
+      set.on(&quot;mouseout&quot;, (...[, node]) =&gt; {
+        const nodeId = getNodeId(node.data)
+
+        svgG
+          .selectAll&lt;SVGPathElement, HierarchyNode&lt;ChartData&gt;&gt;(
+            `path[${ATTR_DATA_ID}=&quot;${nodeId}&quot;]`
+          )
+          .style(&quot;fill&quot;, this.fillColor)
+        svgG.select(`text[${ATTR_DATA_ID}=&quot;${nodeId}&quot;]`).style(&quot;fill&quot;, &quot;#000&quot;)
+      })
+
+      set.on(&quot;click&quot;, (...[, node]) =&gt; {
+        const focusedPath = this.dataModule.getFocusedPathRef()
+        const nodeId = getNodeId(node.data)
+
+        if (!node.parent) {
+          this.dataModule.setFocusedPath([])
+          this.state.isClearingSelection = true
+        } else if (focusedPath.includes(nodeId)) {
+          const idIndex = focusedPath.indexOf(nodeId)
+
+          this.dataModule.setFocusedPath(focusedPath.slice(0, idIndex))
+        } else {
+          this.dataModule.setFocusedPathFromNode(node)
+        }
+
+        svgG
+          .selectAll&lt;SVGPathElement, HierarchyNode&lt;ChartData&gt;&gt;(
+            `path[${ATTR_DATA_ID}=&quot;${nodeId}&quot;]`
+          )
+          .style(&quot;fill&quot;, this.fillColor)
+        svgG.select(`text[${ATTR_DATA_ID}=&quot;${nodeId}&quot;]`).style(&quot;fill&quot;, null)
+
+        this.dataModule.setDescendants()
+        this.renderDescendants()
+      })
+
+      set.attr(&quot;title&quot;, (node) =&gt;
+        getNodeTitle({
+          nodeData: node.data,
+          valueNum: node.value,
+        })
+      )
+    })
+
+    if (!isTouchDevice()) {
+      $(`.${selectors.path}`).tooltip({
+        track: true,
+      })
+
+      $(`.${selectors.text}`).tooltip({
+        track: true,
+      })
+    }
+  }
+
+  private readonly getPathStrokeColor = (node: HierarchyNode&lt;ChartData&gt;) =&gt; {
+    const focusedPath = this.dataModule.getFocusedPathRef()
+    const {
+      config: { getNodeId },
+    } = this
+
+    if (focusedPath.includes(getNodeId(node.data))) {
+      return &quot;darkred&quot;
+    }
+
+    return colorDefaultStroke
+  }
+
+  private readonly fillColor = (node: HierarchyNode&lt;ChartData&gt;) =&gt; {
+    const focusedPath = this.dataModule.getFocusedPathRef()
+    const {
+      colorScale,
+      config: { getNodeColorOption, getNodeId },
+    } = this
+
+    if (focusedPath.includes(getNodeId(node.data))) {
+      return colorFillSelected
+    }
+
+    const nodeOption = getNodeColorOption({
+      depth: node.depth,
+      node: node.data,
+    })
+
+    return colorScale(nodeOption)
+  }
+
+  private readonly handleResize = () =&gt; {
+    this.render()
+  }
+}
+
+const zTestGetArc = process.env.NODE_ENV === &quot;test&quot; ? getArc : null
+const zTestGetTextsTransform =
+  process.env.NODE_ENV === &quot;test&quot; ? getTextsTransform : null
+const zTestGetX0CentroidCorrection =
+  process.env.NODE_ENV === &quot;test&quot; ? getX0CentroidCorrection : null
+const zTestGetTextsOpacity =
+  process.env.NODE_ENV === &quot;test&quot; ? getTextsOpacity : null
+
+export type { Node }
+
+export {
+  ChartConfig,
+  PartitionChart,
+  zTestGetArc,
+  zTestGetTextsOpacity,
+  zTestGetTextsTransform,
+  zTestGetX0CentroidCorrection,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 16 Jan 2022 12:47:54 GMT</p>
+    </body>
+  </html>
+  

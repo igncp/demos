@@ -1,0 +1,241 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>partition-data.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="../../../../../assets/source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/partition/chart/partition-data.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">312</td><td class="">312</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+  HierarchyRectangularNode,
+  hierarchy,
+  interpolate,
+  partition as partitionD3,
+} from &quot;d3&quot;
+
+type Node&lt;NodeData&gt; = NodeData &amp; {
+  children?: Array&lt;Node&lt;NodeData&gt;&gt;
+}
+
+type HierarchyNode&lt;ChartData&gt; = HierarchyRectangularNode&lt;Node&lt;ChartData&gt;&gt;
+
+const extractTweenObj = &lt;ChartData&gt;(node?: HierarchyNode&lt;ChartData&gt;) =&gt; ({
+  depth: node?.depth ?? 0,
+  x0: node?.x0 ?? 0,
+  x1: node?.x1 ?? 0,
+  y0: node?.y0 ?? 0,
+  y1: node?.y1 ?? 0,
+})
+
+type PartitionDataConfig&lt;ChartData&gt; = {
+  getHierarchySum: (node: Node&lt;ChartData&gt;) =&gt; number
+  getMaxRadius: () =&gt; number
+  getNodeId: (node: Node&lt;ChartData&gt;) =&gt; number
+  rootData: Node&lt;ChartData&gt;
+}
+
+const createDescendants = &lt;ChartData&gt;({
+  getHierarchySum,
+  radius,
+  rootNode,
+}: {
+  getHierarchySum: PartitionDataConfig&lt;ChartData&gt;[&quot;getHierarchySum&quot;]
+  radius: number
+  rootNode: Node&lt;ChartData&gt;
+}) =&gt; {
+  const circularPartition = partitionD3&lt;Node&lt;ChartData&gt;&gt;().size([
+    2 * Math.PI,
+    radius,
+  ])
+  const newHierarchy = hierarchy(rootNode).sum(getHierarchySum)
+  const hierarchyResult = circularPartition(newHierarchy)
+
+  return hierarchyResult.descendants()
+}
+
+const getInterpolatorFn =
+  &lt;ChartData&gt;({
+    fn,
+    getNodeId,
+    initialData,
+    isText,
+  }: {
+    fn: (node: HierarchyNode&lt;ChartData&gt;) =&gt; string | null
+    getNodeId: PartitionDataConfig&lt;ChartData&gt;[&quot;getNodeId&quot;]
+    initialData: Array&lt;HierarchyNode&lt;ChartData&gt; | undefined&gt;
+    isText: boolean
+  }) =&gt;
+  (finalNode: HierarchyNode&lt;ChartData&gt;) =&gt; {
+    const initialNode = initialData.find(
+      (node) =&gt; node &amp;&amp; getNodeId(node.data) === getNodeId(finalNode.data)
+    )
+
+    const finalTween = extractTweenObj(finalNode)
+    const initialTween = extractTweenObj(initialNode)
+
+    const initialTweenUpdated = (() =&gt; {
+      if (finalTween.x0 === finalTween.x1) {
+        return finalTween
+      }
+
+      if (isText &amp;&amp; finalNode.depth === 0) {
+        return finalTween
+      }
+
+      return {
+        ...initialTween,
+        y0: finalTween.y0,
+        y1: finalTween.y1,
+      }
+    })()
+
+    const interpolateFn = interpolate(initialTweenUpdated, finalTween)
+
+    return (t: number) =&gt; {
+      const transitientState = interpolateFn(t)
+
+      return fn(transitientState as HierarchyNode&lt;ChartData&gt;)!
+    }
+  }
+
+class PartitionData&lt;ChartData&gt; {
+  private readonly config: PartitionDataConfig&lt;ChartData&gt;
+
+  private readonly state: {
+    descendants: Array&lt;HierarchyNode&lt;ChartData&gt;&gt;
+    focusedPath: number[]
+  }
+
+  public constructor(config: PartitionDataConfig&lt;ChartData&gt;) {
+    this.config = config
+
+    this.state = {
+      descendants: [],
+      focusedPath: [],
+    }
+
+    this.state.descendants = this.getDataHierarchy()
+  }
+
+  public setDescendants() {
+    this.state.descendants = this.getDataHierarchy()
+  }
+
+  public getDescendants() {
+    return this.state.descendants
+  }
+
+  public getDataHierarchy() {
+    const {
+      config: { getHierarchySum, getNodeId, rootData },
+      state: { focusedPath },
+    } = this
+    const maxRadius = this.config.getMaxRadius()
+
+    const getMaxDepthRecursive = (node: Node&lt;ChartData&gt;): number =&gt; {
+      const { children } = node
+
+      if (!children) {
+        return 0
+      }
+
+      return (
+        Math.max(...children.map((child) =&gt; getMaxDepthRecursive(child))) + 1
+      )
+    }
+
+    const cloneRecursive = ({
+      level,
+      node,
+    }: {
+      level: number
+      node: Node&lt;ChartData&gt;
+    }): Node&lt;ChartData&gt; =&gt; {
+      const { [level]: pathId } = focusedPath
+      const isValidPathId = typeof pathId === &quot;number&quot;
+
+      const childrenObj = {
+        ...(&quot;children&quot; in node &amp;&amp; {
+          children: node
+            .children!.filter(
+              (child) =&gt; !isValidPathId || getNodeId(child) === pathId
+            )
+            .map((child) =&gt;
+              cloneRecursive({
+                level: level + 1,
+                node: child,
+              })
+            ),
+        }),
+      }
+
+      return {
+        ...node,
+        ...childrenObj,
+      }
+    }
+
+    const newNode = cloneRecursive({
+      level: 0,
+      node: rootData,
+    })
+
+    const maxDepthTotal = getMaxDepthRecursive(rootData)
+    const maxDepthFiltered = getMaxDepthRecursive(newNode)
+    const radiusOfLevel = maxRadius / maxDepthTotal
+
+    return createDescendants({
+      getHierarchySum,
+      radius: radiusOfLevel * maxDepthFiltered,
+      rootNode: newNode,
+    })
+  }
+
+  public setFocusedPathFromNode(rootNode: HierarchyNode&lt;ChartData&gt;) {
+    const {
+      config: { getNodeId },
+    } = this
+
+    const getFocusedPath = (node: HierarchyNode&lt;ChartData&gt;): number[] =&gt; {
+      if (!node.parent) {
+        return []
+      }
+
+      return getFocusedPath(node.parent).concat([getNodeId(node.data)])
+    }
+
+    this.state.focusedPath = getFocusedPath(rootNode)
+  }
+
+  public getFocusedPathRef() {
+    return this.state.focusedPath
+  }
+
+  public setFocusedPath(newFocusedPath: number[]) {
+    this.state.focusedPath = newFocusedPath
+  }
+}
+
+const zTestCreateDescendants =
+  process.env.NODE_ENV === &quot;test&quot; ? createDescendants : null
+
+export type { Node }
+
+export {
+  HierarchyNode,
+  PartitionData,
+  PartitionDataConfig,
+  extractTweenObj,
+  getInterpolatorFn,
+  zTestCreateDescendants,
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sun, 16 Jan 2022 12:47:54 GMT</p>
+    </body>
+  </html>
+  
