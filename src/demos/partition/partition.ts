@@ -1,4 +1,4 @@
-import { PartitionChart } from "./partition-chart"
+import { PartitionChart } from "./chart/partition-chart"
 import { fetchData, getChartConfig } from "./partition-chart-config"
 import { setupControls } from "./partition-controls"
 import { COLOR_METHOD, CONTAINER_ID, TYPE_FORM } from "./ui-constants"

@@ -19,8 +19,8 @@ type Properties = {
   NAME_3: string // Sometimes not defined, with 'n.a.'
   NL_NAME_3: string
   REMARKS_3: string
-  Shape_Area: number // eslint-disable-line camelcase
-  Shape_Leng: number // eslint-disable-line camelcase
+  Shape_Area: number
+  Shape_Leng: number
   TYPE_3: string // e.g. Comarca
   VALIDFR_3: string
   VALIDTO_3: string

@@ -10,6 +10,7 @@ import {
   Scene,
   Shape,
   ShapeGeometry,
+  Vector3,
   WebGLRenderer,
 } from "three"
 import FontData from "three/examples/fonts/helvetiker_regular.typeface.json"
@@ -121,10 +122,9 @@ const createDemo: CreateDemo = ({ prevSimulation, props }) => {
     const strokeText = new Group()
 
     shapes.forEach((shape) => {
-      const points = shape.getPoints()
+      const points = shape.getPoints() as unknown[] as Vector3[]
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const svgGeo = SVGLoader.pointsToStroke(points as any, style)
+      const svgGeo = SVGLoader.pointsToStroke(points, style)
 
       svgGeo.translate(xMid, 0, 0)
 

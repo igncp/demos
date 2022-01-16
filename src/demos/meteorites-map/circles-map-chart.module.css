@@ -4,7 +4,7 @@
 
 .infoTrigger {
   cursor: pointer;
-  opacity: 70%;
+  opacity: 0.7;
   transition: linear 0.5s opacity;
 
   circle {
@@ -21,7 +21,7 @@
   }
 
   &:hover {
-    opacity: 100%;
+    opacity: 1;
 
     text {
       fill: green;

@@ -9,6 +9,7 @@ const disabledRules = {
   "@typescript-eslint/no-empty-function": 0,
   "@typescript-eslint/no-invalid-this": 0,
   "@typescript-eslint/no-non-null-assertion": 0,
+  "@typescript-eslint/no-unsafe-argument": 0,
   "@typescript-eslint/no-unsafe-assignment": 0,
   "@typescript-eslint/no-unsafe-call": 0,
   "@typescript-eslint/no-unsafe-member-access": 0,
@@ -68,11 +69,7 @@ const tsRules = {
   "@typescript-eslint/unified-signatures": 2,
 }
 
-const commonExtends = [
-  "eslint:recommended",
-  "plugin:eslint-comments/recommended",
-  "plugin:react/recommended",
-]
+const commonExtends = ["eslint:recommended", "plugin:react/recommended"]
 
 const tsExtends = commonExtends.concat([
   "plugin:@typescript-eslint/recommended",
@@ -161,7 +158,6 @@ module.exports = {
     "class-methods-use-this": 2,
     "consistent-return": 2,
     "eqeqeq": 2,
-    "eslint-comments/no-unused-disable": 2,
     "func-names": 2,
     "id-denylist": [2, ...denyList],
 

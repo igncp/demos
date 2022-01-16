@@ -1,6 +1,6 @@
 import { json } from "d3"
 
-import { ChartConfig, Node } from "./partition-chart"
+import { ChartConfig, Node } from "./chart/partition-chart"
 import { ColorMethod, FormState, PartitionType } from "./partition-controls"
 import { CONTAINER_ID } from "./ui-constants"
 
