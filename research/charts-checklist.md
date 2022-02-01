@@ -51,3 +51,6 @@ For new charts using data, they should cover most of these points
 ## Future Requirements Under Consideration
 
 - Add accessibility features to charts
+- It should be possible to change the data source on the fly
+- They should have basic error handling for external services (e.g. APIs)
+- Use different external libraries, e.g. to handle state

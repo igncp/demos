@@ -18,6 +18,8 @@ const disabledRules = {
   "@typescript-eslint/restrict-template-expressions": 0,
   "@typescript-eslint/unbound-method": 0,
 
+  "no-fallthrough": 0,
+
   "react/no-unescaped-entities": 0,
   "react/prop-types": 0,
 }

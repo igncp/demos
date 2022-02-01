@@ -14,6 +14,7 @@ jobs:
 
       - name: Install 🚧
         run: |
+          echo "NodeJS version: $(node --version)"
           npm install
           npm run e2e:install
           cd storybook && npm install
