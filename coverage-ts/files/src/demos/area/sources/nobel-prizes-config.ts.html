@@ -11,7 +11,7 @@
 <link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/area/sources/nobel-prizes-config.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">161</td><td class="">161</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { format, json } from &quot;d3&quot;
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/area/sources/nobel-prizes-config.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">219</td><td class="">219</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import { format, json } from &quot;d3&quot;
 
 import { ChartConfig } from &quot;../chart/area-chart&quot;
 import { ConfigResult, DataSource } from &quot;../config-types&quot;
@@ -20,13 +20,22 @@ import { CONTAINER_ID } from &quot;../ui-constants&quot;
 type NobelPrizeResponse = {
   laureates: Array&lt;{
     birth?: { date: string }
+    familyName: { en: string }
+    givenName: { en: string }
     id: string
+    knownName: { en: string }
     nobelPrizes?: Array&lt;{ awardYear: string }&gt;
+    wikipedia: { english: string }
   }&gt;
+  links: {
+    next: string
+  }
 }
 type NobelPrizeItem = {
   birthYear: number
   id: number
+  link: string
+  name: string
   prizeYear: number
   source: DataSource.NOBEL_PRIZES
 }
@@ -37,16 +46,36 @@ const getItemXValue: Config[&quot;getItemXValue&quot;] = (laureate) =&gt; laurea
 const getItemYValue: Config[&quot;getItemYValue&quot;] = (laureate) =&gt; laureate.prizeYear
 const getItemId: Config[&quot;getItemId&quot;] = (laureate) =&gt;
   `${laureate.source}-${laureate.id}`
-const getItemTitle: Config[&quot;getItemTitle&quot;] = () =&gt; &quot;nobel-prizes&quot;
+
+const getItemTitle: Config[&quot;getItemTitle&quot;] = (laureate) =&gt;
+  `${laureate.name}\nBorn: ${laureate.birthYear}\nAward: ${laureate.prizeYear}`
+
 const chartTitleShort = &quot;Nobel Prizes (subset)&quot;
 const chartTitle = `${chartTitleShort} year of birth (x) vs. year of award (y)`
 
-type NobelPrizesResult = ConfigResult&lt;NobelPrizeItem&gt;
-
-const getNobelPrizesConfig = async (): Promise&lt;NobelPrizesResult&gt; =&gt; {
+const fetchSomeLaureates = async () =&gt; {
   const initialData = (await json(
     &quot;https://api.nobelprize.org/2.1/laureates?limit=100&quot;
   )) as NobelPrizeResponse
+  const secondPage = (await json(initialData.links.next)) as NobelPrizeResponse
+
+  initialData.laureates.push(...secondPage.laureates)
+
+  return initialData
+}
+
+type NobelPrizesResult = ConfigResult&lt;NobelPrizeItem&gt;
+
+const pointClickHandler = (laureate: NobelPrizeItem) =&gt; {
+  if (!laureate.link) {
+    return
+  }
+
+  window.open(laureate.link, &quot;_blank&quot;)
+}
+
+const getNobelPrizesConfig = async (): Promise&lt;NobelPrizesResult&gt; =&gt; {
+  const initialData = await fetchSomeLaureates()
 
   const birthYears = new Set&lt;number&gt;()
 
@@ -68,6 +97,10 @@ const getNobelPrizesConfig = async (): Promise&lt;NobelPrizesResult&gt; =&gt; {
       const newItem: NobelPrizeItem = {
         birthYear,
         id: Number(laureate.id),
+        link: laureate.wikipedia.english || &quot;&quot;,
+        name:
+          laureate.knownName.en ||
+          `${laureate.givenName.en} ${laureate.familyName.en}`,
         prizeYear: Number(laureate.nobelPrizes[0].awardYear),
         source: DataSource.NOBEL_PRIZES,
       }
@@ -88,7 +121,9 @@ const getNobelPrizesConfig = async (): Promise&lt;NobelPrizesResult&gt; =&gt; {
     getItemTitle,
     getItemXValue,
     getItemYValue,
+    getPointClickHandler: () =&gt; pointClickHandler,
     getRootElId: () =&gt; CONTAINER_ID,
+    getVerticalOffset: () =&gt; 15,
     getXAxisFormat: () =&gt; format(&quot;.0f&quot;),
     getYAxisFormat: () =&gt; format(&quot;.0f&quot;),
   }
@@ -103,15 +138,15 @@ const getNobelPrizesConfig = async (): Promise&lt;NobelPrizesResult&gt; =&gt; {
     })
   }
 
-  return Promise.resolve({
+  return {
     config,
     onUpdateRandomValue,
-  })
+  }
 }
 
 export { getNobelPrizesConfig, NobelPrizeItem }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 05 Feb 2022 17:11:36 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 05 Feb 2022 19:43:16 GMT</p>
     </body>
   </html>
   
