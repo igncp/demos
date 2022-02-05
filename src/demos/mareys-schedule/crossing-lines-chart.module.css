@@ -9,7 +9,7 @@
     }
 
     line {
-      shape-rendering: crispEdges;
+      shape-rendering: crispedges;
       stroke: #000;
     }
   }
@@ -20,7 +20,7 @@
 
   .horizontalMarker {
     line {
-      shape-rendering: crispEdges;
+      shape-rendering: crispedges;
       stroke: #ddd;
       stroke-dasharray: 1, 1;
     }

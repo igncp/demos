@@ -1,32 +1,54 @@
+import {
+  AppState,
+  DataSource,
+  GenericItem,
+  createChartConfig,
+  dataSourceToName,
+} from "./area-config"
+import {
+  DATA_SOURCE_SELECT_ID,
+  TOGGLE_BUTTON_ID,
+  UPDATE_BUTTON_ID,
+  setupChartControls,
+} from "./area-controls"
 import { AreaChart } from "./chart/area-chart"
-import { createChartConfig } from "./income-chart-config"
-import { setupChartControls } from "./income-chart-controls"
-import { IncomeItem } from "./income-item-model"
 import { CONTAINER_ID } from "./ui-constants"
 
 const main = async () => {
-  const dataPoints = await IncomeItem.fetchAndCreateCollection()
-  const chartConfig = createChartConfig(dataPoints)
+  const appState: AppState = {
+    source: DataSource.INCOME,
+  }
 
-  const areaChart = AreaChart.renderChart<IncomeItem>(chartConfig)
+  const chartConfig = await createChartConfig(appState)
+
+  const areaChart = AreaChart.renderChart<GenericItem>(chartConfig.config)
 
   setupChartControls({
     onToggleVoronoiClick: () => {
       areaChart.toggleVoronoi()
     },
     onUpdateRandomValue: () => {
-      Array.from({ length: 50 }).forEach(() => {
-        const randomIndex = Math.floor(Math.random() * dataPoints.length)
-        const randomChange = Math.random() * 10 * (Math.random() > 0.5 ? 1 : -1)
-
-        dataPoints[randomIndex].changePercentage(randomChange)
-      })
+      chartConfig.onUpdateRandomValue()
 
       areaChart.refresh()
     },
+    onUpdateSelect: (newDataSource: string) => {
+      chartConfig.updateSource(newDataSource as DataSource)
+
+      areaChart.refresh(true)
+    },
+    selectOptions: Object.values(DataSource).map((dataSource) => ({
+      inputValue: dataSource,
+      label: dataSourceToName[dataSource],
+    })),
   })
 }
 
-export { CONTAINER_ID }
+export {
+  CONTAINER_ID,
+  DATA_SOURCE_SELECT_ID,
+  TOGGLE_BUTTON_ID,
+  UPDATE_BUTTON_ID,
+}
 
 export default main

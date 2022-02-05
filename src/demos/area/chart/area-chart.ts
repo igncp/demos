@@ -4,7 +4,6 @@ import {
   area as areaD3,
   axisBottom,
   axisLeft,
-  format,
   line as lineD3,
   max,
   min,
@@ -63,14 +62,16 @@ const filterBlackOpacity = ({
 }
 
 type ChartConfig<AreaPoint> = {
-  areaPoints: AreaPoint[]
-  chartTitle: string
-  chartTitleShort: string
-  getItemId: (areaPoint: AreaPoint) => number
+  getAreaPoints: () => AreaPoint[]
+  getChartTitle: () => string
+  getChartTitleShort: () => string
+  getItemId: (areaPoint: AreaPoint) => string
   getItemTitle: (areaPoint: AreaPoint) => string
   getItemXValue: (areaPoint: AreaPoint) => number
   getItemYValue: (areaPoint: AreaPoint) => number
-  rootElId: string
+  getRootElId: () => string
+  getXAxisFormat: () => (record: number | { valueOf: () => number }) => string
+  getYAxisFormat: () => (record: number | { valueOf: () => number }) => string
 }
 
 interface BaseChart {
@@ -108,7 +109,7 @@ class AreaChart<AreaPoint> implements BaseChart {
   private constructor(chartConfig: ChartConfig<AreaPoint>) {
     this.config = chartConfig
 
-    const { rootElId } = chartConfig
+    const rootElId = chartConfig.getRootElId()
 
     const svg = select(`#${rootElId}`).append("svg")
     const svgG = svg.append("g").attr("class", styles.areaChart)
@@ -163,8 +164,8 @@ class AreaChart<AreaPoint> implements BaseChart {
     return new AreaChart(chartConfig)
   }
 
-  public refresh() {
-    this.render(false)
+  public refresh(cancelAnimation?: boolean) {
+    this.render(!!cancelAnimation)
   }
 
   public tearDown() {
@@ -176,9 +177,7 @@ class AreaChart<AreaPoint> implements BaseChart {
   }
 
   private render(cancelAnimation: boolean) {
-    const {
-      config: { rootElId },
-    } = this
+    const rootElId = this.config.getRootElId()
     const { width } = (
       document.getElementById(rootElId) as HTMLElement
     ).getBoundingClientRect()
@@ -197,7 +196,7 @@ class AreaChart<AreaPoint> implements BaseChart {
 
     const { config: chartConfig } = this
 
-    const { areaPoints } = chartConfig
+    const areaPoints = chartConfig.getAreaPoints()
     const tooltipItemClass = `tooltip-item-${uuidv1().slice(0, 6)}`
     const pointClassPrefix = `point-${uuidv1().slice(0, 6)}-`
 
@@ -232,7 +231,9 @@ class AreaChart<AreaPoint> implements BaseChart {
         `translate(${width / 2 - margin.left},${titleYOffset})`
       )
       .text(() =>
-        isSmallDevice ? chartConfig.chartTitleShort : chartConfig.chartTitle
+        isSmallDevice
+          ? chartConfig.getChartTitleShort()
+          : chartConfig.getChartTitle()
       )
 
     const xMax = max(areaPoints, chartConfig.getItemXValue) as number
@@ -259,9 +260,12 @@ class AreaChart<AreaPoint> implements BaseChart {
 
     const ticks = isSmallDevice ? getSmallDeviceTicksScale()(width) : null
 
-    const xAxis = axisBottom(xScale).tickFormat(format(".0f")).ticks(ticks)
+    const xAxisFormat = this.config.getXAxisFormat()
+    const yAxisFormat = this.config.getYAxisFormat()
+
+    const xAxis = axisBottom(xScale).tickFormat(xAxisFormat).ticks(ticks)
     const yAxis = axisLeft(yScale)
-      .tickFormat(format(".0%"))
+      .tickFormat(yAxisFormat)
       .tickSize(axisTickSize)
 
     xAxisSel
@@ -323,11 +327,11 @@ class AreaChart<AreaPoint> implements BaseChart {
       )
     }
 
-    const bandsPercentage = 2.5
-    const bandsData = Array.from({ length: 100 / bandsPercentage }).map(
-      (...[, bandIndex]) => (bandIndex * bandsPercentage) / 100
+    const bandsNumber = 10
+    const bandsData = Array.from({ length: bandsNumber }).map(
+      (...[, bandIndex]) => bandIndex
     )
-    const bandHeight = Math.abs(yScale(bandsPercentage / 100) - yScale(0))
+    const bandHeight = height / bandsNumber
 
     const bands = backgroundBands.selectAll("rect").data(bandsData)
 
@@ -343,10 +347,8 @@ class AreaChart<AreaPoint> implements BaseChart {
         bandIndex % 2 ? "#f7f7f7" : "#ffffff"
       )
       .attr("class", "backgroundBands")
-      .transition()
-      .duration(animationDuration)
       .attr("height", bandHeight)
-      .attr("y", (bandPercentage) => yScale(bandPercentage))
+      .attr("y", (band) => band * bandHeight)
 
     const circleData = svgG.selectAll("circle").data(areaPoints)
 

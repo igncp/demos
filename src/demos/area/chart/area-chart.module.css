@@ -12,7 +12,7 @@
 
   .axis {
     fill: #333;
-    shape-rendering: crispEdges;
+    shape-rendering: crispedges;
   }
 
   .chartTitle {
@@ -26,7 +26,7 @@
   .axis path,
   .axis line {
     fill: none;
-    shape-rendering: crispEdges;
+    shape-rendering: crispedges;
     stroke: #ccc;
   }
 

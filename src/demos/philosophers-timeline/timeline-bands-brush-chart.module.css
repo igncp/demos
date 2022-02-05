@@ -10,13 +10,13 @@
   }
 
   .axis line {
-    shape-rendering: crispEdges;
+    shape-rendering: crispedges;
     stroke: grey;
     stroke-width: 1;
   }
 
   .axis path {
-    shape-rendering: crispEdges;
+    shape-rendering: crispedges;
     stroke: grey;
     stroke-width: 1;
   }
@@ -68,12 +68,12 @@
   .instantLabel {
     fill: #7e7e7e;
     font: 10px sans-serif;
-    shape-rendering: crispEdges;
+    shape-rendering: crispedges;
   }
 
   .intervalLabel {
     fill: black;
     font: 10px sans-serif;
-    shape-rendering: crispEdges;
+    shape-rendering: crispedges;
   }
 }

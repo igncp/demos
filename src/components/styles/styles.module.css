@@ -301,3 +301,8 @@ body {
   margin-bottom: 20px;
   overflow: hidden;
 }
+
+/* stylelint-disable-next-line selector-class-pattern */
+:global .form-select {
+  width: auto;
+}

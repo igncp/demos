@@ -19,7 +19,7 @@ type RenderOpts<Point> = {
   extractXScale: (point: Point) => number
   extractYScale: (point: Point) => number
   filter: string
-  getItemId: (point: Point) => number
+  getItemId: (point: Point) => string
   getTitle: (point: Point) => string
   mouseenter: (_: unknown, point: Point) => void
   mouseleave: (_: unknown, point: Point) => void
@@ -71,7 +71,7 @@ class VoronoiGroup<Point> {
     voronoiData.enter().append("path")
     voronoiData.exit().remove()
 
-    const colorScale = scaleOrdinal<number, string>(schemePastel2)
+    const colorScale = scaleOrdinal<string, string>(schemePastel2)
 
     const voronoi = Delaunay.from(points, extractXScale, extractYScale).voronoi(
       boundaries
@@ -98,7 +98,7 @@ class VoronoiGroup<Point> {
       .style("filter", filter)
       .transition()
       .duration(animationDuration)
-      .attr("d", (point) => voronoi.renderCell(getItemId(point)))
+      .attr("d", (...[, pointIndex]) => voronoi.renderCell(pointIndex))
 
     this.setVoronoi()
   }

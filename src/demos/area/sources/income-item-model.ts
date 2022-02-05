@@ -1,5 +1,7 @@
 import { csv } from "d3"
 
+import { DataSource } from "../config-types"
+
 type IncomeItemBase = {
   percent: number
   year: number
@@ -11,9 +13,11 @@ type IncomeItemData = Omit<IncomeItemBase, "percent"> & {
 }
 
 class IncomeItem {
+  public source: DataSource.INCOME
   private readonly incomeItemData: IncomeItemData
 
   private constructor(incomeItemData: IncomeItemData) {
+    this.source = DataSource.INCOME
     this.incomeItemData = incomeItemData
     this.incomeItemData.percentage = Number(this.incomeItemData.percentage)
   }
