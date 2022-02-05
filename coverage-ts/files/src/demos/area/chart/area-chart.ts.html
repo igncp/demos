@@ -11,13 +11,12 @@
 <link href="../../../../../assets/source-file.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/area/chart/area-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">641</td><td class="">641</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="../../../../../index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src/demos/area/chart/area-chart.ts</td><td class="">100.00%</td><td class="">95%</td><td class="">650</td><td class="">650</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import {
   BaseType,
   Selection,
   area as areaD3,
   axisBottom,
   axisLeft,
-  format,
   line as lineD3,
   max,
   min,
@@ -76,14 +75,16 @@ const filterBlackOpacity = ({
 }
 
 type ChartConfig&lt;AreaPoint&gt; = {
-  areaPoints: AreaPoint[]
-  chartTitle: string
-  chartTitleShort: string
-  getItemId: (areaPoint: AreaPoint) =&gt; number
+  getAreaPoints: () =&gt; AreaPoint[]
+  getChartTitle: () =&gt; string
+  getChartTitleShort: () =&gt; string
+  getItemId: (areaPoint: AreaPoint) =&gt; string
   getItemTitle: (areaPoint: AreaPoint) =&gt; string
   getItemXValue: (areaPoint: AreaPoint) =&gt; number
   getItemYValue: (areaPoint: AreaPoint) =&gt; number
-  rootElId: string
+  getRootElId: () =&gt; string
+  getXAxisFormat: () =&gt; (record: number | { valueOf: () =&gt; number }) =&gt; string
+  getYAxisFormat: () =&gt; (record: number | { valueOf: () =&gt; number }) =&gt; string
 }
 
 interface BaseChart {
@@ -121,7 +122,7 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
   private constructor(chartConfig: ChartConfig&lt;AreaPoint&gt;) {
     this.config = chartConfig
 
-    const { rootElId } = chartConfig
+    const rootElId = chartConfig.getRootElId()
 
     const svg = select(`#${rootElId}`).append(&quot;svg&quot;)
     const svgG = svg.append(&quot;g&quot;).attr(&quot;class&quot;, styles.areaChart)
@@ -176,8 +177,8 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
     return new AreaChart(chartConfig)
   }
 
-  public refresh() {
-    this.render(false)
+  public refresh(cancelAnimation?: boolean) {
+    this.render(!!cancelAnimation)
   }
 
   public tearDown() {
@@ -189,9 +190,7 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
   }
 
   private render(cancelAnimation: boolean) {
-    const {
-      config: { rootElId },
-    } = this
+    const rootElId = this.config.getRootElId()
     const { width } = (
       document.getElementById(rootElId) as HTMLElement
     ).getBoundingClientRect()
@@ -210,7 +209,7 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
 
     const { config: chartConfig } = this
 
-    const { areaPoints } = chartConfig
+    const areaPoints = chartConfig.getAreaPoints()
     const tooltipItemClass = `tooltip-item-${uuidv1().slice(0, 6)}`
     const pointClassPrefix = `point-${uuidv1().slice(0, 6)}-`
 
@@ -245,7 +244,9 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
         `translate(${width / 2 - margin.left},${titleYOffset})`
       )
       .text(() =&gt;
-        isSmallDevice ? chartConfig.chartTitleShort : chartConfig.chartTitle
+        isSmallDevice
+          ? chartConfig.getChartTitleShort()
+          : chartConfig.getChartTitle()
       )
 
     const xMax = max(areaPoints, chartConfig.getItemXValue) as number
@@ -272,9 +273,12 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
 
     const ticks = isSmallDevice ? getSmallDeviceTicksScale()(width) : null
 
-    const xAxis = axisBottom(xScale).tickFormat(format(&quot;.0f&quot;)).ticks(ticks)
+    const xAxisFormat = this.config.getXAxisFormat()
+    const yAxisFormat = this.config.getYAxisFormat()
+
+    const xAxis = axisBottom(xScale).tickFormat(xAxisFormat).ticks(ticks)
     const yAxis = axisLeft(yScale)
-      .tickFormat(format(&quot;.0%&quot;))
+      .tickFormat(yAxisFormat)
       .tickSize(axisTickSize)
 
     xAxisSel
@@ -336,11 +340,11 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
       )
     }
 
-    const bandsPercentage = 2.5
-    const bandsData = Array.from({ length: 100 / bandsPercentage }).map(
-      (...[, bandIndex]) =&gt; (bandIndex * bandsPercentage) / 100
+    const bandsNumber = 10
+    const bandsData = Array.from({ length: bandsNumber }).map(
+      (...[, bandIndex]) =&gt; bandIndex
     )
-    const bandHeight = Math.abs(yScale(bandsPercentage / 100) - yScale(0))
+    const bandHeight = height / bandsNumber
 
     const bands = backgroundBands.selectAll(&quot;rect&quot;).data(bandsData)
 
@@ -356,10 +360,8 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
         bandIndex % 2 ? &quot;#f7f7f7&quot; : &quot;#ffffff&quot;
       )
       .attr(&quot;class&quot;, &quot;backgroundBands&quot;)
-      .transition()
-      .duration(animationDuration)
       .attr(&quot;height&quot;, bandHeight)
-      .attr(&quot;y&quot;, (bandPercentage) =&gt; yScale(bandPercentage))
+      .attr(&quot;y&quot;, (band) =&gt; band * bandHeight)
 
     const circleData = svgG.selectAll(&quot;circle&quot;).data(areaPoints)
 
@@ -420,7 +422,7 @@ class AreaChart&lt;AreaPoint&gt; implements BaseChart {
 
 export { ChartConfig, AreaChart }
 </textarea><pre id="annotations" style="display:none">[]</pre></div>
-    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 01 Feb 2022 19:55:49 GMT</p>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Sat, 05 Feb 2022 17:11:36 GMT</p>
     </body>
   </html>
   
