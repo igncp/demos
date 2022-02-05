@@ -88,7 +88,7 @@ const d3js: D3JS = {
     isCompleted: true,
     name: "Area",
     notes: [],
-    sources: ["http://codepen.io/notno/pen/ilvsd"],
+    sources: ["http://codepen.io/notno/pen/ilvsd", "https://nobelprize.org"],
     summary: [
       "This chart is a mix of a common area + line chart plus Voronoi to properly display the points on mouse move. For the x and y axis, it uses two linear scales. It uses a SVG 'path' for printing the area, and a different SVG 'path' to print the line.",
       "It uses an SVG 'clipPath' element with a 'rect' to limit the area and line paths. This doesn't look necessary, because after removing it, the area has the same dimensions. However I kept it because it was in the original source and it showcases this approach.",

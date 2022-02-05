@@ -4,6 +4,11 @@
 - https://mattboldt.com/demos/typed-js/
 - Redux Toolkit
 - Rxjs for real-time charts
+- https://github.com/willianjusten/awesome-svg/blob/master/topics/Libraries.md
+    - https://github.com/mojs/mojso
+    - https://github.com/andreaferretti/paths-js
+    - https://github.com/bendc/animateplus
+- MobX
 
 ## Charts to maybe expand on
 
@@ -36,12 +41,9 @@
 - https://registry.opendata.aws/
 - https://datasetsearch.research.google.com/
 
-## Libraries
+## APIs
 
-- https://github.com/willianjusten/awesome-svg/blob/master/topics/Libraries.md
-    - https://github.com/mojs/mojso
-    - https://github.com/andreaferretti/paths-js
-    - https://github.com/bendc/animateplus
+- List: https://github.com/public-apis/public-apis
 
 ## Features to implement
 

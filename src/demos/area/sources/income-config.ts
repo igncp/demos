@@ -32,11 +32,11 @@ const getIncomeConfig = async (): Promise<IncomeResult> => {
     getItemTitle,
     getItemXValue,
     getItemYValue,
+    getPointClickHandler: () => null,
     getRootElId: () => CONTAINER_ID,
+    getVerticalOffset: () => 0.05,
     getXAxisFormat: () => format(".0f"),
-    getXAxisLabel: () => "",
     getYAxisFormat: () => format(".0%"),
-    getYAxisLabel: () => "",
   }
 
   const onUpdateRandomValue = () => {

@@ -69,7 +69,9 @@ type ChartConfig<AreaPoint> = {
   getItemTitle: (areaPoint: AreaPoint) => string
   getItemXValue: (areaPoint: AreaPoint) => number
   getItemYValue: (areaPoint: AreaPoint) => number
+  getPointClickHandler: () => ((point: AreaPoint) => void) | null
   getRootElId: () => string
+  getVerticalOffset: () => number // padding in the bottom and top of the chart, in Y's units
   getXAxisFormat: () => (record: number | { valueOf: () => number }) => string
   getYAxisFormat: () => (record: number | { valueOf: () => number }) => string
 }
@@ -243,8 +245,9 @@ class AreaChart<AreaPoint> implements BaseChart {
     const yMin = min(areaPoints, chartConfig.getItemYValue) as number
 
     const xScale = scaleLinear().domain([xMin, xMax]).range([0, innerWidth])
+    const verticalOffset = chartConfig.getVerticalOffset()
     const yScale = scaleLinear()
-      .domain([yMax + 0.05, yMin - 0.05])
+      .domain([yMax + verticalOffset, yMin - verticalOffset])
       .range([0, height])
 
     const extractXScale = (areaPoint: AreaPoint) =>
@@ -352,11 +355,13 @@ class AreaChart<AreaPoint> implements BaseChart {
 
     const circleData = svgG.selectAll("circle").data(areaPoints)
 
-    circleData.enter().append("circle")
+    circleData.enter().append("circle").attr("class", styles.point)
     circleData.exit().remove()
 
+    const clickHandler = this.config.getPointClickHandler()
+
     svgG
-      .selectAll<SVGCircleElement, AreaPoint>("circle")
+      .selectAll<SVGCircleElement, AreaPoint>(`.${styles.point}`)
       .attr("r", "5px")
       .style("filter", `url(#drop-shadow-${this.svgOpacityFilter})`)
       .attr(
@@ -364,17 +369,19 @@ class AreaChart<AreaPoint> implements BaseChart {
         (areaPoint: AreaPoint) =>
           `translate(${extractXScale(areaPoint)},${extractYScale(areaPoint)})`
       )
-      .attr(
-        "class",
-        (areaPoint) =>
-          `${
-            styles.point
-          } ${tooltipItemClass} ${pointClassPrefix}${chartConfig.getItemId(
-            areaPoint
-          )}`
+      .attr("class", (areaPoint) =>
+        [
+          styles.point,
+          tooltipItemClass,
+          pointClassPrefix + chartConfig.getItemId(areaPoint),
+        ].join(" ")
       )
       .on("mouseenter", mouseenter)
       .on("mouseleave", mouseleave)
+      .on("click", (...[, point]) => {
+        clickHandler?.(point)
+      })
+      .style("cursor", clickHandler ? "pointer" : "default")
       .attr("title", chartConfig.getItemTitle)
 
     voronoiGroup.render({

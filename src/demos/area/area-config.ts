@@ -16,12 +16,19 @@ const dataSourceToName: Record<DataSource, string> = {
 }
 
 type AppState = {
+  loaded: boolean
   source: DataSource
 }
 
 type GenericItem = IncomeItem | NobelPrizeItem
 
-const createChartConfig = async (appState: AppState) => {
+const createChartConfig = async ({
+  appState,
+  updateState,
+}: {
+  appState: AppState
+  updateState: (newState: Partial<AppState>) => void
+}) => {
   const [incomeResult, nobelPrizesResult] = await Promise.all([
     getIncomeConfig(),
     getNobelPrizesConfig(),
@@ -58,13 +65,18 @@ const createChartConfig = async (appState: AppState) => {
       getItemYValue: (nodeItem: GenericItem) =>
         // @ts-expect-error
         getConfig(nodeItem.source).getItemYValue(nodeItem),
+      getPointClickHandler: () =>
+        getConfig().getPointClickHandler() as
+          | ((point: GenericItem) => void)
+          | null,
       getRootElId: () => getConfig().getRootElId(),
+      getVerticalOffset: () => getConfig().getVerticalOffset(),
       getXAxisFormat: () => getConfig().getXAxisFormat(),
       getYAxisFormat: () => getConfig().getYAxisFormat(),
     },
     onUpdateRandomValue: () => getResult().onUpdateRandomValue(),
     updateSource: (source: DataSource) => {
-      appState.source = source
+      updateState({ source })
     },
   }
 }

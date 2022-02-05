@@ -7,13 +7,22 @@ import { CONTAINER_ID } from "../ui-constants"
 type NobelPrizeResponse = {
   laureates: Array<{
     birth?: { date: string }
+    familyName: { en: string }
+    givenName: { en: string }
     id: string
+    knownName: { en: string }
     nobelPrizes?: Array<{ awardYear: string }>
+    wikipedia: { english: string }
   }>
+  links: {
+    next: string
+  }
 }
 type NobelPrizeItem = {
   birthYear: number
   id: number
+  link: string
+  name: string
   prizeYear: number
   source: DataSource.NOBEL_PRIZES
 }
@@ -24,16 +33,36 @@ const getItemXValue: Config["getItemXValue"] = (laureate) => laureate.birthYear
 const getItemYValue: Config["getItemYValue"] = (laureate) => laureate.prizeYear
 const getItemId: Config["getItemId"] = (laureate) =>
   `${laureate.source}-${laureate.id}`
-const getItemTitle: Config["getItemTitle"] = () => "nobel-prizes"
+
+const getItemTitle: Config["getItemTitle"] = (laureate) =>
+  `${laureate.name}\nBorn: ${laureate.birthYear}\nAward: ${laureate.prizeYear}`
+
 const chartTitleShort = "Nobel Prizes (subset)"
 const chartTitle = `${chartTitleShort} year of birth (x) vs. year of award (y)`
 
-type NobelPrizesResult = ConfigResult<NobelPrizeItem>
-
-const getNobelPrizesConfig = async (): Promise<NobelPrizesResult> => {
+const fetchSomeLaureates = async () => {
   const initialData = (await json(
     "https://api.nobelprize.org/2.1/laureates?limit=100"
   )) as NobelPrizeResponse
+  const secondPage = (await json(initialData.links.next)) as NobelPrizeResponse
+
+  initialData.laureates.push(...secondPage.laureates)
+
+  return initialData
+}
+
+type NobelPrizesResult = ConfigResult<NobelPrizeItem>
+
+const pointClickHandler = (laureate: NobelPrizeItem) => {
+  if (!laureate.link) {
+    return
+  }
+
+  window.open(laureate.link, "_blank")
+}
+
+const getNobelPrizesConfig = async (): Promise<NobelPrizesResult> => {
+  const initialData = await fetchSomeLaureates()
 
   const birthYears = new Set<number>()
 
@@ -55,6 +84,10 @@ const getNobelPrizesConfig = async (): Promise<NobelPrizesResult> => {
       const newItem: NobelPrizeItem = {
         birthYear,
         id: Number(laureate.id),
+        link: laureate.wikipedia.english || "",
+        name:
+          laureate.knownName.en ||
+          `${laureate.givenName.en} ${laureate.familyName.en}`,
         prizeYear: Number(laureate.nobelPrizes[0].awardYear),
         source: DataSource.NOBEL_PRIZES,
       }
@@ -75,7 +108,9 @@ const getNobelPrizesConfig = async (): Promise<NobelPrizesResult> => {
     getItemTitle,
     getItemXValue,
     getItemYValue,
+    getPointClickHandler: () => pointClickHandler,
     getRootElId: () => CONTAINER_ID,
+    getVerticalOffset: () => 15,
     getXAxisFormat: () => format(".0f"),
     getYAxisFormat: () => format(".0f"),
   }
@@ -90,10 +125,10 @@ const getNobelPrizesConfig = async (): Promise<NobelPrizesResult> => {
     })
   }
 
-  return Promise.resolve({
+  return {
     config,
     onUpdateRandomValue,
-  })
+  }
 }
 
 export { getNobelPrizesConfig, NobelPrizeItem }

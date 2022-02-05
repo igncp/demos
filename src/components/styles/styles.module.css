@@ -42,6 +42,7 @@ body {
 
 .codeFragment {
   display: flex;
+  justify-content: center;
 }
 
 .codeFragmentButton {
