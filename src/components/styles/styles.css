@@ -1,5 +1,6 @@
 /* stylelint-disable selector-id-pattern, selector-class-pattern */
 
+@import "./mixin.css";
 @import "./_callout.css";
 @import "./_sticky_footer.css";
 
@@ -40,6 +41,10 @@ ul {
 
 .ui-tooltip {
   white-space: pre-line;
+}
+
+#chart {
+  background: $commonBg;
 }
 
 #code pre {

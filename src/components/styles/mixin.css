@@ -1,4 +1,5 @@
 $mobileBreakpoint: 530px;
+$commonBg: rgb(255 255 255 / 80%);
 
 @define-mixin mobile-only {
   @media (max-width: $mobileBreakpoint) {

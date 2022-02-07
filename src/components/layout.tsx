@@ -2,6 +2,7 @@ import React from "react"
 
 import Footer from "./footer"
 import PageTitle from "./page-title"
+import ParticlesBackground from "./particles-background"
 import "./styles/styles.css"
 import * as styles from "./styles/styles.module.css"
 
@@ -11,6 +12,7 @@ type Props = {
 
 const Layout = ({ children }: Props) => (
   <div className={`${styles.rootLayout} px-3 px-sm-5`}>
+    <ParticlesBackground />
     <div className={styles.navWrapper}>
       <PageTitle />
     </div>

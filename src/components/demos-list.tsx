@@ -22,7 +22,7 @@ const specialHighlightStyle: { [key in SPECIAL_DEMO_KEYS]: string } = {
 }
 
 const DemosList = ({ demos, indexOffset }: Props) => (
-  <ul className="list-group">
+  <ul className={styles.listGroup}>
     {demos.map((...[demo, demoIndex]) => (
       <a
         className={`list-group-item ${
