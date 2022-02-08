@@ -25,7 +25,6 @@ declare const styles: {
   readonly "navWrapper": string
   readonly "notes": string
   readonly "pageHeader": string
-  readonly "particlesContainer": string
   readonly "raphael": string
   readonly "rootLayout": string
   readonly "rowWrapper": string
