@@ -30,6 +30,10 @@ test.describe("Home page", () => {
       page.locator("text=interactive data visualization examples")
     ).toHaveCount(1)
 
+    await new Promise((resolve) => {
+      setTimeout(resolve, 5000)
+    })
+
     expect(await page.screenshot()).toMatchSnapshot("landing.png")
   })
 })
