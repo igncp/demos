@@ -30,9 +30,7 @@ const Area = ({ pageContext }: DemoPageProps) => {
 
     stateSubscription.current?.unsubscribe()
     stateSubscription.current = state$.subscribe((state) => {
-      if (state.loaded) {
-        setLoaded(true)
-      }
+      setLoaded(!!state.loaded[state.source])
     })
 
     return Promise.resolve()
@@ -58,7 +56,19 @@ const Area = ({ pageContext }: DemoPageProps) => {
           Update Random Values
         </button>
       </form>
-      <div id={CONTAINER_ID} />
+      <div
+        id={CONTAINER_ID}
+        style={
+          loaded
+            ? {}
+            : {
+                left: -1000,
+                opacity: 0,
+                position: "absolute",
+                top: -1000,
+              }
+        }
+      />
     </Demo>
   )
 }

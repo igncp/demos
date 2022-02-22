@@ -18,7 +18,7 @@ import { CONTAINER_ID } from "./ui-constants"
 
 const main = () => {
   const appState: AppState = {
-    loaded: false,
+    loaded: {},
     source: DataSource.INCOME,
   }
 
@@ -29,39 +29,35 @@ const main = () => {
     state$.next(appState)
   }
 
-  const renderChart = async () => {
-    const chartConfig = await createChartConfig({ appState, updateState })
+  const chartConfig = createChartConfig({
+    appState,
+    onConfigLoad: () => {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      areaChart.refresh()
+    },
+    updateState,
+  })
 
-    updateState({
-      loaded: true,
-    })
+  const areaChart = AreaChart.renderChart<GenericItem>(chartConfig.config)
 
-    const areaChart = AreaChart.renderChart<GenericItem>(chartConfig.config)
+  setupChartControls({
+    onToggleVoronoiClick: () => {
+      areaChart.toggleVoronoi()
+    },
+    onUpdateRandomValue: () => {
+      chartConfig.onUpdateRandomValue()
 
-    setupChartControls({
-      onToggleVoronoiClick: () => {
-        areaChart.toggleVoronoi()
-      },
-      onUpdateRandomValue: () => {
-        chartConfig.onUpdateRandomValue()
+      areaChart.refresh()
+    },
+    onUpdateSelect: (newDataSource: string) => {
+      chartConfig.updateSource(newDataSource as DataSource)
 
-        areaChart.refresh()
-      },
-      onUpdateSelect: (newDataSource: string) => {
-        chartConfig.updateSource(newDataSource as DataSource)
-
-        areaChart.refresh(true)
-      },
-      selectOptions: Object.values(DataSource).map((dataSource) => ({
-        inputValue: dataSource,
-        label: dataSourceToName[dataSource],
-      })),
-    })
-  }
-
-  renderChart().catch((error) => {
-    // eslint-disable-next-line no-console
-    console.error(error)
+      areaChart.refresh(true)
+    },
+    selectOptions: Object.values(DataSource).map((dataSource) => ({
+      inputValue: dataSource,
+      label: dataSourceToName[dataSource],
+    })),
   })
 
   return { state$ }

@@ -1,7 +1,9 @@
-import { getIncomeConfig } from "./sources/income-config"
+import { EmptyConfigItem, getEmptyConfig } from "./sources/empty-config"
+import { IncomeResult, getIncomeConfig } from "./sources/income-config"
 import { IncomeItem } from "./sources/income-item-model"
 import {
   NobelPrizeItem,
+  NobelPrizesResult,
   getNobelPrizesConfig,
 } from "./sources/nobel-prizes-config"
 
@@ -16,37 +18,67 @@ const dataSourceToName: Record<DataSource, string> = {
 }
 
 type AppState = {
-  loaded: boolean
+  loaded: {
+    [key in DataSource]?: boolean
+  }
   source: DataSource
 }
 
-type GenericItem = IncomeItem | NobelPrizeItem
+type GenericItem = EmptyConfigItem | IncomeItem | NobelPrizeItem
 
-const createChartConfig = async ({
+const createChartConfig = ({
   appState,
+  onConfigLoad,
   updateState,
 }: {
   appState: AppState
+  onConfigLoad: () => void
   updateState: (newState: Partial<AppState>) => void
 }) => {
-  const [incomeResult, nobelPrizesResult] = await Promise.all([
-    getIncomeConfig(),
-    getNobelPrizesConfig(),
-  ])
+  let nobelPrizesResult: NobelPrizesResult | null = null
+  let incomeResult: IncomeResult | null = null
+  const emptyConfig = getEmptyConfig()
+
+  const loadSource = (source: DataSource) => {
+    updateState({
+      loaded: {
+        ...appState.loaded,
+        [source]: true,
+      },
+    })
+    onConfigLoad()
+  }
+
+  ;(async () => {
+    const _incomeResult = await getIncomeConfig()
+
+    incomeResult = _incomeResult
+    loadSource(DataSource.INCOME)
+  })()
+    // eslint-disable-next-line no-console
+    .catch(console.log)
+  ;(async () => {
+    const _nobelPrizesResult = await getNobelPrizesConfig()
+
+    nobelPrizesResult = _nobelPrizesResult
+    loadSource(DataSource.NOBEL_PRIZES)
+  })()
+    // eslint-disable-next-line no-console
+    .catch(console.log)
 
   const getResult = (source?: DataSource) => {
     switch (source ?? appState.source) {
       case DataSource.NOBEL_PRIZES:
-        return nobelPrizesResult
+        return nobelPrizesResult ?? emptyConfig
       case DataSource.INCOME:
-        return incomeResult
+        return incomeResult ?? emptyConfig
 
       default:
         throw new Error("Unknown source")
     }
   }
 
-  const getConfig = (source?: DataSource) => getResult(source).config
+  const getConfig = (source?: DataSource) => getResult(source)!.config
 
   return {
     config: {
@@ -74,7 +106,7 @@ const createChartConfig = async ({
       getXAxisFormat: () => getConfig().getXAxisFormat(),
       getYAxisFormat: () => getConfig().getYAxisFormat(),
     },
-    onUpdateRandomValue: () => getResult().onUpdateRandomValue(),
+    onUpdateRandomValue: () => getResult()!.onUpdateRandomValue(),
     updateSource: (source: DataSource) => {
       updateState({ source })
     },

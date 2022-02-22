@@ -131,4 +131,4 @@ const getNobelPrizesConfig = async (): Promise<NobelPrizesResult> => {
   }
 }
 
-export { getNobelPrizesConfig, NobelPrizeItem }
+export { getNobelPrizesConfig, NobelPrizeItem, NobelPrizesResult }

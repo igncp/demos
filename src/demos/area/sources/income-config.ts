@@ -54,4 +54,4 @@ const getIncomeConfig = async (): Promise<IncomeResult> => {
   }
 }
 
-export { getIncomeConfig }
+export { getIncomeConfig, IncomeResult }
