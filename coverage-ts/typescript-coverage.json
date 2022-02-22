@@ -296,20 +296,6 @@
       "kind": 1
     },
     {
-      "file": "src/demos/area/area.ts",
-      "line": 61,
-      "character": 23,
-      "text": "error",
-      "kind": 1
-    },
-    {
-      "file": "src/demos/area/area.ts",
-      "line": 63,
-      "character": 18,
-      "text": "error",
-      "kind": 1
-    },
-    {
       "file": "src/demos/bars-3dimensional/bars-3dimensional.ts",
       "line": 11,
       "character": 8,
@@ -1360,8 +1346,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.50832551891934,
-  "total": 39457,
-  "covered": 39263,
-  "uncovered": 194
+  "percentage": 99.51450173211622,
+  "total": 39547,
+  "covered": 39355,
+  "uncovered": 192
 }
