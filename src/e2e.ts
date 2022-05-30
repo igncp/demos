@@ -12,9 +12,11 @@ const demosBaseURL = (() => {
     return "http://localhost:9000/demos"
   }
 
-  return process.env.NODE_ENV === "production"
-    ? "https://igncp.github.io/demos"
-    : "http://localhost:8000"
+  if (process.env.NODE_ENV === "production") {
+    return "https://igncp.github.io/demos"
+  }
+
+  return process.env.BASE_URL ?? "http://localhost:8000"
 })()
 
 const jQueryUITooltipSelector = ".ui-tooltip"

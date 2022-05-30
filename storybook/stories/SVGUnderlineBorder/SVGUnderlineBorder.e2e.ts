@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(setupConsoleAfterEach)
 
-test("The initial UI is as expected", async ({ page }) => {
+test("The initial UI is as expected @snapshot", async ({ page }) => {
   const frame = await getFrame(page)
 
   expect(await frame.locator(svgSelector).screenshot()).toMatchSnapshot(

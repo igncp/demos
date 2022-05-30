@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(setupConsoleAfterEach)
 
-test("UI is as expected", async ({ page }, workerInfo) => {
+test("UI is as expected @snapshot", async ({ page }, workerInfo) => {
   if (workerInfo.project.name !== ProjectName.DesktopChrome) {
     return
   }

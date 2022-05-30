@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(setupConsoleAfterEach)
 
-test("UI is as expected", async ({ page }) => {
+test("UI is as expected @snapshot", async ({ page }) => {
   await new Promise((resolve) => setTimeout(resolve, TRANSITION_DURATION))
 
   expect(await page.locator(mainSVGSelector).screenshot()).toMatchSnapshot(

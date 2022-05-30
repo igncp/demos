@@ -19,7 +19,7 @@ test.describe("Home page", () => {
     await expect(page.locator("text=Testing Page")).toHaveCount(1)
   })
 
-  test("UI is as expected", async ({ page }) => {
+  test("UI is as expected @snapshot", async ({ page }) => {
     await page.goto(demosBaseURL)
 
     await expect(page.locator("text=Storybook Demos")).toHaveCount(1)

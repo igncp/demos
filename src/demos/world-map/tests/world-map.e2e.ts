@@ -23,7 +23,7 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(setupConsoleAfterEach)
 
-test("UI is as expected", async ({ page }) => {
+test("UI is as expected @snapshot", async ({ page }) => {
   expect(await page.locator(mainSVGSelector).screenshot()).toMatchSnapshot(
     "chart.png"
   )

@@ -11,14 +11,14 @@ const { setupConsoleAfterEach, setupConsoleBeforeEach } =
 test.beforeEach(async ({ page }) => {
   setupConsoleBeforeEach(page)
 
-  await page.goto(`${demosBaseURL}/d3js/map-distorsions`)
+  await page.goto(`${demosBaseURL}/d3js/map-distorsions?e2e_test=true`)
 
   await page.waitForSelector(mainSVGSelector)
 })
 
 test.afterEach(setupConsoleAfterEach)
 
-test("UI is as expected", async ({ page }, workerInfo) => {
+test("UI is as expected @snapshot", async ({ page }, workerInfo) => {
   if (workerInfo.project.name !== ProjectName.DesktopChrome) {
     return
   }

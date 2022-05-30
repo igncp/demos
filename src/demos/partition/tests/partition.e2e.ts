@@ -18,13 +18,15 @@ test.beforeEach(async ({ page }) => {
 
 test.afterEach(setupConsoleAfterEach)
 
-test("UI is as expected", async ({ page }) => {
+test("UI is as expected @snapshot", async ({ page }) => {
   expect(await page.locator(mainSVGSelector).screenshot()).toMatchSnapshot(
     "chart.png"
   )
 })
 
-test("UI is as expected for the other radio button", async ({ page }) => {
+test("UI is as expected for the other radio button @snapshot", async ({
+  page,
+}) => {
   const radios = await page.$$(`#${TYPE_FORM} >> input[type="radio"]`)
 
   await radios[0].check()

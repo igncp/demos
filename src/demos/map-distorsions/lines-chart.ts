@@ -96,7 +96,11 @@ const colorsScale = <P extends number>(domain: [number, number]) => {
   const c = scaleLinear().domain(domain).range([0, 1])
   const colorScale = scaleLinear<string>()
     .domain(range(0, 1, 1.0 / colors.length))
-    .range(colors)
+    .range(
+      window.location.search.includes("e2e_test=true")
+        ? colors.map(() => "#ccc")
+        : colors
+    )
 
   return (color: P) => colorScale(c(color))
 }

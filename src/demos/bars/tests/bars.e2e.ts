@@ -6,7 +6,7 @@ import { ADD_BAR_BUTTON_ID, CONTAINER_ID } from "../ui-constants"
 const mainSVGSelector = `#${CONTAINER_ID} > svg`
 const demoURL = `${demosBaseURL}/d3js/bars`
 
-test("UI is as expected", async ({ page }) => {
+test("UI is as expected @snapshot", async ({ page }) => {
   await page.goto(demoURL)
 
   await page.waitForSelector(mainSVGSelector)
@@ -45,7 +45,7 @@ test("It adds a new rect each time clicking the button", async ({ page }) => {
   expect(await getBarsCount()).toEqual(initialBarsCount + 2)
 })
 
-test("Mobile: It can swipe chart when adding all bars", async ({
+test("Mobile: It can swipe chart when adding all bars @snapshot", async ({
   page,
 }, workerInfo) => {
   if (workerInfo.project.name !== ProjectName.MobileChrome) {

@@ -20,7 +20,11 @@ test.beforeEach(async ({ page }) => {
   await page.waitForSelector(mainSVGSelector)
 })
 
-test("UI is as expected", async ({ page }) => {
+test("UI is as expected @snapshot", async ({ page }) => {
+  await page.locator(mainSVGSelector).waitFor()
+
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
   expect(await page.locator(mainSVGSelector).screenshot()).toMatchSnapshot(
     "chart.png"
   )
