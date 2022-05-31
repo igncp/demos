@@ -23,7 +23,7 @@ const config: PlaywrightTestConfig = {
   testMatch: [/.*\.e2e\.ts/],
   timeout: (process.env.CI ? 30 : 15) * 1000,
   use: {
-    trace: "on-first-retry",
+    trace: "retain-on-failure",
   },
   ...(process.env.CI && {
     reporter: [["html", { open: "never" }], ["dot"]],
