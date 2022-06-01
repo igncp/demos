@@ -8,7 +8,7 @@ const config: PlaywrightTestConfig = {
     toMatchSnapshot: { threshold: 0.3 },
   },
   forbidOnly: !!process.env.CI,
-  globalTimeout: 10 * 60 * 1000,
+  globalTimeout: 20 * 60 * 1000,
   projects: [
     {
       name: ProjectName.DesktopChrome,
