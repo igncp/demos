@@ -486,35 +486,35 @@
     },
     {
       "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 234,
+      "line": 238,
       "character": 14,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 234,
+      "line": 238,
       "character": 20,
       "text": "range",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 234,
+      "line": 238,
       "character": 39,
       "text": "domain",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 256,
+      "line": 260,
       "character": 18,
       "text": "scale",
       "kind": 1
     },
     {
       "file": "src/demos/map-distorsions/lines-chart.ts",
-      "line": 295,
+      "line": 299,
       "character": 45,
       "text": "scale",
       "kind": 1
@@ -1346,8 +1346,8 @@
       "kind": 1
     }
   ],
-  "percentage": 99.51450173211622,
-  "total": 39547,
-  "covered": 39355,
+  "percentage": 99.51471034273582,
+  "total": 39564,
+  "covered": 39372,
   "uncovered": 192
 }
